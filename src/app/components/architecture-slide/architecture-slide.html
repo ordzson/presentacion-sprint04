@@ -1,0 +1,236 @@
+<section class="slide">
+  <header class="slide-header">
+    <div>
+      <p class="eyebrow">Fase 3 · Arquitectura</p>
+      <h1>Cómo está armado el sistema</h1>
+      <p class="subtitle">
+        Seis piezas, un trabajo cada una, y todo lo que se pasan entre ellas está escrito en un contrato.
+      </p>
+    </div>
+    <div class="metricas">
+      <div class="metrica"><strong>6</strong><span>proyectos</span></div>
+      <div class="metrica"><strong>1</strong><span>base de datos</span></div>
+      <div class="metrica"><strong>13</strong><span>pasos del ejemplo</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" role="tab" class="tab" [class.active]="vista() === 'capas'"
+      [attr.aria-selected]="vista() === 'capas'" (click)="verVista('capas')">
+      <span class="tab-code">01</span><span class="tab-label">Las capas</span>
+    </button>
+    <button type="button" role="tab" class="tab" [class.active]="vista() === 'flujo'"
+      [attr.aria-selected]="vista() === 'flujo'" (click)="verVista('flujo')">
+      <span class="tab-code">02</span><span class="tab-label">Ejemplo real: generar un horario</span>
+    </button>
+    <button type="button" role="tab" class="tab" [class.active]="vista() === 'porque'"
+      [attr.aria-selected]="vista() === 'porque'" (click)="verVista('porque')">
+      <span class="tab-code">03</span><span class="tab-label">Por qué así</span>
+    </button>
+  </nav>
+
+  <!-- ─────────────────────────────────────────────── 01 · las capas -->
+  @if (vista() === 'capas') {
+    <div class="cuerpo dos-columnas">
+      <div class="diagrama">
+        <p class="pista">Clic en cualquier caja para ver qué hace y con qué archivos reales.</p>
+
+        <div class="mapa">
+          <div class="columna">
+            <div class="actor">Persona usuaria · navegador</div>
+            <div class="flecha"><span>abre una página, llena un formulario, hace clic</span></div>
+
+            @for (id of pila; track id) {
+              @let c = capaPorId(id);
+              <button
+                type="button"
+                class="caja"
+                [class.activa]="capaActiva() === id"
+                [style.--c]="c.color"
+                (click)="verCapa(id)"
+              >
+                <span class="caja-rol">{{ c.rol }}</span>
+                <span class="caja-proyecto">{{ c.proyecto }}</span>
+              </button>
+
+              @if (id === 'blazor') {
+                <div class="flecha"><span>llama al caso de uso que corresponde</span></div>
+              }
+              @if (id === 'aplicacion') {
+                <div class="flecha doble">
+                  <span>pide lo que necesita <em>por interfaz</em></span>
+                </div>
+              }
+              @if (id === 'scheduler') {
+                <div class="flecha lateral"><span>el motor calcula en memoria y devuelve su propuesta</span></div>
+              }
+              @if (id === 'infraestructura') {
+                <div class="flecha"><span>HTTP y SQL sobre el esquema <code>horarios</code></span></div>
+              }
+            }
+          </div>
+
+          <div class="rail">
+            <button
+              type="button"
+              class="banda"
+              [class.activa]="capaActiva() === 'contratos'"
+              [style.--c]="contratos.color"
+              (click)="verCapa('contratos')"
+            >
+              <span class="banda-rol">{{ contratos.rol }}</span>
+              <span class="banda-proyecto">{{ contratos.proyecto }}</span>
+              <span class="banda-nota">Todo lo que cruza de una capa a otra viaja con este formato.</span>
+            </button>
+
+            <button
+              type="button"
+              class="banda"
+              [class.activa]="capaActiva() === 'dominio'"
+              [style.--c]="dominio.color"
+              (click)="verCapa('dominio')"
+            >
+              <span class="banda-rol">{{ dominio.rol }}</span>
+              <span class="banda-proyecto">{{ dominio.proyecto }}</span>
+              <span class="banda-nota">No depende de ninguna otra pieza. Es el corazón del sistema.</span>
+            </button>
+          </div>
+        </div>
+
+        <p class="regla-oro">
+          <strong>La regla de oro:</strong> las flechas siempre apuntan hacia adentro. La pantalla y la
+          base de datos conocen al centro; el centro no las conoce a ellas.
+        </p>
+      </div>
+
+      <aside class="panel" [style.--c]="capa().color">
+        <div class="panel-cabecera">
+          <span class="chip">{{ capa().rol }}</span>
+          <h2>{{ capa().proyecto }}</h2>
+          <p class="analogia">{{ capa().analogia }}</p>
+        </div>
+
+        <div class="panel-cuerpo">
+          <h3>Qué hace</h3>
+          <ul class="lista">
+            @for (h of capa().hace; track h) {
+              <li>{{ h }}</li>
+            }
+          </ul>
+
+          <h3>Qué <em>no</em> hace</h3>
+          <ul class="lista no">
+            @for (n of capa().noHace; track n) {
+              <li>{{ n }}</li>
+            }
+          </ul>
+
+          <h3>Con quién habla</h3>
+          <p class="habla">{{ capa().habla }}</p>
+
+          <h3>Archivos reales</h3>
+          <ul class="archivos">
+            @for (a of capa().archivos; track a.ruta) {
+              <li><code>{{ a.ruta }}</code><span>{{ a.nota }}</span></li>
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  }
+
+  <!-- ─────────────────────────────────────────────── 02 · ejemplo real -->
+  @if (vista() === 'flujo') {
+    <div class="cuerpo dos-columnas flujo">
+      <div class="pasos">
+        <p class="pista">
+          Un solo clic recorre las seis piezas. Clic en un paso —o flechas ↑ ↓— para ver qué se manda y
+          qué regresa.
+        </p>
+
+        <ol class="lista-pasos">
+          @for (p of flujo; track p.n) {
+            @let c = capaPorId(p.capa);
+            <li>
+              <button
+                type="button"
+                class="paso-item"
+                [class.activo]="pasoActivo() === p.n"
+                [style.--c]="c.color"
+                (click)="verPaso(p.n)"
+              >
+                <span class="paso-n">{{ p.n }}</span>
+                <span class="paso-texto">
+                  <span class="paso-titulo">{{ p.titulo }}</span>
+                  <span class="paso-capa">{{ c.proyecto }}</span>
+                </span>
+              </button>
+            </li>
+          }
+        </ol>
+      </div>
+
+      <aside class="panel" [style.--c]="capaDelPaso().color">
+        <div class="panel-cabecera">
+          <span class="chip">Paso {{ paso().n }} de {{ flujo.length }} · {{ capaDelPaso().proyecto }}</span>
+          <h2>{{ paso().titulo }}</h2>
+          <p class="analogia">{{ paso().llano }}</p>
+        </div>
+
+        <div class="panel-cuerpo">
+          <h3>Dónde ocurre</h3>
+          <p class="ruta"><code>{{ paso().archivo }}</code></p>
+
+          <div class="contrato">
+            <div class="contrato-fila">
+              <span class="etiqueta envia">Se manda</span>
+              <code>{{ paso().envia }}</code>
+            </div>
+            <div class="contrato-fila">
+              <span class="etiqueta devuelve">Regresa</span>
+              <code>{{ paso().devuelve }}</code>
+            </div>
+          </div>
+
+          @if (paso().nota) {
+            <p class="nota"><strong>Detalle:</strong> {{ paso().nota }}</p>
+          }
+
+          <div class="navegacion">
+            <button type="button" [disabled]="paso().n === 1" (click)="verPaso(paso().n - 1)">‹ Anterior</button>
+            <button type="button" [disabled]="paso().n === flujo.length" (click)="verPaso(paso().n + 1)">Siguiente ›</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  }
+
+  <!-- ─────────────────────────────────────────────── 03 · por qué así -->
+  @if (vista() === 'porque') {
+    <div class="cuerpo">
+      <div class="bloque">
+        <h2 class="bloque-titulo">Las cuatro reglas que sostienen todo</h2>
+        <div class="grid reglas">
+          @for (r of reglas; track r.titulo) {
+            <article class="tarjeta">
+              <h3>{{ r.titulo }}</h3>
+              <p>{{ r.texto }}</p>
+            </article>
+          }
+        </div>
+      </div>
+
+      <div class="bloque">
+        <h2 class="bloque-titulo">Qué gana el proyecto con esto</h2>
+        <div class="grid beneficios">
+          @for (b of beneficios; track b.titulo) {
+            <article class="tarjeta suave">
+              <h3>{{ b.titulo }}</h3>
+              <p>{{ b.texto }}</p>
+            </article>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</section>

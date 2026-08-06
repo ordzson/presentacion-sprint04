@@ -1,10 +1,11 @@
 import { Component, HostListener, signal } from '@angular/core';
+import { ArchitectureSlide } from './components/architecture-slide/architecture-slide';
 import { ErdSlide } from './components/erd-slide/erd-slide';
 import { RequirementsSlide } from './components/requirements-slide/requirements-slide';
 
 @Component({
   selector: 'app-root',
-  imports: [RequirementsSlide, ErdSlide],
+  imports: [RequirementsSlide, ErdSlide, ArchitectureSlide],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -12,6 +13,7 @@ export class App {
   readonly slides = [
     { n: 1, titulo: 'Requerimientos' },
     { n: 2, titulo: 'Base de datos' },
+    { n: 3, titulo: 'Arquitectura' },
   ];
 
   readonly actual = signal(1);
