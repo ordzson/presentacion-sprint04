@@ -1,1 +1,57 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 19px;
+}
+
+:root {
+  --bg: #faf3e6;
+  --surface: #f3e9d6;
+  --surface-hover: #ece0c8;
+  --border: #ddccab;
+  --text: #3a3229;
+  --text-muted: #6b6153;
+  --text-faint: #8c8171;
+  --accent-primary: #3f6fd6;
+
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    'Times New Roman',
+    Times,
+    Georgia,
+    serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent-primary) 35%, transparent);
+}
+
+/* scrollbar, presentation-friendly */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}

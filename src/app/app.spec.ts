@@ -16,10 +16,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', () => {
+  it('should render the requirements slide title', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, presentacion-sprint04');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Sistema de Generación de Horarios Académicos');
   });
 });

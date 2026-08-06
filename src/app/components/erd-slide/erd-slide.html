@@ -1,0 +1,242 @@
+<section class="slide">
+  <header class="slide-header">
+    <div>
+      <p class="eyebrow">Fase 2 · Modelo de datos</p>
+      <h1>Esquema de base de datos</h1>
+    </div>
+    <div class="metricas">
+      <div class="metrica"><strong>{{ totalTablas }}</strong><span>tablas</span></div>
+      <div class="metrica"><strong>{{ totalColumnas }}</strong><span>columnas</span></div>
+      <div class="metrica"><strong>{{ totalFk }}</strong><span>claves foráneas</span></div>
+    </div>
+  </header>
+
+  <div class="barra">
+    <div class="buscador">
+      <svg viewBox="0 0 20 20" class="lupa" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M12.8 12.8 L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar tabla o columna…"
+        [value]="busqueda()"
+        (input)="onBusqueda($event)"
+        (keydown.enter)="saltarAPrimera()"
+        aria-label="Buscar tabla o columna"
+      />
+      @if (busqueda().trim().length > 1) {
+        <span class="contador">{{ numCoincidencias() }}</span>
+      }
+    </div>
+
+    <div class="dominios" role="group" aria-label="Filtrar por dominio">
+      @for (d of dominios; track d.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.activo]="dominioActivo() === d.id"
+          [style.--c]="d.color"
+          [title]="d.descripcion"
+          (click)="alternarDominio(d.id)"
+        >
+          <span class="punto"></span>{{ d.label }}<span class="n">{{ d.tablas }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="controles">
+      <button type="button" (click)="zoom(0.8)" title="Alejar (−)" aria-label="Alejar">−</button>
+      <span class="pct">{{ porcentaje() }}%</span>
+      <button type="button" (click)="zoom(1.25)" title="Acercar (+)" aria-label="Acercar">+</button>
+      <button type="button" class="ajustar" (click)="ajustar()" title="Ajustar a pantalla (0)">Ajustar</button>
+    </div>
+  </div>
+
+  <div class="area">
+    <div
+      #lienzo
+      class="lienzo"
+      [class.arrastrando]="arrastrando()"
+      (wheel)="onWheel($event)"
+      (pointerdown)="onPointerDown($event)"
+    >
+      <svg class="grafo" [attr.width]="'100%'" [attr.height]="'100%'">
+        <g class="mundo" [class.suave]="animando()" [attr.transform]="transform()">
+          <!-- regiones de dominio, como telón de fondo -->
+          <g class="capa-regiones">
+            @for (r of regiones(); track r.d.id) {
+              <g class="region" [class.apagada]="r.apagada" [style.--c]="r.d.color">
+                <rect
+                  [attr.x]="r.d.x"
+                  [attr.y]="r.d.y"
+                  [attr.width]="r.d.w"
+                  [attr.height]="r.d.h"
+                  rx="26"
+                />
+                <text [attr.x]="r.d.x + 22" [attr.y]="r.d.y + 46">{{ r.d.label }}</text>
+              </g>
+            }
+          </g>
+
+          <!-- aristas -->
+          <g class="capa-aristas">
+            @for (e of aristas(); track e.id) {
+              <g class="arista" [class]="e.estado">
+                <path [attr.d]="e.d" [attr.stroke]="e.color" fill="none" />
+                <polygon [attr.points]="e.punta" [attr.fill]="e.color" />
+                @if (e.estado === 'vecina' && seleccionada()) {
+                  <text class="et-arista" [attr.x]="e.lx" [attr.y]="e.ly">{{ e.etiqueta }}</text>
+                }
+              </g>
+            }
+          </g>
+
+          <!-- nodos -->
+          <g class="capa-nodos">
+            @for (n of nodos(); track n.t.id) {
+              <g
+                class="nodo"
+                [class]="n.estado"
+                data-nodo=""
+                [attr.transform]="'translate(' + (n.t.x - n.t.w / 2) + ',' + (n.t.y - n.t.h / 2) + ')'"
+                (click)="seleccionar(n.t.id, $event)"
+                (pointerenter)="sobrevolada.set(n.t.id)"
+                (pointerleave)="sobrevolada.set(null)"
+              >
+                <rect
+                  class="caja"
+                  [attr.width]="n.t.w"
+                  [attr.height]="n.t.h"
+                  rx="7"
+                  [attr.stroke]="n.color"
+                />
+                <rect class="franja" [attr.width]="n.t.w" height="4" rx="2" [attr.fill]="n.color" />
+                <text class="et-tabla" [attr.x]="n.t.w / 2" [attr.y]="n.t.h / 2 - 1">{{ n.t.id }}</text>
+                <text class="et-resumen" [attr.x]="n.t.w / 2" [attr.y]="n.t.h - 11">{{ n.resumen }}</text>
+              </g>
+            }
+          </g>
+
+          <!-- tabla enfocada: se expande en el sitio con todas sus columnas -->
+          @if (nodoExpandido(); as x) {
+            <g class="expandido" [attr.transform]="'translate(' + x.x + ',' + x.y + ')'" data-nodo="">
+              <rect class="caja" [attr.width]="x.ancho" [attr.height]="x.alto" rx="8" [attr.stroke]="x.color" />
+              <rect class="cabecera" [attr.width]="x.ancho" height="26" [attr.fill]="x.color" />
+              <text class="titulo" x="10" y="18">{{ x.t.id }}</text>
+              <text class="conteo" [attr.x]="x.ancho - 10" y="18">{{ x.filas.length }}</text>
+              @for (c of x.filas; track c.n; let i = $index) {
+                <g
+                  [attr.transform]="'translate(0,' + (34 + i * 19) + ')'"
+                  [class.fila-fk]="c.fk"
+                  [attr.title]="c.fk ? 'Doble clic: ir a la tabla referenciada' : null"
+                  (dblclick)="irATablaDeColumna(x.t.id, c, $event)"
+                >
+                  @if (c.fk) {
+                    <rect class="fila-hit" x="0" y="-13" [attr.width]="x.ancho" height="19" />
+                  }
+                  @if (c.pk) {
+                    <text class="marca pk" x="10" y="11">PK</text>
+                  } @else if (c.fk) {
+                    <text class="marca fk" x="10" y="11">FK</text>
+                  }
+                  <text class="col" x="38" y="11" [class.clave]="c.pk || c.fk">{{ c.n }}</text>
+                  <text
+                    class="tipo"
+                    [attr.x]="x.ancho - 10"
+                    y="11"
+                    [class.enum]="c.enum"
+                  >{{ c.t }}{{ c.gen ? ' ⚙' : '' }}{{ c.nn && !c.pk ? ' •' : '' }}</text>
+                </g>
+              }
+            </g>
+          }
+        </g>
+      </svg>
+
+      <!-- minimapa: solo cuando hay más lienzo del que cabe -->
+      @if (minimapaVisible()) {
+      <svg class="minimapa" [attr.viewBox]="'0 0 ' + LIENZO.ancho + ' ' + LIENZO.alto" aria-hidden="true">
+        @for (n of nodos(); track n.t.id) {
+          <rect
+            [attr.x]="n.t.x - n.t.w / 2"
+            [attr.y]="n.t.y - n.t.h / 2"
+            [attr.width]="n.t.w"
+            [attr.height]="n.t.h"
+            [attr.fill]="n.color"
+            [attr.opacity]="n.estado === 'apagada' ? 0.14 : 0.85"
+          />
+        }
+        <rect
+          class="marco"
+          [attr.x]="viewport().x"
+          [attr.y]="viewport().y"
+          [attr.width]="viewport().w"
+          [attr.height]="viewport().h"
+        />
+      </svg>
+      }
+
+      @if (!seleccionada() && !busqueda()) {
+        <p class="pista">
+          Rueda para zoom · arrastrar para desplazar · clic en una tabla para aislar sus relaciones
+        </p>
+      }
+    </div>
+
+    <!-- panel lateral -->
+    @if (detalle(); as t) {
+      <aside class="panel">
+        <button type="button" class="cerrar" (click)="limpiarSeleccion()" aria-label="Cerrar">×</button>
+        <p class="panel-dominio" [style.--c]="dominioDe(t.id).color">
+          <span class="punto"></span>{{ dominioDe(t.id).label }}
+        </p>
+        <h2>{{ t.id }}</h2>
+        <p class="panel-meta">
+          {{ t.cols.length }} columnas · {{ gradoDe(t.id) }} relaciones
+        </p>
+
+        @if (salientes().length) {
+          <div class="bloque">
+            <h3>Referencia a <span class="cuenta">{{ salientes().length }}</span></h3>
+            <ul>
+              @for (r of salientes(); track r.id) {
+                <li>
+                  <button type="button" class="enlace" (click)="irA(r.a)">{{ r.a }}</button>
+                  <span class="via">{{ r.cols.join(', ') }}</span>
+                  <span class="od" [attr.data-od]="r.onDelete">{{ r.onDelete }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (entrantes().length) {
+          <div class="bloque">
+            <h3>Referenciada por <span class="cuenta">{{ entrantes().length }}</span></h3>
+            <ul>
+              @for (r of entrantes(); track r.id) {
+                <li>
+                  <button type="button" class="enlace" (click)="irA(r.de)">{{ r.de }}</button>
+                  <span class="via">{{ r.cols.join(', ') }}</span>
+                  <span class="od" [attr.data-od]="r.onDelete">{{ r.onDelete }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (externasDe().length) {
+          <div class="bloque">
+            <h3>Fuera del esquema</h3>
+            <ul>
+              @for (e of externasDe(); track e.col) {
+                <li><span class="externa">{{ e.destino }}</span><span class="via">{{ e.col }}</span></li>
+              }
+            </ul>
+          </div>
+        }
+      </aside>
+    }
+  </div>
+</section>

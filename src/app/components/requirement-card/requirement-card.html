@@ -1,0 +1,34 @@
+<article
+  class="card"
+  [class.expandable]="requirement().contexto?.length"
+  [class.expanded]="expanded()"
+  [attr.data-cat]="requirement().categoria"
+  (click)="onToggle()"
+  [attr.role]="requirement().contexto?.length ? 'button' : null"
+  [attr.tabindex]="requirement().contexto?.length ? 0 : null"
+  (keydown.enter)="onToggle()"
+  (keydown.space)="onToggle()"
+>
+  <header class="card-head">
+    <span class="badge">{{ requirement().id }}</span>
+    @if (requirement().contexto?.length) {
+      <svg class="chevron" viewBox="0 0 24 24" width="16" height="16">
+        <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    }
+  </header>
+
+  <h3 class="titulo">{{ requirement().titulo }}</h3>
+  <p class="descripcion">{{ requirement().descripcion }}</p>
+
+  @if (expanded() && requirement().contexto?.length) {
+    <div class="contexto">
+      <span class="contexto-label">Contexto adicional</span>
+      <ul>
+        @for (linea of requirement().contexto; track linea) {
+          <li>{{ linea }}</li>
+        }
+      </ul>
+    </div>
+  }
+</article>

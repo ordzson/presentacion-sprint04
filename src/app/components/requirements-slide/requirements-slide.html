@@ -1,0 +1,50 @@
+<section class="slide">
+  <header class="slide-header" [class.oculto]="headerOculto()">
+    <div class="slide-header-inner">
+      <p class="eyebrow">Fase 1 · Especificación de requerimientos</p>
+      <h1>Sistema de Generación de Horarios Académicos</h1>
+      <p class="subtitle">
+        Administración académica y generación automática de horarios, considerando disponibilidad docente,
+        aulas, capacidad, laboratorios y carga académica.
+      </p>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    @for (cat of categorias; track cat) {
+      <button
+        type="button"
+        role="tab"
+        class="tab"
+        [attr.data-cat]="cat"
+        [class.active]="activa() === cat"
+        [attr.aria-selected]="activa() === cat"
+        (click)="seleccionar(cat)"
+      >
+        <span class="tab-code">{{ meta[cat].corto }}</span>
+        <span class="tab-label">{{ meta[cat].label }}</span>
+      </button>
+    }
+  </nav>
+
+  <div class="hint" [class.oculto]="headerOculto()">
+    <div class="hint-inner">Clic en una tarjeta con <span class="hint-chip">›</span> para ver contexto adicional del documento original.</div>
+  </div>
+
+  <div class="contenido" (scroll)="onScroll($event)">
+    @for (seccion of secciones(); track seccion.nombre) {
+      <div class="seccion">
+        <h2 class="seccion-titulo">{{ seccion.nombre }}</h2>
+        <div class="grid">
+          @for (item of seccion.items; track item.id) {
+            <app-requirement-card
+              [requirement]="item"
+              [expanded]="expandidoId() === item.id"
+              (toggle)="onToggle($event)"
+            />
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>

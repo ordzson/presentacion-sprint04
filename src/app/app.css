@@ -1,0 +1,89 @@
+.deck {
+  position: fixed;
+  left: 50%;
+  bottom: 0.55rem;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(6px);
+  opacity: 0.42;
+  transition: opacity 0.2s ease;
+}
+
+.deck:hover,
+.deck:focus-within {
+  opacity: 1;
+}
+
+.paso {
+  width: 1.6rem;
+  height: 1.6rem;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.paso:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.paso:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.punto {
+  display: flex;
+  align-items: center;
+  height: 1.6rem;
+  padding: 0 0.35rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.punto::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: all 0.2s ease;
+}
+
+.punto:hover::before {
+  background: var(--text-muted);
+}
+
+.punto.activo::before {
+  background: var(--accent-primary);
+  width: 1.4rem;
+  border-radius: 999px;
+}
+
+/* el título de la slide solo aparece al pasar el cursor por la barra */
+.etiqueta {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: max-width 0.25s ease, padding 0.25s ease;
+}
+
+.deck:hover .punto.activo .etiqueta {
+  max-width: 9rem;
+  padding-left: 0.4rem;
+}
