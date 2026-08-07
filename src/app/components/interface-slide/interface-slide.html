@@ -1,0 +1,156 @@
+<section class="slide">
+  <header class="slide-header">
+    <div>
+      <p class="eyebrow">Fase 4 · Interfaz</p>
+      <h1>Cómo se ve y por qué se ve así</h1>
+      <p class="subtitle">
+        Bootstrap como base, una capa propia corta encima y una misma plantilla repetida en las siete
+        pantallas del flujo. Todo lo que sigue son capturas del programa real.
+      </p>
+    </div>
+    <div class="metricas">
+      @for (m of metricas; track m.etiqueta) {
+        <div class="metrica"><strong>{{ m.valor }}</strong><span>{{ m.etiqueta }}</span></div>
+      }
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" role="tab" class="tab" [class.active]="vista() === 'pantallas'"
+      [attr.aria-selected]="vista() === 'pantallas'" (click)="verVista('pantallas')">
+      <span class="tab-code">01</span><span>Las pantallas reales</span>
+    </button>
+    <button type="button" role="tab" class="tab" [class.active]="vista() === 'sistema'"
+      [attr.aria-selected]="vista() === 'sistema'" (click)="verVista('sistema')">
+      <span class="tab-code">02</span><span>Bootstrap y lo que hicimos aparte</span>
+    </button>
+    <button type="button" role="tab" class="tab" [class.active]="vista() === 'decisiones'"
+      [attr.aria-selected]="vista() === 'decisiones'" (click)="verVista('decisiones')">
+      <span class="tab-code">03</span><span>Decisiones de diseño</span>
+    </button>
+  </nav>
+
+  <!-- ────────────────────────────────────────── 01 · las pantallas reales -->
+  @if (vista() === 'pantallas') {
+    <div class="cuerpo galeria">
+      <div class="visor-columna">
+        <button type="button" class="visor" (click)="ampliar()" title="Ampliar la captura">
+          <img [src]="captura().imagen" [alt]="'Captura de ' + captura().titulo" />
+          <span class="lupa">Ampliar</span>
+        </button>
+
+        <div class="filmstrip">
+          @for (c of capturas; track c.id; let i = $index) {
+            <button
+              type="button"
+              class="miniatura"
+              [class.activa]="indice() === i"
+              [title]="c.titulo"
+              (click)="ver(i)"
+            >
+              <img [src]="c.imagen" alt="" />
+              <span>{{ c.ruta }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="panel-cabecera">
+          <span class="chip">{{ indice() + 1 }} de {{ capturas.length }} · <code>{{ captura().ruta }}</code></span>
+          <h2>{{ captura().titulo }}</h2>
+          <p class="analogia">{{ captura().resumen }}</p>
+        </div>
+
+        <div class="panel-cuerpo">
+          <h3>Qué mirar</h3>
+          <ul class="lista">
+            @for (p of captura().puntos; track p) {
+              <li>{{ p }}</li>
+            }
+          </ul>
+
+          <h3>Dónde vive</h3>
+          <p class="ruta"><code>{{ captura().archivo }}</code></p>
+
+          <div class="navegacion">
+            <button type="button" [disabled]="indice() === 0" (click)="ver(indice() - 1)">‹ Anterior</button>
+            <button type="button" [disabled]="indice() === capturas.length - 1" (click)="ver(indice() + 1)">Siguiente ›</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <p class="pie">
+      Capturas tomadas del programa corriendo con los datos sembrados. La prueba en vivo va aparte,
+      cuando decidamos abrirla.
+    </p>
+  }
+
+  <!-- ────────────────────────────────── 02 · bootstrap y la capa propia -->
+  @if (vista() === 'sistema') {
+    <div class="cuerpo">
+      <div class="bloque">
+        <h2 class="bloque-titulo">Tres capas de estilo, en este orden</h2>
+        <div class="grid capas">
+          @for (c of capas; track c.titulo; let i = $index) {
+            <article class="tarjeta capa">
+              <span class="capa-n">{{ i + 1 }}</span>
+              <h3>{{ c.titulo }}</h3>
+              <code class="capa-fuente">{{ c.fuente }}</code>
+              <p>{{ c.texto }}</p>
+              <ul class="lista">
+                @for (d of c.detalles; track d) {
+                  <li>{{ d }}</li>
+                }
+              </ul>
+            </article>
+          }
+        </div>
+      </div>
+
+      <div class="bloque">
+        <h2 class="bloque-titulo">La paleta, que no es la de Bootstrap</h2>
+        <div class="grid colores">
+          @for (t of paleta; track t.valor) {
+            <div class="color">
+              <span class="muestra" [style.background]="t.valor"></span>
+              <div>
+                <strong>{{ t.nombre }}</strong>
+                <code>{{ t.valor }}</code>
+                <span>{{ t.uso }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ────────────────────────────────────────── 03 · decisiones de diseño -->
+  @if (vista() === 'decisiones') {
+    <div class="cuerpo">
+      <div class="bloque">
+        <h2 class="bloque-titulo">Por qué la interfaz quedó así</h2>
+        <div class="grid decisiones">
+          @for (d of decisiones; track d.titulo) {
+            <article class="tarjeta">
+              <h3>{{ d.titulo }}</h3>
+              <p>{{ d.texto }}</p>
+            </article>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Visor a pantalla completa: sirve para señalar detalles sin abrir el programa. -->
+  @if (ampliada()) {
+    <div class="lightbox" (click)="cerrar()">
+      <img [src]="captura().imagen" [alt]="'Captura ampliada de ' + captura().titulo" />
+      <p class="lightbox-pie">
+        <code>{{ captura().ruta }}</code> · {{ captura().titulo }} — clic o Esc para cerrar
+      </p>
+    </div>
+  }
+</section>
