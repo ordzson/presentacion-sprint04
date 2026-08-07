@@ -22,7 +22,7 @@ export const CAPTURAS: Captura[] = [
     ruta: '/',
     titulo: 'Inicio · recorrido de 6 pasos',
     resumen:
-      'La portada no es un panel de métricas: es el mapa del proceso. Seis tarjetas numeradas en el mismo orden que el menú lateral.',
+      'La portada no es un panel de métricas: es una guía de inicio. Seis tarjetas numeradas en el mismo orden que el menú lateral.',
     imagen: 'capturas/inicio.png',
     puntos: [
       'Bloque .hero-panel con degradado propio y la pregunta directa «¿Qué necesitas hacer?».',

@@ -1,0 +1,166 @@
+<section class="slide">
+  <header class="slide-header">
+    <div>
+      <p class="eyebrow">Fase 5 · Base de datos construida</p>
+      <h1>Catálogo del script</h1>
+    </div>
+    <div class="metricas">
+      <div class="metrica"><strong>{{ totalTablas }}</strong><span>tablas</span></div>
+      <div class="metrica"><strong>{{ totalFunciones }}</strong><span>funciones</span></div>
+      <div class="metrica"><strong>{{ totalTriggers }}</strong><span>triggers</span></div>
+      <div class="metrica"><strong>{{ totalPoliticas }}</strong><span>políticas RLS</span></div>
+    </div>
+  </header>
+
+  <div class="barra">
+    <div class="buscador">
+      <svg viewBox="0 0 20 20" class="lupa" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M12.8 12.8 L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar…"
+        [value]="busqueda()"
+        (input)="onBusqueda($event)"
+        (keydown.enter)="abrirPrimera()"
+        aria-label="Buscar en el catálogo"
+      />
+      @if (busqueda().trim().length > 1) {
+        <span class="contador">{{ coincidencias() }}</span>
+      }
+    </div>
+
+    <div class="chips" role="group" aria-label="Filtrar por categoría">
+      @for (c of categorias; track c.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.activo]="catActiva() === c.id"
+          [style.--c]="c.color"
+          (click)="alternarCategoria(c.id)"
+        >
+          <span class="punto"></span>{{ c.label }}<span class="n">{{ c.n }}</span>
+        </button>
+      }
+    </div>
+
+    @if (busqueda() || catActiva()) {
+      <button type="button" class="limpiar" (click)="limpiar()">Limpiar</button>
+    }
+  </div>
+
+  <div class="area">
+    <!-- índice: todo el esquema, agrupado por categoría -->
+    <div class="indice" #lista>
+      @if (buscoEnSql()) {
+        <p class="aviso">Sin coincidencias en los nombres ni en las descripciones. Esto es lo que
+          contiene ese texto dentro del propio SQL.</p>
+      }
+
+      @for (g of grupos(); track g.clave) {
+        <h3 class="grupo" [style.--c]="g.color">
+          <span class="punto"></span>{{ g.titulo }}<span class="n">{{ g.filas.length }}</span>
+        </h3>
+        @for (f of g.filas; track f.o.id) {
+          <button
+            type="button"
+            class="fila"
+            [class.activa]="seleccionado() === f.o.id"
+            [style.--c]="g.color"
+            (click)="seleccionar(f.o.id)"
+          >
+            <span class="nombre">
+              @for (t of f.nombre; track $index) {
+                <span [class.hit]="t.m">{{ t.t }}</span>
+              }
+            </span>
+            <span class="que-hace">
+              @for (t of f.desc; track $index) {
+                <span [class.hit]="t.m" [class.cod]="t.c">{{ t.t }}</span>
+              }
+            </span>
+          </button>
+        }
+      } @empty {
+        <p class="vacio">Nada coincide con «{{ busqueda() }}».</p>
+      }
+    </div>
+
+    <!-- ficha del objeto abierto -->
+    <aside class="ficha" [style.--c]="colorDetalle()">
+      @if (detalle(); as o) {
+        <div class="ficha-cab">
+          <p class="ruta">
+            <span class="etiqueta-cat">{{ etiquetaCat() }}</span>
+            <span class="sep">·</span>{{ o.grupo }}
+          </p>
+          <h2>{{ o.nombre }}</h2>
+          <p class="nota">{{ o.nota }}</p>
+        </div>
+
+        <p class="que">
+          @for (t of descFicha(); track $index) {
+            <span [class.cod]="t.c">{{ t.t }}</span>
+          }
+        </p>
+        @if (o.detalle) {
+          <p class="detalle">
+            @for (t of detalleFicha(); track $index) {
+              <span [class.cod]="t.c">{{ t.t }}</span>
+            }
+          </p>
+        }
+
+        @if (o.cat === 'funcion') {
+          <div class="bloque">
+            <h3>Parámetros</h3>
+            @if (o.params.length) {
+              <dl class="params">
+                @for (a of o.params; track a.n) {
+                  <dt>{{ a.n }}</dt>
+                  <dd>
+                    <span class="tipo">{{ a.t }}</span>
+                    @if (a.d) {
+                      <span class="opcional">opcional · por defecto {{ a.d }}</span>
+                    }
+                  </dd>
+                }
+              </dl>
+            } @else {
+              <p class="ninguno">Ninguno: la dispara la base y recibe la fila en
+                <code>new</code> y <code>old</code>.</p>
+            }
+          </div>
+
+          <div class="bloque">
+            <h3>Cómo procede</h3>
+            <ol class="pasos">
+              @for (paso of pasosFicha(); track $index) {
+                <li>
+                  @for (t of paso; track $index) {
+                    <span [class.cod]="t.c">{{ t.t }}</span>
+                  }
+                </li>
+              }
+            </ol>
+          </div>
+        }
+
+        <div class="meta">
+          @if (o.tabla) {
+            <button type="button" class="pastilla enlace" (click)="filtrarPorTabla(o.tabla)">
+              tabla {{ o.tabla }}
+            </button>
+          }
+          <span class="pastilla">{{ META.archivo }} · línea {{ o.linea }}</span>
+          <button type="button" class="pastilla accion" (click)="copiar()">
+            {{ copiado() ? 'copiado' : 'copiar SQL' }}
+          </button>
+        </div>
+
+        <pre class="sql"><code>@for (t of tokens(); track $index) {<span [class]="t.c">{{ t.t }}</span>}</code></pre>
+      }
+    </aside>
+  </div>
+</section>

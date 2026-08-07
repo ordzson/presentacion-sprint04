@@ -1,0 +1,527 @@
+:host {
+  --mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+.slide {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1.6rem clamp(1.25rem, 3vw, 2.75rem) 1.25rem;
+  box-sizing: border-box;
+  gap: 0.9rem;
+}
+
+/* ------------------------------------------------------------ cabecera */
+
+.slide-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.slide-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.metricas {
+  display: flex;
+  gap: 2rem;
+}
+
+.metrica {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+.metrica strong {
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.metrica span {
+  font-size: 0.9rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ------------------------------------------------------------ barra */
+
+.barra {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  min-width: 24rem;
+  flex: 0 1 26rem;
+}
+
+.buscador:focus-within {
+  border-color: var(--accent-primary);
+}
+
+.lupa {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+.buscador input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  color: var(--text);
+  min-width: 0;
+}
+
+.buscador input::placeholder {
+  color: var(--text-faint);
+  font-family: inherit;
+}
+
+.contador {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  padding: 0.1rem 0.45rem;
+  border-radius: 5px;
+}
+
+.chips {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip .punto {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--c);
+  flex-shrink: 0;
+}
+
+.chip .n {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.chip:hover {
+  border-color: var(--c);
+}
+
+.chip.activo {
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  border-color: var(--c);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.chip.activo .n {
+  color: var(--c);
+}
+
+.limpiar {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.limpiar:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------ área */
+
+.area {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(20rem, 36%) 1fr;
+  gap: 0.9rem;
+}
+
+/* ------------------------------------------------------------ índice */
+
+.indice {
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  /* el margen inferior deja pasar la barra de navegación de la presentación */
+  padding: 0 0.35rem 2.4rem;
+}
+
+.aviso,
+.vacio {
+  margin: 0.6rem 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.grupo {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.5rem 0.5rem 0.35rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.grupo .punto {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.grupo .n {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.fila {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.3rem 0.5rem 0.35rem;
+  border: none;
+  border-left: 3px solid transparent;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 0 6px 6px 0;
+}
+
+.fila:hover {
+  background: var(--surface-hover);
+}
+
+.fila.activa {
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  border-left-color: var(--c);
+}
+
+.fila .nombre {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.fila.activa .nombre {
+  font-weight: 700;
+}
+
+.fila .que-hace {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.86rem;
+  line-height: 1.3;
+  color: var(--text-faint);
+}
+
+.fila.activa .que-hace {
+  color: var(--text-muted);
+}
+
+.hit {
+  background: color-mix(in srgb, var(--accent-primary) 26%, transparent);
+  border-radius: 3px;
+}
+
+/* Identificador del esquema citado dentro de una frase. */
+.cod {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------ ficha */
+
+.ficha {
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 1.1rem 1.3rem 2.6rem;
+}
+
+.ficha-cab {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.7rem;
+}
+
+.ruta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.3rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.etiqueta-cat {
+  padding: 0.1rem 0.45rem;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--c) 20%, transparent);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.ficha h2 {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.nota {
+  margin: 0.3rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.que {
+  margin: 0.8rem 0 0;
+  font-size: 1.02rem;
+  line-height: 1.45;
+}
+
+.detalle {
+  margin: 0.5rem 0 0;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--c);
+  font-size: 0.96rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.9rem 0 0.6rem;
+}
+
+.pastilla {
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.pastilla.enlace,
+.pastilla.accion {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.pastilla.enlace:hover,
+.pastilla.accion:hover {
+  border-color: var(--c);
+  color: var(--text);
+}
+
+.sql {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  /* se prefiere ajustar la línea a recortarla: en una presentación nadie va a
+     desplazar el bloque a lo ancho para ver el final de una restricción */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+.sql .kw {
+  color: #7a3fa8;
+  font-weight: 600;
+}
+
+.sql .tip {
+  color: #0f6a72;
+}
+
+.sql .str {
+  color: #9a5b1f;
+}
+
+.sql .num {
+  color: #2a6ea8;
+}
+
+.sql .com {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------- ficha: bloques */
+
+.bloque {
+  margin-top: 1rem;
+}
+
+.bloque h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.params {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.9rem;
+  align-items: baseline;
+}
+
+.params dt {
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.params dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.params .tipo {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--c);
+}
+
+.params .opcional {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.ninguno {
+  margin: 0;
+  font-size: 0.94rem;
+  color: var(--text-muted);
+}
+
+.ninguno code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  padding: 0.05rem 0.25rem;
+  border-radius: 4px;
+  background: var(--surface-hover);
+}
+
+.pasos {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.pasos li {
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.pasos li::marker {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--c);
+}
