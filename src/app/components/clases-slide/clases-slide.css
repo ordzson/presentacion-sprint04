@@ -1,0 +1,796 @@
+:host {
+  --mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+.slide {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1.6rem clamp(1.25rem, 3vw, 2.75rem) 1.25rem;
+  box-sizing: border-box;
+  gap: 0.9rem;
+}
+
+/* ------------------------------------------------------------ cabecera */
+
+.slide-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.slide-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.metricas {
+  display: flex;
+  gap: 2rem;
+}
+
+.metrica {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+.metrica strong {
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.metrica span {
+  font-size: 0.9rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ------------------------------------------------------------ barra */
+
+.barra {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  min-width: 17rem;
+}
+
+.buscador:focus-within {
+  border-color: var(--accent-primary);
+}
+
+.lupa {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+.buscador input {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  color: var(--text);
+  min-width: 0;
+}
+
+.buscador input::placeholder {
+  color: var(--text-faint);
+  font-family: inherit;
+}
+
+.contador {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  padding: 0.1rem 0.45rem;
+  border-radius: 5px;
+}
+
+.dominios {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip .punto {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--c);
+  flex-shrink: 0;
+}
+
+.chip .n {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+.chip:hover {
+  border-color: var(--c);
+}
+
+.chip.activo {
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  border-color: var(--c);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.chip.activo .n {
+  color: var(--c);
+}
+
+.controles {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.controles button {
+  min-width: 2.1rem;
+  height: 2.1rem;
+  padding: 0 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.controles button:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+.controles .ajustar {
+  font-size: 0.95rem;
+}
+
+.pct {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  min-width: 3.1rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------ área */
+
+.area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.lienzo {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--text) 9%, transparent) 1px, transparent 0)
+      0 0 / 26px 26px,
+    var(--surface);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* el canvas del grafo: ocupa todo el lienzo, el resto lo dibuja el componente */
+.grafo {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ------------------------------------------------------------ minimapa */
+
+.minimapa {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  width: 12rem;
+  height: 9.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 96%, var(--surface));
+  pointer-events: none;
+}
+
+/* oculto sin quitarlo del flujo: hace falta poder medirlo para dimensionarlo */
+.minimapa.oculto {
+  visibility: hidden;
+}
+
+.pista {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.85rem;
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------ panel */
+
+.panel {
+  position: relative;
+  /* la doc necesita más ancho que la lista de relaciones que había antes */
+  width: clamp(22rem, 27vw, 30rem);
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 1.1rem 1.25rem 1.5rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  animation: entrar 0.18s ease;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+.cerrar {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.cerrar:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.panel-dominio {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c);
+}
+
+.panel-dominio .punto {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.panel h2 {
+  margin: 0 0 0.2rem;
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  word-break: break-all;
+  padding-right: 1.5rem;
+}
+
+.panel-meta {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--text-faint);
+}
+
+.bloque {
+  margin-top: 1.1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+.bloque h3 {
+  margin: 0 0 0.55rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.cuenta {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text-faint);
+  letter-spacing: 0;
+}
+
+.bloque ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bloque li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.enlace {
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: 0.98rem;
+  color: var(--accent-primary);
+  cursor: pointer;
+  text-align: left;
+  word-break: break-all;
+}
+
+.enlace:hover {
+  text-decoration: underline;
+}
+
+.via {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.externa {
+  font-family: var(--mono);
+  font-size: 0.98rem;
+  color: var(--text-muted);
+}
+
+.od {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.08rem 0.35rem;
+  border-radius: 4px;
+  color: var(--text-faint);
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.od[data-od='CASCADE'] {
+  color: #a33d38;
+  border-color: color-mix(in srgb, #c2504b 45%, transparent);
+  background: color-mix(in srgb, #c2504b 12%, transparent);
+}
+
+.od[data-od='RESTRICT'] {
+  color: #196242;
+  border-color: color-mix(in srgb, #2a9468 45%, transparent);
+  background: color-mix(in srgb, #2a9468 12%, transparent);
+}
+
+.od[data-od='SET NULL'] {
+  color: #7a4f0d;
+  border-color: color-mix(in srgb, #b5791b 45%, transparent);
+  background: color-mix(in srgb, #b5791b 12%, transparent);
+}
+
+@media (max-width: 1100px) {
+  .panel {
+    width: 18rem;
+  }
+  .minimapa {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------ tipos */
+
+.kinds {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.chip-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.chip-kind .n {
+  font-size: 0.66rem;
+  color: var(--text-faint);
+}
+
+.chip-kind:hover {
+  border-color: var(--text-faint);
+}
+
+.chip-kind.activo {
+  color: var(--text);
+  border-color: currentColor;
+  background: color-mix(in srgb, var(--bg) 84%, currentColor);
+}
+
+.chip-kind[data-kind='interfaz'].activo { color: #0f8a94; }
+.chip-kind[data-kind='record'].activo { color: #3f6fd6; }
+.chip-kind[data-kind='enum'].activo { color: #8b52d9; }
+.chip-kind[data-kind='clase'].activo { color: #2a9468; }
+
+
+/* ------------------------------------------------------------ leyenda */
+
+.leyenda {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.leyenda span {
+  width: 1.6rem;
+  height: 0;
+  border-top: 2px solid currentColor;
+}
+
+.leyenda li[data-tipo='implementa'] span { border-top-style: dashed; }
+.leyenda li[data-tipo='depende'] span { border-top-style: dashed; opacity: 0.7; }
+.leyenda li[data-tipo='usa'] span { border-top-style: dotted; opacity: 0.6; }
+
+/* ------------------------------------------------------------ panel */
+
+.panel-ns {
+  margin: 0 0 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  word-break: break-word;
+}
+
+.panel-archivo {
+  margin: 0 0 0.9rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  word-break: break-all;
+}
+
+.panel-dominio .modulo {
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.panel-dominio .kind {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.66rem;
+  color: var(--text-muted);
+}
+
+.od[data-od='hereda'] {
+  color: #c2504b;
+  border-color: color-mix(in srgb, #c2504b 40%, transparent);
+}
+
+.od[data-od='implementa'] {
+  color: #0f8a94;
+  border-color: color-mix(in srgb, #0f8a94 40%, transparent);
+}
+
+.od[data-od='depende'] {
+  color: #b5791b;
+  border-color: color-mix(in srgb, #b5791b 40%, transparent);
+}
+
+.od[data-od='usa'] {
+  color: var(--text-faint);
+}
+
+
+/* ------------------------------------------------------------ documentación
+ *
+ * Los textos vienen troceados desde el componente: los trozos de código son
+ * <code> y el resto <span>. Así no hace falta innerHTML ni sanitizar nada.
+ */
+
+.doc-clase {
+  margin: 0 0 0.2rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.doc-clase p {
+  margin: 0 0 0.5rem;
+}
+
+.doc-clase code,
+.doc-m code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  padding: 0.02rem 0.22rem;
+  border-radius: 3px;
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.miembros {
+  gap: 0.1rem;
+}
+
+.miembros li {
+  display: block;
+  border-radius: 6px;
+}
+
+.miembros li.abierto {
+  background: color-mix(in srgb, var(--accent-primary) 7%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--accent-primary) 22%, transparent);
+}
+
+.miembro {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.18rem 0.35rem;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  color: var(--text);
+}
+
+.miembro:hover {
+  background: var(--surface-hover);
+}
+
+.miembro .icono {
+  flex-shrink: 0;
+  width: 0.8rem;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.miembro .icono[data-k='metodo'] {
+  color: #8b52d9;
+}
+
+.miembro .icono[data-k='prop'] {
+  color: var(--accent-primary);
+}
+
+/* sin comentario /// en el código: el icono se apaga, el nombre no */
+.miembro.sin-doc .icono {
+  opacity: 0.35;
+}
+
+.miembro .nombre {
+  flex: 1;
+  min-width: 0;
+  /* una fila por miembro: la firma entera se lee al abrirlo, aquí estorba */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* los parámetros se apagan: al ojear la lista lo que se busca es el nombre */
+.miembro .args {
+  color: var(--text-faint);
+}
+
+.miembro .nombre.est {
+  font-style: italic;
+}
+
+.miembro .tipo {
+  flex-shrink: 0;
+  max-width: 42%;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-m {
+  margin: 0.1rem 0 0.5rem;
+  padding: 0 0.55rem 0.15rem;
+  font-size: 0.9rem;
+  line-height: 1.42;
+  color: var(--text-muted);
+}
+
+.doc-m p {
+  margin: 0 0 0.45rem;
+}
+
+.doc-m h4 {
+  margin: 0.55rem 0 0.25rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+}
+
+.firma {
+  margin: 0 0 0.5rem;
+  padding: 0.35rem 0.45rem;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}
+
+.campos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.campos li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.campos .clave {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.02rem 0.28rem;
+  border-radius: 3px;
+  background: var(--surface-hover);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* las excepciones se leen como avisos: la clave va en el rojo de la paleta */
+.excepciones .clave {
+  color: #a33d38;
+  background: color-mix(in srgb, #c2504b 12%, transparent);
+}
+
+.heredada {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.heredada .enlace,
+.salto .enlace {
+  font-size: 0.86rem;
+}
+
+.salto {
+  margin: 0 0 0.5rem;
+  padding: 0 0.55rem;
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.fuente {
+  margin: 0.5rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  word-break: break-all;
+}
+
+.doc-m.vacia {
+  padding: 0.15rem 0.55rem 0.45rem;
+  font-size: 0.84rem;
+  color: var(--text-faint);
+}

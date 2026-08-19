@@ -1,0 +1,266 @@
+<section class="slide">
+  <header class="slide-header">
+    <div>
+      <p class="eyebrow">Fase 2 · Modelo de clases</p>
+      <h1>Diagrama de clases</h1>
+    </div>
+  </header>
+
+  <div class="barra">
+    <div class="buscador">
+      <svg viewBox="0 0 20 20" class="lupa" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M12.8 12.8 L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar clase, namespace o miembro…"
+        [value]="busqueda()"
+        (input)="onBusqueda($event)"
+        (keydown.enter)="saltarAPrimera()"
+        aria-label="Buscar clase, namespace o miembro"
+      />
+      @if (busqueda().trim().length > 1) {
+        <span class="contador">{{ numCoincidencias() }}</span>
+      }
+    </div>
+
+    <div class="dominios" role="group" aria-label="Filtrar por capa">
+      @for (c of capas; track c.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.activo]="capaActiva() === c.id"
+          [style.--c]="c.color"
+          [title]="c.descripcion"
+          (click)="alternarCapa(c.id)"
+        >
+          <span class="punto"></span>{{ c.label }}<span class="n">{{ c.clases }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="kinds" role="group" aria-label="Filtrar por tipo">
+      @for (k of kinds; track k.id) {
+        <button
+          type="button"
+          class="chip-kind"
+          [class.activo]="kindActivo() === k.id"
+          [attr.data-kind]="k.id"
+          (click)="alternarKind(k.id)"
+        >{{ k.label }}<span class="n">{{ k.n }}</span></button>
+      }
+    </div>
+
+    <div class="controles">
+      <button type="button" (click)="zoom(0.8)" title="Alejar (−)" aria-label="Alejar">−</button>
+      <span class="pct" #pct>20%</span>
+      <button type="button" (click)="zoom(1.25)" title="Acercar (+)" aria-label="Acercar">+</button>
+      <button type="button" class="ajustar" (click)="ajustar()" title="Ajustar a pantalla (0)">Ajustar</button>
+    </div>
+  </div>
+
+  <div class="area">
+    <div
+      #lienzo
+      class="lienzo"
+    >
+      <!-- el grafo entero: 299 nodos y 572 aristas pintados a mano -->
+      <canvas #canvas class="grafo"></canvas>
+
+      <!-- minimapa: solo cuando hay más lienzo del que cabe -->
+      <canvas #mini class="minimapa oculto" aria-hidden="true"></canvas>
+
+      @if (!detalle() && !busqueda()) {
+        <p class="pista">
+          Rueda para zoom · arrastrar para desplazar · clic en una clase para aislar sus
+          relaciones y leer su documentación
+        </p>
+        <ul class="leyenda" aria-label="Tipos de relación">
+          <li data-tipo="hereda"><span></span>hereda</li>
+          <li data-tipo="implementa"><span></span>implementa</li>
+          <li data-tipo="depende"><span></span>depende (inyección)</li>
+          <li data-tipo="usa"><span></span>usa (tipo de miembro)</li>
+        </ul>
+      }
+    </div>
+
+    <!-- panel lateral -->
+    @if (detalle(); as c) {
+      <aside class="panel">
+        <button type="button" class="cerrar" (click)="limpiarSeleccion()" aria-label="Cerrar">×</button>
+        <p class="panel-dominio" [style.--c]="capaDe(c.id).color">
+          <span class="punto"></span>{{ capaDe(c.id).label }}
+          <span class="modulo">{{ c.modulo }}</span>
+          <span class="kind" [attr.data-kind]="c.kind">{{ c.kind }}</span>
+        </p>
+        <h2>{{ c.nombre }}</h2>
+        <p class="panel-ns">{{ c.ns }}</p>
+        <p class="panel-meta">
+          {{ c.miembros.length }} miembros · {{ gradoDe(c.id) }} relaciones
+        </p>
+        <p class="panel-archivo">{{ c.archivo }}</p>
+
+        @if (docClase(); as parrafos) {
+          <div class="doc-clase">
+            @for (par of parrafos; track $index) {
+              <p>
+                @for (t of par; track $index) {
+                  @if (t.cod) { <code>{{ t.v }}</code> } @else { <span>{{ t.v }}</span> }
+                }
+              </p>
+            }
+          </div>
+        }
+
+        @if (miembrosPanel().length) {
+          <div class="bloque">
+            <h3>
+              Miembros <span class="cuenta">{{ numDocumentados() }}/{{ miembrosPanel().length }} con doc</span>
+            </h3>
+            <ul class="miembros">
+              @for (f of miembrosPanel(); track f.m.n) {
+                <li [id]="'m-' + f.nombre" [class.abierto]="miembroSel() === f.nombre">
+                  <button
+                    type="button"
+                    class="miembro"
+                    [class.sin-doc]="!f.doc"
+                    [attr.aria-expanded]="miembroSel() === f.nombre"
+                    (click)="alternarMiembro(f.nombre)"
+                  >
+                    <span class="icono" [attr.data-k]="f.m.k">{{
+                      f.m.k === 'metodo' ? 'ƒ' : f.m.k === 'valor' ? '·' : '◆'
+                    }}</span>
+                    <span class="nombre" [class.est]="f.m.est" [title]="f.m.n"
+                      >{{ f.nombre }}<span class="args">{{ f.args }}</span></span
+                    >
+                    <span class="tipo" [title]="f.m.t">{{ f.m.t }}</span>
+                  </button>
+
+                  @if (miembroSel() === f.nombre) {
+                    @if (docMiembro(); as d) {
+                      <div class="doc-m">
+                        @if (d.origen) {
+                          <p class="heredada">
+                            Documentado en
+                            <button type="button" class="enlace" (click)="irA(d.origen)">
+                              {{ nombreDe(d.origen) }}
+                            </button>
+                          </p>
+                        }
+                        @if (d.firma) {
+                          <pre class="firma">{{ d.firma }}</pre>
+                        }
+                        @for (par of d.resumen; track $index) {
+                          <p>
+                            @for (t of par; track $index) {
+                              @if (t.cod) { <code>{{ t.v }}</code> } @else { <span>{{ t.v }}</span> }
+                            }
+                          </p>
+                        }
+
+                        @if (d.params.length) {
+                          <h4>Parámetros</h4>
+                          <ul class="campos">
+                            @for (q of d.params; track q.n) {
+                              <li>
+                                <code class="clave">{{ q.n }}</code>
+                                <span>
+                                  @for (par of q.t; track $index) {
+                                    @for (t of par; track $index) {
+                                      @if (t.cod) { <code>{{ t.v }}</code> } @else { {{ t.v }} }
+                                    }
+                                  }
+                                </span>
+                              </li>
+                            }
+                          </ul>
+                        }
+
+                        @if (d.devuelve) {
+                          <h4>Devuelve</h4>
+                          @for (par of d.devuelve; track $index) {
+                            <p>
+                              @for (t of par; track $index) {
+                                @if (t.cod) { <code>{{ t.v }}</code> } @else { <span>{{ t.v }}</span> }
+                              }
+                            </p>
+                          }
+                        }
+
+                        @if (d.excepciones.length) {
+                          <h4>Lanza</h4>
+                          <ul class="campos excepciones">
+                            @for (q of d.excepciones; track q.n) {
+                              <li>
+                                <code class="clave">{{ q.n }}</code>
+                                <span>
+                                  @for (par of q.t; track $index) {
+                                    @for (t of par; track $index) {
+                                      @if (t.cod) { <code>{{ t.v }}</code> } @else { {{ t.v }} }
+                                    }
+                                  }
+                                </span>
+                              </li>
+                            }
+                          </ul>
+                        }
+
+                        @if (d.linea) {
+                          <p class="fuente">{{ archivoDoc() }}:{{ d.linea }}</p>
+                        }
+                      </div>
+                    } @else {
+                      <p class="doc-m vacia">
+                        {{ docs() ? 'Sin comentario /// en el código.' : 'Cargando documentación…' }}
+                      </p>
+                    }
+                  }
+
+                  @if (f.destino && miembroSel() === f.nombre) {
+                    <p class="doc-m salto">
+                      Tipo:
+                      <button type="button" class="enlace" (click)="irA(f.destino)">
+                        {{ nombreDe(f.destino) }}
+                      </button>
+                    </p>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (salientes().length) {
+          <div class="bloque">
+            <h3>Depende de <span class="cuenta">{{ salientes().length }}</span></h3>
+            <ul>
+              @for (r of salientes(); track r.id) {
+                <li>
+                  <button type="button" class="enlace" (click)="irA(r.a)">{{ nombreDe(r.a) }}</button>
+                  <span class="via">{{ r.via.join(', ') }}</span>
+                  <span class="od" [attr.data-od]="r.tipo">{{ relLabel[r.tipo] }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (entrantes().length) {
+          <div class="bloque">
+            <h3>Usada por <span class="cuenta">{{ entrantes().length }}</span></h3>
+            <ul>
+              @for (r of entrantes(); track r.id) {
+                <li>
+                  <button type="button" class="enlace" (click)="irA(r.de)">{{ nombreDe(r.de) }}</button>
+                  <span class="via">{{ r.via.join(', ') }}</span>
+                  <span class="od" [attr.data-od]="r.tipo">{{ relLabel[r.tipo] }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </aside>
+    }
+  </div>
+</section>

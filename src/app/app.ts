@@ -1,13 +1,23 @@
 import { Component, HostListener, signal } from '@angular/core';
 import { ArchitectureSlide } from './components/architecture-slide/architecture-slide';
 import { CatalogoSlide } from './components/catalogo-slide/catalogo-slide';
+import { ClasesSlide } from './components/clases-slide/clases-slide';
 import { ErdSlide } from './components/erd-slide/erd-slide';
 import { InterfaceSlide } from './components/interface-slide/interface-slide';
+import { MotorSlide } from './components/motor-slide/motor-slide';
 import { RequirementsSlide } from './components/requirements-slide/requirements-slide';
 
 @Component({
   selector: 'app-root',
-  imports: [RequirementsSlide, ErdSlide, ArchitectureSlide, InterfaceSlide, CatalogoSlide],
+  imports: [
+    RequirementsSlide,
+    ErdSlide,
+    ClasesSlide,
+    ArchitectureSlide,
+    InterfaceSlide,
+    CatalogoSlide,
+    MotorSlide,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -15,9 +25,11 @@ export class App {
   readonly slides = [
     { n: 1, titulo: 'Requerimientos' },
     { n: 2, titulo: 'Base de datos' },
-    { n: 3, titulo: 'Arquitectura' },
-    { n: 4, titulo: 'Interfaz' },
-    { n: 5, titulo: 'Script de la base' },
+    { n: 3, titulo: 'Diagrama de clases' },
+    { n: 4, titulo: 'Arquitectura' },
+    { n: 5, titulo: 'Interfaz' },
+    { n: 6, titulo: 'Script de la base' },
+    { n: 7, titulo: 'Motor de horarios' },
   ];
 
   readonly actual = signal(1);
