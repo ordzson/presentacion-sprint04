@@ -89,11 +89,20 @@ export const DOCS: Record<string, DocClase> = {
   },
   'Horarios.Dominio.Academia.EstadoPensum': {
     s: 'Etapa en que se encuentra un pensum.',
+    m: {
+      'Borrador': { s: 'Se está armando; todavía no se le asignan cohortes.', l: 38 },
+      'EnRetiro': { s: 'Ya no recibe cohortes nuevas, pero las que lo cursan lo terminan.', l: 44 },
+      'Retirado': { s: 'Nadie lo cursa; queda solo como historia.', l: 47 },
+      'Vigente': { s: 'Es el pensum con que ingresan las cohortes nuevas.', l: 41 },
+    },
   },
   'Horarios.Dominio.Academia.EstadoPeriodo': {
     s: 'Etapa en que se encuentra un período académico.',
     m: {
-      'Archivado': { f: 'Vigente, /// <summary>Terminó. Se conserva para consulta, pero ya no admite cambios.</summary> Cerrado, /// <summary>Se guarda solo como historia y no aparece en las listas de trabajo.</summary> Archivado } /// <summary>', s: 'Es el período en curso; sobre él se generan y publican horarios.', l: 12 },
+      'Archivado': { s: 'Se guarda solo como historia y no aparece en las listas de trabajo.', l: 18 },
+      'Borrador': { s: 'Se está armando: aún se cargan cohortes, cursos y datos base.', l: 9 },
+      'Cerrado': { s: 'Terminó. Se conserva para consulta, pero ya no admite cambios.', l: 15 },
+      'Vigente': { s: 'Es el período en curso; sobre él se generan y publican horarios.', l: 12 },
     },
   },
   'Horarios.Dominio.Academia.Facultad': {
@@ -117,14 +126,19 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Dominio.Acceso.EstadoUsuario': {
     s: 'Situación de la cuenta de un usuario frente al ingreso al sistema.',
     m: {
-      'Bloqueado': { f: 'Inactivo, /// <summary>Acceso suspendido a propósito, sin dar de baja la cuenta.</summary> Bloqueado }', s: 'Ya no usa el sistema (baja, traslado). Se conserva por su historia.', l: 12 },
+      'Activo': { s: 'Puede iniciar sesión y trabajar con normalidad.', l: 9 },
+      'Bloqueado': { s: 'Acceso suspendido a propósito, sin dar de baja la cuenta.', l: 15 },
+      'Inactivo': { s: 'Ya no usa el sistema (baja, traslado). Se conserva por su historia.', l: 12 },
     },
   },
   'Horarios.Dominio.Acceso.TipoUsuario': {
     s: 'Rol del usuario en el sistema. Decide qué puede hacer y sobre qué datos: el alcance (qué facultades y carreras ve) se deriva del tipo más los vínculos del usuario.',
     m: {
-      'Alumno': { f: 'CoordinadorAcademico, /// <summary>Manda sobre su facultad: ve y aprueba lo de las carreras que dependen de ella.</summary> Decano, /// <summary>Consulta su horario y declara su disponibilidad.</summary> Docente, /// <summary>Consulta el horario publicado de su cohorte.</summary> Alumno', s: 'Arma los períodos, los planes y los horarios de las carreras a su cargo.', l: 13 },
-      'Docente': { f: 'Superadministrador, /// <summary>Arma los períodos, los planes y los horarios de las carreras a su cargo.</summary> CoordinadorAcademico, /// <summary>Manda sobre su facultad: ve y aprueba lo de las carreras que dependen de ella.</summary> Decano, /// <summary>Consulta su horario y declara su disponibilidad.</summary> Docente,', s: 'Ve y administra todo el sistema, sin límite de facultad.', l: 10 },
+      'Alumno': { s: 'Consulta el horario publicado de su cohorte.', l: 22 },
+      'CoordinadorAcademico': { s: 'Arma los períodos, los planes y los horarios de las carreras a su cargo.', l: 13 },
+      'Decano': { s: 'Manda sobre su facultad: ve y aprueba lo de las carreras que dependen de ella.', l: 16 },
+      'Docente': { s: 'Consulta su horario y declara su disponibilidad.', l: 19 },
+      'Superadministrador': { s: 'Ve y administra todo el sistema, sin límite de facultad.', l: 10 },
     },
   },
   'Horarios.Dominio.Acceso.Usuario': {
@@ -196,8 +210,10 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Dominio.Aulas.TipoAula': {
     s: 'Para qué sirve un aula. El motor lo cruza con lo que pide el curso: un curso con laboratorio no cabe en un aula solo teórica.',
     m: {
-      'Laboratorio': { f: 'Teorica, /// <summary>Laboratorio; el tipo concreto va en el aula misma.</summary> Laboratorio, /// <summary>Sirve para clase teórica y para práctica.</summary> Mixta, /// <summary>No es un espacio físico: clase en línea, sin límite real de cupo.</summary> Virtual', s: 'Solo clase expositiva.', l: 10 },
-      'Virtual': { f: 'Laboratorio, /// <summary>Sirve para clase teórica y para práctica.</summary> Mixta, /// <summary>No es un espacio físico: clase en línea, sin límite real de cupo.</summary> Virtual }', s: 'Laboratorio; el tipo concreto va en el aula misma.', l: 13 },
+      'Laboratorio': { s: 'Laboratorio; el tipo concreto va en el aula misma.', l: 13 },
+      'Mixta': { s: 'Sirve para clase teórica y para práctica.', l: 16 },
+      'Teorica': { s: 'Solo clase expositiva.', l: 10 },
+      'Virtual': { s: 'No es un espacio físico: clase en línea, sin límite real de cupo.', l: 19 },
     },
   },
   'Horarios.Dominio.Docentes.AsignacionDocenteCurso': {
@@ -225,11 +241,16 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Dominio.Planes.EstadoHorario': {
     s: 'Etapa en que se encuentra un plan de horario, desde que se crea hasta que se archiva. Los saltos permitidos entre estados están en `PlanHorario`; aquí solo se nombra qué significa cada uno.',
     m: {
-      'Aprobado': { f: 'Generado, /// <summary>Alguien lo está revisando y puede ajustarlo a mano.</summary> EnRevision, /// <summary>Listo y esperando la firma de quien aprueba.</summary> PendienteAprobacion, /// <summary>Aprobado, pero todavía no visible para docentes y alumnos.</summary> Aprobado,', s: 'El motor terminó y produjo un horario completo.', l: 17 },
-      'EnRevision': { f: 'Borrador, /// <summary>El motor está trabajando en él. Es un estado pasajero.</summary> Generando, /// <summary>El motor terminó y produjo un horario completo.</summary> Generado, /// <summary>Alguien lo está revisando y puede ajustarlo a mano.</summary> EnRevision,', s: 'Recién creado: se elige su alcance y se revisan los datos base.', l: 11 },
-      'Inviable': { f: 'Archivado, /// <summary>La generación se cayó por un error. Se puede volver a borrador y reintentar.</summary> Fallido, /// <summary>El motor terminó bien pero no existe horario posible con estos datos: /// faltan aulas, docentes u horas. Hay que corregir los datos y reintentar.</summary> Inviable }', s: 'Retirado de circulación; se guarda solo como historia.', l: 32 },
-      'PendienteAprobacion': { f: 'Generando, /// <summary>El motor terminó y produjo un horario completo.</summary> Generado, /// <summary>Alguien lo está revisando y puede ajustarlo a mano.</summary> EnRevision, /// <summary>Listo y esperando la firma de quien aprueba.</summary> PendienteAprobacion,', s: 'El motor está trabajando en él. Es un estado pasajero.', l: 14 },
-      'Publicado': { f: 'EnRevision, /// <summary>Listo y esperando la firma de quien aprueba.</summary> PendienteAprobacion, /// <summary>Aprobado, pero todavía no visible para docentes y alumnos.</summary> Aprobado, /// <summary>Publicado: es el horario oficial que todos consultan.</summary> Publicado,', s: 'Alguien lo está revisando y puede ajustarlo a mano.', l: 20 },
+      'Aprobado': { s: 'Aprobado, pero todavía no visible para docentes y alumnos.', l: 26 },
+      'Archivado': { s: 'Retirado de circulación; se guarda solo como historia.', l: 32 },
+      'Borrador': { s: 'Recién creado: se elige su alcance y se revisan los datos base.', l: 11 },
+      'EnRevision': { s: 'Alguien lo está revisando y puede ajustarlo a mano.', l: 20 },
+      'Fallido': { s: 'La generación se cayó por un error. Se puede volver a borrador y reintentar.', l: 35 },
+      'Generado': { s: 'El motor terminó y produjo un horario completo.', l: 17 },
+      'Generando': { s: 'El motor está trabajando en él. Es un estado pasajero.', l: 14 },
+      'Inviable': { s: 'El motor terminó bien pero no existe horario posible con estos datos: faltan aulas, docentes u horas. Hay que corregir los datos y reintentar.', l: 39 },
+      'PendienteAprobacion': { s: 'Listo y esperando la firma de quien aprueba.', l: 23 },
+      'Publicado': { s: 'Publicado: es el horario oficial que todos consultan.', l: 29 },
     },
   },
   'Horarios.Dominio.Planes.PlanHorario': {
@@ -249,7 +270,8 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Dominio.Planes.TipoPlanHorario': {
     s: 'Para qué es el plan de horario. Ambos tipos se generan igual, pero cubren calendarios distintos: uno el semestre entero, el otro la semana de evaluaciones.',
     m: {
-      'Examenes': { f: 'Clases, /// <summary>Calendario del período de exámenes.</summary> Examenes }', s: 'Horario semanal de clases del período.', l: 10 },
+      'Clases': { s: 'Horario semanal de clases del período.', l: 10 },
+      'Examenes': { s: 'Calendario del período de exámenes.', l: 13 },
     },
   },
   'Horarios.Contratos.Academia.ActivarCohortePeriodoSolicitud': {
@@ -792,9 +814,12 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Contratos.Planes.EstadoGeneracionDto': {
     s: 'En qué va una corrida del motor. Es aparte del estado del plan: una generación es un intento concreto, y un plan puede acumular varios.',
     m: {
-      'Cancelada': { f: 'Completada, /// <summary>Se cayó por un error. El detalle está en los mensajes.</summary> Fallida, /// <summary>Terminó bien pero no hay horario posible con estos datos.</summary> Inviable, /// <summary>Alguien la detuvo antes de que terminara.</summary> Cancelada', s: 'Terminó y produjo un horario.', l: 18 },
-      'Fallida': { f: 'Pendiente, /// <summary>El motor está trabajando.</summary> Generando, /// <summary>Terminó y produjo un horario.</summary> Completada, /// <summary>Se cayó por un error. El detalle está en los mensajes.</summary> Fallida,', s: 'Encolada, todavía no empieza.', l: 12 },
-      'Inviable': { f: 'Generando, /// <summary>Terminó y produjo un horario.</summary> Completada, /// <summary>Se cayó por un error. El detalle está en los mensajes.</summary> Fallida, /// <summary>Terminó bien pero no hay horario posible con estos datos.</summary> Inviable,', s: 'El motor está trabajando.', l: 15 },
+      'Cancelada': { s: 'Alguien la detuvo antes de que terminara.', l: 27 },
+      'Completada': { s: 'Terminó y produjo un horario.', l: 18 },
+      'Fallida': { s: 'Se cayó por un error. El detalle está en los mensajes.', l: 21 },
+      'Generando': { s: 'El motor está trabajando.', l: 15 },
+      'Inviable': { s: 'Terminó bien pero no hay horario posible con estos datos.', l: 24 },
+      'Pendiente': { s: 'Encolada, todavía no empieza.', l: 12 },
     },
   },
   'Horarios.Contratos.Planes.EstadoHorarioDto': {
@@ -2020,4 +2045,4 @@ export const DOCS: Record<string, DocClase> = {
 };
 
 export const TOTAL_CLASES_DOC = 286;
-export const TOTAL_MIEMBROS_DOC = 719;
+export const TOTAL_MIEMBROS_DOC = 742;

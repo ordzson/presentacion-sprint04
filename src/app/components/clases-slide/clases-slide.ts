@@ -28,6 +28,7 @@ import {
   TipoClase,
   TipoRelacion,
 } from '../../data/clases-data';
+import { descargar, escalaSegura } from '../../util/exportar';
 import type { DocClase, DocMiembro } from '../../data/clases-docs';
 
 /*
@@ -138,6 +139,9 @@ const LOD_GUION = 0.3;
 
 const MS_ANIM = 420;
 
+/** Escala del PNG exportado, antes del recorte por los límites del navegador. */
+const ESCALA_EXPORT = 1.25;
+
 const MONO = "'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace";
 const SERIF = "'Times New Roman', Times, Georgia, serif";
 
@@ -149,6 +153,7 @@ const COLOR = {
   acento: '#3f6fd6',
   metodo: '#8b52d9',
   prop: '#3f6fd6',
+  alerta: '#c2504b',
 };
 
 const KINDS: { id: TipoClase; label: string }[] = [
@@ -249,8 +254,11 @@ export class ClasesSlide {
   readonly kindActivo = signal<TipoClase | null>(null);
   /** Miembro abierto en el panel, por su nombre sin parámetros. */
   readonly miembroSel = signal<string | null>(null);
+  /** Miembro sin doc que acaba de recibir un clic: destella y no abre nada. */
+  readonly destello = signal<string | null>(null);
   /** Índice de documentación; nulo mientras su módulo no ha llegado. */
   readonly docs = signal<Record<string, DocClase> | null>(null);
+  readonly exportando = signal(false);
 
   /** Vista viva: la fuente de verdad del lienzo. Nunca pasa por Angular. */
   private readonly vista = { escala: 0.2, tx: 0, ty: 0 };
@@ -258,6 +266,8 @@ export class ClasesSlide {
   private sobrevolada: string | null = null;
   /** Copia sin señal de miembroSel: el pintado no debe leer señales. */
   private miembroPintado: string | null = null;
+  private destelloPintado: string | null = null;
+  private destelloTimer: ReturnType<typeof setTimeout> | null = null;
   private cargaDocs: Promise<unknown> | null = null;
   private vistaPrevia: { escala: number; tx: number; ty: number } | null = null;
 
@@ -356,6 +366,7 @@ export class ClasesSlide {
 
     inject(DestroyRef).onDestroy(() => {
       this.vivo = false;
+      if (this.destelloTimer) clearTimeout(this.destelloTimer);
       const el = this.lienzoRef().nativeElement;
       el.removeEventListener('wheel', this.onWheel);
       el.removeEventListener('pointerdown', this.onPointerDown);
@@ -622,7 +633,39 @@ export class ClasesSlide {
    * El lienzo resalta la misma fila, así que las dos vistas van a la par.
    */
   alternarMiembro(nombre: string): void {
-    this.ponerMiembro(untracked(this.miembroSel) === nombre ? null : nombre);
+    if (untracked(this.miembroSel) === nombre) {
+      this.ponerMiembro(null);
+      return;
+    }
+    if (!this.tieneDoc(nombre)) {
+      this.parpadear(nombre);
+      return;
+    }
+    this.ponerMiembro(nombre);
+  }
+
+  /**
+   * Un miembro sin comentario /// no tiene nada que enseñar: en vez de abrir un
+   * panel vacío, la fila destella en rojo y todo se queda como estaba.
+   * Mientras la doc no ha llegado se deja abrir: el panel avisa que está cargando.
+   */
+  private tieneDoc(nombre: string): boolean {
+    if (!untracked(this.docs)) return true;
+    return !!untracked(this.miembrosPanel).find((f) => f.nombre === nombre)?.doc;
+  }
+
+  private parpadear(nombre: string): void {
+    if (this.destelloTimer) clearTimeout(this.destelloTimer);
+    this.destello.set(nombre);
+    this.destelloPintado = nombre;
+    this.programarPintado();
+    this.destelloTimer = setTimeout(() => {
+      this.destelloTimer = null;
+      if (!this.vivo) return;
+      this.destello.set(null);
+      this.destelloPintado = null;
+      this.programarPintado();
+    }, 620);
   }
 
   private ponerMiembro(nombre: string | null): void {
@@ -634,6 +677,10 @@ export class ClasesSlide {
 
   /** Desde el lienzo: abre el miembro y lo deja a la vista en el panel. */
   private abrirMiembroDelLienzo(nombre: string): void {
+    if (!this.tieneDoc(nombre)) {
+      this.parpadear(nombre);
+      return;
+    }
     this.ponerMiembro(nombre);
     requestAnimationFrame(() => {
       document
@@ -710,6 +757,57 @@ export class ClasesSlide {
     this.programarPintado();
   }
 
+  // ----------------------------------------------------------- exportar
+
+  /**
+   * Descarga el diagrama entero como PNG. Se repinta el lienzo completo en un
+   * canvas aparte a escala 1 (donde todos los niveles de detalle están por
+   * encima de su umbral, así que salen todos los rótulos) y sin filtros: la
+   * capa, el tipo, la búsqueda y la clase seleccionada se apartan durante la
+   * captura y se restauran después. La vista en pantalla no se toca.
+   */
+  async exportarPng(): Promise<void> {
+    if (this.exportando()) return;
+    this.exportando.set(true);
+
+    const previo = {
+      seleccionada: untracked(this.seleccionada),
+      busqueda: untracked(this.busqueda),
+      capa: untracked(this.capaActiva),
+      kind: untracked(this.kindActivo),
+      sobrevolada: this.sobrevolada,
+    };
+    this.seleccionada.set(null);
+    this.busqueda.set('');
+    this.capaActiva.set(null);
+    this.kindActivo.set(null);
+    this.sobrevolada = null;
+
+    const off = document.createElement('canvas');
+    try {
+      const factor = escalaSegura(LIENZO.ancho, LIENZO.alto, ESCALA_EXPORT);
+      off.width = Math.round(LIENZO.ancho * factor);
+      off.height = Math.round(LIENZO.alto * factor);
+      const ctx = off.getContext('2d');
+      if (!ctx) return;
+      // el factor va como si fuera el dpr: el encuadre es el lienzo entero
+      this.pintarEscena(ctx, 1, 0, 0, LIENZO.ancho, LIENZO.alto, factor, COLOR.bg);
+      const blob = await new Promise<Blob | null>((r) => off.toBlob(r, 'image/png'));
+      if (blob) descargar(blob, 'diagrama-clases.png');
+    } finally {
+      // un lienzo de decenas de megapíxeles no se recicla solo: se vacía
+      off.width = 0;
+      off.height = 0;
+      this.seleccionada.set(previo.seleccionada);
+      this.busqueda.set(previo.busqueda);
+      this.capaActiva.set(previo.capa);
+      this.kindActivo.set(previo.kind);
+      this.sobrevolada = previo.sobrevolada;
+      this.exportando.set(false);
+      this.programarPintado();
+    }
+  }
+
   // ------------------------------------------------------------ pintado
 
   private programarPintado(): void {
@@ -735,14 +833,41 @@ export class ClasesSlide {
   }
 
   private pintar(): void {
-    const ctx = this.ctx!;
     const { escala: s, tx, ty } = this.vista;
-    const dpr = this.dpr;
     const w = this.anchoCss;
     const h = this.altoCss;
 
+    this.pintarEscena(this.ctx!, s, tx, ty, w, h, this.dpr, null);
+    this.pintarMini(-tx / s, -ty / s, w / s, h / s);
+
+    const pct = Math.round(s * 100);
+    if (pct !== this.pctPintado) {
+      this.pctRef().nativeElement.textContent = `${pct}%`;
+      this.pctPintado = pct;
+    }
+  }
+
+  /**
+   * Pinta el grafo con el contexto y el encuadre que se le den. La vista en
+   * pantalla y la exportación comparten este método: sólo cambian el lienzo de
+   * destino y el fondo (el PNG no puede salir transparente).
+   */
+  private pintarEscena(
+    ctx: CanvasRenderingContext2D,
+    s: number,
+    tx: number,
+    ty: number,
+    w: number,
+    h: number,
+    dpr: number,
+    fondo: string | null,
+  ): void {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
+    if (fondo) {
+      ctx.fillStyle = fondo;
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.setTransform(s * dpr, 0, 0, s * dpr, tx * dpr, ty * dpr);
     ctx.lineJoin = 'round';
     ctx.lineCap = 'butt';
@@ -769,14 +894,6 @@ export class ClasesSlide {
     this.pintarNodos(ctx, s, vx, vy, vx1, vy1, sel, foco, vecinos, coincide, hayCoincide, capa, kind);
     if (sel) this.pintarEtiquetasArista(ctx, s, vx, vy, vx1, vy1, foco!);
     this.pintarExpandido(ctx);
-
-    this.pintarMini(vx, vy, vw, vh);
-
-    const pct = Math.round(s * 100);
-    if (pct !== this.pctPintado) {
-      this.pctRef().nativeElement.textContent = `${pct}%`;
-      this.pctPintado = pct;
-    }
   }
 
   private pintarRegiones(
@@ -1083,11 +1200,17 @@ export class ClasesSlide {
       const f = x.filas[i];
       const y = 34 + i * ALTO_FILA;
       const abierta = this.miembroPintado === f.nombre;
+      const rechazada = this.destelloPintado === f.nombre;
       const activa = this.filaSobre === i || abierta;
 
       // la fila abierta es la que el panel está explicando
       if (abierta) {
         ctx.fillStyle = alfa(COLOR.acento, 0.1);
+        ctx.fillRect(2, y - 2, x.ancho - 4, ALTO_FILA);
+      }
+      // sin doc: el clic no abre nada y la fila lo dice en rojo
+      if (rechazada) {
+        ctx.fillStyle = alfa(COLOR.alerta, 0.16);
         ctx.fillRect(2, y - 2, x.ancho - 4, ALTO_FILA);
       }
 
@@ -1104,12 +1227,12 @@ export class ClasesSlide {
       ctx.fillText(f.m.k === 'metodo' ? 'ƒ' : f.m.k === 'valor' ? '·' : '◆', 10, y + 11);
 
       ctx.font = `${f.m.est ? 'italic ' : ''}11.5px ${MONO}`;
-      ctx.fillStyle = activa ? COLOR.acento : COLOR.texto;
+      ctx.fillStyle = rechazada ? COLOR.alerta : activa ? COLOR.acento : COLOR.texto;
       ctx.fillText(f.texto, 30, y + 11);
 
       ctx.textAlign = 'right';
       ctx.font = `10.5px ${MONO}`;
-      ctx.fillStyle = activa ? COLOR.acento : COLOR.faint;
+      ctx.fillStyle = rechazada ? COLOR.alerta : activa ? COLOR.acento : COLOR.faint;
       ctx.fillText(f.tipo, x.ancho - 10, y + 11);
 
       if (this.filaSobre === i) {

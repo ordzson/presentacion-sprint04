@@ -197,8 +197,27 @@
   color: var(--text);
 }
 
-.controles .ajustar {
+.controles .ajustar,
+.controles .exportar {
   font-size: 0.95rem;
+}
+
+.controles .exportar {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.controles button:disabled {
+  opacity: 0.45;
+  cursor: progress;
+}
+
+.controles .sep {
+  width: 1px;
+  height: 1.3rem;
+  margin: 0 0.15rem;
+  background: var(--border);
 }
 
 .pct {

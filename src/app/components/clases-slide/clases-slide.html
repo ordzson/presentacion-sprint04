@@ -57,6 +57,14 @@
       <span class="pct" #pct>20%</span>
       <button type="button" (click)="zoom(1.25)" title="Acercar (+)" aria-label="Acercar">+</button>
       <button type="button" class="ajustar" (click)="ajustar()" title="Ajustar a pantalla (0)">Ajustar</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button
+        type="button"
+        class="exportar"
+        [disabled]="exportando()"
+        (click)="exportarPng()"
+        title="Descargar el diagrama completo en PNG"
+      >PNG</button>
     </div>
   </div>
 
@@ -125,6 +133,7 @@
                     type="button"
                     class="miembro"
                     [class.sin-doc]="!f.doc"
+                    [class.destello]="destello() === f.nombre"
                     [attr.aria-expanded]="miembroSel() === f.nombre"
                     (click)="alternarMiembro(f.nombre)"
                   >
@@ -210,10 +219,8 @@
                           <p class="fuente">{{ archivoDoc() }}:{{ d.linea }}</p>
                         }
                       </div>
-                    } @else {
-                      <p class="doc-m vacia">
-                        {{ docs() ? 'Sin comentario /// en el código.' : 'Cargando documentación…' }}
-                      </p>
+                    } @else if (!docs()) {
+                      <p class="doc-m vacia">Cargando documentación…</p>
                     }
                   }
 

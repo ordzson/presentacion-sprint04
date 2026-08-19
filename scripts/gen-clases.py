@@ -268,9 +268,16 @@ def bloques_doc(raw: str):
             continue
         firma = []
         for l in lineas[k: k + 10]:
-            firma.append(l.strip())
+            recorte = l.strip()
+            if firma and recorte.startswith("///"):   # empezó otro bloque: la firma ya acabó
+                break
+            firma.append(recorte)
             unida = " ".join(firma)
-            if unida.count("(") <= unida.count(")") and unida.endswith(CIERRA_FIRMA):
+            if unida.count("(") > unida.count(")"):
+                continue
+            # un valor de enum termina en la coma que lo separa del siguiente,
+            # o en la llave que cierra el tipo cuando es el último
+            if unida.endswith(CIERRA_FIRMA) or unida.endswith((",", "}")):
                 break
         salida.append((cuerpo, offs[k], k + 1, " ".join(firma)))
     return salida
@@ -327,7 +334,7 @@ def firma_limpia(firma: str) -> str:
     s = re.sub(r"\(\s+", "(", s)
     s = re.sub(r"\s+\)", ")", s)
     s = re.sub(r"\s+,", ",", s)
-    return s.rstrip(" ;").strip()
+    return s.rstrip(" ;,").strip()
 
 
 def leer_docs(raw: str, del_archivo: list[str]) -> None:
@@ -357,7 +364,9 @@ def leer_docs(raw: str, del_archivo: list[str]) -> None:
         nom = nombre_miembro(firma)
         if not nom or nom == tipos[clave]["nombre"]:  # constructor: sin fila propia
             continue
-        doc["f"] = firma_limpia(firma)
+        # en un enum la «firma» es el nombre a secas: no aporta nada al panel
+        if tipos[clave]["kind"] != "enum":
+            doc["f"] = firma_limpia(firma)
         doc["l"] = num
         docs_miembro.setdefault(clave, {}).setdefault(nom, doc)
 

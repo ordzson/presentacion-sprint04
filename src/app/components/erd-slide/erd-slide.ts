@@ -20,6 +20,14 @@ import {
   TOTAL_FK,
   Tabla,
 } from '../../data/erd-data';
+import {
+  descargar,
+  escalaSegura,
+  esperarPintado,
+  inlinarEstilos,
+  serializar,
+  svgAPng,
+} from '../../util/exportar';
 
 /** Estado visual de un nodo o arista bajo el foco actual. */
 type Estado = 'normal' | 'seleccionada' | 'vecina' | 'coincide' | 'apagada';
@@ -59,6 +67,7 @@ const ESCALA_FOCO = 1.4;
 })
 export class ErdSlide {
   private readonly lienzoRef = viewChild.required<ElementRef<HTMLElement>>('lienzo');
+  private readonly grafoRef = viewChild.required<ElementRef<SVGSVGElement>>('grafo');
 
   readonly LIENZO = LIENZO;
   readonly dominios = DOMINIOS;
@@ -78,6 +87,7 @@ export class ErdSlide {
   readonly busqueda = signal('');
   readonly dominioActivo = signal<DominioId | null>(null);
   readonly arrastrando = signal(false);
+  readonly exportando = signal(false);
   /** Escala que corresponde a "ajustar"; sirve de referencia para el minimapa. */
   private readonly escalaAjuste = signal(0.3);
   readonly animando = signal(false);
@@ -356,6 +366,81 @@ export class ErdSlide {
     this.tx.update((v) => px - (px - v) * k);
     this.ty.update((v) => py - (py - v) * k);
     this.escala.set(nueva);
+  }
+
+  // --------------------------------------------------------------- exportar
+
+  /**
+   * Descarga el diagrama completo. Se exporta siempre el esquema entero y sin
+   * atenuar: el filtro de dominio, la búsqueda y la tabla seleccionada se
+   * apartan durante la captura y se restauran después. La vista (zoom y
+   * desplazamiento) no se toca, porque el archivo lleva su propio encuadre.
+   */
+  async exportar(formato: 'svg' | 'png'): Promise<void> {
+    if (this.exportando()) return;
+    this.exportando.set(true);
+
+    const previo = {
+      seleccionada: this.seleccionada(),
+      sobrevolada: this.sobrevolada(),
+      busqueda: this.busqueda(),
+      dominio: this.dominioActivo(),
+    };
+    this.seleccionada.set(null);
+    this.sobrevolada.set(null);
+    this.busqueda.set('');
+    this.dominioActivo.set(null);
+
+    try {
+      await esperarPintado();
+      const { texto, ancho, alto } = this.construirSvg();
+      if (formato === 'svg') {
+        descargar(new Blob([texto], { type: 'image/svg+xml;charset=utf-8' }), 'esquema-base-datos.svg');
+      } else {
+        const png = await svgAPng(texto, ancho, alto, escalaSegura(ancho, alto, 2));
+        descargar(png, 'esquema-base-datos.png');
+      }
+    } finally {
+      this.seleccionada.set(previo.seleccionada);
+      this.sobrevolada.set(previo.sobrevolada);
+      this.busqueda.set(previo.busqueda);
+      this.dominioActivo.set(previo.dominio);
+      this.exportando.set(false);
+    }
+  }
+
+  /**
+   * Clona el SVG en pantalla y lo vuelve autónomo: encuadre propio (la caja
+   * real del contenido, sin la transformación de la vista), fondo opaco y los
+   * estilos calculados escritos en cada nodo, porque las hojas de estilo del
+   * componente no viajan con el archivo.
+   */
+  private construirSvg(): { texto: string; ancho: number; alto: number } {
+    const svg = this.grafoRef().nativeElement;
+    const mundo = svg.querySelector<SVGGElement>('g.mundo')!;
+    const caja = mundo.getBBox();
+    const margen = 48;
+    const ancho = Math.ceil(caja.width + margen * 2);
+    const alto = Math.ceil(caja.height + margen * 2);
+    const x = Math.floor(caja.x - margen);
+    const y = Math.floor(caja.y - margen);
+
+    const clon = svg.cloneNode(true) as SVGSVGElement;
+    inlinarEstilos(svg, clon);
+    clon.querySelector('g.mundo')?.removeAttribute('transform');
+    clon.setAttribute('width', `${ancho}`);
+    clon.setAttribute('height', `${alto}`);
+    clon.setAttribute('viewBox', `${x} ${y} ${ancho} ${alto}`);
+
+    const fondo = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    fondo.setAttribute('x', `${x}`);
+    fondo.setAttribute('y', `${y}`);
+    fondo.setAttribute('width', `${ancho}`);
+    fondo.setAttribute('height', `${alto}`);
+    fondo.setAttribute('fill', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#faf3e6');
+    clon.insertBefore(fondo, clon.firstChild);
+
+    return { texto: serializar(clon), ancho, alto };
   }
 
   // ---------------------------------------------------------------- entrada

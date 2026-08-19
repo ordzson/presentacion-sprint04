@@ -201,6 +201,24 @@
   font-size: 0.95rem;
 }
 
+.controles .exportar {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.controles button:disabled {
+  opacity: 0.45;
+  cursor: progress;
+}
+
+.controles .sep {
+  width: 1px;
+  height: 1.3rem;
+  margin: 0 0.15rem;
+  background: var(--border);
+}
+
 .pct {
   font-family: var(--mono);
   font-size: 0.85rem;
@@ -665,6 +683,35 @@
 /* sin comentario /// en el código: el icono se apaga, el nombre no */
 .miembro.sin-doc .icono {
   opacity: 0.35;
+}
+
+/* el clic en un miembro sin doc no abre nada: la fila lo avisa en rojo */
+.miembro.destello,
+.miembro.destello:hover {
+  animation: destello-sin-doc 0.62s ease-out;
+}
+
+@keyframes destello-sin-doc {
+  0%,
+  55% {
+    background: color-mix(in srgb, #c2504b 18%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #c2504b 55%, transparent);
+    color: #c2504b;
+  }
+  100% {
+    background: none;
+    box-shadow: none;
+    color: var(--text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .miembro.destello,
+  .miembro.destello:hover {
+    animation: none;
+    background: color-mix(in srgb, #c2504b 18%, transparent);
+    color: #c2504b;
+  }
 }
 
 .miembro .nombre {

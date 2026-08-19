@@ -5,6 +5,7 @@ import { ClasesSlide } from './components/clases-slide/clases-slide';
 import { ErdSlide } from './components/erd-slide/erd-slide';
 import { InterfaceSlide } from './components/interface-slide/interface-slide';
 import { MotorSlide } from './components/motor-slide/motor-slide';
+import { PreguntasSlide } from './components/preguntas-slide/preguntas-slide';
 import { RequirementsSlide } from './components/requirements-slide/requirements-slide';
 
 @Component({
@@ -17,6 +18,7 @@ import { RequirementsSlide } from './components/requirements-slide/requirements-
     InterfaceSlide,
     CatalogoSlide,
     MotorSlide,
+    PreguntasSlide,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -30,6 +32,7 @@ export class App {
     { n: 5, titulo: 'Interfaz' },
     { n: 6, titulo: 'Script de la base' },
     { n: 7, titulo: 'Motor de horarios' },
+    { n: 8, titulo: 'Preguntas y glosario' },
   ];
 
   readonly actual = signal(1);

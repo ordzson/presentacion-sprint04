@@ -45,6 +45,21 @@
       <span class="pct">{{ porcentaje() }}%</span>
       <button type="button" (click)="zoom(1.25)" title="Acercar (+)" aria-label="Acercar">+</button>
       <button type="button" class="ajustar" (click)="ajustar()" title="Ajustar a pantalla (0)">Ajustar</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button
+        type="button"
+        class="exportar"
+        [disabled]="exportando()"
+        (click)="exportar('svg')"
+        title="Descargar el esquema completo en SVG (vectorial)"
+      >SVG</button>
+      <button
+        type="button"
+        class="exportar"
+        [disabled]="exportando()"
+        (click)="exportar('png')"
+        title="Descargar el esquema completo en PNG"
+      >PNG</button>
     </div>
   </div>
 
@@ -56,7 +71,7 @@
       (wheel)="onWheel($event)"
       (pointerdown)="onPointerDown($event)"
     >
-      <svg class="grafo" [attr.width]="'100%'" [attr.height]="'100%'">
+      <svg #grafo class="grafo" [attr.width]="'100%'" [attr.height]="'100%'">
         <g class="mundo" [class.suave]="animando()" [attr.transform]="transform()">
           <!-- regiones de dominio, como telón de fondo -->
           <g class="capa-regiones">

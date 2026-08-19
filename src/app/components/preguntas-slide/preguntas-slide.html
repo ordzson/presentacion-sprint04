@@ -1,0 +1,235 @@
+<!-- texto de una frase: negrita, cursiva, código, referencias y coincidencias -->
+<ng-template #txt let-ts>
+  @for (t of ts; track $index) {
+    @if (t.r) {
+      <button
+        type="button"
+        class="ref"
+        [class.hit]="t.m"
+        (click)="irARef(t.r)"
+        [title]="'Ir a ' + t.t"
+      >{{ t.t }}</button>
+    } @else {
+      <span
+        [class.neg]="t.b"
+        [class.cur]="t.i"
+        [class.cod]="t.c"
+        [class.hit]="t.m"
+      >{{ t.t }}</span>
+    }
+  }
+</ng-template>
+
+<!-- un bloque del cuerpo. Se llama a sí misma para lo que va dentro de una cita -->
+<ng-template #blk let-b>
+  @switch (b.k) {
+    @case ('p') {
+      <p class="par" [class.con-rotulo]="b.rot">
+        @if (b.rot) {
+          <strong class="rotulo">{{ b.rot }}</strong>
+        }
+        <ng-container *ngTemplateOutlet="txt; context: { $implicit: b.t ?? [] }" />
+      </p>
+    }
+    @case ('code') {
+      <pre class="codigo"><code>@for (t of b.tk ?? []; track $index) {<span [class]="t.c">{{ t.t }}</span>}</code></pre>
+    }
+    @case ('tabla') {
+      <div class="tabla-marco">
+        <table class="tabla">
+          <thead>
+            <tr>
+              @for (c of b.cab ?? []; track $index) {
+                <th><ng-container *ngTemplateOutlet="txt; context: { $implicit: c }" /></th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (fila of b.filas ?? []; track $index) {
+              <tr>
+                @for (c of fila; track $index) {
+                  <td><ng-container *ngTemplateOutlet="txt; context: { $implicit: c }" /></td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    @case ('lista') {
+      @if (b.ord) {
+        <ol class="lista">
+          @for (li of b.it ?? []; track $index) {
+            <li [class.anidado]="li.n === 1">
+              <ng-container *ngTemplateOutlet="txt; context: { $implicit: li.t }" />
+            </li>
+          }
+        </ol>
+      } @else {
+        <ul class="lista">
+          @for (li of b.it ?? []; track $index) {
+            <li [class.anidado]="li.n === 1">
+              <ng-container *ngTemplateOutlet="txt; context: { $implicit: li.t }" />
+            </li>
+          }
+        </ul>
+      }
+    }
+    @case ('cita') {
+      <blockquote class="cita">
+        @for (x of b.b ?? []; track $index) {
+          <ng-container *ngTemplateOutlet="blk; context: { $implicit: x }" />
+        }
+      </blockquote>
+    }
+  }
+</ng-template>
+
+<section class="slide">
+  <header class="slide-header">
+    <div>
+      <p class="eyebrow">Fase 8 · Preparación de la defensa</p>
+      <h1>Preguntas, respuestas y glosario</h1>
+    </div>
+  </header>
+
+  <div class="barra">
+    <div class="buscador">
+      <svg viewBox="0 0 20 20" class="lupa" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M12.8 12.8 L17 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar una pregunta o un término…"
+        [value]="busqueda()"
+        (input)="onBusqueda($event)"
+        (keydown.enter)="abrirPrimera()"
+        aria-label="Buscar entre las preguntas y el glosario"
+      />
+      @if (busqueda().trim().length > 1) {
+        <span class="contador">{{ coincidencias() }}</span>
+      }
+    </div>
+
+    <div class="chips" role="group" aria-label="Filtrar por sección">
+      @for (s of secciones; track s.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.activo]="secActiva() === s.id"
+          [style.--c]="s.color"
+          (click)="alternarSeccion(s.id)"
+        >
+          <span class="punto"></span>{{ s.label }}<span class="n">{{ s.n }}</span>
+        </button>
+      }
+    </div>
+
+    @if (busqueda() || secActiva()) {
+      <button type="button" class="limpiar" (click)="limpiar()">Limpiar</button>
+    }
+  </div>
+
+  <div class="area">
+    <!-- índice: las 60 preguntas, el glosario y las notas del documento -->
+    <div class="indice" #lista>
+      @if (buscoEnFondo()) {
+        <p class="aviso">Sin coincidencias en los títulos. Esto es lo que contiene ese texto
+          dentro del cuerpo de las respuestas.</p>
+      }
+
+      @for (g of grupos(); track g.clave) {
+        <h3 class="grupo" [style.--c]="g.color">
+          <span class="punto"></span>{{ g.titulo }}<span class="n">{{ g.filas.length }}</span>
+        </h3>
+        @for (f of g.filas; track f.it.id) {
+          <button
+            type="button"
+            class="fila"
+            [class.activa]="seleccionado() === f.it.id"
+            [style.--c]="g.color"
+            (click)="seleccionar(f.it.id)"
+          >
+            <span class="cab-fila">
+              @if (f.it.n) {
+                <span class="num">P{{ f.it.n }}</span>
+              } @else if (f.it.kind === 'g') {
+                <span class="num tipo-g">término</span>
+              } @else {
+                <span class="num tipo-n">nota</span>
+              }
+              <span class="titulo">
+                <ng-container *ngTemplateOutlet="txt; context: { $implicit: f.tit }" />
+              </span>
+            </span>
+            <span class="resumen">
+              <ng-container *ngTemplateOutlet="txt; context: { $implicit: f.resumen }" />
+            </span>
+          </button>
+        }
+      } @empty {
+        <p class="vacio">Nada coincide con «{{ busqueda() }}».</p>
+      }
+    </div>
+
+    <!-- ficha del elemento abierto -->
+    <aside class="ficha" [style.--c]="colorDetalle()">
+      @if (detalle(); as it) {
+        <div class="ficha-cab">
+          <p class="ruta">
+            <span class="etiqueta-sec">{{ etiquetaSec() }}</span>
+            @if (subgrupo(); as g) {
+              <span class="sep">·</span>{{ g }}
+            }
+            @if (it.n) {
+              <span class="sep">·</span><span class="num-ficha">P{{ it.n }}</span>
+            }
+          </p>
+          <h2>
+            <ng-container *ngTemplateOutlet="txt; context: { $implicit: it.tit }" />
+          </h2>
+        </div>
+
+        <div class="cuerpo">
+          @for (b of it.bloques; track $index) {
+            <ng-container *ngTemplateOutlet="blk; context: { $implicit: b }" />
+          }
+        </div>
+
+        <div class="meta">
+          @if (puedeVolver()) {
+            <button type="button" class="pastilla accion" (click)="volver()">← volver</button>
+          }
+          @if (anterior(); as a) {
+            <button type="button" class="pastilla accion" (click)="seleccionar(a.id)">
+              ‹ {{ a.n ? 'P' + a.n : a.titulo }}
+            </button>
+          }
+          @if (siguiente(); as s) {
+            <button type="button" class="pastilla accion" (click)="seleccionar(s.id)">
+              {{ s.n ? 'P' + s.n : s.titulo }} ›
+            </button>
+          }
+          <span class="pastilla">{{ META.archivo }} · línea {{ it.linea }}</span>
+        </div>
+      } @else {
+        <div class="pista">
+          <h2>{{ META.preguntas }} preguntas, {{ META.terminos }} términos de glosario</h2>
+          <p>El documento entero está acá: cada respuesta con su <strong>qué</strong>,
+            su <strong>cómo</strong> y su <strong>por qué</strong>, las tablas, el SQL y las
+            referencias entre preguntas.</p>
+          <ul>
+            <li>Escribí en el buscador y pulsá <kbd>Enter</kbd> para abrir la primera.</li>
+            <li><kbd>↑</kbd> <kbd>↓</kbd> recorren el índice; <kbd>Esc</kbd> cierra la ficha.</li>
+            <li>Los chips filtran por sección; el número es cuántas entradas tiene.</li>
+            <li>Dentro de una respuesta, <span class="ref-ej">P24</span> es un enlace: lleva a
+              esa pregunta y <strong>← volver</strong> regresa.</li>
+          </ul>
+          <p class="fuente">{{ META.archivo }} · {{ META.lineas }} líneas · cobertura
+            {{ META.cobertura }} %</p>
+        </div>
+      }
+    </aside>
+  </div>
+</section>
