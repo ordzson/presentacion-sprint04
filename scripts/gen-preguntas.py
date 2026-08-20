@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Parsea docs/preguntas-respuestas.md y genera src/app/data/preguntas-data.ts.
 
-El documento entero entra en la slide: las 60 preguntas con su cuerpo completo
-(párrafos, tablas, código, listas y notas), los tres bloques del glosario término
-por término, las introducciones de cada sección, el índice de lo que cubrirá el
-motor y las fuentes citadas. El script verifica la cobertura al final: si alguna
-línea del markdown no acabó dentro de un elemento, lo dice.
+El documento entero entra en la slide: las preguntas con su cuerpo completo
+(párrafos, tablas, código, listas y notas), los bloques del glosario término por
+término, las introducciones de cada sección y las fuentes citadas. El script
+verifica la cobertura al final: si alguna línea del markdown no acabó dentro de un
+elemento, lo dice.
 
 Uso: python3 scripts/gen-preguntas.py
 """
@@ -111,7 +111,7 @@ def ancla_a_ref(url):
     m = re.match(r"^(\d+)-", u)
     if m:
         d = m.group(1)
-        return "s" + d if len(d) == 1 else "sub" + d
+        return ("s" + d + "-intro") if len(d) == 1 else "sub" + d
     return ""
 
 
@@ -491,6 +491,35 @@ ALIAS = {
     "p47": "login autenticacion cookie",
     "p49": "rbac roles permisos",
     "p60": "verificador calidad",
+    "p61": "np completo complejidad combinaciones fuerza bruta",
+    "p62": "ia inteligencia artificial genetico voraz greedy busqueda local",
+    "p63": "por donde empezar orden de lectura clases principales",
+    "p64": "snapshot instantanea inmutable",
+    "p65": "expansor uuid hash determinista",
+    "p66": "construccion voraz bucle candidatos",
+    "p67": "mrv fail first dsatur heuristica",
+    "p68": "mejora local optimo local first improvement",
+    "p69": "verificador independencia diversidad",
+    "p70": "duras blandas restricciones",
+    "p71": "reglasduras duplicacion desincronizacion",
+    "p72": "pesos ponderaciones puntaje costo",
+    "p73": "bitset tablero ocupacion arreglo",
+    "p74": "catalogo candidatos cache precalculo",
+    "p75": "costo incremental rendimiento",
+    "p76": "pruebas equivalencia test",
+    "p77": "determinismo reproducible azar random",
+    "p78": "pendiente diagnostico motivo",
+    "p79": "limites optimalidad backtracking",
+    "p80": "tiempo cola timeout reinicio",
+    "p81": "flecha lambda expression bodied",
+    "p82": "ternario null coalescing nullable",
+    "p83": "readonly const inmutable",
+    "p84": "internal private sealed modificadores de acceso encapsulacion",
+    "p85": "record with igualdad por valor",
+    "p86": "sintaxis simbolos operadores async",
+    "p87": "decimal double coma flotante precision",
+    "p88": "immutablearray list ienumerable linq",
+    "p89": "cancellationtoken cancelacion timeout",
 }
 
 for it in items:

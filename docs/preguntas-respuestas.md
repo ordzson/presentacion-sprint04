@@ -27,7 +27,7 @@
    - [4.5 Acceso](#45-acceso)
    - [4.6 Importaciones](#46-importaciones)
 5. [Preguntas incómodas](#5-preguntas-incómodas)
-6. [Motor de generación](#6-motor-de-generación-pendiente)
+6. [Motor de generación](#6-motor-de-generación)
 7. [Glosario](#7-glosario)
 
 ---
@@ -1621,23 +1621,1005 @@ las dos.
 
 ---
 
-## 6. Motor de generación (pendiente)
+## 6. Motor de generación
 
-Esta sección se desarrolla aparte por su complejidad. Las preguntas que va a cubrir, para que
-el equipo sepa qué se viene:
+> **Cómo está ordenada esta sección, y por qué.** El motor es la parte más compleja del
+> sistema y la más fácil de contar mal. Son ocho archivos y 1 542 líneas en
+> `Horarios.Scheduler`, pero **cuatro piezas cuentan la idea entera**: la instantánea que
+> congela los datos, el expansor que dice qué hay que colocar, el motor que coloca y el
+> verificador que revisa. Dos más escriben las reglas —`ReglasDuras` y
+> `EvaluadorRestriccionesBlandas`—, y las tres últimas no cambian ni un resultado: solo
+> hacen que el trabajo termine en segundos. Por eso el orden es ese y no el alfabético: si
+> alguien explica `CostoBlandoIncremental` antes que `MotorHorario`, el oyente se lleva la
+> idea de que el motor es complicado, cuando lo complicado es la máquina que lo acelera.
 
-- Qué problema resuelve el motor y por qué es NP-difícil.
-- Qué es una instantánea (`InstantaneaMotor`) y por qué el motor no consulta la base de datos.
-- Cómo se expanden los requisitos en sesiones (`ExpansorSesiones`) y por qué los
-  identificadores son deterministas.
-- Qué es una restricción dura y una blanda, y por qué unas rechazan y otras solo penalizan.
-- Qué significa la heurística de "más restringido primero" y por qué se eligió.
-- Cómo se calcula el costo blando de forma incremental (`CostoBlandoIncremental`) y por qué
-  incremental.
-- Cómo se lleva la ocupación (`OcupacionHorario`) y por qué esa estructura.
-- Qué hace el verificador y por qué es independiente del motor.
-- Por qué una sesión queda sin asignar y cómo se explica la causa.
-- Qué hace que una corrida sea reproducible.
+### 6.1 El problema y la estrategia
+
+#### P61. ¿Qué problema resuelve el motor y por qué no se prueban todas las combinaciones?
+
+**Qué.** Colocar cada sesión de clase de un período en una casilla (día y hora), con un
+docente y un aula, sin que dos cosas ocupen el mismo lugar al mismo tiempo y respetando
+autorizaciones, capacidades, laboratorios, jornadas y topes de carga.
+
+**Cómo.** El propio motor cuenta el tamaño del problema: para cada sesión calcula
+`Combinaciones = docentes × aulas × bloques` (`MotorHorario.Candidatos`). Con números
+modestos —20 docentes, 30 aulas, 25 bloques— una sola sesión tiene 15 000 ubicaciones
+posibles. Un período con 200 sesiones tiene, antes de descartar nada, del orden de
+15 000²⁰⁰ combinaciones: más de 10⁸⁰⁰. Las reglas duras podan muchísimo, pero el espacio
+sigue siendo astronómico y no hay computadora que lo recorra.
+
+**Por qué.** No es que falte hardware: el problema es intrínsecamente difícil. La
+construcción de horarios en su forma de decisión es **NP-completa** (Even, Itai y Shamir,
+*On the Complexity of Timetable and Multicommodity Flow Problems*, SIAM J. Comput., 1976), y
+las variantes prácticas —con aulas, capacidades y disponibilidad, como la nuestra— son al
+menos igual de difíciles (Cooper y Kingston, *The Complexity of Timetable Construction
+Problems*, PATAT 1996). Formalmente es un problema de satisfacción de restricciones con una
+función objetivo encima: hay que encontrar algo **factible** y, entre lo factible, algo
+**cómodo**. Ante eso hay dos caminos honestos: un solucionador exacto que puede tardar horas
+o no terminar, o una heurística que da una respuesta buena en segundos y dice claramente qué
+no garantiza. Se eligió el segundo, y [P79](#p79-qué-es-lo-que-el-motor-no-garantiza) enumera exactamente qué no garantiza.
+
+#### P62. ¿Qué algoritmo usa? ¿Hay inteligencia artificial adentro?
+
+**Qué.** No. Es una **heurística híbrida determinista**: construcción voraz con la regla
+«más restringido primero», seguida de búsqueda local de primera mejora. Ni redes neuronales,
+ni algoritmos genéticos, ni recocido simulado. La versión que se anota en cada corrida lo
+dice: `VersionMotor = "motor-hibrido-1"` (`GenerarHorarioPlan.cs`).
+
+**Cómo.** Dos fases, en `MotorHorario.Ejecutar`:
+
+1. **Construcción.** Ordena las sesiones de la más difícil a la más fácil y a cada una le da
+   la primera ubicación legal que encuentra. Rápida y sin vuelta atrás.
+2. **Mejora.** Solo si la construcción no dejó ninguna sesión pendiente: recorre las
+   sesiones colocadas buscando un hueco que baje el puntaje blando, sin romper nunca una
+   regla dura.
+
+**Por qué.** El esquema «construir y después mejorar» es el estándar de la literatura de
+horarios (Schaerf, *A Survey of Automated Timetabling*, 1999), y se eligió por tres razones
+concretas, no por moda:
+
+- **Es determinista.** No hay ni un `Random` en todo `Horarios.Scheduler` (se puede
+  comprobar buscándolo). Una corrida se puede reproducir y auditar; un genético con
+  población aleatoria, no.
+- **Explica sus fallos.** Cuando una sesión no entra, el motor dice por qué
+  ([P78](#p78-por-qué-una-sesión-queda-sin-asignar-y-cómo-se-explica-la-causa)). Un metaheurístico devuelve «no convergió», que no le sirve a nadie que
+  tenga que arreglar los datos.
+- **No hay que ajustarlo.** Los genéticos y el recocido traen parámetros propios
+  —población, mutación, temperatura— que exigen experimentación para funcionar bien. Acá
+  los únicos parámetros son los cinco pesos blandos, y son configurables sin recompilar.
+
+El costo, dicho de frente: una heurística voraz con búsqueda local se queda en el primer
+mínimo local que encuentra. Un genético bien ajustado podría dar horarios más cómodos. Se
+prefirió lo reproducible y explicable sobre lo potencialmente mejor.
+
+### 6.2 Las cuatro clases que cuentan toda la idea
+
+#### P63. Si tuviera una hora para entender el motor, ¿qué leo y en qué orden?
+
+**Qué.** Cuatro archivos, en este orden. Con eso se entiende el motor entero; lo demás es
+detalle o velocidad.
+
+| # | Pieza | Archivo | Líneas | Qué aporta |
+|---|---|---|---|---|
+| 1 | `InstantaneaMotor` | `Horarios.Contratos/Motor/ContratoMotor.cs` | — | La entrada, congelada: todo lo que el motor va a mirar |
+| 2 | `ExpansorSesiones` | `Horarios.Scheduler/ExpansorSesiones.cs` | 90 | Qué hay que colocar: convierte requisitos en sesiones concretas |
+| 3 | `MotorHorario` | `Horarios.Scheduler/MotorHorario.cs` | 369 | Cómo se coloca: las dos fases y la decisión |
+| 4 | `VerificadorHorario` | `Horarios.Scheduler/VerificadorHorario.cs` | 269 | Si el resultado vale: segunda opinión antes de guardar |
+
+**Cómo.** Las otras cinco piezas se dividen en dos grupos, y conviene no mezclarlos:
+
+- **Definiciones de las reglas.** `ReglasDuras` (63 líneas) dice qué es legal;
+  `EvaluadorRestriccionesBlandas` (108) dice qué es cómodo. Son cortas y declarativas: se
+  leen casi como una lista de requisitos.
+- **Maquinaria de optimización.** `OcupacionHorario` (171) responde «¿está libre?» en tiempo
+  constante; `CatalogoCandidatos` (dentro de `MotorHorario`) precalcula las opciones de cada
+  sesión; `CostoBlandoIncremental` (383, la clase más larga del motor) da el mismo puntaje
+  que el evaluador recalculando solo lo que cambió.
+
+La frase que resume el reparto es esta: **si las tres piezas de maquinaria se reemplazaran
+por implementaciones ingenuas que respetaran el mismo orden de candidatos, el horario
+resultante sería exactamente el mismo; solo tardaría órdenes de magnitud más.** No aportan
+decisiones, aportan tiempo. Por eso se explican al final y no al principio.
+
+El octavo archivo, `TrabajosPesados.cs` (89 líneas), no es algoritmo: es la cola y el
+perfilador que sacan la generación de la petición web ([P29](#p29-por-qué-la-generación-se-ejecuta-en-segundo-plano), [P80](#p80-qué-pasa-si-la-generación-tarda-demasiado-o-si-el-servidor-se-reinicia)).
+
+**Por qué importa el orden de lectura.** Porque las tres clases de maquinaria concentran casi
+la mitad del código del motor y toda su dificultad aparente —índices densos, buffers
+reutilizados, ordenación por inserción a mano—. Quien empieza por ahí concluye que el motor
+es un laberinto. Quien empieza por las cuatro primeras entiende un algoritmo que cabe en un
+párrafo y después ve por qué hizo falta acelerarlo.
+
+#### P64. ¿Qué es la instantánea y por qué el motor no consulta la base de datos?
+
+**Qué.** `InstantaneaMotor` es una foto inmutable con todo lo que la generación va a mirar:
+docentes con sus cursos autorizados y su disponibilidad, aulas con capacidad y recursos,
+cohortes, bloques, sesiones por colocar, los pesos blandos y los topes de la fase de mejora.
+El motor no recibe nada más y no consulta nada más.
+
+**Cómo.** El constructor valida que haya plan y **copia** cada lista a `ImmutableArray`; el
+comentario del código lo dice donde ocurre: *"Aquí se hace la copia fija: si otra capa cambia
+sus listas, la ejecución no cambia"*. Los valores por omisión también viven ahí: 100 pasadas
+de mejora y 15 segundos de presupuesto. La foto la arma
+`PreparadorInstantaneaMotorPostgres` y la guarda `IDatosGeneraciones.IniciarAsync` **antes**
+de que el motor arranque.
+
+**Por qué.** Tres razones que se sostienen solas:
+
+1. **Reproducibilidad.** La entrada exacta de cada corrida queda guardada, así que un
+   horario cuestionado se puede volver a generar con los mismos datos aunque la base haya
+   cambiado. Sin instantánea, «¿por qué salió esto?» no tiene respuesta comprobable.
+2. **El motor se prueba sin base de datos.** `Horarios.Scheduler` no referencia Npgsql,
+   Supabase ni Blazor: solo `Horarios.Contratos`. Por eso las 13 pruebas del scheduler
+   corren en milisegundos con escenarios inventados a mano.
+3. **Consistencia de lectura.** Leer tabla por tabla mientras alguien edita produciría una
+   foto imposible: un docente con la disponibilidad de antes y la autorización de después.
+   Una sola lectura coherente lo evita — y es también el motivo de la conexión directa a
+   Postgres que se discute en [P56](#p56-si-el-motor-lee-sin-pasar-por-rls-no-se-rompe-el-modelo-de-seguridad).
+
+#### P65. ¿Qué hace `ExpansorSesiones` y por qué los identificadores son deterministas?
+
+**Qué.** Traduce lo académico a lo colocable. «Programación I, cohorte 1A, 3 sesiones
+semanales de 2 slots» entra como **un** `RequisitoCursoMotor` y sale como **tres**
+`SesionRequeridaMotor`, cada una con identidad propia. Esa sesión es la unidad de trabajo del
+motor: todo lo demás gira alrededor de colocarla.
+
+**Cómo.** Agrupa los requisitos por una clave: si el curso pertenece a una agrupación de área
+común, la clave es `area:{agrupacionId}`; si no, `curso:{cursoId}:cohorte:{cohorteId}`. De
+ahí salen tres comportamientos que conviene saber explicar:
+
+- **Las áreas comunes se funden en una sola sesión** con varias cohortes, porque se dictan a
+  la vez; el docente tendrá que estar autorizado en **todos** los cursos equivalentes.
+- **Exige coherencia**: si dos cursos de la misma agrupación declaran distinta cantidad o
+  duración de sesiones, lanza excepción en vez de inventar un criterio.
+- **Suma alumnos sin contar doble**: `GroupBy(CohorteId).Sum(x => x.Max(...))` toma el máximo
+  por cohorte y después suma cohortes, así que una cohorte que aparece en dos cursos
+  equivalentes se cuenta una vez. Ese total es el que después le exige capacidad al aula.
+
+El identificador sale de `IdentificadorDeterminista.Crear($"plan:{planId:N}:{clave}:{numero}")`:
+SHA-256 del texto, primeros 16 bytes, con los bits de versión y variante ajustados para que
+sea un UUID válido.
+
+**Por qué determinista y no `Guid.NewGuid()`.** Porque `horarios.sesiones` tiene una llave
+primaria global, no una por horario. Con identificadores derivados:
+
+- **Regenerar un plan reescribe sus propias filas** en lugar de duplicarlas.
+- **Dos planes del mismo período no chocan**, porque el `planId` entra en el texto — hay una
+  prueba dedicada a eso (`Dos_planes_del_mismo_periodo_no_comparten_identificadores`).
+- **Dos versiones se comparan casilla por casilla**, porque la misma sesión conserva su
+  identidad entre corridas.
+
+Un detalle de precisión, por si alguien del jurado sabe de UUID: el resultado se marca como
+**versión 5**, pero se deriva de SHA-256 y la versión 5 del estándar usa SHA-1. Lo formalmente
+correcto hoy sería la **versión 8** de la RFC 9562, pensada justo para identificadores
+derivados a medida. En la práctica no cambia nada —Postgres lo acepta como `uuid` y la
+propiedad que importa, que el mismo texto dé siempre el mismo id, se cumple—, pero es
+preferible decirlo antes de que lo pregunten.
+
+#### P66. ¿Cómo decide `MotorHorario` dónde va una sesión?
+
+**Qué.** Fase 1, construcción voraz. Recorre las sesiones ordenadas de la más restringida a
+la menos ([P67](#p67-qué-significa-más-restringido-primero-y-por-qué-se-eligió)) y a cada una le da **la primera combinación legal** que encuentra.
+
+**Cómo.** Tres bucles anidados, en este orden exacto:
+
+```text
+para cada bloque (día y hora, en orden cronológico)
+    ¿están libres todas las cohortes de la sesión?      → si no, siguiente bloque
+    para cada docente (prioridad más alta primero)
+        ¿es el docente que ya dicta este curso?          → continuidad obligatoria
+        ¿le queda cupo de cursos?                        → tope de carga
+        ¿declaró disponibilidad en todos los slots?
+        ¿está libre en todos los slots?
+        para cada aula (la más chica que sirva primero)
+            ¿está libre en todos los slots?              → si sí, se toma y se corta
+```
+
+Cuando encuentra la terna, marca ocupados todos los slots del docente, del aula y de cada
+cohorte (`ocupacion.Ocupar`) y anota dos cosas en diccionarios: qué docente quedó a cargo de
+ese curso (`docentePorCurso`) y qué cursos acumula ese docente (`cursosPorDocente`). Esos dos
+diccionarios son los que hacen cumplir la continuidad y el tope de carga en las sesiones
+siguientes.
+
+**Por qué ese orden y no otro.** Cada nivel codifica una política:
+
+- **Bloques en orden cronológico** → los horarios tienden a empezar temprano y a compactarse
+  solos, antes incluso de que la fase de mejora toque nada.
+- **Docentes por prioridad descendente** → quien tiene mayor `NivelPrioridad` recibe carga
+  primero.
+- **Aulas por capacidad ascendente** → se usa la más chica que sirva, y las grandes quedan
+  disponibles para las cohortes que de verdad las necesitan. Es una decisión de política
+  metida en un `OrderBy`, y conviene señalarla porque no es obvia leyendo el bucle.
+
+**Por qué la primera que pasa y no la mejor.** Porque en esta fase la pregunta no es «cuál es
+la mejor ubicación» sino «existe alguna». Evaluar todas las ternas de cada sesión para elegir
+la óptima multiplicaría el trabajo sin garantizar nada mejor: la calidad se arregla después,
+en la fase de mejora, que ya trabaja sobre un horario completo y sabe cuánto cuesta cada
+movimiento.
+
+#### P67. ¿Qué significa «más restringido primero» y por qué se eligió?
+
+**Qué.** Antes de colocar nada, cada sesión sabe cuántas ubicaciones posibles tiene:
+`Combinaciones = docentes × aulas × bloques`. Se colocan primero las de menor número.
+
+**Cómo.** Un ejemplo con dos sesiones reales del sistema:
+
+```text
+Química Orgánica (laboratorio, 1 docente autorizado)   1 × 1 × 4  =   4 combinaciones
+Introducción a la Filosofía (teórica, cualquier aula)  4 × 5 × 20 = 400 combinaciones
+```
+
+La de 4 va primero. Los empates se resuelven, en orden, por más cohortes involucradas, más
+recursos requeridos, más alumnos y finalmente por identificador —ese último criterio no
+aporta calidad, aporta **orden total**: sin él, dos sesiones iguales podrían quedar en
+cualquier orden y la corrida dejaría de ser reproducible.
+
+**Por qué.** Es el **principio de fallo temprano** (*fail-first*) de Haralick y Elliott
+(*Increasing Tree Search Efficiency for Constraint Satisfaction Problems*, Artificial
+Intelligence, 1980): conviene decidir primero la variable con menos valores posibles, porque
+si va a haber un conflicto es mejor encontrarlo antes de haber construido medio horario
+encima. En coloreo de grafos la misma idea es DSATUR (Brélaz, CACM 1979). Dicho sin jerga: si
+la clase que solo puede ir en un laboratorio con un solo profesor se deja para el final, es
+seguro que alguna clase flexible ya le ocupó su única casilla.
+
+**El límite honesto.** El número de combinaciones se calcula **una sola vez, antes de
+empezar**, y no se recalcula a medida que el horario se llena. Un MRV dinámico —recontar tras
+cada colocación— tomaría mejores decisiones, porque una sesión hoy flexible puede quedar
+acorralada después. Se prefirió el cálculo estático porque es más barato y porque hace el
+orden totalmente predecible. Es una mejora identificada, no un descuido.
+
+#### P68. ¿Qué hace la fase de mejora y por qué no cambia de docente?
+
+**Qué.** Toma el horario ya completo y busca movimientos que bajen el puntaje blando sin
+romper ninguna regla dura. Solo arranca si la construcción **no dejó ninguna sesión
+pendiente**: no tiene sentido pulir un horario que no se puede publicar.
+
+**Cómo.** Por cada pasada, recorre todas las sesiones y para cada una:
+
+1. **La retira** del tablero de ocupación (`ocupacion.Liberar`). Este paso no es cosmético:
+   si no se retirara, su propia ocupación bloquearía sus mejores candidatos y la sesión
+   nunca podría moverse a un lugar solapado con donde ya está.
+2. Prueba otros pares (bloque, aula) **conservando el docente**, descartando todo lo que
+   rompa una regla dura.
+3. Acepta **la primera** opción que baje estrictamente el costo (`costo.Total < mejorCosto`)
+   y la ocupa; si ninguna sirve, vuelve a poner la sesión donde estaba.
+
+Se detiene cuando una pasada completa no encuentra ninguna mejora, cuando llega a 100 pasadas
+o cuando se agotan los 15 segundos de presupuesto — lo que ocurra primero. El diagnóstico
+`MEJORA_RESTRICCIONES_BLANDAS` deja escrito el puntaje inicial, el final, cuántos movimientos
+hubo y si el tiempo se agotó.
+
+**Por qué conserva el docente.** Porque la continuidad —todas las sesiones de un curso y sus
+cohortes con el mismo docente— es una regla **dura**, y la mejora mueve una sesión a la vez.
+Cambiar el docente de una sesión suelta rompería el curso entero; hacerlo bien exigiría mover
+todas sus sesiones a la vez, que es un movimiento compuesto que esta búsqueda no implementa.
+El código lo dice en el comentario del método.
+
+**Por qué primera mejora y no la mejor.** Con presupuesto fijo, aceptar en cuanto se encuentra
+algo mejor produce muchos más movimientos que evaluar todos los candidatos para elegir el
+mejor de cada ronda. Es la estrategia *first improvement* clásica de búsqueda local (Hoos y
+Stützle, *Stochastic Local Search*, 2004). El costo de la elección es conocido: se llega a un
+mínimo local, no al óptimo.
+
+**Lo que esta fase no puede arreglar.** Como el docente queda fijo, el desbalance de carga
+—una de las cinco penalizaciones— casi no se puede corregir después de la construcción: se
+mide, pero apenas se mejora. Es la limitación más concreta de la fase 2.
+
+#### P69. Si el verificador usa las mismas `ReglasDuras` que el motor, ¿de verdad es independiente?
+
+**Qué.** Es independiente en parte, y hay que ser preciso en cuál.
+
+**Cómo.** Lo que comparte con el motor es exactamente una cosa: `ReglasDuras`, es decir las
+reglas que dependen de una sesión y un recurso (docente autorizado, capacidad, recursos, tipo
+de aula, tipo de laboratorio y la definición de `ClaveCurso`). Todo lo demás lo hace por su
+cuenta: no usa `OcupacionHorario` ni `CatalogoCandidatos`, construye sus propios índices
+`(entidad, día, slot)` y recorre las asignaciones desde cero para detectar colisiones,
+continuidad rota, carga excedida, sesiones duplicadas, sesiones desconocidas y sesiones que
+no aparecen ni asignadas ni pendientes. Emite 20 códigos de violación distintos y **no se
+detiene en el primero**: informa todo lo que encuentra.
+
+**Por qué así.** Compartir `ReglasDuras` fue una decisión con una causa documentada: cuando
+cada componente llevaba su propia copia, se desincronizaron. El comentario del archivo lo
+cuenta sin adornos: *"el reparador exigía un bloque tan largo como la sesión y el verificador
+solo miraba el bloque de inicio"*. El resultado era peor que un punto ciego: el verificador
+rechazaba horarios que el motor consideraba correctos, y nadie sabía cuál de los dos tenía
+razón.
+
+La elección, entonces, fue entre dos riesgos:
+
+- **Copias separadas:** detecta errores de definición, pero produce desacuerdos constantes
+  entre componentes que deberían coincidir.
+- **Definición única:** un error en la definición de una regla dura pasa desapercibido para
+  ambos, pero todo lo demás —que es donde está la complejidad real— sí se verifica.
+
+Se eligió la segunda, con dos mitigaciones. La primera: el riesgo que importa está en la
+maquinaria, no en la definición. `ReglasDuras` son 63 líneas de comparaciones directas que se
+leen enteras en dos minutos; `OcupacionHorario` y la fase de mejora son índices y estado
+mutable, y ahí sí es plausible un error —un bitset mal desplazado, un `Liberar` sin su
+`Ocupar`—, que el verificador **sí** detecta porque no comparte ese código. La segunda: hay
+una tercera barrera que no comparte código con ninguna de las dos, las restricciones
+`EXCLUDE` de PostgreSQL ([P13](#p13-qué-es-una-restricción-exclude-y-por-qué-se-usa-acá)), que rechazarían un solape aunque motor y verificador
+fallaran juntos. Ver también [P60](#p60-cómo-sé-que-el-horario-generado-está-bien).
+
+### 6.3 Las reglas: duras, blandas y sus pesos
+
+#### P70. ¿Qué diferencia hay entre una restricción dura y una blanda?
+
+**Qué.** Una dura decide si el horario **existe**; una blanda decide si el horario **gusta**.
+
+| | Dura | Blanda |
+|---|---|---|
+| Qué hace en la construcción | Descarta el candidato: no se puede elegir | No interviene: no filtra nada |
+| Qué hace si se incumple | El verificador emite una `ViolacionDura` y el plan queda `Inviable` | Suma puntos al costo; el horario sigue siendo válido |
+| Quién la define | `ReglasDuras`, `OcupacionHorario` y `MotorHorario` | `EvaluadorRestriccionesBlandas` con los pesos de la instantánea |
+| Se puede negociar | No | Sí: cambiando los pesos, sin tocar el motor |
+
+**Cómo.** Las doce reglas duras del sistema, con dónde vive cada una:
+
+- **Autorización del docente** para todos los cursos de la sesión — `ReglasDuras`.
+- **Capacidad del aula** suficiente para el total de alumnos — `ReglasDuras`.
+- **Recursos** requeridos presentes en el aula — `ReglasDuras`.
+- **Tipo de aula** compatible cuando la sesión exige laboratorio — `ReglasDuras`.
+- **Tipo de laboratorio** compatible — `ReglasDuras`.
+- **Disponibilidad declarada** del docente en todos los slots — `OcupacionHorario`.
+- **Docente libre** en todos los slots — `OcupacionHorario`.
+- **Aula libre** en todos los slots — `OcupacionHorario`.
+- **Cohortes libres** en todos los slots — `OcupacionHorario`.
+- **Bloque dentro de la jornada** de la sesión, con slots consecutivos y sin cruzar el
+  receso — `OcupacionHorario.CabeEnLaJornada`.
+- **Continuidad del docente** por curso y cohortes — `MotorHorario` (diccionario
+  `docentePorCurso`) y `VerificadorHorario`.
+- **Tope de carga** de cursos distintos por docente — `MotorHorario` y `VerificadorHorario`.
+
+**Por qué el reparto es ese.** Porque cada regla vive donde está la información que necesita:
+las que se responden mirando una sesión y un recurso son funciones puras en `ReglasDuras`;
+las que dependen de lo ya colocado necesitan el tablero, así que viven en `OcupacionHorario`;
+y las dos que dependen del **estado de la construcción** —quién quedó a cargo de qué— viven
+en el bucle del motor. No es una división estética: es lo que permite que `ReglasDuras` sea
+compartible por tres consumidores sin arrastrar estado.
+
+**Por qué separar duras de blandas.** Si todo fuera duro, cualquier preferencia incumplida
+volvería inviable el plan y el sistema no entregaría nada; si todo fuera blando, entregaría
+horarios imposibles con un puntaje malo. La separación es la que permite el esquema de dos
+fases: primero factibilidad, después comodidad.
+
+#### P71. ¿Por qué las reglas duras están en una sola clase?
+
+**Qué.** `ReglasDuras` es la única definición, y la usan tres consumidores: el motor para
+generar candidatos, el reparador local para proponer movimientos y el verificador para
+aceptar o rechazar.
+
+**Cómo.** Son métodos estáticos de una línea, sin estado: reciben un docente o un aula más la
+sesión y devuelven `bool`. Por eso pueden compartirse sin efectos secundarios.
+
+**Por qué.** La respuesta está escrita en el propio archivo y es una lección aprendida, no una
+teoría: *"Cuando cada uno llevaba su propia copia, las tres se desincronizaron"*. Una regla
+escrita en tres lugares son tres reglas que **empiezan** iguales. El resultado observable de
+esa desincronización era el peor posible: un horario que el motor daba por válido y el
+verificador rechazaba, sin que ninguno estuviera claramente equivocado. Con una definición
+única eso es imposible por construcción. El precio —un punto ciego compartido— se discute en
+[P69](#p69-si-el-verificador-usa-las-mismas-reglasduras-que-el-motor-de-verdad-es-independiente).
+
+#### P72. ¿Cómo se calcula el puntaje blando y de dónde salen los pesos?
+
+**Qué.** Un solo número, que se minimiza. Menos es mejor; cero sería el horario perfecto.
+
+```text
+Costo = faltas de consecutividad × 10
+      + ventanas de cohorte      ×  8
+      + ventanas al final        ×  3
+      + desplazamiento docente   ×  2
+      + desbalance de carga      ×  5
+```
+
+**Cómo.** Cada término se cuenta de una forma concreta, y conviene saberla porque las
+preguntas afiladas van justo ahí:
+
+| Penalización | Cómo se cuenta exactamente |
+|---|---|
+| Consecutividad | Por curso+cohortes, solo entre sesiones marcadas `PreferirConsecutividad`, ordenadas por día y slot: cuenta cada par que no queda pegado al anterior |
+| Ventanas | Por (cohorte, día), sobre los slots de inicio distintos: `último − primero + 1 − cantidad` |
+| Ventanas al final | Por (cohorte, día): `último − cantidad`; castiga terminar tarde con pocas clases |
+| Desplazamiento | Por (docente, día), solo entre clases pegadas: distancia entre las dos aulas, contando el cambio de piso el doble que un paso horizontal |
+| Desbalance | `máximo − mínimo` de `cursos ÷ carga máxima − prioridad × 0,01` entre todos los docentes |
+
+**Por qué esos pesos.** Son los valores por omisión de `PonderacionesRestriccionesBlandas`, y
+el propio contrato es explícito sobre su estatus: *"Los valores por omisión son un punto de
+partida razonable, no una verdad"*. Se eligieron por criterio del equipo para reflejar un
+orden de importancia —una clase partida molesta más que caminar un piso—, no midiendo nada.
+Lo que importa es la **relación**: consecutividad pesa cinco veces lo que el desplazamiento.
+Y son parte de la instantánea, así que se pueden cambiar por corrida, sin recompilar y
+quedando registrados junto al resultado.
+
+Si alguien pregunta «¿por qué 8 y no 6?», la respuesta correcta no es inventar una
+justificación: es que es un parámetro configurable, que lo que se defiende es el mecanismo, y
+que ajustarlo con horarios reales es trabajo pendiente.
+
+**Un detalle de escala que conviene conocer.** Las cuatro primeras penalizaciones crecen con
+el tamaño del horario —más sesiones, más ventanas posibles—, mientras que el desbalance es
+una diferencia de proporciones acotada entre 0 y 1. En un período grande, el término de
+balance pesa cada vez menos frente a los demás. No está mal calculado; está sin normalizar, y
+es otra mejora identificada.
+
+### 6.4 La maquinaria de optimización
+
+> Estas tres piezas no toman ni una decisión sobre el horario. Responden más rápido las
+> mismas preguntas que ya estaban definidas en otra parte. Se explican al final a propósito:
+> son la mitad del código del motor y ninguna de ellas cambia el resultado.
+
+#### P73. ¿Qué es `OcupacionHorario` y por qué un arreglo plano de `bool`?
+
+**Qué.** El tablero. Cuatro mapas: docente ocupado, aula ocupada, cohorte ocupada y docente
+disponible. Responde «¿está libre?» y «¿está disponible?», y marca o borra con `Ocupar` y
+`Liberar`.
+
+**Cómo.** Cada par (día, slot) se traduce a una posición fija:
+
+```csharp
+public int Posicion(BloqueMotor bloque)
+    => ((int)bloque.Dia - 1) * _slotsPorDia + bloque.IndiceSlotInicio - _slotMinimo;
+```
+
+y cada entidad tiene una fila; el acceso final es `mapa[fila * TotalPosiciones + posicion]`.
+Una sesión de dos slots exige las dos casillas, no solo la de inicio: `Todos(...)` recorre
+`duracionSlots` posiciones y corta al primer desacuerdo.
+
+**Por qué.** Sin este índice, cada pregunta «¿está libre?» habría que responderla recorriendo
+todas las asignaciones ya hechas, y como esa pregunta se hace dentro del bucle de candidatos,
+la construcción se volvería cuadrática respecto al tamaño del horario. Con el índice, la
+respuesta cuesta lo mismo con 4 sesiones que con 4 000.
+
+Cuatro detalles que muestran que la estructura está pensada, y que valen para responder
+repreguntas:
+
+- **Es `bool[]`, no un mapa de bits de verdad.** El comentario habla de «mapa de bits», pero
+  no hay empaquetado: cada casilla ocupa un byte. Se gana indexar sin máscaras ni
+  desplazamientos, y se pierde memoria que acá no importa —siete días por una docena de
+  slots por unos cientos de entidades son decenas de kilobytes—.
+- **Arreglo plano en vez de `bool[][]`.** Una sola reserva de memoria contigua en lugar de
+  una por entidad.
+- **Un solo bucle responde dos preguntas opuestas.** `Todos(..., esperado)` sirve para
+  «libre» (esperado `false` sobre la ocupación) y para «disponible» (esperado `true` sobre la
+  disponibilidad). Menos código, y por lo tanto menos lugares donde equivocarse.
+- **Una entidad desconocida falla del lado seguro.** Si el identificador no está en el
+  índice, devuelve `!esperado`: un docente que no está en la instantánea nunca está
+  disponible, así que nunca se le asigna nada. Es el criterio de *fail-safe default* de
+  Saltzer y Schroeder aplicado a una estructura de datos.
+
+Y una regla que vive acá y suele sorprender: `CabeEnLaJornada` exige que **cada** slot
+consecutivo de la sesión exista en la jornada. Como los descansos no llegan a la instantánea,
+una sesión que los cruzara no encuentra dónde caber: el receso se respeta sin necesidad de
+una regla que lo nombre.
+
+#### P74. ¿Qué es `CatalogoCandidatos` y por qué se precalcula?
+
+**Qué.** Antes de colocar nada, cada sesión ya sabe qué docentes, qué aulas y qué bloques
+podría usar. Es una clase privada dentro de `MotorHorario`, porque no existe para nadie más.
+
+**Cómo.** No calcula una lista por sesión, sino **por perfil**, y las sesiones que comparten
+perfil comparten la lista:
+
+- docentes, por el conjunto de cursos de la sesión;
+- aulas, por la combinación alumnos + laboratorio + tipo de laboratorio + recursos;
+- bloques, por jornada + duración.
+
+Las tres sesiones semanales de un mismo curso tienen idéntico perfil, así que el filtrado se
+hace una vez y no tres. El catálogo fija además el **orden** de los candidatos: docentes por
+prioridad descendente, aulas por capacidad ascendente, bloques por día y hora.
+
+**Por qué.** Porque la fase de mejora pide los candidatos de cada sesión **en cada pasada**;
+filtrar todas las aulas y todos los docentes cada vez era el costo dominante. El comentario
+del código añade una precisión que vale la pena repetir, porque es contraintuitiva: armar la
+clave del perfil dentro de la mejora costaba más que el filtro que la clave evitaba. Por eso
+el catálogo se resuelve al construir y durante la búsqueda solo queda una consulta por
+identificador de sesión.
+
+Segundo motivo, menos visible pero igual de importante: el orden de los candidatos es parte
+del determinismo del motor y de su política. La regla «el aula más chica que sirva» no está
+escrita en ningún `if`: está en el `OrderBy(x => x.Capacidad)` de esta clase.
+
+#### P75. ¿Por qué existe `CostoBlandoIncremental` si ya está el evaluador?
+
+**Qué.** Da exactamente el mismo total que `EvaluadorRestriccionesBlandas`, pero recalculando
+solo lo que el movimiento tocó. Es la clase más larga del motor —383 líneas— y no cambia ni
+un horario.
+
+**Cómo.** La cuenta que la justifica: la fase de mejora prueba, por cada sesión y por cada
+pasada, todos los pares (bloque, aula) compatibles, y cada candidato son **dos** llamadas a
+`Mover` —una para probar y otra para deshacer—. En un período mediano eso son cientos de
+miles de llamadas. Volver a puntuar el horario completo en cada una, con `GroupBy` y
+`OrderBy` de LINQ, no es lento: es inviable.
+
+Lo que hace para lograrlo:
+
+- **Índices densos.** Cada sesión, bloque, aula, docente, cohorte y clave de curso recibe un
+  entero al construir. A partir de ahí todo es aritmética sobre arreglos; no se arma ni una
+  cadena de texto durante la búsqueda.
+- **Aporte por grupo.** Guarda cuánto penaliza cada curso, cada (cohorte, día) y cada
+  (docente, día) por separado, así que el total se ajusta sumando la diferencia en vez de
+  rehacerse.
+- **Buffers reutilizados y ordenación por inserción.** Los grupos son de pocas sesiones, así
+  que ordenar a mano evita el arreglo intermedio y el comparador que exigiría `OrderBy`. La
+  inserción es estable, igual que `OrderBy`, y eso es necesario para que los empates queden
+  como en el evaluador.
+- **Estructuras chicas a propósito.** `List.Contains` en lugar de un `HashSet` para marcar
+  grupos tocados: sobre listas de dos o tres elementos, buscar linealmente es más rápido que
+  reservar memoria.
+- **El único recálculo global está acotado.** El desbalance de carga recorre todos los
+  docentes, pero solo se recalcula si la sesión estrena docente (`cambiaCargaDocente`) — y en
+  la fase de mejora el docente se conserva siempre, así que en la práctica no ocurre.
+
+**Por qué está bien que exista, y por qué está bien que sea fea.** Es el único lugar del motor
+donde se paga complejidad por velocidad, está aislado en una clase con una superficie mínima
+—`Mover` y `Total`— y su contrato cabe en una línea: dar el mismo número que el evaluador. Esa
+es la forma correcta de meter una optimización agresiva en un sistema que se quiere poder
+leer: concentrada, con un equivalente simple al lado que sirve de definición, y sin contagiar
+al resto del código.
+
+#### P76. ¿Cómo se sabe que el incremental da el mismo número que el evaluador?
+
+**Qué.** Por construcción, y —hay que decirlo— hoy sin una prueba automática que lo compruebe.
+
+**Cómo coinciden.** Tres decisiones deliberadas los mantienen alineados:
+
+1. **El mismo filtro de entrada.** Ambos descartan las asignaciones cuyos cuatro
+   identificadores no estén todos en la instantánea. Está comentado en los dos archivos,
+   señalando explícitamente que es la condición que hace que los totales coincidan.
+2. **Los mismos tres agrupamientos:** por curso+cohortes, por (cohorte, día) y por
+   (docente, día).
+3. **Las mismas fórmulas**, incluida la ordenación estable dentro de cada grupo.
+
+**El agujero, dicho antes de que lo encuentren.** El comentario de `CostoBlandoIncremental`
+afirma que *"la prueba `CostoBlandoIncrementalTests` lo comprueba"*, y **esa prueba no existe
+en el repositorio**: `Horarios.Scheduler.Tests` tiene 13 pruebas en tres archivos
+—`MotorHorarioTests`, `ExpansorSesionesTests` y `SchedulerSmokeTests`— y ninguna compara los
+dos costos. Es la afirmación más débil del motor.
+
+**Qué pasaría si divergieran.** Conviene tener clara la magnitud del riesgo: el costo blando
+**no participa de ninguna regla dura**. Si el incremental se equivocara, el motor optimizaría
+un número distinto del que se guarda y se muestra, y el horario saldría peor de lo que dice
+su registro — pero seguiría siendo válido, y el verificador y las restricciones `EXCLUDE` de
+la base de datos seguirían siendo la garantía de corrección. Es un fallo de calidad, no de
+corrección.
+
+**Cómo se cierra.** Con una prueba basada en propiedades, que además es barata porque el
+scheduler no necesita base de datos: armar un escenario, aplicar movimientos, y tras cada uno
+comprobar que `CostoBlandoIncremental.Total` es igual a
+`EvaluadorRestriccionesBlandas.Evaluar(...).Penalizaciones.Total`. Es trabajo pendiente
+identificado, y decirlo así vale más que dejar que lo descubra el jurado.
+
+### 6.5 Garantías, fallos y límites
+
+#### P77. ¿Qué hace que una corrida sea reproducible?
+
+**Qué.** La misma instantánea produce el mismo horario, y la instantánea de cada corrida
+queda guardada.
+
+**Cómo.** Cinco cosas, todas comprobables:
+
+- **No hay azar.** No existe ni un `Random` en `Horarios.Scheduler`. El único
+  `Guid.NewGuid()` está en la cola de trabajos, que no participa del algoritmo.
+- **Los identificadores se derivan por hash**, no se sortean ([P65](#p65-qué-hace-expansorsesiones-y-por-qué-los-identificadores-son-deterministas)).
+- **Los órdenes son totales.** El orden de colocación termina desempatando por identificador
+  de sesión, y las listas de candidatos se ordenan por criterios con desempate final por
+  `Id`. `OrderBy` de LINQ es estable, así que no reordena empates.
+- **La entrada es inmutable**, así que un cambio en la base a mitad de la generación no la
+  afecta ([P64](#p64-qué-es-la-instantánea-y-por-qué-el-motor-no-consulta-la-base-de-datos)).
+- **La configuración viaja con la entrada**: pesos, tope de pasadas y presupuesto son campos
+  de la instantánea y quedan registrados junto al resultado, igual que `VersionMotor`, que es
+  lo que permite comparar dos corridas.
+
+**Por qué no es reproducibilidad absoluta.** Porque el presupuesto de 15 segundos corta donde
+llegue: en una máquina más lenta la mejora alcanza a hacer menos movimientos, y el horario
+final puede ser distinto —siempre válido, quizá menos cómodo—. Dicho con precisión: **si el
+presupuesto de tiempo no se agota, la corrida es determinista**; si se agota, lo determinista
+es la construcción y el resultado depende de cuánto alcanzó a mejorar. Subir el presupuesto o
+bajar el tope de pasadas vuelve la corrida completamente repetible.
+
+#### P78. ¿Por qué una sesión queda sin asignar y cómo se explica la causa?
+
+**Qué.** Cuando el bucle de búsqueda no encuentra ninguna terna legal, la sesión sale como
+`SesionPendienteMotor` con un motivo en español, y además se emite un diagnóstico
+`SESION_SIN_CANDIDATO`. Ambos se guardan con la generación.
+
+**Cómo.** El método `Diagnosticar` prueba las causas en orden, de la más estructural a la más
+circunstancial, y devuelve la primera que aplica:
+
+1. No existe un docente autorizado para todos los cursos de la sesión.
+2. No existe un aula con capacidad y recursos suficientes.
+3. No existe un bloque válido dentro de la jornada de la cohorte.
+4. Ningún docente autorizado tiene disponibilidad confirmada en esa jornada.
+5. El docente que debe conservar la continuidad del curso no tiene un bloque libre.
+6. Todos los docentes autorizados alcanzaron su carga máxima.
+7. Las combinaciones compatibles colisionan con docente, aula o cohorte ya ocupados.
+
+**Por qué importa el orden.** Porque las tres primeras son **datos que faltan** —alguien tiene
+que autorizar un docente, registrar un aula o activar una jornada— y las tres últimas son
+**conflictos de agenda**, que se resuelven de otra forma. Un motor que solo dijera «no pude»
+obligaría a adivinar cuál de las siete es.
+
+Consecuencias: con una sola sesión pendiente **no se ejecuta la fase de mejora** y el plan
+queda `Inviable`, porque el verificador convierte cada pendiente en una violación
+`SESION_PENDIENTE`. Es deliberado: no se guarda como bueno un horario incompleto.
+
+**El límite honesto.** El diagnóstico es estático: mira el catálogo y el estado final, no
+reconstruye la secuencia de decisiones. Por eso el séptimo motivo dice «colisionan con
+docente, aula o cohorte ya ocupados» y no «colisionó con la sesión X, que se colocó tres
+pasos antes». Explicar la causa raíz de un conflicto exigiría registrar la traza de
+decisiones, que hoy no se guarda.
+
+#### P79. ¿Qué es lo que el motor NO garantiza?
+
+Esta es la pregunta que conviene contestar antes de que la hagan. La lista completa:
+
+- **No da el óptimo.** Da un horario válido y razonablemente cómodo. La búsqueda local se
+  detiene en un mínimo local.
+- **`Inviable` no significa imposible.** Significa que esta heurística no pudo completarlo.
+  No hay demostración de que no exista solución.
+- **No hay vuelta atrás.** Sin *backtracking*: una colocación de la fase 1 no se deshace,
+  aunque sea la que después bloquea a otra sesión.
+- **No hay intercambios.** La mejora mueve una sesión a la vez; no intercambia dos sesiones
+  entre sí ni mueve un curso completo, que son justo los movimientos que sacarían al horario
+  de un mínimo local.
+- **El balance de carga apenas se corrige**, porque la mejora conserva el docente
+  ([P68](#p68-qué-hace-la-fase-de-mejora-y-por-qué-no-cambia-de-docente)).
+- **Clases y exámenes usan la misma lógica.** `TipoPlan` viaja en la instantánea pero el
+  algoritmo no lo distingue todavía.
+- **La cola vive en memoria** ([P80](#p80-qué-pasa-si-la-generación-tarda-demasiado-o-si-el-servidor-se-reinicia)).
+
+Y dos imprecisiones conocidas en las **métricas blandas**, que conviene poder nombrar con
+exactitud porque afectan a la calidad, nunca a la validez:
+
+1. **Las ventanas se miden sobre slots de inicio, sin mirar la duración.** Dos sesiones de dos
+   slots seguidas —una empieza en el slot 1, la otra en el 3— cuentan como una ventana que en
+   realidad no existe. El evaluador y el cálculo incremental cometen exactamente el mismo
+   error, así que sus totales siguen coincidiendo: lo que está mal es la definición de la
+   métrica, no la optimización.
+2. **«Carga» significa dos cosas distintas.** El tope por docente cuenta pares
+   curso+cohortes (`ClaveCurso`) y la penalización de balance cuenta cursos distintos
+   (`CursoId`). El que se hace cumplir es el tope, y el motor y el verificador lo miden
+   igual; la que usa la unidad más gruesa es la penalización blanda.
+
+Decir todo esto en la exposición no es una debilidad: es la prueba de que el equipo leyó su
+propio motor. Lo que sí sería una debilidad es afirmar que el resultado es óptimo.
+
+#### P80. ¿Qué pasa si la generación tarda demasiado, o si el servidor se reinicia?
+
+**Qué.** Hay dos topes de tiempo anidados y una cola de un solo consumidor.
+
+**Cómo.**
+
+- **15 segundos** de presupuesto para la fase de mejora, dentro de la instantánea. Al
+  agotarse devuelve el mejor horario encontrado, que siempre es válido.
+- **300 segundos** para la generación completa (`Motor:TiempoMaximoSegundos`), impuestos con
+  un `CancellationTokenSource` enlazado que se cancela solo: `CancelAfter(...)` en
+  `ColaGeneracionesEnMemoria`.
+- **Cola acotada a 100 trabajos** y **un solo consumidor**, porque el trabajo es intensivo en
+  CPU y correr varios en paralelo solo se quitarían tiempo entre ellos. Se conservan los 200
+  perfiles de ejecución más recientes: es un proceso de larga vida y no pueden acumularse sin
+  límite.
+- **Si se cancela o falla**, `EjecutarGeneracionPlan` cierra la generación como `Cancelada` o
+  `Fallida` y deja el plan en `Fallido` — usando `CancellationToken.None` para ese cierre,
+  porque el registro de que algo terminó no se puede cancelar también.
+
+**Por qué el plan nunca debería quedar colgado.** Porque el bloque de captura cubre las dos
+salidas anormales. La excepción es el reinicio del servidor: la cola es **en memoria**, así
+que un trabajo encolado se pierde y su plan queda en `Generando`. No queda atrapado para
+siempre —la máquina de estados permite `Generando → Fallido → Borrador`—, pero hoy hay que
+hacer ese rescate a mano. Una cola persistente lo resolvería y es trabajo pendiente conocido.
+
+### 6.6 Cómo leer el C# del motor
+
+> Esta subsección es para quien va a abrir el código en la exposición. No explica C# desde
+> cero: explica los símbolos y las decisiones que aparecen en el motor y que no son obvios
+> para quien aprendió programando en otro lenguaje.
+
+#### P81. ¿Qué significa `=>` en medio de un método?
+
+**Qué.** Un **miembro con cuerpo de expresión**. Cuando un método o una propiedad se resuelve
+en una sola expresión, se puede escribir con `=>` en lugar de llaves y `return`. Es
+exactamente el mismo código compilado.
+
+**Cómo.** Estas dos versiones de `ReglasDuras.DocenteAutorizado` son idénticas:
+
+```csharp
+public static bool DocenteAutorizado(DocenteMotor docente, SesionRequeridaMotor sesion)
+    => CursosDeLaSesion(sesion).All(docente.CursosAutorizados.Contains);
+
+public static bool DocenteAutorizado(DocenteMotor docente, SesionRequeridaMotor sesion)
+{
+    return CursosDeLaSesion(sesion).All(docente.CursosAutorizados.Contains);
+}
+```
+
+**El mismo símbolo, dos cosas distintas.** La regla para distinguirlas es mirar qué hay a la
+izquierda:
+
+- Si a la izquierda hay una **firma** (nombre, paréntesis, tipo de retorno), es un miembro con
+  cuerpo de expresión: `public int Posicion(BloqueMotor bloque) => ...`.
+- Si a la izquierda hay **parámetros sueltos**, es una **lambda**: una función anónima que se
+  pasa como argumento. `x => x.Combinaciones` dentro de `OrderBy` es eso.
+
+**Un caso que hay que saber leer.** Cuando el `=>` está en una **propiedad**, el valor se
+calcula **cada vez que se lee**, no se guarda:
+
+```csharp
+public decimal Total
+    => _totalFaltas * _pesos.Consecutividad
+       + _totalVentanas * _pesos.Ventanas
+       + ...;
+```
+
+`Total` no es un campo: son cinco multiplicaciones y cuatro sumas cada vez que alguien la
+consulta. Es barato porque los contadores ya están sumados; si en su lugar recorriera el
+horario, el `=>` estaría escondiendo un costo grande detrás de algo que parece un dato.
+
+**Por qué se usa tanto acá.** Porque buena parte del motor son funciones de una línea
+—`ReglasDuras` entera, los accesos de `OcupacionHorario`, `Dia` y `Slot` en el incremental—.
+Con llaves y `return`, esas 63 líneas de reglas serían más de 120 y se leerían peor.
+
+#### P82. ¿Qué es el operador ternario y qué significan los demás signos de interrogación?
+
+**Qué.** `condición ? valorSiSí : valorSiNo` es un `if` que **devuelve un valor**, así que se
+puede usar donde una sentencia no cabe: dentro de un `=>`, como argumento, en un
+inicializador.
+
+**Cómo.** Ejemplos textuales del motor:
+
+```csharp
+// ReglasDuras: si no hay cursos equivalentes, la lista es el curso solo.
+public static ImmutableArray<Guid> CursosDeLaSesion(SesionRequeridaMotor sesion)
+    => sesion.CursosEquivalentesIds.IsDefaultOrEmpty
+        ? [sesion.CursoId]
+        : sesion.CursosEquivalentesIds;
+
+// EjecutarGeneracionPlan: el estado final depende de la verificación.
+var estadoGeneracion = verificacion.EsValido
+    ? EstadoGeneracionDto.Completada
+    : EstadoGeneracionDto.Inviable;
+
+// ColaTrabajosPesados: devolver el perfil o null, en una línea.
+public PerfilTrabajoPesadoDto? Consultar(Guid id) =>
+    _resultados.TryGetValue(id, out var resultado) ? resultado : null;
+```
+
+**Los otros signos de interrogación**, que no son lo mismo:
+
+| Símbolo | Nombre | Qué hace | Dónde aparece |
+|---|---|---|---|
+| `a ? b : c` | Ternario | Elige entre dos valores | `ReglasDuras.CursosDeLaSesion` |
+| `??` | Fusión de nulos | Usa el de la izquierda salvo que sea nulo | `ponderaciones ?? Predeterminadas` |
+| `?? throw` | Fusión con lanzamiento | Si es nulo, lanza en vez de seguir | `?? throw new KeyNotFoundException(...)` |
+| `?.` | Acceso condicional | Si el objeto es nulo, no llama y da nulo | `contexto?.UsuarioId` en `CambiarEstadoPlan` |
+| `Tipo?` | Anulable | Declara que ese valor puede faltar | `string?`, `Guid?`, `EvaluacionRestriccionesBlandas?` |
+
+**Por qué importa el `Tipo?`.** No es decoración: con los tipos de referencia anulables
+activados, el compilador avisa si se usa sin comprobar algo declarado como posiblemente nulo.
+`PuntajeInicial` y `PuntajeFinal` son anulables justamente porque **no existen** cuando la
+construcción dejó pendientes y la mejora no llegó a correr. El tipo cuenta esa historia.
+
+**Cuándo no usarlo.** El ternario deja de ayudar en cuanto no se lee de un vistazo o se anida.
+En el motor no hay ninguno anidado, y esa es la regla práctica: si necesita paréntesis para
+entenderse, vuelve el `if`.
+
+#### P83. ¿Qué significa `readonly` y por qué casi todo el motor lo lleva?
+
+**Qué.** `readonly` en un campo significa que **solo se puede asignar en la declaración o en
+el constructor**. Después, el compilador rechaza cualquier reasignación.
+
+**Cómo.** Aparece en tres formas distintas:
+
+```csharp
+private readonly bool[] _docenteOcupado;              // campo: la referencia queda fija
+private const int DiasPorSemana = 7;                  // constante en tiempo de compilación
+private readonly record struct DatosBloque(int Dia, int IndiceSlotInicio);  // struct inmutable
+```
+
+**El matiz que hay que tener clarísimo.** `readonly` congela **la referencia**, no el
+contenido. `_docenteOcupado` es `readonly` y sin embargo sus casillas se escriben todo el
+tiempo: lo que no puede cambiar es **cuál** arreglo es. Es exactamente lo que se quiere en
+`CostoBlandoIncremental`, donde más de veinte campos son índices, grupos y buffers: su
+contenido es estado vivo, pero ninguno debe ser reemplazado por otro objeto a mitad de una
+búsqueda.
+
+**Por qué se usa tanto.** Tres beneficios concretos:
+
+1. **Impide una clase entera de errores.** En una clase con veinte estructuras internas,
+   reasignar por accidente un buffer en vez de vaciarlo es un error silencioso; con
+   `readonly` no compila.
+2. **Documenta la intención.** Al leer la lista de campos se sabe de un golpe qué es
+   andamiaje fijo y qué es estado que cambia.
+3. **En `readonly record struct` habilita copias baratas** sin copias defensivas del
+   compilador, que es justo lo que hace falta en `DatosSesion`, `DatosBloque`, `DatosAula` y
+   `Asignacion`: tipos diminutos que se leen millones de veces.
+
+**Cómo se distingue de sus parientes.** `const` es un valor fijado al compilar y sustituido en
+el código (`DiasPorSemana = 7`); `static readonly` es un valor único para toda la aplicación,
+fijado la primera vez (`PonderacionesRestriccionesBlandas.Predeterminadas`); una propiedad
+`{ get; }` es de solo lectura desde fuera y es la forma que usa `InstantaneaMotor` para
+exponer sus arreglos inmutables.
+
+#### P84. ¿Por qué `ReglasDuras` es `internal` y `CatalogoCandidatos` está escondida dentro de `MotorHorario`?
+
+**Qué.** Porque el alcance de un tipo es una decisión de diseño, no un trámite. En
+`Horarios.Scheduler` hay 21 tipos: **9 públicos, 1 `internal` y 11 privados anidados**. Que la
+mayoría no sea pública es intencional.
+
+**Cómo se leen los modificadores:**
+
+| Modificador | Quién lo ve | Ejemplo en el motor |
+|---|---|---|
+| `public` | Cualquier proyecto que referencie el ensamblado | `MotorHorario`, `VerificadorHorario`, `OcupacionHorario` |
+| `internal` | Solo el código del propio ensamblado `Horarios.Scheduler.dll` | `ReglasDuras` |
+| `private` anidado | Solo la clase que lo contiene | `CatalogoCandidatos`, `Candidatos`, `Construccion`, `DatosSesion` |
+| `sealed` | Nadie puede heredar de él | Todas las clases del motor |
+
+**Por qué `ReglasDuras` es `internal`.** Porque es un detalle compartido entre el motor y el
+verificador, que viven en el mismo proyecto. Si fuera pública, cualquier capa —una página
+Blazor, un caso de uso— podría empezar a validar por su cuenta con las reglas del motor, y esa
+es precisamente la dependencia que la arquitectura evita ([P22](#p22-por-qué-tantas-capas-no-sería-más-simple-todo-junto)). La frontera pública
+del motor es otra: los tipos de `ContratoMotor.cs` y las interfaces `IMotorHorarios` e
+`IVerificadorHorario`. Todo lo demás es interior.
+
+**Por qué `CatalogoCandidatos` está anidada y privada.** Porque existe solo para el algoritmo
+de `MotorHorario`: nadie más puede construirla, ni depender de ella, ni romperse si mañana
+cambia. Es la forma más fuerte de decir «esto es asunto de esta clase». Los `record` privados
+anidados —`Construccion`, `ResultadoMejora`, `Candidatos`, `Item`, `AsignacionConDatos`— están
+por otro motivo: son tipos de retorno con **nombre**, para no devolver tuplas anónimas cuyos
+campos se llamarían `Item1` e `Item2`.
+
+**Por qué todo es `sealed`.** Porque ninguna de estas clases está diseñada para heredarse: la
+extensión prevista pasa por las interfaces, no por subclases. Sellar deja libertad para
+cambiar el interior sin romper a nadie, y de paso permite al compilador resolver llamadas sin
+búsqueda virtual — aunque acá el motivo es de diseño, no de rendimiento.
+
+**La regla de fondo**, que sirve para cualquier proyecto: cada tipo se declara con el alcance
+más chico que le sirva. Un tipo público es un compromiso que hay que sostener; uno privado
+anidado no compromete nada.
+
+#### P85. ¿Qué es un `record` y qué hace `with`?
+
+**Qué.** Un `record` es una clase (o un struct) pensada para llevar datos: constructor
+primario, propiedades de solo lectura, **igualdad por valor**, `ToString` legible y el
+operador `with` para copiar cambiando algo.
+
+**Cómo.** Toda la salida del motor son records de una línea:
+
+```csharp
+public sealed record SesionAsignadaMotor(Guid SesionId, Guid DocenteId, Guid AulaId, Guid BloqueId);
+```
+
+Cuatro propiedades inmutables, comparación por contenido y una copia modificada sin tocar el
+original:
+
+```csharp
+return asignacionActual with { AulaId = aula.Id, BloqueId = bloque.Id };
+```
+
+**Por qué importa acá.** La fase de mejora **prueba** candidatos y descarta casi todos. Con
+objetos mutables, deshacer un intento sería trabajo manual y una fuente clásica de errores:
+basta olvidar un campo al revertir para corromper el horario en silencio. Con `with`, probar
+no modifica nada: la asignación anterior sigue intacta hasta que se decide reemplazarla.
+
+**La igualdad por valor**, además, es lo que permite comparar resultados en las pruebas sin
+escribir comparadores: dos `SesionAsignadaMotor` con los mismos cuatro identificadores son
+iguales.
+
+**Por qué `InstantaneaMotor` NO es un record.** Porque no solo lleva datos: **valida** que el
+plan no venga vacío y **copia** cada lista a `ImmutableArray` en el constructor. Un record con
+propiedades de inicialización invitaría a construirla sin pasar por esa copia, y la copia es
+justamente la garantía que hace reproducible la generación ([P64](#p64-qué-es-la-instantánea-y-por-qué-el-motor-no-consulta-la-base-de-datos)). Cuando el
+constructor hace trabajo, corresponde una clase.
+
+#### P86. ¿Qué significan los demás símbolos que aparecen en el motor?
+
+Los que se cruzan al leer el código y no se explican solos:
+
+| Símbolo | Qué es | Ejemplo del motor |
+|---|---|---|
+| `[a, b]` | Expresión de colección (C# 12): el tipo lo pone el destino | `[sesion.CursoId]`, `Dictionary<string, ...> docentes = [];` |
+| `^1` | Índice desde el final: el último elemento | `slots[^1]` en el conteo de ventanas |
+| `is X or Y` | Patrón: se lee como la frase que representa | `aula.Tipo is TipoAulaMotor.Laboratorio or TipoAulaMotor.Mixta` |
+| `out var` | Declara la variable en el mismo lugar donde se recibe | `filas.TryGetValue(entidadId, out var fila)` |
+| `ref` | Pasa la variable misma, no una copia: lo que se le asigne se ve afuera | `ref decimal mejorCosto` en la búsqueda de movimientos |
+| `$"..."` | Interpolación de texto | `$"plan:{planId:N}:{grupo.Key}:{numero}"` |
+| `:N` y `0:0.##` | Formatos: uuid sin guiones; hasta dos decimales sin relleno | El id determinista y el diagnóstico de mejora |
+| `stackalloc` | Reserva memoria en la pila, sin usar el montón | `Span<byte> bytes = stackalloc byte[16]` |
+| `_nombre` | Convención de campo privado | `_totalFaltas`, `_bufferSlots` |
+| `var (_, perfil)` | El guion bajo descarta un valor que no interesa | El perfilador de trabajos pesados |
+| `using var` | Se libera solo al salir del bloque | `using var ambito = ambitos.CreateScope()` |
+| `(long)` | Conversión explícita para evitar desbordar `int` | `(long)Docentes.Count * Aulas.Count * Bloques.Count` |
+
+Ese último merece una frase aparte, porque no es un tecnicismo: multiplicar tres cuentas de
+candidatos puede pasarse del rango de un entero de 32 bits, y sin la conversión el número de
+combinaciones podría salir **negativo** y el orden «más restringido primero» se invertiría en
+silencio. Un paréntesis de cinco caracteres sosteniendo la heurística entera.
+
+**Y lo que llamativamente no aparece: `async`.** No hay ni un `async` ni un `await` en
+`MotorHorario`, `VerificadorHorario`, `CostoBlandoIncremental`, `OcupacionHorario`,
+`ExpansorSesiones` ni `EvaluadorRestriccionesBlandas`. El algoritmo es **síncrono a
+propósito**: es trabajo de CPU puro, y lo asíncrono es el andamiaje que lo saca de la petición
+web —la cola, el servicio de fondo, los adaptadores de datos—. Confundir esas dos capas es el
+error habitual al leerlo por primera vez.
+
+#### P87. ¿Por qué el puntaje es `decimal` y no `double`?
+
+**Qué.** Porque `decimal` representa exactamente los valores en base 10, y `double` no.
+
+**Cómo.** Los pesos son literales decimales —`10m`, `8m`, `3m`, `2m`, `5m`, `0.01m`— y el
+costo es una suma de enteros multiplicados por esos pesos. Con `decimal` no hay arrastre de
+error, así que la comparación que decide cada movimiento de la fase de mejora,
+`costo.Total < mejorCosto`, es exacta y dos corridas dan el mismo total.
+
+**Por qué importa.** Con `double`, `0,1 + 0,2` no da `0,3`. Un residuo de representación en
+una comparación estricta puede hacer que un movimiento se acepte en una máquina y se rechace
+en otra, o que se acepte un movimiento que en realidad no mejora nada. En un algoritmo cuyo
+único criterio de decisión es «¿este número bajó?», eso rompería el determinismo que se
+defiende en [P77](#p77-qué-hace-que-una-corrida-sea-reproducible).
+
+**El costo.** `decimal` es bastante más lento que `double`, porque no lo ejecuta la unidad de
+punto flotante del procesador. Se acepta porque el total se mantiene por diferencias
+([P75](#p75-por-qué-existe-costoblandoincremental-si-ya-está-el-evaluador)) y no se recalcula desde cero. Un `long` con pesos enteros sería aún más rápido y
+también exacto, pero cerraría la puerta a pesos fraccionarios configurables —y el desbalance
+de carga, que es una proporción, ya los necesita—.
+
+#### P88. ¿Qué es `ImmutableArray` y por qué no una `List`?
+
+**Qué.** `ImmutableArray<T>` es un arreglo que no se puede modificar: cualquier «cambio»
+devuelve otro arreglo. Toda la instantánea y toda la salida del motor lo usan.
+
+**Cómo.** Para construir uno se usa un constructor por pasos, que es el patrón de
+`ExpansorSesiones`:
+
+```csharp
+var resultado = ImmutableArray.CreateBuilder<SesionRequeridaMotor>();
+// ... resultado.Add(...) mientras se arma
+return resultado.ToImmutable();
+```
+
+**Por qué en las fronteras.** Porque garantiza que nadie —ni otra capa, ni otro hilo— pueda
+alterar la entrada del motor mientras corre. Es la diferencia entre *decir* que la instantánea
+es una foto y que lo sea: si fuera una `List`, quien la pasó conservaría una referencia capaz
+de modificarla.
+
+**Y por qué no adentro.** Dentro del motor se usan `List`, `Dictionary`, `HashSet` y arreglos
+crudos sin ningún pudor, porque son estado local, caliente y de vida corta. La regla es
+**inmutable en las fronteras, mutable adentro**: la inmutabilidad se paga en copias, así que
+se compra donde da garantías y no donde solo da lentitud.
+
+**Un pariente que conviene distinguir: `IEnumerable<T>` es perezoso.**
+`OrdenarMasRestringidaPrimero` devuelve una consulta, no una lista: nada se ordena hasta que
+el `foreach` de la construcción la recorre, y se recorre exactamente una vez. Recorrer dos
+veces un `IEnumerable` construido con LINQ repite todo el trabajo — es la trampa clásica, y
+por eso el motor materializa con `ToArray()` o `ToImmutableArray()` en cuanto una lista se va
+a usar más de una vez.
+
+#### P89. ¿Qué es un `CancellationToken` y quién lo dispara?
+
+**Qué.** Un aviso de «dejá de trabajar» que viaja como parámetro. No mata nada por su cuenta:
+el código tiene que preguntarle.
+
+**Cómo.** El motor pregunta en dos lugares: al entrar a `Ejecutar` y **dentro del bucle de
+candidatos** de la fase de mejora, con `cancellationToken.ThrowIfCancellationRequested()`, que
+lanza `OperationCanceledException`. Preguntar dentro del bucle es lo que hace que el tope de
+tiempo funcione de verdad: si solo se comprobara entre pasadas, una pasada larga se pasaría
+del presupuesto.
+
+**Quién lo dispara.** Dos fuentes, anidadas:
+
+- `ColaGeneracionesEnMemoria` crea un token enlazado y lo cancela solo a los 300 segundos.
+- El apagado de la aplicación cancela el token del servicio de fondo, y ese es el que cuelga
+  del anterior.
+
+**Quién lo atrapa.** `EjecutarGeneracionPlan` captura `OperationCanceledException`, cierra la
+generación como `Cancelada`, deja el plan en `Fallido` y **vuelve a lanzar**, porque cancelar
+no es terminar bien. El cierre se registra con `CancellationToken.None`: la anotación de que
+algo se canceló no puede cancelarse a su vez.
+
+**Por qué hay dos topes y no uno.** Porque hacen cosas distintas: los 15 segundos de la mejora
+son un **presupuesto de calidad** —al agotarse se devuelve el mejor horario encontrado, que es
+válido—, y los 300 segundos de la generación son un **límite de seguridad**: al agotarse se
+aborta y el plan queda en fallido para reintentar.
 
 ---
 
@@ -1734,6 +2716,31 @@ el equipo sepa qué se viene:
 | **Contenedor / Docker Compose** | Empaquetado del sistema con todo lo que necesita para correr / herramienta para levantar varios juntos | `Dockerfile`, `compose.yaml` |
 | **CI** | *Continuous Integration*: compilar y probar automáticamente en cada cambio | El workflow de `.github/` |
 
+### 7.4 Motor y algoritmos
+
+| Término | Qué es | En este proyecto |
+|---|---|---|
+| **Heurística** | Método que busca una buena solución en tiempo razonable, sin garantizar la mejor. Se juzga por resultados, no por demostración | Todo el motor: construcción voraz más búsqueda local |
+| **Algoritmo voraz (greedy)** | Toma en cada paso la mejor opción disponible en ese momento y no vuelve atrás | La fase 1: la primera terna legal de cada sesión |
+| **Búsqueda local** | Partir de una solución completa y explorar cambios pequeños que la mejoren | La fase 2: mover una sesión a otro bloque o aula |
+| **Primera mejora / mejor mejora** | Aceptar el primer cambio que mejora / evaluar todos y quedarse con el mejor | Se usa primera mejora: más movimientos por segundo |
+| **Óptimo local** | Solución que no mejora con ningún cambio pequeño, aunque exista otra mejor lejos | Donde termina la fase 2; no hay reinicios para escapar |
+| **Función objetivo / costo** | El número que el algoritmo minimiza | El puntaje blando: menos es mejor |
+| **Restricción dura** | Regla que no se puede incumplir: decide si la solución es válida | Colisiones, autorización, capacidad, jornada, carga |
+| **Restricción blanda** | Preferencia: incumplirla penaliza pero no invalida | Ventanas, consecutividad, desplazamiento, balance |
+| **CSP** | *Constraint Satisfaction Problem*: variables, dominios y restricciones entre ellas | Sesión = variable; (docente, aula, bloque) = su dominio |
+| **NP-completo / NP-difícil** | Clase de problemas para los que no se conoce algoritmo eficiente y que se creen intratables en el caso general | La construcción de horarios lo es (Even, Itai y Shamir, 1976) |
+| **Espacio de búsqueda** | El conjunto de todas las soluciones posibles, válidas o no | Docentes × aulas × bloques, elevado al número de sesiones |
+| **Fail-first / MRV** | Decidir primero la variable con menos opciones, para chocar temprano y barato | La heurística «más restringido primero» |
+| **Backtracking** | Deshacer decisiones anteriores al llegar a un callejón sin salida | **No** se usa: una colocación de la fase 1 no se revisa |
+| **Poda** | Descartar de antemano opciones que no pueden llevar a una solución válida | El catálogo de candidatos y las reglas duras |
+| **Evaluación incremental** | Recalcular solo la parte del costo afectada por un cambio, en vez del total | `CostoBlandoIncremental` |
+| **Índice de ocupación** | Estructura que responde «¿está libre?» sin recorrer lo ya colocado | Los tableros de `OcupacionHorario` |
+| **Algoritmo con presupuesto (anytime)** | El que puede detenerse en cualquier momento y devolver la mejor solución hallada | La fase de mejora, con sus 15 segundos |
+| **Instantánea (snapshot)** | Copia congelada de los datos de entrada en un instante | `InstantaneaMotor`, guardada con cada generación |
+| **Slot** | La unidad mínima de tiempo del horario. El motor no razona con relojes | Un período de la jornada; una sesión ocupa uno o varios seguidos |
+| **Sesión** | Una clase concreta por colocar: curso, cohortes, duración | `SesionRequeridaMotor`, producida por el expansor |
+
 ---
 
 ## Fuentes citadas
@@ -1764,4 +2771,17 @@ Referencias técnicas usadas en las respuestas, por si alguien pide el respaldo:
 - **ISO/IEC/IEEE 29148** — ingeniería de requisitos y trazabilidad.
 - **PATAT** — *Practice and Theory of Automated Timetabling*, literatura de referencia del
   problema de horarios.
+- Even, S., Itai, A. & Shamir, A. (1976). *On the Complexity of Timetable and Multicommodity
+  Flow Problems.* SIAM Journal on Computing — NP-completitud del problema de horarios.
+- Cooper, T. B. & Kingston, J. H. (1996). *The Complexity of Timetable Construction
+  Problems.* PATAT.
+- Brélaz, D. (1979). *New Methods to Color the Vertices of a Graph.* CACM — DSATUR, el
+  antecedente de «más restringido primero».
+- Haralick, R. M. & Elliott, G. L. (1980). *Increasing Tree Search Efficiency for Constraint
+  Satisfaction Problems.* Artificial Intelligence — principio de fallo temprano.
+- Schaerf, A. (1999). *A Survey of Automated Timetabling.* Artificial Intelligence Review.
+- Hoos, H. H. & Stützle, T. (2004). *Stochastic Local Search: Foundations and Applications* —
+  primera mejora frente a mejor mejora.
+- **Microsoft Learn** — *C# language reference*: miembros con cuerpo de expresión, `readonly`,
+  modificadores de acceso, `record` y expresiones `with`.
 - **The Twelve-Factor App** — factores III (configuración) y X (paridad de entornos).

@@ -176,7 +176,8 @@ export const PIEZAS: Pieza[] = [
     detalles: [
       'La fase de mejora prueba cientos de miles de candidatos; volver a puntuar el horario completo en cada uno era inviable.',
       'Cada sesión, bloque, aula, docente y cohorte recibe una posición densa: a partir de ahí todo es aritmética sobre arreglos y buffers reutilizados.',
-      'Una prueba comprueba que su total y el del evaluador coinciden siempre.',
+      'Su total debe coincidir siempre con el del evaluador: descartan las mismas asignaciones y agrupan igual. '
+        + 'Hoy esa igualdad se sostiene por construcción, no por una prueba automática.',
     ],
   },
 ];
