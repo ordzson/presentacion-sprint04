@@ -32,7 +32,7 @@ import { descargar, escalaSegura } from '../../util/exportar';
 import type { DocClase, DocMiembro } from '../../data/clases-docs';
 
 /*
- * El grafo se pinta en un <canvas>, no en SVG. Con 299 nodos y 572 aristas —
+ * El grafo se pinta en un <canvas>, no en SVG. Con 278 nodos y 543 aristas —
  * muchas de ellas punteadas — el árbol SVG eran ~2.400 formas que el navegador
  * volvía a rasterizar entera en cada cuadro de un arrastre, y cada recorte
  * montaba y desmontaba cientos de nodos del DOM. En canvas un cuadro es un
@@ -570,7 +570,7 @@ export class ClasesSlide {
     }
   }
 
-  /** El fondo del minimapa son 299 rectángulos fijos: se pinta una vez. */
+  /** El fondo del minimapa son 278 rectángulos fijos: se pinta una vez. */
   private pintarMiniFondo(w: number, h: number): HTMLCanvasElement {
     const off = document.createElement('canvas');
     off.width = Math.round(w * this.dpr);
@@ -952,7 +952,7 @@ export class ClasesSlide {
 
   /**
    * Las aristas se agrupan por (capa, tipo, estado) y cada grupo se traza de
-   * una vez: 572 llamadas a stroke() pasan a ser, como mucho, unas pocas
+   * una vez: 543 llamadas a stroke() pasan a ser, como mucho, unas pocas
    * decenas, y el guion sólo se configura una vez por grupo.
    */
   private pintarAristas(

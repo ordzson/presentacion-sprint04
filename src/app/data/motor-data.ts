@@ -1,6 +1,11 @@
-// Fuente: código real de src/Horarios.Scheduler (MotorHorario, OcupacionHorario,
-// ReglasDuras, ExpansorSesiones, EvaluadorRestriccionesBlandas, CostoBlandoIncremental,
+// Fuente: código real de src/Horarios.Scheduler (MotorHorario y su fase MejoraLocal,
+// OcupacionHorario, ReglasDuras, ExpansorSesiones, EvaluadorRestriccionesBlandas,
 // VerificadorHorario) y src/Horarios.Contratos/Motor/ContratoMotor.cs.
+//
+// Verificado contra el código el 2026-08-20, después de la simplificación del motor:
+// se eliminaron CostoBlandoIncremental y CatalogoCandidatos, y OcupacionHorario pasó de
+// arreglos densos a conjuntos de casillas. Ver docs/motor-generador-horarios.md del repo
+// del sistema.
 //
 // El caso de ejemplo está reducido a un solo día para que quepa en pantalla, pero los
 // pasos, las llamadas y la aritmética del puntaje son los que produce ese código.
@@ -12,9 +17,8 @@ export type PiezaId =
   | 'verificador'
   | 'reglas'
   | 'ocupacion'
-  | 'catalogo'
   | 'evaluador'
-  | 'costo';
+  | 'mejora';
 
 export interface Pieza {
   id: PiezaId;
@@ -46,6 +50,7 @@ export const PIEZAS: Pieza[] = [
       'El identificador sale de plan + grupo + número, así que es el mismo en cada regeneración: el plan reescribe sus propias filas en vez de duplicarlas.',
       'Los cursos de un área común se juntan en una sola sesión, porque se dictan a la vez y exigen un docente autorizado en todos ellos.',
       'Suma los alumnos de todas las cohortes del grupo: ese número es el que después le exige capacidad al aula.',
+      'Si dos cursos de una misma agrupación declaran distinta cantidad o duración de sesiones, falla con un error explícito en vez de inventar un valor.',
     ],
   },
   {
@@ -76,6 +81,7 @@ export const PIEZAS: Pieza[] = [
     llano:
       'Trabaja en dos fases: primero coloca todas las sesiones empezando por la más difícil, después mejora lo colocado sin romper nada.',
     detalles: [
+      'Antes de empezar, CalcularCandidatos resuelve de una vez qué docentes, qué aulas y qué bloques puede usar cada sesión: un diccionario de sesión a Candidatos.',
       'Fase 1, construcción: ordena las sesiones por «más restringido primero» y toma la primera combinación legal de cada una.',
       'Fase 2, mejora: solo arranca si la construcción no dejó ninguna sesión pendiente.',
       'Comprueba la cancelación dentro del bucle de candidatos, así que el tope de tiempo lo detiene de verdad.',
@@ -95,23 +101,8 @@ export const PIEZAS: Pieza[] = [
     detalles: [
       'Veinte códigos de violación: COLISION_DOCENTE, CAPACIDAD_AULA_INSUFICIENTE, BLOQUE_FUERA_DE_JORNADA, CONTINUIDAD_DOCENTE, CARGA_DOCENTE_EXCEDIDA…',
       'Comparte ReglasDuras con el motor, así que no puede rechazar un horario por un criterio que el motor no conocía.',
+      'No se detiene en el primer hallazgo: devuelve todas las violaciones que encuentre.',
       'También reclama las sesiones que no aparecen ni asignadas ni pendientes: nada puede desaparecer en el camino.',
-    ],
-  },
-  {
-    id: 'catalogo',
-    clase: 'CatalogoCandidatos',
-    archivo: 'Horarios.Scheduler/MotorHorario.cs',
-    rol: 'Las opciones de cada sesión',
-    color: '#3f6fd6',
-    recibe: 'InstantaneaMotor + OcupacionHorario',
-    devuelve: 'Candidatos(Docentes, Aulas, Bloques) y su número de Combinaciones',
-    llano:
-      'Antes de colocar nada resuelve, de una vez, qué docentes, qué aulas y qué bloques puede usar cada sesión.',
-    detalles: [
-      'Las sesiones equivalentes comparten la misma lista: las dos sesiones semanales de un curso se filtran una sola vez, no una por bloque.',
-      'Combinaciones = docentes × aulas × bloques. Ese número es el que decide el orden de colocación.',
-      'Docentes ordenados por prioridad, aulas por capacidad de menor a mayor, bloques por día y hora.',
     ],
   },
   {
@@ -123,7 +114,7 @@ export const PIEZAS: Pieza[] = [
     recibe: 'Un docente o un aula, más la sesión',
     devuelve: 'bool',
     llano:
-      'La única definición de lo que se puede y lo que no. La usan el motor para elegir, el reparador para proponer y el verificador para aceptar.',
+      'La única definición de lo que se puede y lo que no. La usan el motor para elegir y el verificador para aceptar.',
     detalles: [
       'Cuando cada uno llevaba su propia copia se desincronizaron: el verificador rechazaba horarios que el motor daba por buenos.',
       'Aquí viven docente autorizado, capacidad del aula, recursos, tipo de aula y tipo de laboratorio.',
@@ -139,10 +130,11 @@ export const PIEZAS: Pieza[] = [
     recibe: '(docenteId | aulaId | cohorteId, bloque, duración)',
     devuelve: 'bool — y Ocupar / Liberar marcan o borran esas casillas',
     llano:
-      'Un tablero de casillas por docente, por aula y por cohorte. Responde «¿está libre?» sin recorrer las sesiones ya colocadas.',
+      'Cinco conjuntos de casillas: docente ocupado, aula ocupada, cohorte ocupada, docente disponible y slots que existen en cada jornada. Responde «¿está libre?» sin recorrer las sesiones ya colocadas.',
     detalles: [
-      'Cada par (día, período) es una posición fija de un arreglo; la semana entera son 7 días × períodos por día.',
-      'Preguntar si un candidato cabe cuesta lo mismo con 4 sesiones que con 4 000.',
+      'Una casilla es la tupla (entidad, día, slot) dentro de un HashSet: preguntar si un candidato cabe cuesta lo mismo con 4 sesiones que con 4 000.',
+      'Los dos últimos conjuntos se llenan una sola vez al construirse y ya no cambian; los tres primeros se marcan y se borran mientras el motor trabaja.',
+      'La disponibilidad del docente lleva además la jornada en la clave: el slot 3 de la matutina y el slot 3 de la vespertina no son la misma casilla, así que quien declaró solo la matutina no termina colocado en la vespertina.',
       'Una sesión de dos períodos exige las dos casillas libres, no solo la primera.',
       'CabeEnLaJornada impide que una sesión cruce el receso: esos períodos no existen dentro de la instantánea.',
     ],
@@ -159,25 +151,27 @@ export const PIEZAS: Pieza[] = [
       'Le pone un número al horario. Ya no discute si es legal —eso está resuelto—, sino cuánto molesta.',
     detalles: [
       'Cinco penalizaciones con peso: consecutividad 10, ventanas 8, ventanas al final 3, desplazamiento 2, balance de carga 5.',
-      'Se usa dos veces, antes y después de la mejora, y las dos cifras quedan guardadas en la bitácora de la generación.',
-      'Solo puntúa lo que la instantánea reconoce por completo, la misma condición que aplica el cálculo incremental.',
+      'Es la única definición del puntaje: el mismo método que la mejora usa para decidir es el que produce las cifras que se guardan y se muestran.',
+      'Se informa dos veces, antes y después de la mejora, y las dos cifras quedan en la bitácora de la generación.',
+      'Solo puntúa lo que la instantánea reconoce por completo: una asignación que apunte a un aula o a un docente inexistente se ignora en vez de contarse mal.',
     ],
   },
   {
-    id: 'costo',
-    clase: 'CostoBlandoIncremental',
-    archivo: 'Horarios.Scheduler/CostoBlandoIncremental.cs',
-    rol: 'El mismo número, pero rápido',
+    id: 'mejora',
+    clase: 'MejoraLocal',
+    archivo: 'Horarios.Scheduler/MotorHorario.cs',
+    rol: 'La fase 2, por dentro',
     color: '#6b6153',
-    recibe: 'Mover(sesionId, docenteId, aulaId, bloqueId)',
-    devuelve: 'Total — el puntaje ya actualizado',
+    recibe: 'Las asignaciones de la construcción + su puntaje inicial',
+    devuelve: 'ResultadoMejora(Asignadas, Movimientos, Duracion, PresupuestoAgotado)',
     llano:
-      'Da exactamente el mismo total que el evaluador, pero recalculando solo los grupos que el movimiento tocó.',
+      'Saca una sesión del tablero, le prueba otros huecos y se queda con el primero que baje el puntaje. Repite hasta que una pasada entera no gane nada.',
     detalles: [
-      'La fase de mejora prueba cientos de miles de candidatos; volver a puntuar el horario completo en cada uno era inviable.',
-      'Cada sesión, bloque, aula, docente y cohorte recibe una posición densa: a partir de ahí todo es aritmética sobre arreglos y buffers reutilizados.',
-      'Su total debe coincidir siempre con el del evaluador: descartan las mismas asignaciones y agrupan igual. '
-        + 'Hoy esa igualdad se sostiene por construcción, no por una prueba automática.',
+      'Es búsqueda local de primera mejora: acepta el primer movimiento que mejora, no compara todos para elegir el mejor.',
+      'El docente no se toca: cambiarlo rompería la continuidad del curso, que es una regla dura. Solo se mueven el bloque y el aula.',
+      'Cada candidato se puntúa reevaluando el horario completo con el evaluador. Existió una clase aparte que recalculaba solo lo afectado y se borró a propósito el 2026-08-20: exigía mantener dos definiciones del puntaje sincronizadas.',
+      'Se cambió velocidad por una sola fuente de verdad, y el precio está medido: a 400 sesiones hace 231 movimientos en 15 s y aun así baja el puntaje un 44 %.',
+      'Corta por pasada 100, por 15 segundos o por cancelación, y siempre devuelve un horario válido: el costo de referencia solo baja.',
     ],
   },
 ];
@@ -189,8 +183,8 @@ export const PIEZAS_POR_ID: Record<PiezaId, Pieza> = Object.fromEntries(
 /** Piezas que forman la cadena principal, de arriba hacia abajo. */
 export const CADENA: PiezaId[] = ['expansor', 'instantanea', 'motor', 'verificador'];
 
-/** Piezas que el motor consulta mientras trabaja. */
-export const HERRAMIENTAS: PiezaId[] = ['catalogo', 'reglas', 'ocupacion', 'evaluador', 'costo'];
+/** Piezas de dentro del motor: las que consulta y la fase que mejora lo ya colocado. */
+export const HERRAMIENTAS: PiezaId[] = ['reglas', 'ocupacion', 'evaluador', 'mejora'];
 
 /* ══════════════════════════════════════════════════ el caso de ejemplo */
 
@@ -329,29 +323,29 @@ export const PASOS: PasoMotor[] = [
     titulo: 'Se arma el tablero de casillas',
     envia: 'new OcupacionHorario(instantanea)',
     devuelve:
-      'Cuatro mapas de casillas: docente ocupado, aula ocupada, cohorte ocupada y docente disponible',
+      'Cinco conjuntos de casillas: docente ocupado, aula ocupada, cohorte ocupada, docente disponible y slots que existen en la jornada',
     llano:
-      'Cada par (día, período) pasa a ser una posición fija de un arreglo. La disponibilidad declarada por cada docente se marca de antemano: en las casillas de Ana solo quedan encendidas Lun·1 y Lun·4.',
-    nota: 'A partir de aquí, «¿el aula está libre a esa hora?» se responde mirando una casilla, no recorriendo las sesiones ya colocadas.',
+      'Cada casilla es la tupla (entidad, día, período) dentro de un conjunto. La disponibilidad declarada por cada docente se anota de antemano: de Ana solo quedan dentro Lun·1 y Lun·4.',
+    nota: 'A partir de aquí, «¿el aula está libre a esa hora?» se responde con una consulta al conjunto, no recorriendo las sesiones ya colocadas. Los dos últimos conjuntos se llenan una sola vez y ya no cambian.',
     grilla: G0,
   },
   {
     n: 3,
-    pieza: 'catalogo',
+    pieza: 'motor',
     titulo: 'Cada sesión averigua sus opciones',
-    envia: 'new CatalogoCandidatos(instantanea, ocupacion) → pregunta a ReglasDuras por cada docente y cada aula',
+    envia: 'CalcularCandidatos(instantanea, ocupacion) → pregunta a ReglasDuras por cada docente y cada aula',
     devuelve:
       'Programación I: 1 docente × 1 aula × 4 bloques = 4 · Matemática I·1A: 1 × 3 × 4 = 12 · Matemática I·1B: 1 × 3 × 4 = 12',
     llano:
       'Programación I exige laboratorio, así que de las tres aulas solo sobrevive LAB-1, y solo Ana está autorizada en ese curso: apenas 4 combinaciones. Matemática I cabe en las tres aulas, así que tiene 12.',
-    nota: 'El filtro se hace una sola vez por perfil: S1 y S2 son el mismo curso para la misma cohorte y comparten la lista.',
+    nota: 'El filtro se hace una sola vez, antes de colocar nada, y queda en un diccionario de sesión a Candidatos. Lo que cambia durante la ejecución no es quién es compatible, sino quién está ocupado, y de eso se encarga OcupacionHorario.',
     grilla: G0,
   },
   {
     n: 4,
     pieza: 'motor',
     titulo: 'Se coloca primero lo más difícil',
-    envia: 'OrdenarMasRestringidaPrimero(instantanea, catalogo)',
+    envia: 'OrdenarMasRestringidaPrimero(instantanea, candidatos)',
     devuelve: 'S1, S2 (4 combinaciones) → S3 (12, con 30 alumnos) → S4 (12, con 28 alumnos)',
     llano:
       'Menos salidas, más urgencia. Si dos sesiones empatan en combinaciones, pasa antes la que junta más cohortes, luego la que exige más recursos y luego la que tiene más alumnos.',
@@ -415,14 +409,14 @@ export const PASOS: PasoMotor[] = [
   },
   {
     n: 10,
-    pieza: 'costo',
+    pieza: 'mejora',
     titulo: 'La mejora: misma hora, otra aula',
     envia:
-      'Se libera S3, se prueban sus huecos con costo.Mover(S3, Luis, A-102, Lun·2) y se compara costo.Total',
+      'Se libera S3 y, por cada par (bloque, aula) legal, se escribe el candidato y se llama Evaluar sobre el horario entero',
     devuelve: 'SesionAsignadaMotor(S3, Luis, A-102, Lun·2) → Total 11,83',
     llano:
       'Se saca una sesión del tablero, se prueban sus huecos y se acepta el primero que baje el total; si ninguno baja, el movimiento se deshace y la sesión vuelve a su sitio. S3 pasa de LAB-1 a A-102 sin cambiar de hora, y Luis deja de cruzar dos pisos entre clase y clase.',
-    nota: 'El docente nunca cambia en esta fase: cambiarlo rompería la continuidad del curso, que es una regla dura. Se repite hasta 100 pasadas o hasta agotar 15 segundos, y se corta en cuanto una pasada entera no mejora nada.',
+    nota: 'Puntuar un candidato es reevaluar el horario completo, y esa es la operación cara del motor: por eso el reloj se mira dentro del bucle de aulas y no solo entre sesiones. El docente nunca cambia, porque rompería la continuidad del curso. Se repite hasta 100 pasadas o hasta agotar 15 segundos, y se corta en cuanto una pasada entera no mejora nada.',
     grilla: G10,
   },
   {
@@ -469,7 +463,8 @@ export const REGLAS_DURAS: ReglaDura[] = [
   },
   {
     llamada: 'ReglasDuras.TieneLosRecursos',
-    texto: 'El aula tiene que tener los recursos que el curso pide, sin importar mayúsculas ni tildes.',
+    texto:
+      'El aula tiene que tener los recursos que el curso pide. Se comparan sin distinguir mayúsculas, pero sí tildes: «Proyector» y «proyector» son el mismo recurso; «proyector» y «proyectór», no.',
   },
   {
     llamada: 'ReglasDuras.TipoDeAulaCompatible · LaboratorioCompatible',
@@ -490,7 +485,7 @@ export const REGLAS_DURAS: ReglaDura[] = [
   {
     llamada: 'OcupacionHorario.DocenteDisponible',
     texto:
-      'La hora tiene que caer dentro de lo que el docente declaró, y en todos los períodos que dura la sesión, no solo en el primero.',
+      'La hora tiene que caer dentro de lo que el docente declaró, en todos los períodos que dura la sesión y dentro de la misma jornada: quien declaró la matutina no queda disponible en la vespertina aunque coincidan día y número de período.',
   },
   {
     llamada: 'OcupacionHorario.CabeEnLaJornada',
@@ -539,7 +534,7 @@ export const REGLAS_BLANDAS: ReglaBlanda[] = [
     nombre: 'Balance de carga',
     peso: '5',
     texto:
-      'Distancia entre el docente más cargado y el menos cargado, medida contra el tope de cada uno.',
+      'Distancia entre el docente más cargado y el menos cargado, medida contra el tope de cada uno. A mayor nivel de prioridad, el motor lo considera algo menos cargado de lo que está.',
   },
 ];
 

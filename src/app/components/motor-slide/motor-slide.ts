@@ -52,11 +52,10 @@ export class MotorSlide {
     instantanea: 'InstantaneaMotor',
     motor: 'ResultadoMotor',
     verificador: 'ResultadoVerificacion',
-    catalogo: '',
     reglas: '',
     ocupacion: '',
     evaluador: '',
-    costo: '',
+    mejora: '',
   };
 
   readonly vista = signal<Vista>('cadena');

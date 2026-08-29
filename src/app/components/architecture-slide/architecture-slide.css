@@ -2,23 +2,19 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 1.8rem clamp(1.5rem, 4vw, 4rem) 1.4rem;
+  padding: 1.6rem clamp(1.5rem, 4vw, 4rem) 1.2rem;
   box-sizing: border-box;
-  gap: 0.9rem;
+  gap: 0.8rem;
 }
 
 /* ------------------------------------------------------------ encabezado */
 
 .slide-header {
   flex-shrink: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 2rem;
 }
 
 .eyebrow {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.35rem;
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -27,8 +23,8 @@
 }
 
 .slide-header h1 {
-  margin: 0 0 0.4rem;
-  font-size: clamp(1.8rem, 2.9vw, 2.4rem);
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.7rem, 2.7vw, 2.25rem);
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.15;
@@ -36,34 +32,10 @@
 
 .subtitle {
   margin: 0;
-  max-width: 52rem;
-  font-size: 1.2rem;
-  line-height: 1.45;
+  max-width: 60rem;
+  font-size: 1.15rem;
+  line-height: 1.4;
   color: var(--text-muted);
-}
-
-.metricas {
-  display: flex;
-  gap: 1.6rem;
-  flex-shrink: 0;
-  padding-top: 0.3rem;
-}
-
-.metrica {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1.1;
-}
-
-.metrica strong {
-  font-size: 1.7rem;
-  font-weight: 700;
-}
-
-.metrica span {
-  font-size: 0.9rem;
-  color: var(--text-faint);
 }
 
 /* ------------------------------------------------------------------ tabs */
@@ -79,13 +51,13 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 1.2rem;
+  padding: 0.55rem 1.1rem;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-muted);
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -103,7 +75,7 @@
 
 .tab-code {
   font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   opacity: 0.75;
 }
 
@@ -114,203 +86,650 @@
   min-height: 0;
   overflow-y: auto;
   padding-right: 0.25rem;
-  padding-bottom: 1.4rem;
+  padding-bottom: 1.2rem;
 }
 
-/* Cada columna se desplaza por dentro; la slide nunca crece más que la pantalla. */
 .dos-columnas {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 25rem);
   grid-template-rows: minmax(0, 1fr);
-  gap: 1.6rem;
+  gap: 1.4rem;
   align-items: stretch;
   overflow: hidden;
 }
 
+.dos-columnas.ancho {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+}
+
+.apilado {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
 .pista {
-  margin: 0 0 0.6rem;
-  font-size: 0.98rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
   color: var(--text-faint);
 }
 
-/* --------------------------------------------------------------- diagrama */
+/* ----------------------------------------------------------- lienzos svg */
 
-.diagrama {
+.lienzo {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   height: 100%;
-  min-height: 0;
 }
 
-.mapa {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 12.5rem;
-  gap: 1rem;
+.lienzo.estrecho {
+  height: auto;
+}
+
+svg text {
+  font-family: 'Times New Roman', Times, Georgia, serif;
+}
+
+.grafo {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  padding-bottom: 0.3rem;
-}
-
-.columna {
-  display: flex;
-  flex-direction: column;
-}
-
-.actor {
-  align-self: center;
-  padding: 0.2rem 1rem;
-  border-radius: 999px;
-  border: 1px dashed var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  font-size: 0.98rem;
-}
-
-.flecha {
-  display: flex;
-  justify-content: center;
-  padding: 0.1rem 0;
-  position: relative;
-}
-
-.flecha::before {
-  content: '↓';
-  margin-right: 0.5rem;
-  color: var(--text-faint);
-  font-size: 1.1rem;
-  line-height: 1.3;
-}
-
-.flecha.doble::before {
-  content: '↓↑';
-  letter-spacing: -0.15em;
-}
-
-.flecha.lateral::before {
-  content: '↺';
-}
-
-.flecha span {
-  font-size: 0.92rem;
-  color: var(--text-faint);
-  text-align: center;
-  max-width: 32rem;
-}
-
-.flecha em {
-  font-style: italic;
-  color: var(--text-muted);
-}
-
-.flecha code {
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.85rem;
-}
-
-.caja {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
   width: 100%;
-  padding: 0.36rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  border-left: 5px solid var(--c);
-  background: var(--surface);
-  color: var(--text);
-  font-family: inherit;
-  text-align: left;
+}
+
+/* puntas de flecha */
+.punta.llamada {
+  fill: #3f6fd6;
+}
+.punta.declara {
+  fill: #b5791b;
+}
+.punta.implementa {
+  fill: #c0522d;
+}
+.punta.referencia,
+.punta.paso {
+  fill: var(--text-faint);
+}
+
+.linea {
+  fill: none;
+  stroke-width: 1.6;
+}
+.linea.llamada {
+  stroke: #3f6fd6;
+}
+.linea.declara {
+  stroke: #b5791b;
+  stroke-dasharray: 5 3;
+}
+.linea.implementa {
+  stroke: #c0522d;
+  stroke-width: 2.2;
+  stroke-dasharray: 6 3;
+}
+.linea.referencia {
+  stroke: var(--text-faint);
+  stroke-dasharray: 2 3;
+}
+.linea.vuelta {
+  fill: none;
+  stroke: var(--text-faint);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 4;
+}
+
+.arista {
+  opacity: 0.42;
+  transition: opacity 0.15s ease;
+}
+
+.arista.viva {
+  opacity: 1;
+}
+
+.arista-texto {
+  font-size: 11.5px;
+  fill: var(--text-muted);
+}
+
+.arista[data-tipo='implementa'] .arista-texto {
+  font-weight: 700;
+  fill: #a2431f;
+}
+
+/* cajas del grafo */
+.nodo {
   cursor: pointer;
+}
+
+.nodo rect {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 1.2;
   transition: all 0.15s ease;
 }
 
-.caja:hover {
-  background: var(--surface-hover);
+.nodo:hover rect {
+  fill: var(--surface-hover);
 }
 
-.caja.activa {
-  border-color: var(--c);
-  background: color-mix(in srgb, var(--c) 12%, var(--surface));
-  box-shadow: 0 0 0 1px var(--c) inset;
+.nodo.activo rect {
+  fill: color-mix(in srgb, var(--c) 12%, var(--surface));
+  stroke: var(--c);
+  stroke-width: 2;
 }
 
-.caja-rol {
-  font-size: 1.08rem;
+.nodo-rol {
+  font-size: 15px;
   font-weight: 700;
-  color: var(--c);
+  fill: var(--c);
+  text-anchor: middle;
 }
 
-.caja-proyecto {
+.nodo-proyecto {
   font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+  font-size: 11px;
+  fill: var(--text-muted);
+  text-anchor: middle;
 }
 
-.rail {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  padding-top: 1.9rem;
+.puertos rect {
+  fill: color-mix(in srgb, #b5791b 8%, transparent);
+  stroke: #b5791b;
+  stroke-width: 1.4;
+  stroke-dasharray: 6 4;
 }
 
-.banda {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding: 0.9rem 0.9rem;
-  border-radius: 10px;
-  border: 1px dashed var(--c);
-  background: color-mix(in srgb, var(--c) 7%, transparent);
-  color: var(--text);
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.banda:hover {
-  background: color-mix(in srgb, var(--c) 13%, transparent);
-}
-
-.banda.activa {
-  border-style: solid;
-  box-shadow: 0 0 0 1px var(--c) inset;
-}
-
-.banda-rol {
-  font-size: 1.05rem;
+.puertos-titulo {
+  font-size: 13.5px;
   font-weight: 700;
-  color: var(--c);
+  fill: #8a5a11;
+  text-anchor: middle;
 }
 
-.banda-proyecto {
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.82rem;
+.puertos-nota {
+  font-size: 11px;
+  fill: var(--text-muted);
+  text-anchor: middle;
+}
+
+.leyenda {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  margin-top: 0.4rem;
+  font-size: 0.86rem;
   color: var(--text-muted);
 }
 
-.banda-nota {
-  font-size: 0.9rem;
-  line-height: 1.35;
-  color: var(--text-muted);
+.leyenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.leyenda-item i {
+  width: 1.4rem;
+  height: 0;
+  border-top: 2px solid var(--text-faint);
+}
+
+.leyenda-item[data-tipo='llamada'] i {
+  border-color: #3f6fd6;
+}
+.leyenda-item[data-tipo='declara'] i {
+  border-color: #b5791b;
+  border-top-style: dashed;
+}
+.leyenda-item[data-tipo='implementa'] i {
+  border-color: #c0522d;
+  border-top-style: dashed;
+  border-top-width: 3px;
+}
+.leyenda-item[data-tipo='referencia'] i {
+  border-top-style: dotted;
 }
 
 .regla-oro {
   flex-shrink: 0;
-  margin: 0.6rem 0 0;
+  margin: 0.5rem 0 0;
   padding: 0.5rem 0.85rem;
-  border-left: 3px solid var(--accent-primary);
+  border-left: 3px solid #c0522d;
   background: var(--surface);
   border-radius: 0 8px 8px 0;
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   line-height: 1.4;
   color: var(--text-muted);
 }
 
 .regla-oro strong {
   color: var(--text);
+}
+
+/* -------------------------------------------------------- 02 · el patrón */
+
+.patron-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 25rem);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 1rem 1.4rem;
+  overflow: hidden;
+}
+
+.patron-fila > .lienzo {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.patron-fila > .panel {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.patron-fila > .bloque {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+}
+
+.patron-fila > .bloque .tabla-envoltura {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.patron {
+  width: 100%;
+  max-width: 54rem;
+  height: auto;
+}
+
+.ranura {
+  cursor: pointer;
+}
+
+.ranura rect {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 1.2;
+  transition: all 0.15s ease;
+}
+
+.ranura:hover rect {
+  fill: var(--surface-hover);
+}
+
+.ranura.activa rect {
+  fill: color-mix(in srgb, var(--c) 14%, var(--surface));
+  stroke: var(--c);
+  stroke-width: 2;
+}
+
+.ranura-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--c);
+  text-anchor: middle;
+}
+
+.ranura-capa {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  fill: var(--text-muted);
+  text-anchor: middle;
+}
+
+.ranura-n {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 12px;
+  fill: var(--text-faint);
+  text-anchor: middle;
+}
+
+.patron-nota {
+  font-size: 11.5px;
+  font-style: italic;
+  fill: var(--text-faint);
+}
+
+/* ------------------------------------------------------------- la matriz */
+
+.tabla-envoltura {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.matriz {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+}
+
+.matriz th,
+.matriz td {
+  padding: 0.4rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.35;
+}
+
+.matriz thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.matriz thead th:not(.pregunta-col) {
+  border-top: 3px solid var(--c);
+}
+
+.matriz-nombre {
+  display: block;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--c);
+}
+
+.matriz-clase {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.matriz tbody th {
+  width: 10.5rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+}
+
+.matriz tbody td {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.matriz .fila {
+  cursor: pointer;
+}
+
+.matriz .fila:hover td,
+.matriz .fila:hover th {
+  background: var(--surface-hover);
+}
+
+.matriz .fila.activa td {
+  background: color-mix(in srgb, var(--c) 10%, transparent);
+}
+
+.matriz tbody tr.lectura td {
+  font-family: 'Times New Roman', Times, Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--accent-primary) 7%, transparent);
+}
+
+.matriz.tocar tbody th {
+  width: 16rem;
+  color: var(--text);
+}
+
+.matriz.tocar tbody td {
+  font-family: 'Times New Roman', Times, Georgia, serif;
+  font-size: 0.98rem;
+  color: var(--text-muted);
+}
+
+.matriz.tocar tbody td.apagada {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------ 03 · recorridos */
+
+.selector {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--c);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.opcion:hover {
+  background: var(--surface-hover);
+}
+
+.opcion.activa {
+  background: color-mix(in srgb, var(--c) 12%, var(--surface));
+  border-color: var(--c);
+  border-top-color: var(--c);
+}
+
+.opcion-n {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 20%, transparent);
+  color: color-mix(in srgb, var(--c) 78%, #241f19);
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.opcion-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.opcion-nombre {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.opcion-clase {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  line-height: 1.25;
+}
+
+.secuencia-envoltura {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 0.5rem 0;
+}
+
+.secuencia {
+  width: 100%;
+  height: auto;
+}
+
+.pie {
+  flex-shrink: 0;
+  margin: 0.4rem 0 0;
+  font-size: 0.88rem;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--text-faint);
+}
+
+/* Las cabeceras van en HTML, no en el SVG, para que queden fijas al desplazar
+   un recorrido largo: sin ellas a la vista, las flechas dejan de significar nada. */
+.carriles {
+  position: sticky;
+  top: -0.5rem;
+  z-index: 2;
+  height: 3.1rem;
+  margin-bottom: 0.2rem;
+  background: var(--surface);
+  box-shadow: 0 0.4rem 0.4rem -0.35rem color-mix(in srgb, var(--text) 18%, transparent);
+}
+
+.carril-caja {
+  position: absolute;
+  top: 0.3rem;
+  width: 14.28%;
+  min-height: 2.5rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.25rem 0.2rem;
+  border-radius: 9px;
+  border: 1px solid var(--c);
+  background: color-mix(in srgb, var(--c) 13%, var(--surface));
+}
+
+.carril-caja.apagado {
+  opacity: 0.36;
+}
+
+.carril-titulo {
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--c);
+}
+
+.carril-capa {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: var(--text-muted);
+}
+
+.vida {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.vida.apagada {
+  opacity: 0.4;
+}
+
+.corte {
+  stroke: #c0522d;
+  stroke-width: 1.2;
+  stroke-dasharray: 7 4;
+}
+
+.corte-texto {
+  font-size: 10.5px;
+  font-style: italic;
+  fill: #a2431f;
+}
+
+.paso {
+  cursor: pointer;
+}
+
+.paso .zona {
+  fill: transparent;
+}
+
+.paso:hover .zona {
+  fill: color-mix(in srgb, var(--c) 7%, transparent);
+}
+
+.paso.activo .zona {
+  fill: color-mix(in srgb, var(--c) 13%, transparent);
+}
+
+.paso .trazo {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+}
+
+.paso .origen {
+  fill: var(--text-muted);
+}
+
+.paso.vuelta .trazo {
+  stroke-dasharray: 5 3;
+  stroke: var(--text-faint);
+}
+
+.paso.vuelta .origen {
+  fill: var(--text-faint);
+}
+
+.paso.activo .trazo,
+.paso.activo .origen {
+  stroke: var(--c);
+  fill: none;
+  stroke-width: 2.2;
+}
+
+.paso.activo .origen {
+  fill: var(--c);
+}
+
+.fondo-texto {
+  fill: var(--surface);
+}
+
+.paso.activo .fondo-texto {
+  fill: color-mix(in srgb, var(--c) 13%, var(--surface));
+}
+
+.paso-etiqueta {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  fill: var(--text);
+}
+
+.paso.vuelta .paso-etiqueta {
+  fill: var(--text-muted);
+}
+
+.paso.activo .paso-etiqueta {
+  font-weight: 700;
+}
+
+.paso-etiqueta .paso-n {
+  fill: var(--text-faint);
 }
 
 /* ------------------------------------------------------------- panel dcha */
@@ -329,32 +748,32 @@
 
 .panel-cabecera {
   flex-shrink: 0;
-  padding: 1.1rem 1.3rem 0.9rem;
+  padding: 1rem 1.2rem 0.85rem;
   border-bottom: 1px solid var(--border);
 }
 
 .chip {
   display: inline-block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
   background: color-mix(in srgb, var(--c) 16%, transparent);
   color: color-mix(in srgb, var(--c) 75%, #241f19);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 600;
 }
 
 .panel-cabecera h2 {
-  margin: 0 0 0.45rem;
-  font-size: 1.55rem;
+  margin: 0 0 0.4rem;
+  font-size: 1.45rem;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .analogia {
   margin: 0;
-  font-size: 1.08rem;
-  line-height: 1.5;
+  font-size: 1.02rem;
+  line-height: 1.45;
   color: var(--text-muted);
 }
 
@@ -362,12 +781,12 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 1rem 1.3rem 1.3rem;
+  padding: 0.9rem 1.2rem 1.2rem;
 }
 
 .panel-cuerpo h3 {
-  margin: 1.1rem 0 0.5rem;
-  font-size: 0.92rem;
+  margin: 1rem 0 0.45rem;
+  font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -378,28 +797,109 @@
   margin-top: 0;
 }
 
+.refs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.ref {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  border: 1px solid var(--border);
+}
+
+.ref-etiqueta {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.ref-valor {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
 .lista {
   margin: 0;
   padding-left: 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 1.02rem;
-  line-height: 1.45;
-}
-
-.lista.no {
-  color: var(--text-muted);
-}
-
-.lista.no li::marker {
-  content: '× ';
+  gap: 0.35rem;
+  font-size: 0.99rem;
+  line-height: 1.4;
 }
 
 .habla {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 0.99rem;
   line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.nota {
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border-left: 3px solid var(--c);
+  border-radius: 0 8px 8px 0;
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+  font-size: 0.96rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.nuevo {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px dashed var(--c);
+  background: color-mix(in srgb, var(--c) 7%, transparent);
+}
+
+.nuevo-etiqueta {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--c) 75%, #241f19);
+}
+
+.nuevo p {
+  margin: 0;
+  font-size: 0.97rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.paso-titulo {
+  margin: 0 0 0.5rem;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.ruta {
+  margin: 0;
+}
+
+.ruta code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  word-break: break-word;
   color: var(--text-muted);
 }
 
@@ -409,14 +909,14 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .archivos li {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  padding: 0.45rem 0.6rem;
+  padding: 0.4rem 0.55rem;
   border-radius: 8px;
   background: color-mix(in srgb, var(--bg) 60%, transparent);
   border: 1px solid var(--border);
@@ -424,168 +924,32 @@
 
 .archivos code {
   font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text);
   word-break: break-word;
 }
 
 .archivos span {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-}
-
-/* ----------------------------------------------------------------- flujo */
-
-.pasos {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-}
-
-.lista-pasos {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0 0.3rem 0.3rem 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.paso-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.5rem 0.8rem;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  border-left: 4px solid var(--c);
-  background: var(--surface);
-  color: var(--text);
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
-
-.paso-item:hover {
-  background: var(--surface-hover);
-}
-
-.paso-item.activo {
-  border-color: var(--c);
-  background: color-mix(in srgb, var(--c) 12%, var(--surface));
-}
-
-.paso-n {
-  flex-shrink: 0;
-  width: 1.7rem;
-  height: 1.7rem;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--c) 20%, transparent);
-  color: color-mix(in srgb, var(--c) 78%, #241f19);
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.paso-texto {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.paso-titulo {
-  font-size: 1.03rem;
-  line-height: 1.3;
-}
-
-.paso-capa {
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.78rem;
-  color: var(--text-faint);
-}
-
-.ruta {
-  margin: 0;
-}
-
-.ruta code,
-.contrato code {
-  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  word-break: break-word;
-}
-
-.contrato {
-  margin-top: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.contrato-fila {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
-}
-
-.etiqueta {
-  align-self: flex-start;
-  padding: 0.1rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.etiqueta.envia {
-  background: color-mix(in srgb, #3f6fd6 18%, transparent);
-  color: #1f3f8c;
-}
-
-.etiqueta.devuelve {
-  background: color-mix(in srgb, #2a9468 18%, transparent);
-  color: #196242;
-}
-
-.nota {
-  margin: 1rem 0 0;
-  padding: 0.6rem 0.8rem;
-  border-left: 3px solid var(--c);
-  border-radius: 0 8px 8px 0;
-  background: color-mix(in srgb, var(--c) 8%, transparent);
-  font-size: 0.98rem;
-  line-height: 1.45;
+  font-size: 0.92rem;
   color: var(--text-muted);
 }
 
 .navegacion {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
-  margin-top: 1.2rem;
+  margin-top: 1.1rem;
+  flex-wrap: wrap;
 }
 
 .navegacion button {
-  padding: 0.45rem 1rem;
+  padding: 0.4rem 0.95rem;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text-muted);
   font-family: inherit;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   cursor: pointer;
 }
 
@@ -599,92 +963,99 @@
   cursor: default;
 }
 
-/* ------------------------------------------------------------- por qué así */
+.tecla {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+/* -------------------------------------------------------- 04 · por qué así */
 
 .bloque + .bloque {
-  margin-top: 1.8rem;
+  margin-top: 1.6rem;
 }
 
 .bloque-titulo {
-  margin: 0 0 0.9rem;
-  font-size: 1.3rem;
+  margin: 0 0 0.7rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
   border-bottom: 1px solid var(--border);
 }
 
 .grid {
   display: grid;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .grid.reglas {
-  grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
-}
-
-.grid.beneficios {
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
 }
 
 .tarjeta {
-  padding: 0.9rem 1.1rem;
+  padding: 0.85rem 1rem;
   border-radius: 10px;
   border: 1px solid var(--border);
   border-left: 4px solid var(--accent-primary);
   background: var(--surface);
 }
 
-.tarjeta.suave {
-  border-left-color: var(--border);
-}
-
 .tarjeta h3 {
-  margin: 0 0 0.4rem;
-  font-size: 1.12rem;
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
 .tarjeta p {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.45;
+  font-size: 0.99rem;
+  line-height: 1.4;
   color: var(--text-muted);
+}
+
+.tarjeta .prueba {
+  margin-top: 0.5rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border);
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-faint);
 }
 
 /* ------------------------------------------------------------ adaptaciones */
 
-@media (max-width: 1100px) {
-  .dos-columnas {
+@media (max-width: 1200px) {
+  .dos-columnas,
+  .dos-columnas.ancho,
+  .patron-fila {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
     overflow-y: auto;
   }
 
-  .mapa {
-    grid-template-columns: minmax(0, 1fr);
-    overflow: visible;
+  .lienzo {
+    height: auto;
   }
 
-  .rail {
-    flex-direction: row;
-    padding-top: 1rem;
+  .grafo {
+    max-height: 60vh;
   }
 
   .panel {
     max-height: none;
   }
+
+  .secuencia-envoltura {
+    overflow: visible;
+  }
 }
 
 @media (max-width: 640px) {
   .slide {
-    padding: 1.4rem 1rem 1rem;
+    padding: 1.2rem 0.9rem 0.9rem;
   }
 
-  .metricas {
+  .tab-label {
     display: none;
-  }
-
-  .rail {
-    flex-direction: column;
   }
 }

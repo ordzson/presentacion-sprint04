@@ -601,9 +601,6 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Contratos.Motor.CohorteMotor': {
     s: 'Cohorte vista por el motor. Es una de las tres cosas que no se pueden solapar, junto con el docente y el aula: un grupo no puede estar en dos clases a la vez.',
   },
-  'Horarios.Contratos.Motor.DecisionManualMotor': {
-    s: 'Ubicación que una persona fija a mano para una sesión: este docente, esta aula, esta casilla. Es el punto de partida de una reparación local.',
-  },
   'Horarios.Contratos.Motor.DesglosePuntajeBlando': {
     s: 'Penalización acumulada por cada preferencia, ya multiplicada por su peso. Sirve para ver de dónde viene el castigo de un horario, no solo cuánto es.\n\nMenos es mejor: cero sería el horario perfecto.',
     m: {
@@ -645,12 +642,6 @@ export const DOCS: Record<string, DocClase> = {
       'Ejecutar': { f: 'ResultadoMotor Ejecutar(InstantaneaMotor instantanea, CancellationToken cancellationToken = default)', s: 'Arma el horario. Es una función pura sobre la instantánea: no lee ni escribe nada fuera, así que la misma entrada da siempre la misma salida.', p: [['cancellationToken', 'Corta la ejecución. La fase de mejora lo respeta y devuelve lo mejor que llevaba, que siempre es un horario válido.']], l: 428 },
     },
   },
-  'Horarios.Contratos.Motor.IReparadorHorarioLocal': {
-    s: 'Acomoda un horario existente alrededor de un cambio manual, moviendo lo mínimo. Se usa cuando alguien corrige una sesión a mano y hay que reacomodar las vecinas sin volver a generar todo desde cero.',
-    m: {
-      'Reparar': { f: 'ResultadoReparacionLocal Reparar(InstantaneaMotor instantanea, ResultadoMotor original, DecisionManualMotor decision, int maximoVecinos = 12, CancellationToken cancellationToken = default)', p: [['original', 'Horario del que se parte.'], ['decision', 'Ubicación que se quiere fijar.'], ['maximoVecinos', 'Cuántas sesiones alrededor se permite mover como mucho. Acota el daño y el tiempo: si con ese margen no alcanza, se desiste.']], l: 507 },
-    },
-  },
   'Horarios.Contratos.Motor.IVerificadorHorario': {
     s: 'Revisa un horario ya armado contra las reglas duras. Es una segunda opinión independiente del motor: comprueba el resultado sin confiar en cómo se produjo, y así un error del motor no pasa desapercibido.',
   },
@@ -658,7 +649,7 @@ export const DOCS: Record<string, DocClase> = {
     s: 'Identificador de una casilla del horario. Se deriva de jornada, día e índice, así que la misma casilla tiene el mismo identificador en toda ejecución y en toda versión: es lo que permite comparar dos horarios casilla por casilla.',
   },
   'Horarios.Contratos.Motor.IdentificadorDeterminista': {
-    s: 'Convierte un texto estable en un identificador siempre igual. Así una misma sesión o bloque conserva su identificador entre ejecuciones y puede referenciarse al reparar o al comparar versiones.',
+    s: 'Convierte un texto estable en un identificador siempre igual. Así una misma sesión o bloque conserva su identificador entre ejecuciones, y regenerar un plan reescribe sus propias filas en lugar de duplicarlas.',
     m: {
       'Crear': { f: 'public static Guid Crear(string valor)', s: 'Deriva el identificador del hash SHA-256 del texto. Los dos ajustes de bits marcan el resultado como un UUID versión 5 en su forma estándar, para que la base de datos y cualquier herramienta lo acepten como un identificador normal.', l: 24 },
     },
@@ -676,17 +667,6 @@ export const DOCS: Record<string, DocClase> = {
       'Sesiones': { f: 'public ImmutableArray<SesionRequeridaMotor> Sesiones { get; }', s: 'Las clases que hay que colocar. Es el trabajo a repartir.', l: 351 },
       'TiempoMaximoMejora': { f: 'public TimeSpan TiempoMaximoMejora { get; }', s: 'Presupuesto de reloj para la fase de mejora. Al agotarse se devuelve la mejor solución encontrada hasta ese momento, que siempre es válida.', l: 369 },
       'TipoPlan': { f: 'public TipoPlanMotor TipoPlan { get; }', s: 'Si se está armando horario de clases o calendario de exámenes.', l: 363 },
-    },
-  },
-  'Horarios.Contratos.Motor.PerfilTrabajoPesadoDto': {
-    s: 'Medición de un trabajo pesado que se ejecutó en segundo plano, como una generación de horario. Sirve para ver dónde se va el tiempo y la memoria sin adivinar.',
-    m: {
-      'Error': { s: 'Mensaje de la excepción cuando falló; en nulo si salió bien.' },
-      'Exitoso': { s: 'Falso si el trabajo terminó con error. Una cancelación no cuenta como error y no genera perfil.' },
-      'Inicio': { s: 'Cuándo arrancó, en UTC.' },
-      'MemoriaAsignadaBytes': { s: 'Cuánta memoria pidió mientras corría. Es lo asignado en total, no lo que quedó ocupado al final.' },
-      'TiempoEjecucionMs': { s: 'Cuánto tardó de reloj, en milisegundos.' },
-      'Trabajo': { s: 'Nombre con que se encoló, para saber qué se midió.' },
     },
   },
   'Horarios.Contratos.Motor.PonderacionesRestriccionesBlandas': {
@@ -713,14 +693,6 @@ export const DOCS: Record<string, DocClase> = {
     m: {
       'PuntajeFinal': { s: 'Calidad al terminar. Comparado con el inicial dice cuánto ganó la fase de mejora; ambos van en nulo si no se evaluó.' },
       'PuntajeInicial': { s: 'Calidad de la primera colocación, antes de mejorar.' },
-    },
-  },
-  'Horarios.Contratos.Motor.ResultadoReparacionLocal': {
-    s: 'Resultado de reacomodar un horario alrededor de un cambio manual.',
-    m: {
-      'FueExitoso': { s: 'Falso cuando no se encontró acomodo sin romper reglas. En ese caso `Resultado` viene sin cambios: el horario original se conserva.' },
-      'Mensaje': { s: 'Explicación en español de qué pasó.' },
-      'SesionesMovidas': { s: 'Qué sesiones hubo que correr para que el cambio cupiera. Es lo que se le muestra a quien hizo el cambio.' },
     },
   },
   'Horarios.Contratos.Motor.ResultadoVerificacion': {
@@ -773,25 +745,6 @@ export const DOCS: Record<string, DocClase> = {
     m: {
       'CambiadoPorId': { s: 'Usuario que lo hace, para el historial.' },
       'Motivo': { s: 'Por qué se hace el cambio. Es obligatorio: es lo único que queda escrito de la decisión.' },
-    },
-  },
-  'Horarios.Contratos.Planes.CambioSesionVersionDto': {
-    s: 'Una diferencia concreta entre una versión de horario y la anterior: qué cambió de una sesión y de qué a qué. Se guarda campo por campo, no la sesión entera, para que al revisar se vea exactamente qué se movió.',
-    m: {
-      'Campo': { s: 'Qué se cambió («Docente», «Aula», «Dia», «Duracion», …).' },
-      'ValorDerivado': { s: 'Cómo quedó en la versión nueva, en texto.' },
-      'ValorOriginal': { s: 'Cómo estaba en la versión de origen, en texto.' },
-    },
-  },
-  'Horarios.Contratos.Planes.ComparacionVersionDto': {
-    s: 'Comparación entre un horario y la versión que se derivó de él: qué se cambió a mano, qué tuvo que reacomodar el motor y qué quedó mal.',
-    m: {
-      'Cambios': { s: 'Todas las diferencias entre las dos versiones.' },
-      'Conflictos': { s: 'Problemas que quedaron en la versión derivada.' },
-      'EstadoReparacion': { s: 'Cómo salió el reacomodo automático que siguió al cambio manual. Viaja como texto porque lo resuelve la base de datos.' },
-      'MensajeReparacion': { s: 'Explicación en español de ese reacomodo.' },
-      'NumeroVersion': { s: 'Cuál versión es la derivada dentro de su cadena.' },
-      'SesionesMovidas': { s: 'Sesiones que el reacomodo tuvo que correr, más allá de la que se cambió a mano.' },
     },
   },
   'Horarios.Contratos.Planes.ConteosRevisionPlan': {
@@ -863,13 +816,6 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Contratos.Planes.ResultadoGeneracionPlanDto': {
     s: 'Todo lo que deja una generación: el registro de la corrida, el horario crudo del motor y el veredicto de la verificación independiente.',
   },
-  'Horarios.Contratos.Planes.ResultadoReparacionVersionDto': {
-    s: 'Resultado de ese reacomodo.',
-    m: {
-      'FueExitoso': { s: 'Falso cuando no se encontró acomodo sin romper reglas; en ese caso el horario queda como estaba.' },
-      'SesionesMovidas': { s: 'Qué sesiones hubo que correr, para mostrárselas a quien pidió el cambio.' },
-    },
-  },
   'Horarios.Contratos.Planes.ResultadoRevisionPlanDto': {
     s: 'Diagnóstico previo a generar: dice si vale la pena arrancar el motor y qué falta si no. Evita esperar una generación completa para descubrir que faltaban datos base.',
     m: {
@@ -885,13 +831,6 @@ export const DOCS: Record<string, DocClase> = {
       'IndiceSlotInicio': { s: 'Primer slot ocupado dentro del día.' },
       'MinutoFin': { s: 'Minuto del día en que termina.' },
       'MinutoInicio': { s: 'Minuto del día en que empieza, contando desde medianoche. Va calculado para que la pantalla ubique la clase sin conocer la jornada.' },
-    },
-  },
-  'Horarios.Contratos.Planes.SolicitudReparacionVersionDto': {
-    s: 'Petición de reacomodar una versión alrededor de una sesión que se quiere dejar quieta.',
-    m: {
-      'MaximoVecinos': { s: 'Cuántas sesiones alrededor se permite mover como mucho. Acota el daño y el tiempo: si con ese margen no alcanza, se desiste.' },
-      'SesionFijadaId': { s: 'Sesión que no se debe mover; todo lo demás se acomoda alrededor de ella.' },
     },
   },
   'Horarios.Contratos.Planes.TipoPlanHorarioDto': {
@@ -1506,17 +1445,6 @@ export const DOCS: Record<string, DocClase> = {
       'EliminarAsync': { f: 'public async Task EliminarAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Borra un plan que todavía no ha avanzado.\n\nSolo se admite en borrador o recién generado: a partir de revisión el plan ya entró en un circuito de aprobación del que tiene que quedar rastro, y para eso está archivarlo.', e: [['UnauthorizedAccessException', 'Sin el permiso planes:actualizar.'], ['KeyNotFoundException', 'El plan no existe.'], ['InvalidOperationException', 'El plan ya pasó de generado.']], l: 62 },
     },
   },
-  'Horarios.Aplicacion.Planes.GestionarVersionHorario': {
-    s: 'Comparación y reparación de versiones de horario.\n\nCuando alguien corrige una sesión a mano, las vecinas pueden quedar en conflicto. Reparar reacomoda lo mínimo alrededor del cambio en vez de volver a generar todo, que movería sesiones que nadie pidió tocar.',
-    m: {
-      'CompararAsync': { f: 'public Task<ComparacionVersionDto> CompararAsync(Guid horarioDerivadoId, CancellationToken cancellationToken = default)', s: 'Devuelve qué cambió entre una versión y aquella de la que salió.', e: [['UnauthorizedAccessException', 'Sin el permiso planes:actualizar.'], ['ArgumentException', 'No se indicó la versión derivada.']], l: 98 },
-      'ExigirPermiso': { f: 'private void ExigirPermiso()', s: 'Comparar y reparar piden el mismo permiso: ambas cosas se hacen sobre un plan que se está ajustando a mano.', l: 151 },
-      'RepararAsync': { f: 'public async Task<ResultadoReparacionVersionDto> RepararAsync(SolicitudReparacionVersionDto solicitud, CancellationToken cancellationToken = default)', s: 'Reacomoda la versión alrededor de la sesión que se quiere dejar quieta, y guarda el resultado.\n\nEl tope de vecinos se limita a 50: por encima de eso ya no es una reparación local sino una regeneración encubierta, más lenta y con más sesiones movidas de las que nadie esperaba ver cambiar.\n\nQue el reparador no encuentre acomodo no es un error: se guarda igual, con el motivo, para que quede constancia de que se intentó.', e: [['UnauthorizedAccessException', 'Sin el permiso planes:actualizar, o la sesión no identifica al usuario.'], ['ArgumentException', 'Falta la versión derivada o la sesión fijada.'], ['ArgumentOutOfRangeException', 'El tope de vecinos está fuera de 0 a 50.']], l: 123 },
-    },
-  },
-  'Horarios.Aplicacion.Planes.IDatosComparacionVersiones': {
-    s: 'Puerto hacia la comparación entre una versión de horario y aquella de la que salió.',
-  },
   'Horarios.Aplicacion.Planes.IDatosPlanes': {
     s: 'Puerto hacia la persistencia de planes de horario.',
     m: {
@@ -1527,13 +1455,6 @@ export const DOCS: Record<string, DocClase> = {
       'GuardarCambioEstadoAsync': { f: 'Task<PlanHorario> GuardarCambioEstadoAsync(PlanHorario plan, EstadoHorario estadoAnterior, long versionAnterior, Guid? cambiadoPorId, CancellationToken cancellationToken = default)', s: 'Guarda el cambio de estado y lo deja anotado en el historial.\n\n`versionAnterior` es el control de concurrencia: si la fila cambió desde que se leyó, la escritura se rechaza en vez de pisar el trabajo de otro. El estado anterior se guarda para que el historial diga de dónde a dónde se movió.', l: 29 },
       'ListarAsync': { f: 'Task<IReadOnlyList<PlanHorario>> ListarAsync(Guid? periodoId, TipoPlanHorario? tipo, CancellationToken cancellationToken = default)', s: 'Planes, filtrados por período y tipo. Ambos filtros en nulo devuelven todos.', l: 18 },
       'ObtenerAsync': { f: 'Task<PlanHorario?> ObtenerAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Un plan por su identificador, o nulo si no existe.', l: 14 },
-    },
-  },
-  'Horarios.Aplicacion.Planes.IDatosReparacionVersiones': {
-    s: 'Puerto hacia la reparación de versiones: leer lo necesario antes y guardar el resultado después. Reacomodar en sí no es cosa suya, sino de `IReparadorHorarioLocal`.',
-    m: {
-      'GuardarReparacionAsync': { f: 'Task GuardarReparacionAsync(Guid horarioDerivadoId, ResultadoReparacionLocal resultado, IReadOnlyDictionary<Guid, UbicacionBloquePersistida> ubicaciones, Guid usuarioId, CancellationToken cancellationToken = default)', s: 'Escribe el horario reacomodado y deja constancia de quién lo pidió.', l: 59 },
-      'PrepararReparacionAsync': { f: 'Task<PreparacionReparacionVersion> PrepararReparacionAsync(Guid horarioDerivadoId, Guid sesionFijadaId, CancellationToken cancellationToken = default)', s: 'Reúne de la base de datos todo lo que el reparador va a necesitar.', l: 51 },
     },
   },
   'Horarios.Aplicacion.Planes.IDatosRevisionPlanes': {
@@ -1548,61 +1469,73 @@ export const DOCS: Record<string, DocClase> = {
       'EjecutarAsync': { f: 'public Task<IReadOnlyList<PlanHorario>> EjecutarAsync(Guid? periodoId = null, TipoPlanHorarioDto? tipo = null, CancellationToken cancellationToken = default)', s: 'Sin filtros devuelve todos los planes. Un período nulo significa «cualquiera», pero un período vacío es un error: delata un desplegable sin elegir, no una intención de no filtrar.', e: [['ArgumentException', 'Se pasó un período vacío.']], l: 24 },
     },
   },
-  'Horarios.Aplicacion.Planes.PreparacionReparacionVersion': {
-    s: 'Todo lo que hace falta para reparar una versión, leído de una vez: la foto de datos, el horario tal como está hoy, la ubicación que se quiere fijar y la traducción de bloques a día y hora.',
-  },
   'Horarios.Aplicacion.Planes.RevisarDatosPlan': {
     s: 'Diagnóstico previo a generar: cuenta lo que hay y dice qué falta, en español.\n\nExiste para que el error se vea en los datos y no en un horario vacío media hora después. Lo llama la pantalla antes de ofrecer el botón de generar, y lo vuelve a llamar `GenerarHorarioPlan` antes de arrancar el motor.',
     m: {
       'EjecutarAsync': { f: 'public async Task<ResultadoRevisionPlanDto> EjecutarAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Revisa el plan y devuelve el veredicto con la lista de lo que falta.\n\nCuando no hay cohortes, el mensaje cambia según el plan cubra todo el período o solo una parte: no es lo mismo que el período esté vacío que haber elegido un alcance donde no cae nadie, y confundirlos lleva a buscar el problema en el sitio equivocado.', e: [['ArgumentException', 'No se indicó el plan.'], ['InvalidOperationException', 'El plan no existe.']], l: 47 },
     },
   },
-  'Horarios.Aplicacion.Planes.UbicacionBloquePersistida': {
-    s: 'Dónde cae de verdad un bloque, en los términos que guarda la base de datos: día en texto y minutos del día.\n\nEl motor solo maneja identificadores de bloque; esto es la traducción que hace falta para escribir el resultado, y se prepara antes de reparar para no tener que recalcularla después.',
-  },
   'Horarios.Scheduler.Candidatos': {
     s: 'Docentes, aulas y bloques que una sesión puede usar sin romper reglas duras.',
     m: {
-      'Combinaciones': { f: 'public long Combinaciones', s: 'Tamaño del espacio de búsqueda de la sesión, para ordenarlas.', l: 314 },
+      'Combinaciones': { f: 'public long Combinaciones', s: 'Tamaño del espacio de búsqueda de la sesión, para poder ordenarlas.', l: 79 },
     },
   },
-  'Horarios.Scheduler.CatalogoCandidatos': {
-    s: 'Resuelve, antes de empezar, los candidatos de cada sesión. El filtrado se hace una sola vez por perfil —las sesiones equivalentes comparten la misma lista, que es lo que evita repetirlo por cada bloque semanal— y la búsqueda queda con una consulta por identificador de sesión. Hacerlo aquí importa porque la mejora local pide los candidatos de cada sesión en cada pasada: armar allí la clave del perfil costaba más que el filtro que la clave evitaba.',
-  },
-  'Horarios.Scheduler.CostoBlandoIncremental': {
-    s: 'Mantiene el puntaje de restricciones blandas por partes independientes para poder recalcular solo lo que cambia al mover una sesión, en vez de volver a puntuar el horario completo (contexto.md §7.2: evaluación incremental de costos).\n\nLa fase de mejora del motor evalúa cientos de miles de candidatos, y cada candidato son dos llamadas a `Mover`, así que el camino caliente no puede asignar memoria. Al construirse, cada sesión, bloque, aula, docente, cohorte y curso recibe una posición densa; a partir de ahí todo ocurre sobre arreglos y buffers reutilizados. No se arman cadenas de clave ni consultas LINQ por movimiento.\n\nEl total coincide siempre con `EvaluadorRestriccionesBlandas`; la prueba `CostoBlandoIncrementalTests` lo comprueba.',
+  'Horarios.Scheduler.ColaTrabajosPesados': {
+    s: 'Cola de trabajos que tardan más de lo que una petición web debería esperar, como generar un horario. La página encola y responde; un servicio en segundo plano va vaciando la cola.\n\nLa capacidad está acotada a propósito: si se llena, encolar falla con un mensaje claro en lugar de aceptar trabajo que nunca se va a alcanzar a procesar.',
     m: {
-      'CopiarOrdenadoPorDiaYSlot': { f: 'private int CopiarOrdenadoPorDiaYSlot(List<int> grupo, bool soloPreferenciaConsecutiva)', s: 'Copia el grupo al buffer ordenado por día y slot. Es una ordenación por inserción porque los grupos son de unas pocas sesiones: evita el arreglo intermedio y el comparador que exigiría `OrderBy` en un camino que se recorre sin parar. Es estable, como `OrderBy`, así que los empates conservan el orden del grupo.', l: 289 },
-      'CopiarSlotsDistintosOrdenados': { f: 'private int CopiarSlotsDistintosOrdenados(List<int> grupo)', s: 'Copia al buffer los slots de inicio distintos del grupo, ya ordenados. El evaluador mide las ventanas sobre slots distintos: dos sesiones a la misma hora son una sola franja ocupada.', l: 320 },
-      'Mover': { f: 'public void Mover(SesionAsignadaMotor nueva)', s: 'Reemplaza la asignación de una sesión y recalcula solo lo afectado: su grupo de curso, los pares (cohorte, día) y (docente, día) que deja y los que ocupa. Las asignaciones que no pertenecen a la instantánea se ignoran, igual que hace `EvaluadorRestriccionesBlandas`.', l: 131 },
+      'Encolar': { f: 'public Guid Encolar(string nombre, Func<CancellationToken, Task> trabajo)', s: 'Deja un trabajo en la cola y devuelve su identificador.', e: [['ArgumentException', 'El nombre viene vacío.'], ['InvalidOperationException', 'La cola está llena.']], l: 25 },
+      'ProcesarSiguienteAsync': { f: 'public async Task<bool> ProcesarSiguienteAsync(CancellationToken cancellationToken = default)', s: 'Ejecuta el siguiente trabajo de la cola.', r: 'Falso cuando no había nada que hacer.', l: 45 },
     },
+  },
+  'Horarios.Scheduler.EvaluadorRestriccionesBlandas': {
+    s: 'Mide qué tan conveniente es un horario ya armado.\n\nTodo lo que llega aquí cumple ya las reglas obligatorias; esto solo puntúa preferencias: sesiones del mismo curso que quedaron sueltas, ventanas muertas de una cohorte, días que terminan tarde sin necesidad, caminatas del docente entre clases seguidas y desbalance de carga. Menos puntaje es mejor.\n\nEs la única definición del puntaje blando: la usa el motor para decidir si un movimiento mejora el horario, y también para informar la calidad inicial y final de la generación.',
   },
   'Horarios.Scheduler.ExpansorSesiones': {
     m: {
       'Expandir': { f: 'public ImmutableArray<SesionRequeridaMotor> Expandir(Guid planId, IEnumerable<RequisitoCursoMotor> requisitos)', s: 'Expande los requisitos del período en las sesiones semanales que el motor debe colocar.\n\nEl identificador de cada sesión se deriva del plan, del grupo y del número de sesión: así regenerar el mismo plan reescribe sus propias filas, y dos planes del mismo período —dos versiones del mismo horario, por ejemplo— no compiten por la misma clave primaria de `horarios.sesiones`, que es global y no por horario.', l: 17 },
     },
   },
-  'Horarios.Scheduler.MotorHorario': {
-    s: 'Motor de generación de horarios.\n\nTrabaja en dos fases, tal como describe contexto.md §7.2: 1. Construcción voraz con la regla "más restringido primero": la sesión con menos combinaciones factibles se coloca antes que las demás. 2. Mejora local por primera mejora: se recorren las sesiones ya colocadas buscando un hueco que baje el puntaje blando, conservando siempre un horario válido.\n\nAmbas fases consultan `OcupacionHorario` (índices de ocupación) y `CostoBlandoIncremental` (recálculo solo de lo afectado), de modo que el costo de evaluar un candidato no crece con el tamaño del horario.\n\nLa mejora está acotada por número de pasadas y por presupuesto de reloj, y comprueba la cancelación dentro del bucle de candidatos.',
+  'Horarios.Scheduler.MejoraLocal': {
+    s: 'Mejora local por primera mejora.\n\nPara cada sesión ya colocada: se retira del horario —para que su propia ocupación no bloquee sus propios candidatos—, se prueban los pares (bloque, aula) que no rompen ninguna regla dura y se acepta el primero que baje el puntaje blando. El docente no se toca: cambiarlo rompería la continuidad del curso, que es una regla dura.\n\nSe repiten pasadas mientras alguna encuentre mejoras. Cada candidato se puntúa evaluando el horario completo, que es caro, así que el reloj se comprueba dentro del bucle de candidatos y no solo entre sesiones. Al agotarse el presupuesto se devuelve lo mejor encontrado hasta ese momento, que siempre es un horario válido.',
     m: {
-      'BuscarMovimientoQueMejora': { f: 'private static SesionAsignadaMotor? BuscarMovimientoQueMejora(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacionActual, CatalogoCandidatos catalogo, OcupacionHorario ocupacion, CostoBlandoIncremental costo, ref decimal mejorCosto, CancellationToken cancellationToken)', s: 'Busca un hueco mejor para una sesión conservando su docente: cambiarlo rompería la continuidad del curso, que es una restricción dura (contexto.md §7.3.11).', l: 242 },
-      'CargaMaximaAlcanzada': { f: 'private static bool CargaMaximaAlcanzada(DocenteMotor docente, IReadOnlyDictionary<Guid, HashSet<string>> cursosPorDocente)', s: 'Indica si el docente ya llegó a su tope de cursos distintos. Un docente que todavía no tiene cursos asignados no aparece en el diccionario, y en ese caso su carga es cero.', l: 161 },
+      'BuscarMovimiento': { f: 'private SesionAsignadaMotor? BuscarMovimiento(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacion, CancellationToken cancellationToken)', s: 'Primera colocación válida que baje el puntaje para una sesión ya retirada de la ocupación, o nulo si ninguna lo baja. El horario de trabajo se deja como estaba: cada candidato se escribe solo para puntuarlo y se deshace enseguida.', l: 333 },
+      'Puntuar': { f: 'private decimal Puntuar(Guid sesionId, SesionAsignadaMotor candidata, SesionAsignadaMotor original)', s: 'Puntúa el horario completo como quedaría con esa colocación, y deja el horario de trabajo tal como estaba.', l: 374 },
+      'SinPresupuesto': { f: 'private bool SinPresupuesto', s: '¿Se acabó el tiempo que la instantánea concede a la mejora?', l: 275 },
+      'UnaPasada': { f: 'private bool UnaPasada(IReadOnlyList<Guid> orden, CancellationToken cancellationToken)', s: 'Recorre todas las sesiones una vez, moviendo las que puedan mejorar.', r: 'Verdadero si movió alguna; en falso ya no hay nada que ganar.', l: 296 },
+    },
+  },
+  'Horarios.Scheduler.MotorHorario': {
+    s: 'Motor de generación de horarios.\n\nTrabaja en dos fases: 1. Construcción voraz con la regla «más restringido primero»: la sesión con menos combinaciones factibles se coloca antes que las demás, porque es la que menos alternativas tiene si otra le ocupa el sitio. 2. Mejora local por primera mejora: se recorren las sesiones ya colocadas buscando un hueco que baje el puntaje blando, conservando siempre un horario válido.\n\nLas reglas obligatorias las deciden `ReglasDuras` (autorización, capacidad, recursos) y `OcupacionHorario` (choques y disponibilidad). La calidad la mide `EvaluadorRestriccionesBlandas`.\n\nLa mejora está acotada por número de pasadas y por presupuesto de reloj, y comprueba tanto el reloj como la cancelación dentro del bucle de candidatos.',
+    m: {
+      'CalcularCandidatos': { f: 'private static Dictionary<Guid, Candidatos> CalcularCandidatos(InstantaneaMotor instantanea, OcupacionHorario ocupacion)', s: 'Resuelve, antes de empezar, qué docentes, aulas y bloques puede usar cada sesión. Se hace una sola vez porque las reglas duras que dependen solo de la sesión no cambian durante la ejecución: lo que cambia es quién está ocupado, y eso lo lleva `OcupacionHorario`.\n\nEl orden de cada lista es el orden en que la búsqueda los va a probar: bloques en orden cronológico, docentes de mayor prioridad primero y aulas de menor capacidad suficiente primero, para no gastar las aulas grandes en grupos pequeños.', l: 92 },
+      'CargaMaximaAlcanzada': { f: 'private static bool CargaMaximaAlcanzada(DocenteMotor docente, IReadOnlyDictionary<Guid, HashSet<string>> cursosPorDocente)', s: 'Indica si el docente ya llegó a su tope de cursos distintos. Un docente que todavía no tiene cursos asignados no aparece en el diccionario, y en ese caso su carga es cero.', l: 210 },
+      'Diagnosticar': { f: 'private static string Diagnosticar(string claveCurso, Candidatos candidatos, IReadOnlyDictionary<string, Guid> docentePorCurso, IReadOnlyDictionary<Guid, HashSet<string>> cursosPorDocente)', s: 'Explica en español por qué una sesión no encontró sitio. Se revisan las causas de la más concreta a la más general, para que el mensaje señale lo que de verdad falta.', l: 390 },
       'Ejecutar': { h: 'Horarios.Contratos.Motor.IMotorHorarios' },
+      'OrdenarMasRestringidaPrimero': { f: 'private static IEnumerable<SesionRequeridaMotor> OrdenarMasRestringidaPrimero(InstantaneaMotor instantanea, IReadOnlyDictionary<Guid, Candidatos> candidatos)', s: 'Ordena las sesiones de menos a más combinaciones posibles. Una sesión con un solo laboratorio y un solo docente autorizado tiene que elegir antes que una que cabe en cualquier aula, o se quedará sin sitio.', l: 161 },
     },
   },
   'Horarios.Scheduler.OcupacionHorario': {
-    s: 'Índice de ocupación del horario en construcción.\n\nTraduce cada par (día, slot) a una posición fija de un arreglo y mantiene un mapa de bits por docente, por aula y por cohorte. Preguntar si un candidato cabe cuesta lo mismo tenga el horario diez o diez mil sesiones, en lugar de recorrer todas las asignaciones ya hechas (contexto.md §7.2: índices y bitsets para ocupación).',
+    s: 'Quién está ocupado y cuándo, mientras el motor arma el horario.\n\nUna clase ocupa tres cosas a la vez: el docente, el aula y las cohortes. Aquí se anota cada una de ellas en las casillas (día, slot) que usa, y preguntar si un candidato cabe es preguntar si esas casillas están libres.\n\nUna sesión de varios slots ocupa slots consecutivos del mismo día, así que todos los métodos recorren la duración completa y no solo el slot de inicio.',
     m: {
-      'CabeEnLaJornada': { f: 'public bool CabeEnLaJornada(SesionRequeridaMotor sesion, BloqueMotor bloque)', s: 'Comprueba que la jornada tenga slots asignables consecutivos para cubrir la sesión completa desde el bloque indicado. Los descansos no llegan a la instantánea, así que una sesión que los cruzara no encontraría slot.', l: 76 },
-      'TotalPosiciones': { f: 'public int TotalPosiciones { get; }', s: 'Cantidad de posiciones (día × slot) que cubre una semana completa.', l: 63 },
+      'AulaLibre': { f: 'public bool AulaLibre(Guid aulaId, BloqueMotor bloque, int duracionSlots)', s: 'El aula no tiene ya otra clase en esos slots.', l: 102 },
+      'CabeEnLaJornada': { f: 'public bool CabeEnLaJornada(SesionRequeridaMotor sesion, BloqueMotor bloque)', s: 'Comprueba que la jornada tenga slots asignables consecutivos para cubrir la sesión completa desde el bloque indicado. Como los descansos y el fin del día no existen como casillas, una sesión que los cruzara no encuentra dónde caber.', l: 61 },
+      'CohortesLibres': { f: 'public bool CohortesLibres(SesionRequeridaMotor sesion, BloqueMotor bloque)', s: 'Ninguna de las cohortes de la sesión tiene ya clase en esos slots.', l: 106 },
+      'DocenteDisponible': { f: 'public bool DocenteDisponible(Guid docenteId, BloqueMotor bloque, int duracionSlots)', s: 'El docente declaró disponibilidad en todos los slots que ocuparía la sesión, dentro de la jornada del bloque. La disponibilidad de otra jornada no cuenta, aunque caiga en el mismo día y en el mismo número de slot.', l: 84 },
+      'DocenteLibre': { f: 'public bool DocenteLibre(Guid docenteId, BloqueMotor bloque, int duracionSlots)', s: 'El docente no tiene ya otra clase en esos slots.', l: 98 },
+      'Liberar': { f: 'public void Liberar(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacion, BloqueMotor bloque)', s: 'Deshace lo que hizo `Ocupar`.', l: 123 },
+      'Ocupar': { f: 'public void Ocupar(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacion, BloqueMotor bloque)', s: 'Marca como ocupados el docente, el aula y las cohortes de la sesión.', l: 119 },
     },
   },
   'Horarios.Scheduler.ReglasDuras': {
-    s: 'Única definición de las reglas duras que deciden si una sesión puede ocupar un docente o un aula.\n\nEl motor las usa para generar candidatos, el reparador para proponer movimientos y el verificador para aceptar o rechazar el resultado. Cuando cada uno llevaba su propia copia, las tres se desincronizaron: el reparador exigía un bloque tan largo como la sesión y el verificador solo miraba el bloque de inicio. Con una sola definición, un horario que el motor considera válido no puede ser rechazado por el verificador ni viceversa.\n\nLas reglas que dependen de la ocupación acumulada (colisiones, disponibilidad a lo largo de varios slots) viven en `OcupacionHorario`, que además es el índice que las responde en tiempo constante.',
+    s: 'Única definición de las reglas duras que deciden si una sesión puede ocupar un docente o un aula.\n\nEl motor las usa para generar candidatos y el verificador para aceptar o rechazar el resultado. Cuando cada uno llevaba su propia copia, las dos se desincronizaron y un horario que el motor daba por bueno podía ser rechazado después. Con una sola definición eso no puede pasar.\n\nLas reglas que dependen de la ocupación acumulada (colisiones, disponibilidad a lo largo de varios slots) viven en `OcupacionHorario`.',
     m: {
-      'ClaveCurso': { f: 'public static string ClaveCurso(SesionRequeridaMotor sesion)', s: 'Identidad de un curso impartido a unas cohortes concretas. Es la unidad que debe conservar el mismo docente y la que cuenta para su carga máxima.', l: 61 },
-      'CursosDeLaSesion': { f: 'public static ImmutableArray<Guid> CursosDeLaSesion(SesionRequeridaMotor sesion)', s: 'Cursos que la sesión imparte a la vez. Una sesión de área común agrupa varios cursos equivalentes y exige un docente autorizado para todos ellos.', l: 27 },
+      'ClaveCurso': { f: 'public static string ClaveCurso(SesionRequeridaMotor sesion)', s: 'Identidad de un curso impartido a unas cohortes concretas. Es la unidad que debe conservar el mismo docente y la que cuenta para su carga máxima.', l: 58 },
+      'CursosDeLaSesion': { f: 'public static ImmutableArray<Guid> CursosDeLaSesion(SesionRequeridaMotor sesion)', s: 'Cursos que la sesión imparte a la vez. Una sesión de área común agrupa varios cursos equivalentes y exige un docente autorizado para todos ellos.', l: 24 },
     },
+  },
+  'Horarios.Scheduler.TrabajoPesado': {
+    s: 'Un trabajo encolado, con su nombre para poder identificarlo en los registros.',
   },
   'Horarios.Scheduler.VerificadorHorario': {
     m: {
@@ -1848,20 +1781,13 @@ export const DOCS: Record<string, DocClase> = {
       'ADia': { f: 'private static DiaSemana ADia(string valor)', s: 'Convierte el día tal como lo devuelve Postgres (el enum de la base leído como texto) al enum del dominio. Sin distinguir mayúsculas porque las dos escrituras no coinciden.', l: 339 },
       'AgregarAlcance': { f: 'private static void AgregarAlcance(NpgsqlCommand comando, AlcanceConsulta alcance)', s: 'Pasa el alcance como dos arreglos de uuid. Van siempre los dos, aunque estén vacíos, porque el SQL los nombra siempre.', l: 87 },
       'CargarAulasAsync': { f: 'private async Task<ImmutableArray<AulaMotor>> CargarAulasAsync(CancellationToken cancellationToken)', s: 'Aulas activas con su capacidad, su tipo y los recursos que tienen instalados. Los recursos se traen como arreglo de códigos porque así los compara el motor contra lo que pide cada curso. El `join` es externo: un aula sin recursos sigue siendo usable.', l: 246 },
-      'CargarAulasReparacionAsync': { f: 'private static async Task<ImmutableArray<AulaMotor>> CargarAulasReparacionAsync(NpgsqlConnection conexion, CancellationToken ct)', s: 'Aulas activas con sus recursos para la reparación. Mismo contenido que `CargarAulasAsync`, pero sobre la conexión compartida de la reparación.', l: 520 },
       'CargarBloquesAsync': { f: 'private async Task<ImmutableArray<BloqueMotor>> CargarBloquesAsync(Guid periodoId, AlcanceConsulta alcance, CancellationToken cancellationToken)', s: 'Bloques donde se puede dar clase, calculados en la base de datos en vez de guardados: se combinan los días activos de cada jornada con sus slots por día y se descartan los que caen en un descanso. Solo se consideran las jornadas de las cohortes del período, así que un plan no recibe huecos de jornadas que no usa.', l: 127 },
       'CargarCohortesAsync': { f: 'private async Task<ImmutableArray<CohorteMotor>> CargarCohortesAsync(Guid periodoId, AlcanceConsulta alcance, CancellationToken cancellationToken)', s: 'Cohortes activas del período dentro del alcance, con su matrícula estimada. La matrícula es lo que después decide si un aula alcanza.', l: 97 },
       'CargarDisponibilidadAsync': { f: 'private async Task<IReadOnlyDictionary<Guid, ImmutableArray<Guid>>> CargarDisponibilidadAsync(Guid periodoId, CancellationToken cancellationToken)', s: 'Bloques en que cada docente dijo que puede dar clase, solo de disponibilidades confirmadas: un borrador sin confirmar no debe condicionar una generación.', r: 'Diccionario de docente a bloques, sin repetidos. Un docente que no aparece es un docente sin disponibilidad declarada, y para el motor eso significa que no puede tomar ninguna sesión.', l: 173 },
       'CargarDocentesAsync': { f: 'private async Task<ImmutableArray<DocenteMotor>> CargarDocentesAsync(IReadOnlyDictionary<Guid, ImmutableArray<Guid>> disponibilidad, CancellationToken cancellationToken)', s: 'Docentes activos con su carga máxima, su prioridad y los cursos que tienen autorizados. El `join` con las asignaciones es interno a propósito: un docente sin ningún curso vigente no puede recibir sesiones, así que no vale la pena mandárselo al motor.', p: [['disponibilidad', 'Resultado de `CargarDisponibilidadAsync`, que se adjunta a cada docente para no hacer una segunda consulta por persona.']], l: 210 },
-      'CargarDocentesReparacionAsync': { f: 'private static async Task<ImmutableArray<DocenteMotor>> CargarDocentesReparacionAsync(NpgsqlConnection conexion, Guid periodoId, CancellationToken ct)', s: 'Docentes para la reparación, en una sola consulta.\n\nLa disponibilidad viene concatenada como `jornada:dia:slot` y se vuelve a partir en memoria: es la forma de agregar en el mismo `group by` dos cosas de cardinalidad distinta (cursos autorizados y slots disponibles) sin que una multiplique a la otra. Aquí los `join` son externos, al revés que en `CargarDocentesAsync`, porque un docente ya asignado en la versión tiene que seguir apareciendo aunque hoy no tenga autorizaciones vigentes.', l: 488 },
       'CargarRequisitosAsync': { f: 'private async Task<ImmutableArray<RequisitoCursoMotor>> CargarRequisitosAsync(Guid periodoId, AlcanceConsulta alcance, CancellationToken cancellationToken)', s: 'Qué cursos le toca cursar a cada cohorte en el período, con lo que exige cada uno: bloques semanales, duración, laboratorio y recursos.\n\nEl `left join lateral` busca si el par curso–cohorte pertenece a una agrupación de área común; cuando pertenece, el identificador de la agrupación viaja con el requisito y es lo que después permite juntar varias cohortes en una misma sesión. El orden final agrupa por área para que ese emparejamiento quede contiguo.', l: 284 },
-      'CargarSesionesReparacionAsync': { f: 'private static async Task<List<SesionCargadaReparacion>> CargarSesionesReparacionAsync(NpgsqlConnection conexion, Guid horarioId, CancellationToken ct)', s: 'Sesiones de la versión, con las cohortes de cada una agregadas en arreglos. La matrícula de la sesión es la suma de sus cohortes, con mínimo 1 para que una cohorte registrada sin estudiantes no haga que cualquier aula parezca suficiente por tener capacidad cero.', l: 447 },
       'PrepararAsync': { f: 'public async Task<InstantaneaMotor> PrepararAsync(PlanHorario plan, CancellationToken cancellationToken = default)', s: 'Lee todo lo que el motor va a necesitar para un plan y lo devuelve como una sola instantánea inmutable. A partir de aquí el motor no vuelve a tocar la base de datos, así que dos corridas sobre la misma instantánea son comparables.', p: [['plan', 'Plan a generar; de él salen el período y el alcance (carreras y jornadas).']], e: [['ArgumentNullException', 'Si `plan` es nulo.']], l: 37 },
-      'PrepararReparacionAsync': { f: 'public async Task<PreparacionReparacionVersion> PrepararReparacionAsync(Guid horarioDerivadoId, Guid sesionFijadaId, CancellationToken cancellationToken = default)', s: 'Reúne lo necesario para reacomodar una versión derivada alrededor de una sesión que el usuario quiere dejar fija: la foto de datos, el horario tal como está guardado hoy, la decisión que se fija y la traducción de cada bloque a día y minutos.\n\nA diferencia de `PrepararAsync`, aquí se abre una sola conexión y se reutiliza en todas las consultas, porque son varias seguidas y deben ver el mismo estado. Los bloques y las aulas se leen sin recortar por alcance: la versión ya existe, y lo que importa es respetar lo que se guardó, no volver a aplicar el filtro del plan.\n\nEste método cumple la parte de lectura de `IDatosReparacionVersiones`, pero la clase no declara esa interfaz y hoy nada lo registra en el contenedor: la reparación de versiones todavía no está conectada a la aplicación.', p: [['horarioDerivadoId', 'Versión a reparar; tiene que tener horario de origen.'], ['sesionFijadaId', 'Sesión que se queda donde está y alrededor de la cual se reacomoda el resto.']], e: [['KeyNotFoundException', 'Si el identificador no corresponde a una versión derivada, o si la sesión fijada no es de esa versión.']], l: 361 },
     },
-  },
-  'Horarios.Infraestructura.Motor.SesionCargadaReparacion': {
-    s: 'Una sesión ya guardada, vista de las tres formas que hacen falta a la vez: como requisito para el motor, como asignación actual y con las cohortes que la comparten. Se leen juntas porque salen de la misma fila.',
   },
   'Horarios.Infraestructura.Planes.CarreraAlcanceFila': {
     s: 'Una carrera del alcance, embebida en la fila del plan.',
@@ -2044,5 +1970,5 @@ export const DOCS: Record<string, DocClase> = {
   },
 };
 
-export const TOTAL_CLASES_DOC = 286;
-export const TOTAL_MIEMBROS_DOC = 742;
+export const TOTAL_CLASES_DOC = 274;
+export const TOTAL_MIEMBROS_DOC = 720;

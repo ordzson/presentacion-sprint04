@@ -2,99 +2,174 @@
   <header class="slide-header">
     <div>
       <p class="eyebrow">Fase 3 · Arquitectura</p>
-      <h1>Cómo está armado el sistema</h1>
+      <h1>Seis piezas y un solo patrón, repetido</h1>
       <p class="subtitle">
-        Seis piezas, un trabajo cada una, y todo lo que se pasan entre ellas está escrito en un contrato.
+        Todo trámite del sistema —listar aulas, dar de alta un docente, entrar, generar un horario—
+        atraviesa las mismas ranuras en el mismo orden. Lo que cambia es el relleno.
       </p>
     </div>
   </header>
 
   <nav class="tabs" role="tablist">
-    <button type="button" role="tab" class="tab" [class.active]="vista() === 'capas'"
-      [attr.aria-selected]="vista() === 'capas'" (click)="verVista('capas')">
-      <span class="tab-code">01</span><span class="tab-label">Las capas</span>
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [class.active]="vista() === 'mapa'"
+      [attr.aria-selected]="vista() === 'mapa'"
+      (click)="verVista('mapa')"
+    >
+      <span class="tab-code">01</span><span class="tab-label">Mapa de dependencias</span>
     </button>
-    <button type="button" role="tab" class="tab" [class.active]="vista() === 'flujo'"
-      [attr.aria-selected]="vista() === 'flujo'" (click)="verVista('flujo')">
-      <span class="tab-code">02</span><span class="tab-label">Ejemplo real: generar un horario</span>
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [class.active]="vista() === 'patron'"
+      [attr.aria-selected]="vista() === 'patron'"
+      (click)="verVista('patron')"
+    >
+      <span class="tab-code">02</span><span class="tab-label">El patrón que se repite</span>
     </button>
-    <button type="button" role="tab" class="tab" [class.active]="vista() === 'porque'"
-      [attr.aria-selected]="vista() === 'porque'" (click)="verVista('porque')">
-      <span class="tab-code">03</span><span class="tab-label">Por qué así</span>
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [class.active]="vista() === 'recorridos'"
+      [attr.aria-selected]="vista() === 'recorridos'"
+      (click)="verVista('recorridos')"
+    >
+      <span class="tab-code">03</span><span class="tab-label">Cuatro recorridos reales</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [class.active]="vista() === 'porque'"
+      [attr.aria-selected]="vista() === 'porque'"
+      (click)="verVista('porque')"
+    >
+      <span class="tab-code">04</span><span class="tab-label">Por qué así · dónde tocar</span>
     </button>
   </nav>
 
-  <!-- ─────────────────────────────────────────────── 01 · las capas -->
-  @if (vista() === 'capas') {
+  <!-- ══════════════════════════════════════════════ 01 · mapa de dependencias -->
+  @if (vista() === 'mapa') {
     <div class="cuerpo dos-columnas">
-      <div class="diagrama">
-        <p class="pista">Seis piezas, cada una con su rol, sus archivos reales y con quién puede hablar.</p>
+      <div class="lienzo">
+        <p class="pista">
+          Quién puede nombrar a quién. Toca una caja para ver sus referencias reales.
+        </p>
 
-        <div class="mapa">
-          <div class="columna">
-            <div class="actor">Persona usuaria · navegador</div>
-            <div class="flecha"><span>abre una página, llena un formulario, hace clic</span></div>
-
-            @for (id of pila; track id) {
-              @let c = capaPorId(id);
-              <button
-                type="button"
-                class="caja"
-                [class.activa]="capaActiva() === id"
-                [style.--c]="c.color"
-                (click)="verCapa(id)"
+        <svg
+          class="grafo"
+          viewBox="0 0 800 528"
+          role="img"
+          aria-label="Diagrama de dependencias entre los proyectos de la solución"
+        >
+          <defs>
+            @for (l of leyenda; track l.tipo) {
+              <marker
+                [attr.id]="'punta-' + l.tipo"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
               >
-                <span class="caja-rol">{{ c.rol }}</span>
-                <span class="caja-proyecto">{{ c.proyecto }}</span>
-              </button>
-
-              @if (id === 'blazor') {
-                <div class="flecha"><span>llama al caso de uso que corresponde</span></div>
-              }
-              @if (id === 'aplicacion') {
-                <div class="flecha doble">
-                  <span>pide lo que necesita <em>por interfaz</em></span>
-                </div>
-              }
-              @if (id === 'scheduler') {
-                <div class="flecha lateral"><span>el motor calcula en memoria y devuelve su propuesta</span></div>
-              }
-              @if (id === 'infraestructura') {
-                <div class="flecha"><span>HTTP y SQL sobre el esquema <code>horarios</code></span></div>
-              }
+                <path d="M0,0 L10,5 L0,10 z" [attr.class]="'punta ' + l.tipo" />
+              </marker>
             }
-          </div>
+          </defs>
 
-          <div class="rail">
-            <button
-              type="button"
-              class="banda"
-              [class.activa]="capaActiva() === 'contratos'"
-              [style.--c]="contratos.color"
-              (click)="verCapa('contratos')"
-            >
-              <span class="banda-rol">{{ contratos.rol }}</span>
-              <span class="banda-proyecto">{{ contratos.proyecto }}</span>
-              <span class="banda-nota">Todo lo que cruza de una capa a otra viaja con este formato.</span>
-            </button>
+          <!-- aristas primero, para que las cajas queden encima -->
+          @for (a of aristas; track a.id) {
+            <g class="arista" [class.viva]="aristaViva(a)" [attr.data-tipo]="a.tipo">
+              <path
+                [attr.d]="a.d"
+                [attr.class]="'linea ' + a.tipo"
+                [attr.marker-end]="'url(#punta-' + a.tipo + ')'"
+              />
+              <text
+                [attr.x]="a.lx"
+                [attr.y]="a.ly"
+                [attr.text-anchor]="a.anclaje"
+                [attr.transform]="a.rot ? 'rotate(' + a.rot + ' ' + a.lx + ' ' + a.ly + ')' : null"
+                class="arista-texto"
+              >
+                {{ a.etiqueta }}
+              </text>
+            </g>
+          }
 
-            <button
-              type="button"
-              class="banda"
-              [class.activa]="capaActiva() === 'dominio'"
-              [style.--c]="dominio.color"
-              (click)="verCapa('dominio')"
+          <!-- la costura: no es un proyecto -->
+          <g class="puertos" [class.activo]="capaActiva() === 'aplicacion'">
+            <rect
+              [attr.x]="puertosNodo.x"
+              [attr.y]="puertosNodo.y"
+              [attr.width]="puertosNodo.w"
+              [attr.height]="puertosNodo.h"
+              rx="10"
+            />
+            <text
+              [attr.x]="puertosNodo.x + puertosNodo.w / 2"
+              [attr.y]="puertosNodo.y + 21"
+              class="puertos-titulo"
             >
-              <span class="banda-rol">{{ dominio.rol }}</span>
-              <span class="banda-proyecto">{{ dominio.proyecto }}</span>
-              <span class="banda-nota">No depende de ninguna otra pieza. Es el corazón del sistema.</span>
-            </button>
-          </div>
+              21 puertos · interfaces
+            </text>
+            <text
+              [attr.x]="puertosNodo.x + puertosNodo.w / 2"
+              [attr.y]="puertosNodo.y + 38"
+              class="puertos-nota"
+            >
+              declarados dentro de Aplicación
+            </text>
+          </g>
+
+          @for (c of capas; track c.id) {
+            @if (c.nodo) {
+              <g
+                class="nodo"
+                [class.activo]="capaActiva() === c.id"
+                [style.--c]="c.color"
+                (click)="verCapa(c.id)"
+                role="button"
+                tabindex="0"
+                [attr.aria-label]="c.proyecto"
+              >
+                <rect
+                  [attr.x]="c.nodo.x"
+                  [attr.y]="c.nodo.y"
+                  [attr.width]="c.nodo.w"
+                  [attr.height]="c.nodo.h"
+                  rx="10"
+                />
+                <text [attr.x]="c.nodo.x + c.nodo.w / 2" [attr.y]="c.nodo.y + 25" class="nodo-rol">
+                  {{ c.rol }}
+                </text>
+                <text
+                  [attr.x]="c.nodo.x + c.nodo.w / 2"
+                  [attr.y]="c.nodo.y + 44"
+                  class="nodo-proyecto"
+                >
+                  {{ c.proyecto }}
+                </text>
+              </g>
+            }
+          }
+        </svg>
+
+        <div class="leyenda">
+          @for (l of leyenda; track l.tipo) {
+            <span class="leyenda-item" [attr.data-tipo]="l.tipo"><i></i>{{ l.texto }}</span>
+          }
         </div>
 
         <p class="regla-oro">
-          <strong>La regla de oro:</strong> las flechas siempre apuntan hacia adentro. La pantalla y la
-          base de datos conocen al centro; el centro no las conoce a ellas.
+          <strong>La única flecha que sube</strong> es la de Infraestructura hacia los puertos. Por
+          eso Aplicación no tiene ni una referencia a Infraestructura, y aun así se guardan datos.
         </p>
       </div>
 
@@ -106,6 +181,17 @@
         </div>
 
         <div class="panel-cuerpo">
+          <div class="refs">
+            <div class="ref">
+              <span class="ref-etiqueta">Referencia a</span>
+              <span class="ref-valor">{{ capa().referencia }}</span>
+            </div>
+            <div class="ref">
+              <span class="ref-etiqueta">La referencian</span>
+              <span class="ref-valor">{{ capa().referidaPor }}</span>
+            </div>
+          </div>
+
           <h3>Qué hace</h3>
           <ul class="lista">
             @for (h of capa().hace; track h) {
@@ -113,20 +199,16 @@
             }
           </ul>
 
-          <h3>Qué <em>no</em> hace</h3>
-          <ul class="lista no">
-            @for (n of capa().noHace; track n) {
-              <li>{{ n }}</li>
-            }
-          </ul>
-
-          <h3>Con quién habla</h3>
-          <p class="habla">{{ capa().habla }}</p>
+          <h3>Qué no hace</h3>
+          <p class="habla">{{ capa().noHace }}</p>
 
           <h3>Archivos reales</h3>
           <ul class="archivos">
             @for (a of capa().archivos; track a.ruta) {
-              <li><code>{{ a.ruta }}</code><span>{{ a.nota }}</span></li>
+              <li>
+                <code>{{ a.ruta }}</code
+                ><span>{{ a.nota }}</span>
+              </li>
             }
           </ul>
         </div>
@@ -134,95 +216,358 @@
     </div>
   }
 
-  <!-- ─────────────────────────────────────────────── 02 · ejemplo real -->
-  @if (vista() === 'flujo') {
-    <div class="cuerpo dos-columnas flujo">
-      <div class="pasos">
+  <!-- ══════════════════════════════════════════════════ 02 · el patrón -->
+  @if (vista() === 'patron') {
+    <div class="cuerpo patron-fila">
+      <div class="lienzo estrecho">
         <p class="pista">
-          Trece pasos que atraviesan las seis piezas, cada uno con lo que se manda y lo que regresa.
+          Las seis ranuras. Da igual el trámite: la petición baja de izquierda a derecha y la
+          respuesta vuelve traducida. Toca una ranura.
         </p>
 
-        <ol class="lista-pasos">
-          @for (p of flujo; track p.n) {
-            @let c = capaPorId(p.capa);
-            <li>
-              <button
-                type="button"
-                class="paso-item"
-                [class.activo]="pasoActivo() === p.n"
-                [style.--c]="c.color"
-                (click)="verPaso(p.n)"
-              >
-                <span class="paso-n">{{ p.n }}</span>
-                <span class="paso-texto">
-                  <span class="paso-titulo">{{ p.titulo }}</span>
-                  <span class="paso-capa">{{ c.proyecto }}</span>
-                </span>
-              </button>
-            </li>
+        <svg
+          class="patron"
+          viewBox="0 0 840 212"
+          role="img"
+          aria-label="Las seis ranuras por las que pasa cualquier caso de uso"
+        >
+          <defs>
+            <marker
+              id="punta-patron"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,0 L10,5 L0,10 z" class="punta llamada" />
+            </marker>
+            <marker
+              id="punta-vuelta"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,0 L10,5 L0,10 z" class="punta referencia" />
+            </marker>
+          </defs>
+
+          @for (r of ranuras; track r.id; let i = $index) {
+            @if (i > 0) {
+              <line
+                [attr.x1]="ranuras[i - 1].x + 60"
+                y1="86"
+                [attr.x2]="r.x - 62"
+                y2="86"
+                class="linea llamada"
+                marker-end="url(#punta-patron)"
+              />
+            }
+            <g
+              class="ranura"
+              [class.activa]="ranuraActiva() === r.id"
+              [style.--c]="capaPorId(r.capa).color"
+              (click)="verRanura(r.id)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="r.titulo"
+            >
+              <rect [attr.x]="r.x - 60" y="56" width="120" height="60" rx="10" />
+              <text [attr.x]="r.x" y="80" class="ranura-titulo">{{ r.titulo }}</text>
+              <text [attr.x]="r.x" y="99" class="ranura-capa">
+                {{ nombreCorto(r.capa) }}
+              </text>
+            </g>
+            <text [attr.x]="r.x" y="42" class="ranura-n">{{ i + 1 }}</text>
           }
-        </ol>
+
+          <path
+            d="M770,124 L770,168 L70,168 L70,126"
+            class="linea vuelta"
+            marker-end="url(#punta-vuelta)"
+          />
+          <text x="420" y="188" text-anchor="middle" class="patron-nota">
+            la respuesta sube por el mismo camino, ya traducida a entidades o DTOs
+          </text>
+          <text x="420" y="24" text-anchor="middle" class="patron-nota">
+            nadie salta una ranura: ni el trámite más corto, ni el más largo
+          </text>
+        </svg>
       </div>
 
-      <aside class="panel" [style.--c]="capaDelPaso().color">
+      <aside class="panel" [style.--c]="capaPorId(ranura().capa).color">
         <div class="panel-cabecera">
-          <span class="chip">Paso {{ paso().n }} de {{ flujo.length }} · {{ capaDelPaso().proyecto }}</span>
-          <h2>{{ paso().titulo }}</h2>
-          <p class="analogia">{{ paso().llano }}</p>
+          <span class="chip">Ranura · {{ capaPorId(ranura().capa).proyecto }}</span>
+          <h2>{{ ranura().titulo }}</h2>
+          <p class="analogia">{{ ranura().pregunta }}</p>
+        </div>
+        <div class="panel-cuerpo">
+          <h3>Lo que pone siempre</h3>
+          <p class="habla">{{ ranura().siempre }}</p>
+          <h3>Lo que cambia de un caso a otro</h3>
+          <p class="habla">{{ ranura().cambia }}</p>
+          <h3>Señal de que algo está fuera de sitio</h3>
+          <p class="nota">{{ ranura().senal }}</p>
+        </div>
+      </aside>
+
+      <div class="bloque">
+        <h2 class="bloque-titulo">La misma forma, cuatro rellenos</h2>
+        <p class="pista">
+          Cada columna es un caso de uso real. Léela en horizontal: lo que se repite es el
+          esqueleto. Toca una fila para ver qué enseña la comparación.
+        </p>
+
+        <div class="tabla-envoltura">
+          <table class="matriz">
+            <thead>
+              <tr>
+                <th class="pregunta-col"></th>
+                @for (r of recorridos; track r.id) {
+                  <th [style.--c]="r.color">
+                    <span class="matriz-nombre">{{ r.nombre }}</span>
+                    <span class="matriz-clase">{{ r.clase }}</span>
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (f of matriz; track f.pregunta; let i = $index) {
+                <tr class="fila" [class.activa]="filaActiva() === i" (click)="verFila(i)">
+                  <th scope="row">{{ f.pregunta }}</th>
+                  @for (c of f.celdas; track $index) {
+                    <td [style.--c]="recorridos[$index].color">{{ c }}</td>
+                  }
+                </tr>
+                @if (filaActiva() === i) {
+                  <tr class="lectura">
+                    <td [attr.colspan]="recorridos.length + 1">
+                      <strong>Lo que enseña:</strong> {{ f.lectura }}
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════ 03 · cuatro recorridos -->
+  @if (vista() === 'recorridos') {
+    <div class="cuerpo dos-columnas ancho">
+      <div class="lienzo">
+        <div class="selector">
+          @for (r of recorridos; track r.id) {
+            <button
+              type="button"
+              class="opcion"
+              [class.activa]="recorridoActivo() === r.id"
+              [style.--c]="r.color"
+              (click)="verRecorrido(r.id)"
+            >
+              <span class="opcion-n">{{ indiceRecorrido(r.id) + 1 }}</span>
+              <span class="opcion-texto">
+                <span class="opcion-nombre">{{ r.nombre }}</span>
+                <span class="opcion-clase">{{ r.clase }}</span>
+              </span>
+            </button>
+          }
+        </div>
+
+        <div class="secuencia-envoltura">
+          <div class="carriles">
+            @for (c of geo().carriles; track c.id) {
+              <div
+                class="carril-caja"
+                [class.apagado]="!c.usado"
+                [style.--c]="c.color"
+                [style.left.%]="(c.x / 840) * 100"
+              >
+                <span class="carril-titulo">{{ c.titulo }}</span>
+                <span class="carril-capa">{{ c.proyecto }}</span>
+              </div>
+            }
+          </div>
+
+          <svg
+            class="secuencia"
+            [attr.viewBox]="'0 0 840 ' + geo().alto"
+            role="img"
+            [attr.aria-label]="'Diagrama de secuencia de ' + recorrido().nombre"
+          >
+            <defs>
+              <marker
+                id="punta-paso"
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M0,0 L10,5 L0,10 z" class="punta paso" />
+              </marker>
+            </defs>
+
+            @for (c of geo().carriles; track c.id) {
+              <line
+                [attr.x1]="c.x"
+                y1="0"
+                [attr.x2]="c.x"
+                [attr.y2]="geo().alto - 4"
+                class="vida"
+                [class.apagada]="!c.usado"
+              />
+            }
+
+            @if (geo().corte; as corte) {
+              <line x1="16" [attr.y1]="corte" x2="824" [attr.y2]="corte" class="corte" />
+              <text x="824" [attr.y]="corte - 6" text-anchor="end" class="corte-texto">
+                aquí termina la petición web · lo de abajo corre en segundo plano
+              </text>
+            }
+
+            @for (f of geo().flechas; track f.n) {
+              <g
+                class="paso"
+                [class.activo]="pasoActivo() === f.n"
+                [class.vuelta]="f.vuelta"
+                [class.fondo]="f.fondo"
+                [style.--c]="f.color"
+                (click)="verPaso(f.n)"
+                role="button"
+                tabindex="0"
+                [attr.aria-label]="'Paso ' + f.n"
+              >
+                <rect x="0" [attr.y]="f.y - 22" width="840" height="44" class="zona" />
+
+                @if (f.propia) {
+                  <path
+                    [attr.d]="'M' + f.x1 + ',' + (f.y - 11) + ' h44 a9,9 0 0 1 0,22 h-44'"
+                    class="trazo"
+                    marker-end="url(#punta-paso)"
+                  />
+                } @else {
+                  <line
+                    [attr.x1]="f.x1"
+                    [attr.y1]="f.y"
+                    [attr.x2]="f.x2"
+                    [attr.y2]="f.y"
+                    class="trazo"
+                    marker-end="url(#punta-paso)"
+                  />
+                }
+
+                <circle [attr.cx]="f.x1" [attr.cy]="f.y" r="4" class="origen" />
+                <rect
+                  [attr.x]="f.propia ? f.mx - 6 : f.mx - f.ancho / 2"
+                  [attr.y]="f.y - 24"
+                  [attr.width]="f.ancho"
+                  height="15"
+                  class="fondo-texto"
+                />
+                <text
+                  [attr.x]="f.propia ? f.mx : f.mx"
+                  [attr.y]="f.y - 13"
+                  [attr.text-anchor]="f.propia ? 'start' : 'middle'"
+                  class="paso-etiqueta"
+                >
+                  <tspan class="paso-n">{{ f.n }}.</tspan>
+                  {{ f.etiqueta }}
+                </text>
+              </g>
+            }
+          </svg>
+        </div>
+
+        @if (recorrido().nota) {
+          <p class="pie">{{ recorrido().nota }}</p>
+        }
+      </div>
+
+      <aside class="panel" [style.--c]="recorrido().color">
+        <div class="panel-cabecera">
+          <span class="chip">{{ recorrido().clase }}</span>
+          <h2>{{ recorrido().nombre }}</h2>
+          <p class="analogia">{{ recorrido().resumen }}</p>
         </div>
 
         <div class="panel-cuerpo">
-          <h3>Dónde ocurre</h3>
-          <p class="ruta"><code>{{ paso().archivo }}</code></p>
-
-          <div class="contrato">
-            <div class="contrato-fila">
-              <span class="etiqueta envia">Se manda</span>
-              <code>{{ paso().envia }}</code>
-            </div>
-            <div class="contrato-fila">
-              <span class="etiqueta devuelve">Regresa</span>
-              <code>{{ paso().devuelve }}</code>
-            </div>
+          <div class="nuevo">
+            <span class="nuevo-etiqueta">Lo que este recorrido enseña y los otros no</span>
+            <p>{{ recorrido().loNuevo }}</p>
           </div>
 
-          @if (paso().nota) {
-            <p class="nota"><strong>Detalle:</strong> {{ paso().nota }}</p>
-          }
+          <h3>Paso {{ paso().n }} de {{ recorrido().pasos.length }}</h3>
+          <p class="paso-titulo">{{ paso().etiqueta }}</p>
+          <p class="habla">{{ paso().detalle }}</p>
+
+          <h3>Dónde está</h3>
+          <p class="ruta">
+            <code>{{ paso().archivo }}</code>
+          </p>
 
           <div class="navegacion">
-            <button type="button" [disabled]="paso().n === 1" (click)="verPaso(paso().n - 1)">‹ Anterior</button>
-            <button type="button" [disabled]="paso().n === flujo.length" (click)="verPaso(paso().n + 1)">Siguiente ›</button>
+            <button type="button" [disabled]="paso().n === 1" (click)="verPaso(paso().n - 1)">
+              ‹ Anterior
+            </button>
+            <button
+              type="button"
+              [disabled]="paso().n === recorrido().pasos.length"
+              (click)="verPaso(paso().n + 1)"
+            >
+              Siguiente ›
+            </button>
+            <span class="tecla">o las flechas del teclado</span>
           </div>
         </div>
       </aside>
     </div>
   }
 
-  <!-- ─────────────────────────────────────────────── 03 · por qué así -->
+  <!-- ═══════════════════════════════════════ 04 · por qué así · dónde tocar -->
   @if (vista() === 'porque') {
     <div class="cuerpo">
       <div class="bloque">
-        <h2 class="bloque-titulo">Las cuatro reglas que sostienen todo</h2>
+        <h2 class="bloque-titulo">Las cuatro reglas, y cómo comprobar cada una</h2>
         <div class="grid reglas">
           @for (r of reglas; track r.titulo) {
             <article class="tarjeta">
               <h3>{{ r.titulo }}</h3>
               <p>{{ r.texto }}</p>
+              <p class="prueba">{{ r.prueba }}</p>
             </article>
           }
         </div>
       </div>
 
       <div class="bloque">
-        <h2 class="bloque-titulo">Qué gana el proyecto con esto</h2>
-        <div class="grid beneficios">
-          @for (b of beneficios; track b.titulo) {
-            <article class="tarjeta suave">
-              <h3>{{ b.titulo }}</h3>
-              <p>{{ b.texto }}</p>
-            </article>
-          }
+        <h2 class="bloque-titulo">Si mañana hay que cambiar algo</h2>
+        <div class="tabla-envoltura">
+          <table class="matriz tocar">
+            <thead>
+              <tr>
+                <th>Quiero…</th>
+                <th>Toco</th>
+                <th>No toco</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (d of dondeTocar; track d.quiero) {
+                <tr>
+                  <th scope="row">{{ d.quiero }}</th>
+                  <td>{{ d.toco }}</td>
+                  <td class="apagada">{{ d.noToco }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
