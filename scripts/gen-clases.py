@@ -18,21 +18,21 @@ OUT = Path("/home/ordson/Documentos/presentacion-sprint04/src/app/data/clases-da
 OUT_DOCS = Path("/home/ordson/Documentos/presentacion-sprint04/src/app/data/clases-docs.ts")
 
 # proyecto -> capa
+# El motor (Horarios.Scheduler / Horarios.Motor) se dejó fuera del deck el
+# 2026-08-29; no se mapea para que sus .cs no entren en el diagrama.
 CAPAS = {
     "Horarios.Dominio": "dominio",
     "Horarios.Contratos": "contratos",
     "Horarios.Aplicacion": "aplicacion",
-    "Horarios.Scheduler": "scheduler",
     "Horarios.Infraestructura": "infraestructura",
     "Horarios.Blazor": "blazor",
 }
-ORDEN = ["dominio", "contratos", "aplicacion", "scheduler", "infraestructura", "blazor"]
+ORDEN = ["dominio", "contratos", "aplicacion", "infraestructura", "blazor"]
 
 META = {
     "dominio":         ("Dominio",         "Entidades y enums del negocio: sin dependencias hacia fuera.",                 "#3f6fd6"),
     "contratos":       ("Contratos",       "DTOs, puertos e interfaces que atraviesan las capas.",                         "#0f8a94"),
     "aplicacion":      ("Aplicación",      "Casos de uso: orquestan repositorios, validan y aplican reglas.",              "#2a9468"),
-    "scheduler":       ("Scheduler",       "Motor de generación: expansión, reglas duras, coste blando y verificación.",   "#8b52d9"),
     "infraestructura": ("Infraestructura", "Adaptadores a Supabase/PostgREST que implementan los puertos.",                "#b5791b"),
     "blazor":          ("Blazor",          "Interfaz web: componentes, estado de sesión y arranque de la app.",            "#c2504b"),
 }
@@ -382,6 +382,11 @@ for cs in sorted(FUENTE.rglob("*.cs")):
     capa = CAPAS.get(proyecto)
     if capa is None:
         continue
+    # el motor v2 vive ahora en sub-namespaces .Motor de los proyectos mapeados
+    # (Horarios.Contratos.Motor, .Aplicacion.Motor…); fuera del deck desde el
+    # 2026-08-29, igual que la antigua capa Scheduler.
+    if "Motor" in cs.relative_to(FUENTE).parts or "Scheduler" in cs.relative_to(FUENTE).parts:
+        continue
     raw = cs.read_text(encoding="utf-8", errors="replace")
     texto = limpiar(raw)
     ns = "?"
@@ -389,6 +394,8 @@ for cs in sorted(FUENTE.rglob("*.cs")):
     mns = re.search(r"\bnamespace\s+([\w.]+)", texto)
     if mns:
         ns = mns.group(1)
+    if "Motor" in ns.split(".") or "Scheduler" in ns.split("."):
+        continue
 
     for m in DECL.finditer(texto):
         kind = re.sub(r"\s+", " ", m.group("kind"))

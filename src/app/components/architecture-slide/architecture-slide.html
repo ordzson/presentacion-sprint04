@@ -2,9 +2,9 @@
   <header class="slide-header">
     <div>
       <p class="eyebrow">Fase 3 · Arquitectura</p>
-      <h1>Seis piezas y un solo patrón, repetido</h1>
+      <h1>Cinco piezas y un solo patrón, repetido</h1>
       <p class="subtitle">
-        Todo trámite del sistema —listar aulas, dar de alta un docente, entrar, generar un horario—
+        Todo trámite del sistema —listar aulas, dar de alta un docente, entrar—
         atraviesa las mismas ranuras en el mismo orden. Lo que cambia es el relleno.
       </p>
     </div>
@@ -39,7 +39,7 @@
       [attr.aria-selected]="vista() === 'recorridos'"
       (click)="verVista('recorridos')"
     >
-      <span class="tab-code">03</span><span class="tab-label">Cuatro recorridos reales</span>
+      <span class="tab-code">03</span><span class="tab-label">Tres recorridos reales</span>
     </button>
     <button
       type="button"
@@ -316,7 +316,7 @@
       </aside>
 
       <div class="bloque">
-        <h2 class="bloque-titulo">La misma forma, cuatro rellenos</h2>
+        <h2 class="bloque-titulo">La misma forma, tres rellenos</h2>
         <p class="pista">
           Cada columna es un caso de uso real. Léela en horizontal: lo que se repite es el
           esqueleto. Toca una fila para ver qué enseña la comparación.
@@ -358,7 +358,7 @@
     </div>
   }
 
-  <!-- ══════════════════════════════════════════ 03 · cuatro recorridos -->
+  <!-- ═══════════════════════════════════════════ 03 · tres recorridos -->
   @if (vista() === 'recorridos') {
     <div class="cuerpo dos-columnas ancho">
       <div class="lienzo">
@@ -535,7 +535,7 @@
   @if (vista() === 'porque') {
     <div class="cuerpo">
       <div class="bloque">
-        <h2 class="bloque-titulo">Las cuatro reglas, y cómo comprobar cada una</h2>
+        <h2 class="bloque-titulo">Las tres reglas, y cómo comprobar cada una</h2>
         <div class="grid reglas">
           @for (r of reglas; track r.titulo) {
             <article class="tarjeta">

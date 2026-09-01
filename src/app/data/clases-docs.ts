@@ -65,11 +65,18 @@ export const DOCS: Record<string, DocClase> = {
     },
   },
   'Horarios.Dominio.Academia.CursoAcademico': {
-    s: 'Curso del catálogo, independiente de la carrera que lo imparta. El mismo curso puede aparecer en los pensums de varias carreras.',
+    s: 'Curso de un pensum. La fila pertenece al pensum en que se creó y no se ve desde ningún otro: dos carreras que enseñan «Matemática I» tienen cada una su propia fila.\n\nQue dos de esas filas sean en realidad el mismo curso se declara aparte, con un `CursoComun`.',
     m: {
-      'EsAreaComun': { s: 'Marca los cursos que varias carreras cursan juntas. El motor los agrupa para dictarlos una sola vez a todas las cohortes involucradas.' },
+      'EsAreaComun': { s: 'Habilita al curso para agruparse con los equivalentes de otras carreras. Sin esta marca el curso solo se dicta a las cohortes de su pensum.' },
+      'PensumId': { s: 'Pensum dueño de la fila. No cambia: mover un curso de carrera sería crear otro.' },
       'RequiereLaboratorio': { s: 'Si es verdadero, el motor solo puede colocarlo en aulas de laboratorio.' },
       'TipoLaboratorioRequerido': { s: 'Qué clase de laboratorio necesita («Química», «Redes», …). En nulo significa que cualquier laboratorio sirve.' },
+    },
+  },
+  'Horarios.Dominio.Academia.CursoComun': {
+    s: 'Grupo de cursos de pensums distintos que son el mismo curso. Es una declaración permanente del catálogo, no de un período: dice que la «Matemática I» de Arquitectura y la de Ingeniería son la misma materia.\n\nDe aquí salen las `AgrupacionAreaComun` de cada período, que es lo que el motor programa como una sola sesión compartida.',
+    m: {
+      'CursoIds': { s: 'Cursos que se declaran equivalentes; uno por pensum.' },
     },
   },
   'Horarios.Dominio.Academia.CursoCubiertoPeriodo': {
@@ -79,10 +86,14 @@ export const DOCS: Record<string, DocClase> = {
       'DuracionSlots': { s: 'Cuántos bloques seguidos de la jornada ocupa cada sesión. Uno significa una sesión de la duración normal del bloque.' },
     },
   },
+  'Horarios.Dominio.Academia.CursoDePensum': {
+    s: 'Un curso con la carga que lleva en su pensum. Las dos filas se crean y se editan en la misma operación, así que se devuelven juntas.',
+  },
   'Horarios.Dominio.Academia.CursoEnPensum': {
-    s: 'Un curso colocado en un pensum: dice en qué semestre se cursa y cuánta clase semanal exige. Es la fila que convierte el catálogo de cursos en carga programable.',
+    s: 'La carga programable de un curso: en qué semestre se cursa y cuánta clase semanal exige. Hay exactamente una por curso —el curso ya pertenece al pensum—, así que las dos filas se crean, se editan y se borran juntas.',
     m: {
       'BloquesSemanalesExactos': { s: 'Cuántas sesiones por semana hay que colocar. Es exacto, no un mínimo: el motor coloca esa cantidad ni más ni menos.' },
+      'DuracionSlots': { s: 'Cuántos bloques seguidos de la jornada ocupa cada sesión. Uno significa una sesión de la duración normal del bloque.' },
       'PrefiereBloquesConsecutivos': { s: 'Preferencia, no obligación: si se puede, el motor junta las sesiones del curso en días u horas seguidas.' },
       'SemestreAsignado': { s: 'Semestre de la carrera en que toca este curso.' },
     },
@@ -294,11 +305,14 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Contratos.Academia.ActualizarCohorteSolicitud': {
     s: 'Datos para editar una cohorte. La carrera, el pensum y el año de ingreso no se pueden cambiar: son lo que define a la cohorte.',
   },
-  'Horarios.Contratos.Academia.ActualizarCursoPensumSolicitud': {
-    s: 'Datos para editar cómo se cursa un curso dentro de un pensum. El pensum y el curso no se pueden cambiar: para eso se quita la fila y se agrega otra.',
+  'Horarios.Contratos.Academia.ActualizarCursoComunSolicitud': {
+    s: 'Datos para editar un grupo de cursos equivalentes. La lista reemplaza por completo a la anterior.',
   },
-  'Horarios.Contratos.Academia.ActualizarCursoSolicitud': {
-    s: 'Datos para editar un curso del catálogo. Se envían todos los campos.',
+  'Horarios.Contratos.Academia.ActualizarCursoEnPensumSolicitud': {
+    s: 'Datos para editar un curso y su carga en la malla. Se envían todos los campos. El pensum no se puede cambiar: mover un curso a otra carrera sería crear otro curso.\n\nQuitar la marca de área común saca al curso del grupo de equivalentes en que estuviera: si ya no se cursa junto con otras carreras, la equivalencia dejó de ser cierta.',
+    m: {
+      'Id': { s: 'Identificador del curso, no el de la fila de la malla.' },
+    },
   },
   'Horarios.Contratos.Academia.ActualizarFacultadSolicitud': {
     s: 'Datos para editar una facultad. Se envían todos los campos.',
@@ -311,14 +325,6 @@ export const DOCS: Record<string, DocClase> = {
   },
   'Horarios.Contratos.Academia.ActualizarPeriodoSolicitud': {
     s: 'Datos para editar un período. Se envían todos los campos, no solo los que cambian: lo que llegue reemplaza a lo que había.',
-  },
-  'Horarios.Contratos.Academia.AgregarCursoPensumSolicitud': {
-    s: 'Datos para colocar un curso del catálogo dentro de un pensum, indicando en qué semestre se cursa y cuánta clase semanal exige.',
-    m: {
-      'BloquesSemanalesExactos': { s: 'Cuántas sesiones por semana hay que colocar. Es exacto, no un mínimo.' },
-      'PrefiereBloquesConsecutivos': { s: 'Preferencia, no obligación: si se puede, el motor junta las sesiones del curso.' },
-      'SemestreAsignado': { s: 'Semestre de la carrera en que toca el curso.' },
-    },
   },
   'Horarios.Contratos.Academia.CrearAgrupacionAreaComunSolicitud': {
     s: 'Datos para unir varios cursos de área común en una sola clase compartida por varias cohortes durante un período.',
@@ -346,12 +352,23 @@ export const DOCS: Record<string, DocClase> = {
       'Seccion': { s: 'Letra o clave que la separa de otro grupo del mismo año e igual carrera («A», «B», …).' },
     },
   },
-  'Horarios.Contratos.Academia.CrearCursoSolicitud': {
-    s: 'Datos para agregar un curso al catálogo general. El curso todavía no pertenece a ningún pensum; eso se hace con `AgregarCursoPensumSolicitud`.',
+  'Horarios.Contratos.Academia.CrearCursoComunSolicitud': {
+    s: 'Datos para declarar que varios cursos de pensums distintos son el mismo curso. La lista reemplaza por completo a la anterior: lo que no venga deja de pertenecer al grupo.',
     m: {
+      'CursoIds': { s: 'Cursos equivalentes; al menos dos, todos marcados como área común y cada uno de un pensum distinto.' },
+    },
+  },
+  'Horarios.Contratos.Academia.CrearCursoEnPensumSolicitud': {
+    s: 'Datos para crear un curso dentro de un pensum. No hay alta de curso fuera de un pensum: el curso nace donde se va a cursar y solo ahí se ve.',
+    m: {
+      'BloquesSemanalesExactos': { s: 'Cuántas sesiones por semana hay que colocar. Es exacto, no un mínimo.' },
       'Codigo': { s: 'Clave corta y única del curso.' },
-      'EsAreaComun': { s: 'Marca los cursos que varias carreras pueden cursar juntas.' },
+      'DuracionSlots': { s: 'Cuántos bloques seguidos de la jornada ocupa cada sesión.' },
+      'EsAreaComun': { s: 'Habilita al curso para agruparse con sus equivalentes de otras carreras mediante un `CrearCursoComunSolicitud`.' },
+      'PensumId': { s: 'Pensum dueño del curso.' },
+      'PrefiereBloquesConsecutivos': { s: 'Preferencia, no obligación: si se puede, el motor junta las sesiones del curso.' },
       'RequiereLaboratorio': { s: 'Si es verdadero, solo se podrá programar en aulas de laboratorio.' },
+      'SemestreAsignado': { s: 'Semestre de la carrera en que toca el curso.' },
       'TipoLaboratorioRequerido': { s: 'Qué clase de laboratorio necesita. En nulo significa que cualquiera sirve.' },
     },
   },
@@ -579,164 +596,6 @@ export const DOCS: Record<string, DocClase> = {
       'MaximoFilas': { s: 'Tope de filas a devolver. La vista previa es para revisar, no para cargar el archivo entero en pantalla.' },
     },
   },
-  'Horarios.Contratos.Motor.AulaMotor': {
-    s: 'Aula vista por el motor.',
-    m: {
-      'Capacidad': { s: 'Cuántos estudiantes caben. Una sesión con más alumnos no se coloca aquí.' },
-      'Piso': { s: 'Piso del edificio. Junto con `PosicionX` y `PosicionY` se usa para medir cuánto tiene que caminar un docente entre dos clases seguidas; el piso pesa el doble porque implica escaleras.' },
-      'PosicionX': { s: 'Coordenada del aula dentro del piso, en una rejilla propia. Solo importa la distancia relativa entre aulas, no la unidad.' },
-      'PosicionY': { s: 'La otra coordenada del aula dentro del piso.' },
-      'Recursos': { s: 'Códigos de equipo que tiene el aula. Deben cubrir lo que exija la sesión.' },
-      'TipoLaboratorioDisponible': { s: 'Qué clase de laboratorio es. En nulo significa que sirve para cualquiera.' },
-    },
-  },
-  'Horarios.Contratos.Motor.BloqueMotor': {
-    s: 'Una casilla donde se puede colocar clase: día, hora y jornada. El motor no razona con relojes, solo con estos bloques.',
-    m: {
-      'DuracionSlots': { s: 'Cuántos slots abarca el bloque.' },
-      'IndiceSlotInicio': { s: 'Número del primer slot ocupado dentro del día.' },
-      'JornadaId': { s: 'Jornada a la que pertenece la casilla. Una sesión solo puede caer en casillas de su propia jornada.' },
-    },
-  },
-  'Horarios.Contratos.Motor.CohorteMotor': {
-    s: 'Cohorte vista por el motor. Es una de las tres cosas que no se pueden solapar, junto con el docente y el aula: un grupo no puede estar en dos clases a la vez.',
-  },
-  'Horarios.Contratos.Motor.DesglosePuntajeBlando': {
-    s: 'Penalización acumulada por cada preferencia, ya multiplicada por su peso. Sirve para ver de dónde viene el castigo de un horario, no solo cuánto es.\n\nMenos es mejor: cero sería el horario perfecto.',
-    m: {
-      'Total': { f: 'public decimal Total', s: 'Suma de todas las penalizaciones. Es el número que el motor minimiza.', l: 227 },
-    },
-  },
-  'Horarios.Contratos.Motor.DiaSemana': {
-    s: 'Día de la semana para el motor. Empieza en 1 a propósito, no en 0: el motor multiplica el día por la cantidad de slots para ubicar la casilla, y arrancar en 1 mantiene esa cuenta alineada con la numeración de bloques, que también empieza en 1.',
-  },
-  'Horarios.Contratos.Motor.DiagnosticoMotor': {
-    s: 'Aviso del motor sobre la ejecución: qué faltó, qué se ajustó, qué conviene revisar.',
-    m: {
-      'Codigo': { s: 'Clave estable del aviso, para tratarlo en código.' },
-      'Mensaje': { s: 'Explicación en español.' },
-      'SesionId': { s: 'Sesión a la que se refiere, si es de una sola.' },
-    },
-  },
-  'Horarios.Contratos.Motor.DocenteMotor': {
-    s: 'Docente visto por el motor: solo lo que hace falta para decidir si puede tomar una sesión. Sin nombre ni correo, porque el motor no muestra nada.',
-    m: {
-      'BloquesDisponibles': { s: 'Casillas en que declaró que puede dar clase, por identificador de bloque. Fuera de ellas no se le coloca nada.' },
-      'CargaMaximaCursos': { s: 'Tope de cursos distintos que puede recibir.' },
-      'CursosAutorizados': { s: 'Cursos que tiene permitido impartir. Fuera de esta lista, el motor no le asigna nada.' },
-      'NivelPrioridad': { s: 'Preferencia al repartir la carga: a mayor número, antes se le asignan cursos.' },
-    },
-  },
-  'Horarios.Contratos.Motor.EvaluacionRestriccionesBlandas': {
-    s: 'Qué tan bueno es un horario según las preferencias: las penalizaciones ya pesadas y, aparte, las cuentas crudas que las produjeron.\n\nLas cuentas crudas se conservan porque son las que se pueden explicar a una persona («quedaron 12 horas muertas»), mientras que el puntaje solo sirve para comparar.',
-    m: {
-      'DesbalanceCarga': { s: 'Diferencia entre el docente más cargado y el menos cargado, medida en proporción al tope de cada uno.' },
-      'DesplazamientoCasillas': { s: 'Cuánto tienen que desplazarse los docentes entre clases seguidas, en unidades de la rejilla de aulas.' },
-      'VentanasMuertas': { s: 'Cuántas horas libres quedaron en medio del día de alguna cohorte.' },
-      'ViolacionesConsecutividad': { s: 'Cuántas veces una sesión quedó separada de la anterior del mismo curso, habiendo pedido consecutividad.' },
-    },
-  },
-  'Horarios.Contratos.Motor.IMotorHorarios': {
-    s: 'El motor de horarios. Toma una instantánea y devuelve el horario armado.',
-    m: {
-      'Ejecutar': { f: 'ResultadoMotor Ejecutar(InstantaneaMotor instantanea, CancellationToken cancellationToken = default)', s: 'Arma el horario. Es una función pura sobre la instantánea: no lee ni escribe nada fuera, así que la misma entrada da siempre la misma salida.', p: [['cancellationToken', 'Corta la ejecución. La fase de mejora lo respeta y devuelve lo mejor que llevaba, que siempre es un horario válido.']], l: 428 },
-    },
-  },
-  'Horarios.Contratos.Motor.IVerificadorHorario': {
-    s: 'Revisa un horario ya armado contra las reglas duras. Es una segunda opinión independiente del motor: comprueba el resultado sin confiar en cómo se produjo, y así un error del motor no pasa desapercibido.',
-  },
-  'Horarios.Contratos.Motor.IdBloqueMotor': {
-    s: 'Identificador de una casilla del horario. Se deriva de jornada, día e índice, así que la misma casilla tiene el mismo identificador en toda ejecución y en toda versión: es lo que permite comparar dos horarios casilla por casilla.',
-  },
-  'Horarios.Contratos.Motor.IdentificadorDeterminista': {
-    s: 'Convierte un texto estable en un identificador siempre igual. Así una misma sesión o bloque conserva su identificador entre ejecuciones, y regenerar un plan reescribe sus propias filas en lugar de duplicarlas.',
-    m: {
-      'Crear': { f: 'public static Guid Crear(string valor)', s: 'Deriva el identificador del hash SHA-256 del texto. Los dos ajustes de bits marcan el resultado como un UUID versión 5 en su forma estándar, para que la base de datos y cualquier herramienta lo acepten como un identificador normal.', l: 24 },
-    },
-  },
-  'Horarios.Contratos.Motor.InstantaneaMotor': {
-    s: 'Todo lo que el motor necesita para armar un horario, congelado en el momento de ejecutar: docentes, aulas, cohortes, casillas y sesiones por colocar.\n\nEs una foto, no una ventana a la base de datos. Las listas se copian a arreglos inmutables al construirla, así que una misma instantánea produce siempre el mismo resultado aunque los datos cambien mientras el motor trabaja.',
-    m: {
-      'Aulas': { f: 'public ImmutableArray<AulaMotor> Aulas { get; }', s: 'Aulas que el motor puede usar.', l: 342 },
-      'Bloques': { f: 'public ImmutableArray<BloqueMotor> Bloques { get; }', s: 'Casillas de horario disponibles, ya descontados recesos y descansos.', l: 348 },
-      'Cohortes': { f: 'public ImmutableArray<CohorteMotor> Cohortes { get; }', s: 'Cohortes involucradas. Ninguna puede tener dos clases a la vez.', l: 345 },
-      'Docentes': { f: 'public ImmutableArray<DocenteMotor> Docentes { get; }', s: 'Docentes que el motor puede usar, con sus permisos y su disponibilidad.', l: 339 },
-      'MaximoIteracionesMejora': { f: 'public int MaximoIteracionesMejora { get; }', s: 'Tope de pasadas de mejora. Junto con `TiempoMaximoMejora` acota cuánto puede tardar la ejecución: se detiene con lo que ocurra primero.', l: 360 },
-      'PlanId': { f: 'public Guid PlanId { get; }', s: 'Plan para el que se generó esta instantánea.', l: 336 },
-      'Ponderaciones': { f: 'public PonderacionesRestriccionesBlandas Ponderaciones { get; }', s: 'Pesos con que se comparan dos horarios válidos entre sí.', l: 354 },
-      'Sesiones': { f: 'public ImmutableArray<SesionRequeridaMotor> Sesiones { get; }', s: 'Las clases que hay que colocar. Es el trabajo a repartir.', l: 351 },
-      'TiempoMaximoMejora': { f: 'public TimeSpan TiempoMaximoMejora { get; }', s: 'Presupuesto de reloj para la fase de mejora. Al agotarse se devuelve la mejor solución encontrada hasta ese momento, que siempre es válida.', l: 369 },
-      'TipoPlan': { f: 'public TipoPlanMotor TipoPlan { get; }', s: 'Si se está armando horario de clases o calendario de exámenes.', l: 363 },
-    },
-  },
-  'Horarios.Contratos.Motor.PonderacionesRestriccionesBlandas': {
-    s: 'Cuánto pesa cada preferencia al comparar dos horarios igual de válidos. Todos los horarios que el motor produce cumplen las reglas duras; estos números deciden cuál de ellos es mejor.\n\nSubir un peso vuelve al motor más terco con esa preferencia a costa de las demás. Los valores por omisión son un punto de partida razonable, no una verdad.',
-    m: {
-      'BalanceCarga': { s: 'Castiga que unos docentes queden mucho más cargados que otros, en proporción a su propio tope.' },
-      'Consecutividad': { s: 'Castiga que las sesiones de un mismo curso queden sueltas en vez de seguidas, cuando el curso pidió consecutividad.' },
-      'Desplazamiento': { s: 'Castiga que un docente tenga que cambiar de piso o cruzar el edificio entre dos clases seguidas.' },
-      'Predeterminadas': { f: 'public static PonderacionesRestriccionesBlandas Predeterminadas { get; }', s: 'Los pesos que se usan cuando nadie indica otros.', l: 210 },
-      'Ventanas': { s: 'Castiga las horas libres que le quedan a una cohorte en medio del día, entre dos clases.' },
-      'VentanasAlFinal': { s: 'Castiga que el día de una cohorte termine tarde teniendo pocas clases, es decir horario estirado sin necesidad.' },
-    },
-  },
-  'Horarios.Contratos.Motor.RequisitoCursoMotor': {
-    s: 'Lo que una cohorte tiene que cursar de un curso durante el período: cuántas sesiones por semana y de qué duración. Es la entrada cruda del motor, antes de expandirla en sesiones sueltas con `ExpansorSesiones`.',
-    m: {
-      'AgrupacionAreaComunId': { s: 'Agrupación de área común a la que pertenece. Los requisitos que comparten agrupación se funden en una sola sesión compartida.' },
-      'DuracionSlots': { s: 'Cuánto dura cada una de esas sesiones.' },
-      'SesionesSemanales': { s: 'Cuántas sesiones hay que colocar por semana.' },
-    },
-  },
-  'Horarios.Contratos.Motor.ResultadoMotor': {
-    s: 'Lo que devuelve una ejecución del motor: lo que se colocó, lo que no, los avisos y qué tan bueno quedó el horario.',
-    m: {
-      'PuntajeFinal': { s: 'Calidad al terminar. Comparado con el inicial dice cuánto ganó la fase de mejora; ambos van en nulo si no se evaluó.' },
-      'PuntajeInicial': { s: 'Calidad de la primera colocación, antes de mejorar.' },
-    },
-  },
-  'Horarios.Contratos.Motor.ResultadoVerificacion': {
-    s: 'Veredicto de revisar un horario contra las reglas duras.',
-    m: {
-      'EsValido': { f: 'public bool EsValido', s: 'Verdadero solo si no se rompió ninguna regla dura.', l: 459 },
-      'Violaciones': { f: 'public ImmutableArray<ViolacionDura> Violaciones { get; }', s: 'Todo lo que se encontró roto. La verificación no se detiene en lo primero.', l: 456 },
-    },
-  },
-  'Horarios.Contratos.Motor.SesionAsignadaMotor': {
-    s: 'Una sesión ya colocada: con qué docente, en qué aula y en qué casilla. Es la salida útil del motor.',
-  },
-  'Horarios.Contratos.Motor.SesionPendienteMotor': {
-    s: 'Una sesión que el motor no pudo colocar, con la razón. Un horario con pendientes está incompleto pero no es inválido: lo que hay cumple todas las reglas.',
-    m: {
-      'Motivo': { s: 'Por qué no se pudo: sin aula con cupo, sin docente autorizado libre, sin casilla disponible…' },
-    },
-  },
-  'Horarios.Contratos.Motor.SesionRequeridaMotor': {
-    s: 'Una clase concreta que hay que colocar: un curso, para unas cohortes, de cierta duración. Es la unidad de trabajo del motor.\n\nLas produce `ExpansorSesiones` a partir de los `RequisitoCursoMotor`: un curso de tres sesiones semanales se convierte en tres de estas.',
-    m: {
-      'AgrupacionAreaComunId': { s: 'Agrupación de la que salió, cuando la hay. Deja rastro de por qué una sesión tiene varias cohortes.' },
-      'CantidadAlumnos': { s: 'Total de estudiantes a sentar, sumando las cohortes. Es lo que se compara contra la capacidad del aula.' },
-      'CohorteIds': { s: 'Cohortes que asisten. Son varias cuando la sesión sale de una agrupación de área común; todas quedan ocupadas a la vez.' },
-      'CursosEquivalentesIds': { s: 'Todos los cursos que esta sesión cubre a la vez, cuando viene de un área común. Un docente autorizado en cualquiera de ellos sirve.' },
-      'DuracionSlots': { s: 'Cuántos slots seguidos ocupa la sesión.' },
-      'PreferirConsecutividad': { s: 'Preferencia, no obligación: si se puede, esta sesión debería quedar pegada a las otras del mismo curso.' },
-      'RecursosRequeridos': { s: 'Códigos de equipo que el aula debe tener.' },
-      'RequiereLaboratorio': { s: 'Si es verdadero, solo caben aulas de laboratorio.' },
-      'TipoLaboratorioRequerido': { s: 'Qué clase de laboratorio hace falta. En nulo significa que cualquiera sirve.' },
-    },
-  },
-  'Horarios.Contratos.Motor.TipoAulaMotor': {
-    s: 'Tipo de aula para el motor. Copia de `TipoAula` del dominio.',
-  },
-  'Horarios.Contratos.Motor.TipoPlanMotor': {
-    s: 'Qué clase de horario se está armando. Copia de `TipoPlanHorario` del dominio.',
-  },
-  'Horarios.Contratos.Motor.ViolacionDura': {
-    s: 'Una regla dura que quedó rota. Si aparece alguna, el horario no sirve: no es cuestión de calidad sino de imposibilidad, como dos clases del mismo docente a la misma hora.',
-    m: {
-      'SesionIds': { s: 'Sesiones implicadas. Suelen ser dos o más, porque una regla dura casi siempre se rompe entre varias.' },
-    },
-  },
   'Horarios.Contratos.Planes.ActualizarPlanSolicitud': {
     s: 'Datos para editar un plan de horario.\n\nEl alcance se reemplaza por completo con cada actualización: lo que no venga en las listas deja de pertenecer al plan. Vacías vuelven a «todo el período».',
   },
@@ -767,12 +626,12 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Contratos.Planes.EstadoGeneracionDto': {
     s: 'En qué va una corrida del motor. Es aparte del estado del plan: una generación es un intento concreto, y un plan puede acumular varios.',
     m: {
-      'Cancelada': { s: 'Alguien la detuvo antes de que terminara.', l: 27 },
-      'Completada': { s: 'Terminó y produjo un horario.', l: 18 },
-      'Fallida': { s: 'Se cayó por un error. El detalle está en los mensajes.', l: 21 },
-      'Generando': { s: 'El motor está trabajando.', l: 15 },
-      'Inviable': { s: 'Terminó bien pero no hay horario posible con estos datos.', l: 24 },
-      'Pendiente': { s: 'Encolada, todavía no empieza.', l: 12 },
+      'Cancelada': { s: 'Alguien la detuvo antes de que terminara.', l: 25 },
+      'Completada': { s: 'Terminó y produjo un horario.', l: 16 },
+      'Fallida': { s: 'Se cayó por un error. El detalle está en los mensajes.', l: 19 },
+      'Generando': { s: 'El motor está trabajando.', l: 13 },
+      'Inviable': { s: 'Terminó bien pero no hay horario posible con estos datos.', l: 22 },
+      'Pendiente': { s: 'Encolada, todavía no empieza.', l: 10 },
     },
   },
   'Horarios.Contratos.Planes.EstadoHorarioDto': {
@@ -812,9 +671,6 @@ export const DOCS: Record<string, DocClase> = {
       'SesionId': { s: 'Sesión a la que se refiere, si es de una sola.' },
       'Severidad': { s: 'Qué tan grave es («alta», «media», «baja»). Viaja como texto porque quien la clasifica es la base de datos.' },
     },
-  },
-  'Horarios.Contratos.Planes.ResultadoGeneracionPlanDto': {
-    s: 'Todo lo que deja una generación: el registro de la corrida, el horario crudo del motor y el veredicto de la verificación independiente.',
   },
   'Horarios.Contratos.Planes.ResultadoRevisionPlanDto': {
     s: 'Diagnóstico previo a generar: dice si vale la pena arrancar el motor y qué falta si no. Evita esperar una generación completa para descubrir que faltaban datos base.',
@@ -860,20 +716,24 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Aplicacion.Academia.GestionarAcademia': {
     s: 'Alta, edición, baja y consulta del catálogo académico: pensums, cursos, cohortes y agrupaciones de área común. Están juntos porque comparten permiso y se editan desde la misma pantalla.\n\nLos códigos y las secciones se guardan siempre en mayúsculas y sin espacios sobrantes, para que buscar por ellos sea una comparación exacta.',
     m: {
-      'ActivarCohorteAsync': { f: 'public Task ActivarCohorteAsync(ActivarCohortePeriodoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Declara que una cohorte cursa en un período y en qué semestre va. Sin esto, la cohorte no entra en la generación de ese período.', l: 95 },
-      'ActualizarAgrupacionAsync': { f: 'public Task<AgrupacionAreaComun> ActualizarAgrupacionAsync(ActualizarAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una agrupación, con las mismas reglas que el alta.', l: 238 },
-      'ActualizarCohorteAsync': { f: 'public Task<Cohorte> ActualizarCohorteAsync(ActualizarCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una cohorte.', l: 223 },
-      'ActualizarCursoAsync': { f: 'public Task<CursoAcademico> ActualizarCursoAsync(ActualizarCursoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un curso, con las mismas reglas que el alta.', l: 193 },
-      'ActualizarCursoPensumAsync': { f: 'public Task<CursoEnPensum> ActualizarCursoPensumAsync(ActualizarCursoPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Cambia el semestre o la carga semanal de un curso dentro de un pensum.', l: 212 },
-      'ActualizarPensumAsync': { f: 'public Task<Pensum> ActualizarPensumAsync(ActualizarPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un pensum.', l: 180 },
-      'AgregarCursoAsync': { f: 'public Task<CursoEnPensum> AgregarCursoAsync(AgregarCursoPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Coloca un curso del catálogo en un pensum. Sin bloques semanales no habría nada que programar, así que se exigen mayores que cero.', l: 67 },
-      'CrearAgrupacionAsync': { f: 'public Task<AgrupacionAreaComun> CrearAgrupacionAsync(CrearAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Une varios cursos de área común en una clase compartida.\n\nEl curso principal se agrega a la lista de cursos por si no venía, y se exigen al menos dos cohortes: con una sola no hay nada que compartir y bastaría el curso normal.', l: 126 },
-      'CrearCohorteAsync': { f: 'public Task<Cohorte> CrearCohorteAsync(CrearCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Registra un grupo de estudiantes. La matrícula puede ser cero —una cohorte declarada antes de la inscripción— pero nunca negativa.', l: 80 },
-      'CrearCursoAsync': { f: 'public Task<CursoAcademico> CrearCursoAsync(CrearCursoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Agrega un curso al catálogo.\n\nExigir un tipo de laboratorio sin exigir laboratorio se rechaza: sería una condición que el motor nunca miraría, y quien la escribió creería que sí.', l: 47 },
+      'ActivarCohorteAsync': { f: 'public Task ActivarCohorteAsync(ActivarCohortePeriodoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Declara que una cohorte cursa en un período y en qué semestre va. Sin esto, la cohorte no entra en la generación de ese período.', l: 108 },
+      'ActualizarAgrupacionAsync': { f: 'public Task<AgrupacionAreaComun> ActualizarAgrupacionAsync(ActualizarAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una agrupación, con las mismas reglas que el alta.', l: 268 },
+      'ActualizarCohorteAsync': { f: 'public Task<Cohorte> ActualizarCohorteAsync(ActualizarCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una cohorte.', l: 253 },
+      'ActualizarCursoAsync': { f: 'public Task<CursoDePensum> ActualizarCursoAsync(ActualizarCursoEnPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un curso y de su carga en la malla, con las mismas reglas que el alta. El pensum no viaja: no se puede cambiar.', l: 217 },
+      'ActualizarCursoComunAsync': { f: 'public Task<CursoComun> ActualizarCursoComunAsync(ActualizarCursoComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un grupo de cursos equivalentes.', l: 237 },
+      'ActualizarPensumAsync': { f: 'public Task<Pensum> ActualizarPensumAsync(ActualizarPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un pensum.', l: 203 },
+      'CrearAgrupacionAsync': { f: 'public Task<AgrupacionAreaComun> CrearAgrupacionAsync(CrearAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Une varios cursos de área común en una clase compartida.\n\nEl curso principal se agrega a la lista de cursos por si no venía, y se exigen al menos dos cohortes: con una sola no hay nada que compartir y bastaría el curso normal.', l: 139 },
+      'CrearCohorteAsync': { f: 'public Task<Cohorte> CrearCohorteAsync(CrearCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Registra un grupo de estudiantes. La matrícula puede ser cero —una cohorte declarada antes de la inscripción— pero nunca negativa.', l: 93 },
+      'CrearCursoAsync': { f: 'public Task<CursoDePensum> CrearCursoAsync(CrearCursoEnPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Crea un curso dentro de un pensum. No hay alta de curso suelta: un curso sin pensum no se puede programar y volvería a ser el catálogo compartido que se quitó.\n\nExigir un tipo de laboratorio sin exigir laboratorio se rechaza: sería una condición que el motor nunca miraría, y quien la escribió creería que sí.', l: 48 },
+      'CrearCursoComunAsync': { f: 'public Task<CursoComun> CrearCursoComunAsync(CrearCursoComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Declara que varios cursos de pensums distintos son el mismo curso.\n\nSe exigen al menos dos: con uno solo no hay nada que declarar equivalente. Que cada curso esté marcado como área común y venga de un pensum distinto lo comprueba la base, que es la que ve las filas.', l: 74 },
       'CrearPensumAsync': { f: 'public Task<Pensum> CrearPensumAsync(CrearPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Crea una versión del plan de estudios de una carrera. El año se exige de 1900 en adelante para atajar el error de teclear un año de dos cifras.', l: 33 },
-      'DesactivarCohorteAsync': { f: 'public async Task DesactivarCohorteAsync(Guid cohorteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Saca una cohorte de un período.', e: [['KeyNotFoundException', 'La cohorte no estaba activa en ese período.']], l: 108 },
-      'EliminarAsync': { f: 'private async Task EliminarAsync(Guid id, Func<Guid, CancellationToken, Task<bool>> eliminar, string entidad, CancellationToken cancellationToken)', s: 'Baja compartida por todas las entidades del catálogo. La persistencia devuelve si borró algo; aquí eso se convierte en un error con el nombre de la entidad, para no repetir cinco veces el mismo bloque.', e: [['KeyNotFoundException', 'No se indicó identificador, o no había nada que borrar.']], l: 281 },
-      'ExigirEdicion': { f: 'private void ExigirEdicion()', s: 'Toda escritura del catálogo pide el mismo permiso; las consultas no piden ninguno, porque lo que cada usuario alcanza ya lo filtra la base de datos.', l: 272 },
+      'CursosDistintos': { f: 'private static IReadOnlyList<Guid> CursosDistintos(IReadOnlyList<Guid>? cursos)', s: 'Quita repetidos y vacíos de una lista de cursos.', l: 343 },
+      'DesactivarCohorteAsync': { f: 'public async Task DesactivarCohorteAsync(Guid cohorteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Saca una cohorte de un período.', e: [['KeyNotFoundException', 'La cohorte no estaba activa en ese período.']], l: 121 },
+      'EliminarAsync': { f: 'private async Task EliminarAsync(Guid id, Func<Guid, CancellationToken, Task<bool>> eliminar, string entidad, CancellationToken cancellationToken)', s: 'Baja compartida por todas las entidades del catálogo. La persistencia devuelve si borró algo; aquí eso se convierte en un error con el nombre de la entidad, para no repetir cinco veces el mismo bloque.', e: [['KeyNotFoundException', 'No se indicó identificador, o no había nada que borrar.']], l: 359 },
+      'ExigirEdicion': { f: 'private void ExigirEdicion()', s: 'Toda escritura del catálogo pide el mismo permiso; las consultas no piden ninguno, porque lo que cada usuario alcanza ya lo filtra la base de datos.', l: 350 },
+      'ListarCursosAsync': { f: 'public Task<IReadOnlyList<CursoAcademico>> ListarCursosAsync(Guid? pensumId = null, CancellationToken cancellationToken = default)', s: 'Cursos de un pensum. Sin pensum devuelve los de todos, que es lo que necesitan las pantallas que cruzan carreras —autorizaciones docentes, cursos comunes—, no un catálogo del que elegir al armar una malla.', l: 166 },
+      'NormalizarCurso': { f: 'private static CrearCursoEnPensumSolicitud NormalizarCurso(CrearCursoEnPensumSolicitud solicitud)', s: 'Deja el código en mayúsculas y sin espacios sobrantes, para que buscar por él sea una comparación exacta, y recorta el resto de textos.', l: 302 },
+      'ValidarCurso': { f: 'private static void ValidarCurso(string codigo, string nombre, bool requiereLaboratorio, string? tipoLaboratorio, int semestre, int bloques, int duracionSlots)', s: 'Reglas comunes al alta y a la edición de un curso. Sin bloques semanales no habría nada que programar, así que se exigen mayores que cero.', e: [['ArgumentException', 'Falta un dato obligatorio, o se exige un tipo de laboratorio sin exigir laboratorio.']], l: 325 },
     },
   },
   'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos': {
@@ -918,29 +778,30 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Aplicacion.Academia.IDatosGestionAcademica': {
     s: 'Puerto hacia la persistencia del catálogo académico: pensums, cursos, cohortes y agrupaciones de área común.\n\nLos métodos con cuerpo por omisión lanzan `NotSupportedException` a propósito: se fueron agregando después, y así un adaptador que no los implemente avisa con claridad en vez de devolver algo vacío que parezca correcto.',
     m: {
-      'ActivarCohortePeriodoAsync': { f: 'Task ActivarCohortePeriodoAsync(ActivarCohortePeriodoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Declara que una cohorte cursa en un período y en qué semestre va.', l: 27 },
-      'ActualizarAgrupacionAsync': { f: 'Task<AgrupacionAreaComun> ActualizarAgrupacionAsync(ActualizarAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una agrupación de área común.', l: 68 },
-      'ActualizarCohorteAsync': { f: 'Task<Cohorte> ActualizarCohorteAsync(ActualizarCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una cohorte.', l: 65 },
-      'ActualizarCursoAsync': { f: 'Task<CursoAcademico> ActualizarCursoAsync(ActualizarCursoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un curso del catálogo.', l: 59 },
-      'ActualizarCursoPensumAsync': { f: 'Task<CursoEnPensum> ActualizarCursoPensumAsync(ActualizarCursoPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un curso dentro de un pensum.', l: 62 },
-      'ActualizarPensumAsync': { f: 'Task<Pensum> ActualizarPensumAsync(ActualizarPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un pensum.', l: 56 },
-      'AgregarCursoPensumAsync': { f: 'Task<CursoEnPensum> AgregarCursoPensumAsync(AgregarCursoPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Coloca un curso dentro de un pensum.', l: 23 },
-      'CrearAgrupacionAsync': { f: 'Task<AgrupacionAreaComun> CrearAgrupacionAsync(CrearAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Une varios cursos de área común en una sola clase compartida.', l: 32 },
-      'CrearCohorteAsync': { f: 'Task<Cohorte> CrearCohorteAsync(CrearCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Inserta una cohorte y devuelve la fila creada.', l: 25 },
-      'CrearCursoAsync': { f: 'Task<CursoAcademico> CrearCursoAsync(CrearCursoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Inserta un curso del catálogo y devuelve la fila creada.', l: 21 },
+      'ActivarCohortePeriodoAsync': { f: 'Task ActivarCohortePeriodoAsync(ActivarCohortePeriodoSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Declara que una cohorte cursa en un período y en qué semestre va.', l: 28 },
+      'ActualizarAgrupacionAsync': { f: 'Task<AgrupacionAreaComun> ActualizarAgrupacionAsync(ActualizarAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una agrupación de área común.', l: 74 },
+      'ActualizarCohorteAsync': { f: 'Task<Cohorte> ActualizarCohorteAsync(ActualizarCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de una cohorte.', l: 71 },
+      'ActualizarCursoComunAsync': { f: 'Task<CursoComun> ActualizarCursoComunAsync(ActualizarCursoComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un grupo de cursos equivalentes.', l: 68 },
+      'ActualizarCursoEnPensumAsync': { f: 'Task<CursoDePensum> ActualizarCursoEnPensumAsync(ActualizarCursoEnPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un curso y de su carga en la malla.', l: 65 },
+      'ActualizarPensumAsync': { f: 'Task<Pensum> ActualizarPensumAsync(ActualizarPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda los cambios de un pensum.', l: 62 },
+      'CrearAgrupacionAsync': { f: 'Task<AgrupacionAreaComun> CrearAgrupacionAsync(CrearAgrupacionAreaComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Une varios cursos de área común en una sola clase compartida.', l: 33 },
+      'CrearCohorteAsync': { f: 'Task<Cohorte> CrearCohorteAsync(CrearCohorteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Inserta una cohorte y devuelve la fila creada.', l: 26 },
+      'CrearCursoComunAsync': { f: 'Task<CursoComun> CrearCursoComunAsync(CrearCursoComunSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Declara que varios cursos de pensums distintos son el mismo curso.', l: 23 },
+      'CrearCursoEnPensumAsync': { f: 'Task<CursoDePensum> CrearCursoEnPensumAsync(CrearCursoEnPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Crea un curso dentro de un pensum, junto con su fila de malla.', l: 21 },
       'CrearPensumAsync': { f: 'Task<Pensum> CrearPensumAsync(CrearPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Inserta un pensum y devuelve la fila creada.', l: 19 },
-      'DesactivarCohortePeriodoAsync': { f: 'Task<bool> DesactivarCohortePeriodoAsync(Guid cohorteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Saca una cohorte de un período. Falso si no estaba activa ahí.', l: 29 },
-      'EliminarAgrupacionAsync': { f: 'Task<bool> EliminarAgrupacionAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Deshace una agrupación de área común. Falso si no existía.', l: 83 },
-      'EliminarCohorteAsync': { f: 'Task<bool> EliminarCohorteAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Borrado lógico de una cohorte. Falso si no había nada que borrar.', l: 80 },
-      'EliminarCursoAsync': { f: 'Task<bool> EliminarCursoAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Borrado lógico de un curso. Falso si no había nada que borrar.', l: 74 },
-      'EliminarCursoPensumAsync': { f: 'Task<bool> EliminarCursoPensumAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Quita un curso de un pensum. Falso si no estaba.', l: 77 },
-      'EliminarPensumAsync': { f: 'Task<bool> EliminarPensumAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Borrado lógico de un pensum. Falso si no había nada que borrar.', l: 71 },
-      'ListarAgrupacionesAsync': { f: 'Task<IReadOnlyList<AgrupacionAreaComun>> ListarAgrupacionesAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Agrupaciones de área común de un período.', l: 51 },
-      'ListarCohortesActivasAsync': { f: 'Task<IReadOnlyList<CohorteActivaPeriodo>> ListarCohortesActivasAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Cohortes que cursan en un período, con el semestre y la matrícula de ese período.', l: 49 },
-      'ListarCohortesAsync': { f: 'Task<IReadOnlyList<Cohorte>> ListarCohortesAsync(CancellationToken cancellationToken = default)', s: 'Todas las cohortes.', l: 46 },
-      'ListarCursosAsync': { f: 'Task<IReadOnlyList<CursoAcademico>> ListarCursosAsync(CancellationToken cancellationToken = default)', s: 'Todo el catálogo de cursos.', l: 38 },
-      'ListarCursosPensumAsync': { f: 'Task<IReadOnlyList<CursoEnPensum>> ListarCursosPensumAsync(Guid? pensumId = null, CancellationToken cancellationToken = default)', s: 'Cursos colocados en pensums. Sin pensumId devuelve los de todos.', l: 41 },
-      'ListarPensumsAsync': { f: 'Task<IReadOnlyList<Pensum>> ListarPensumsAsync(CancellationToken cancellationToken = default)', s: 'Todos los pensums.', l: 36 },
+      'DesactivarCohortePeriodoAsync': { f: 'Task<bool> DesactivarCohortePeriodoAsync(Guid cohorteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Saca una cohorte de un período. Falso si no estaba activa ahí.', l: 30 },
+      'EliminarAgrupacionAsync': { f: 'Task<bool> EliminarAgrupacionAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Deshace una agrupación de área común. Falso si no existía.', l: 90 },
+      'EliminarCohorteAsync': { f: 'Task<bool> EliminarCohorteAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Borrado lógico de una cohorte. Falso si no había nada que borrar.', l: 87 },
+      'EliminarCursoAsync': { f: 'Task<bool> EliminarCursoAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Borrado lógico de un curso y de su fila de malla. Falso si no había nada que borrar.', l: 81 },
+      'EliminarCursoComunAsync': { f: 'Task<bool> EliminarCursoComunAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Deshace un grupo de cursos equivalentes. Falso si no existía.', l: 84 },
+      'EliminarPensumAsync': { f: 'Task<bool> EliminarPensumAsync(Guid id, CancellationToken cancellationToken = default)', s: 'Borrado lógico de un pensum. Falso si no había nada que borrar.', l: 77 },
+      'ListarAgrupacionesAsync': { f: 'Task<IReadOnlyList<AgrupacionAreaComun>> ListarAgrupacionesAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Agrupaciones de área común de un período.', l: 57 },
+      'ListarCohortesActivasAsync': { f: 'Task<IReadOnlyList<CohorteActivaPeriodo>> ListarCohortesActivasAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Cohortes que cursan en un período, con el semestre y la matrícula de ese período.', l: 55 },
+      'ListarCohortesAsync': { f: 'Task<IReadOnlyList<Cohorte>> ListarCohortesAsync(CancellationToken cancellationToken = default)', s: 'Todas las cohortes.', l: 52 },
+      'ListarCursosAsync': { f: 'Task<IReadOnlyList<CursoAcademico>> ListarCursosAsync(Guid? pensumId = null, CancellationToken cancellationToken = default)', s: 'Cursos de un pensum. Sin pensumId devuelve los de todos.', l: 39 },
+      'ListarCursosComunesAsync': { f: 'Task<IReadOnlyList<CursoComun>> ListarCursosComunesAsync(CancellationToken cancellationToken = default)', s: 'Todos los grupos de cursos equivalentes.', l: 44 },
+      'ListarCursosPensumAsync': { f: 'Task<IReadOnlyList<CursoEnPensum>> ListarCursosPensumAsync(Guid? pensumId = null, CancellationToken cancellationToken = default)', s: 'Cursos colocados en pensums. Sin pensumId devuelve los de todos.', l: 47 },
+      'ListarPensumsAsync': { f: 'Task<IReadOnlyList<Pensum>> ListarPensumsAsync(CancellationToken cancellationToken = default)', s: 'Todos los pensums.', l: 37 },
     },
   },
   'Horarios.Aplicacion.Academia.IDatosPeriodosAcademicos': {
@@ -1184,10 +1045,13 @@ export const DOCS: Record<string, DocClase> = {
       'PuedeAutorizar': { f: 'private static bool PuedeAutorizar(IContextoGestionDocentes contexto, Docente docente, Guid? facultadSolicitada)', s: 'Decide si quien pide puede autorizar a ese docente. El administrador siempre puede; quien no es decano, nunca; y el decano solo dentro de sus facultades, y además solo puede acotar la autorización a una facultad suya.', l: 64 },
     },
   },
+  'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente': {
+    s: 'Consulta la disponibilidad del docente que inició sesión. El identificador del docente nunca se recibe desde la pantalla.',
+  },
   'Horarios.Aplicacion.Docentes.CrearDocente': {
     s: 'Da de alta un docente. Es la puerta por la que entran los datos que después usa el motor: la carga que puede recibir y las facultades a las que pertenece.',
     m: {
-      'EjecutarAsync': { f: 'public async Task<Docente> EjecutarAsync(CrearDocenteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Crea el docente y lo devuelve ya guardado.\n\nEl código va en mayúsculas y el correo en minúsculas para que buscar por cualquiera de los dos sea siempre una comparación exacta. Las facultades pasan por `Normalizar`, así que una lista vacía y una nula acaban significando lo mismo: docente compartido.', e: [['UnauthorizedAccessException', 'Sin el permiso docentes:actualizar.'], ['ArgumentException', 'Falta el código, el nombre o el correo; la carga mínima es menor que 1; o la máxima es menor que la mínima.']], l: 34 },
+      'EjecutarAsync': { f: 'public async Task<Docente> EjecutarAsync(CrearDocenteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Crea el docente y lo devuelve ya guardado.\n\nEl código va en mayúsculas y el correo en minúsculas para que buscar por cualquiera de los dos sea siempre una comparación exacta. Las facultades pasan por `Normalizar`, así que una lista vacía y una nula acaban significando lo mismo: docente compartido.', e: [['UnauthorizedAccessException', 'Sin el permiso docentes:actualizar.'], ['ArgumentException', 'Falta el código, el nombre o el correo; la carga mínima es menor que 1; o la máxima es menor que la mínima.']], l: 36 },
     },
   },
   'Horarios.Aplicacion.Docentes.FacultadesDocente': {
@@ -1199,9 +1063,9 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente': {
     s: 'Declaración y consulta de las horas en que un docente puede dar clase durante un período. Es lo que el motor toma como límite: fuera de ahí no le coloca nada.',
     m: {
-      'GuardarAsync': { f: 'public async Task<DisponibilidadDocenteDto> GuardarAsync(GuardarDisponibilidadDocenteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda la rejilla declarada.\n\nSe rechazan las casillas repetidas antes de escribir: dos filas para la misma casilla se contradirían y no habría forma de saber cuál vale.', e: [['ArgumentException', 'Falta el docente o el período, hay una casilla mal formada, o hay casillas repetidas.'], ['KeyNotFoundException', 'El docente no existe o no está activo.'], ['UnauthorizedAccessException', 'El docente queda fuera del alcance de quien pide.']], l: 76 },
-      'ObtenerAsync': { f: 'public async Task<DisponibilidadDocenteDto?> ObtenerAsync(Guid docenteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Devuelve lo declarado, o nulo si el docente aún no ha respondido. Consultar exige el mismo alcance que escribir: la disponibilidad es un dato personal.', e: [['KeyNotFoundException', 'El docente no existe o no está activo.'], ['UnauthorizedAccessException', 'El docente queda fuera del alcance de quien pide.']], l: 102 },
-      'PuedeGestionar': { f: 'private bool PuedeGestionar(Docente docente)', s: 'Decide el alcance: el administrador siempre; el propio docente sobre lo suyo; el decano si comparte al menos una facultad con él; nadie más.', l: 118 },
+      'GuardarAsync': { f: 'public async Task<DisponibilidadDocenteDto> GuardarAsync(GuardarDisponibilidadDocenteSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Guarda la jornada declarada sin perder las jornadas ya almacenadas.\n\nSe rechazan las casillas repetidas antes de escribir: dos filas para la misma casilla se contradirían y no habría forma de saber cuál vale. La persistencia reemplaza la rejilla completa, por lo que antes de guardar se recuperan los bloques existentes y se sustituyen únicamente los de la jornada recibida.', e: [['ArgumentException', 'Falta el docente o el período, hay una casilla mal formada, o hay casillas repetidas.'], ['KeyNotFoundException', 'El docente no existe o no está activo.'], ['UnauthorizedAccessException', 'El docente queda fuera del alcance de quien pide.']], l: 78 },
+      'ObtenerAsync': { f: 'public async Task<DisponibilidadDocenteDto?> ObtenerAsync(Guid docenteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Devuelve lo declarado, o nulo si el docente aún no ha respondido. Consultar exige el mismo alcance que escribir: la disponibilidad es un dato personal.', e: [['KeyNotFoundException', 'El docente no existe o no está activo.'], ['UnauthorizedAccessException', 'El docente queda fuera del alcance de quien pide.']], l: 120 },
+      'PuedeGestionar': { f: 'private bool PuedeGestionar(Docente docente)', s: 'Decide el alcance: el administrador siempre; el propio docente sobre lo suyo; el decano si comparte al menos una facultad con él; nadie más.', l: 136 },
     },
   },
   'Horarios.Aplicacion.Docentes.GestionarDocentes': {
@@ -1341,79 +1205,6 @@ export const DOCS: Record<string, DocClase> = {
       'Ejecutar': { f: 'public IReadOnlyList<ErrorImportacionDto> Ejecutar(PlantillaImportacionVersionadaDto plantillaEsperada, PlantillaImportacionVersionadaDto plantillaRecibida)', s: 'Devuelve todo lo que no cuadra; lista vacía significa que la plantilla es la correcta.\n\nSi la cantidad de columnas ya no coincide se corta ahí: comparar una a una columnas desalineadas produciría un error por cada una y ninguno señalaría el problema real.\n\nLos nombres se comparan sin distinguir mayúsculas, porque las hojas de cálculo suelen cambiarlas al guardar.', l: 23 },
     },
   },
-  'Horarios.Aplicacion.Motor.ConsultarHorarioGenerado': {
-    s: 'Devuelve el horario ya generado de un plan, listo para pintar: clases, conflictos y pendientes.',
-    m: {
-      'EjecutarAsync': { f: 'public Task<HorarioGeneradoDto> EjecutarAsync(Guid planId, CancellationToken cancellationToken = default)', e: [['ArgumentException', 'No se indicó el plan.']], l: 248 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.DatosPlanIncompletosException': {
-    s: 'Se lanza cuando faltan datos base para generar. Lleva la lista de lo que falta, aparte del mensaje, para que la pantalla pueda mostrarlo punto por punto.',
-    m: {
-      'DatosFaltantes': { f: 'public IReadOnlyList<string> DatosFaltantes { get; }', s: 'Qué falta, en español y listo para mostrar.', l: 112 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan': {
-    s: 'Corre el motor de una generación ya abierta, verifica el resultado, lo guarda como horario y deja el plan en su estado final. Se ejecuta en segundo plano, fuera de la petición web.',
-    m: {
-      'CambiarEstadoAsync': { f: 'private async Task CambiarEstadoAsync(PlanHorario plan, EstadoHorario estado, string motivo, Guid? usuarioId, CancellationToken cancellationToken)', s: 'Guardar el horario generado actualiza la fila del plan, así que su número de versión ya no es el que se leyó al solicitar la generación. Se relee antes de cambiar el estado para no chocar contra el control de concurrencia.', l: 119 },
-      'CerrarSinResultadoAsync': { f: 'private async Task CerrarSinResultadoAsync(SolicitudGeneracionEncolada solicitud, EstadoGeneracionDto estado, long duracionMs, string motivo)', s: 'Cierra una generación que no produjo horario, por error o cancelación, y deja el plan en fallido para que se pueda reintentar.', l: 99 },
-      'EjecutarAsync': { f: 'public async Task<ResultadoGeneracionPlanDto> EjecutarAsync(SolicitudGeneracionEncolada solicitud, CancellationToken cancellationToken = default)', s: 'Corre el motor y deja todo cerrado, salga bien o mal.\n\nUn horario con violaciones duras no se toma por bueno: la generación se marca inviable y el plan también, en vez de guardar un horario que no se puede publicar. Si el motor se cae o lo cancelan, el bloque de captura cierra igual la generación y deja el plan en fallido, para que nunca quede colgado en «Generando».', e: [['OperationCanceledException', 'Se canceló. Se registra el cierre y se vuelve a lanzar, porque cancelar no es terminar.']], l: 43 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.GeneracionPlanEnCursoException': {
-    s: 'Se lanza al pedir una generación de un plan que ya tiene una en curso. Dos corridas a la vez sobre el mismo plan se pisarían al guardar.',
-  },
-  'Horarios.Aplicacion.Motor.GenerarHorarioPlan': {
-    s: 'Solicita la generación de un plan: comprueba permisos y datos, arma el paquete fijo de datos, abre la generación y la deja encolada. Devuelve de inmediato para que la interfaz pueda seguir el avance consultando el estado de la generación.',
-    m: {
-      'EjecutarAsync': { f: 'public async Task<GeneracionHorarioDto> EjecutarAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Deja la generación encolada y devuelve su registro recién abierto. No espera al motor: quien llama sigue el avance consultando el estado de esa generación.\n\nEl orden importa. Primero se comprueba todo lo que puede fallar barato —permiso, estado del plan, datos completos, instantánea con sesiones—; solo después se abre la generación y se mueve el plan a «Generando». Así un rechazo no deja el plan atrapado en un estado del que solo se sale generando.', e: [['UnauthorizedAccessException', 'Sin sesión o sin el permiso Motor/generar.'], ['KeyNotFoundException', 'El plan no existe.'], ['InvalidOperationException', 'El plan no está en borrador.'], ['DatosPlanIncompletosException', 'Faltan datos base, o la instantánea salió sin ni una sesión que colocar.']], l: 166 },
-      'VersionMotor': { f: 'public const string VersionMotor = "motor-hibrido-1"', s: 'Versión del motor que se anota en cada generación. Dos corridas solo se pueden comparar de verdad si comparten esta versión.', l: 149 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.IColaGeneraciones': {
-    s: 'Puerto para ejecutar la generación fuera de la petición web. Una generación del motor puede tardar segundos o minutos y no debe bloquear el circuito de Blazor (contexto.md §7.7).',
-  },
-  'Horarios.Aplicacion.Motor.IContextoUsuario': {
-    s: 'Quién está pidiendo la operación. Es la forma en que un caso de uso conoce al usuario actual sin depender de la web: la implementación de verdad lee la sesión HTTP, y en las pruebas se sustituye por un doble.',
-    m: {
-      'EstaAutenticado': { f: 'bool EstaAutenticado { get; }', s: 'Si hay una sesión abierta. En falso, todo caso de uso protegido rechaza.', l: 31 },
-      'TienePermiso': { f: 'bool TienePermiso(PermisoAplicacion permiso)', s: 'Si la sesión tiene el permiso indicado.', l: 40 },
-      'UsuarioId': { f: 'Guid? UsuarioId', s: 'Usuario de la sesión, cuando se conoce. Se usa para dejar constancia de quién hizo cada cosa.', l: 37 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.IDatosGeneraciones': {
-    s: 'Puerto hacia el registro de generaciones. Cada corrida del motor queda anotada de principio a fin, así que una generación que se cae también deja rastro.',
-    m: {
-      'FinalizarAsync': { f: 'Task<GeneracionHorarioDto> FinalizarAsync(Guid generacionId, EstadoGeneracionDto estado, long duracionMs, InstantaneaMotor instantanea, ResultadoMotor? resultado, ResultadoVerificacion? verificacion, string? error, CancellationToken cancellationToken = default)', s: 'Cierra el registro con lo que salió. Cuando la generación falló o se canceló, `resultado` y `verificacion` vienen en nulo y el motivo va en `error`.', l: 43 },
-      'IniciarAsync': { f: 'Task<GeneracionHorarioDto> IniciarAsync(PlanHorario plan, Guid? solicitadaPorId, string versionMotor, InstantaneaMotor instantanea, CancellationToken cancellationToken = default)', s: 'Abre el registro de una generación antes de que el motor arranque, y devuelve la fila creada. Se guarda también la instantánea, para poder reproducir después exactamente con qué datos se generó.', l: 31 },
-      'ListarPorPlanAsync': { f: 'Task<IReadOnlyList<GeneracionHorarioDto>> ListarPorPlanAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Historial de intentos de un plan, para comparar corridas.', l: 54 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.IDatosHorarioGenerado': {
-    s: 'Puerto para leer el horario ya generado de un plan, en la forma que se muestra en pantalla.',
-  },
-  'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor': {
-    s: 'Puerto que arma la instantánea del motor a partir de la base de datos: reúne docentes, aulas, cohortes, casillas y sesiones del plan, y los deja en la forma plana que el motor entiende.',
-  },
-  'Horarios.Aplicacion.Motor.ListarGeneracionesPlan': {
-    s: 'Devuelve el historial de intentos de generación de un plan: cuándo se corrió, cuánto tardó y cómo salió cada uno.',
-    m: {
-      'EjecutarAsync': { f: 'public Task<IReadOnlyList<GeneracionHorarioDto>> EjecutarAsync(Guid planId, CancellationToken cancellationToken = default)', e: [['ArgumentException', 'No se indicó el plan.']], l: 224 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.PermisoAplicacion': {
-    s: 'Un permiso, como par recurso-acción. Es struct y de solo lectura porque se crea muchas veces por petición y no vale la pena reservar memoria para cada comprobación.',
-  },
-  'Horarios.Aplicacion.Motor.PermisosMotor': {
-    s: 'Permisos del motor, escritos una sola vez para no repartir cadenas sueltas por el código, donde una errata pasaría desapercibida.',
-    m: {
-      'Generar': { f: 'public static readonly PermisoAplicacion Generar = new("Motor", "generar")', s: 'Permite mandar a generar el horario de un plan.', l: 18 },
-    },
-  },
-  'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada': {
-    s: 'Todo lo que necesita una generación ya iniciada para terminar en segundo plano.',
-  },
   'Horarios.Aplicacion.Planes.AlcancePlan': {
     s: 'Reglas comunes del alcance de un plan. El alcance vacío es válido y significa «todo el período»; lo que no se admite es un identificador vacío colado en la lista, porque acabaría filtrando por una carrera que no existe y dejaría la generación sin sesiones sin decir por qué.',
     m: {
@@ -1475,73 +1266,6 @@ export const DOCS: Record<string, DocClase> = {
       'EjecutarAsync': { f: 'public async Task<ResultadoRevisionPlanDto> EjecutarAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Revisa el plan y devuelve el veredicto con la lista de lo que falta.\n\nCuando no hay cohortes, el mensaje cambia según el plan cubra todo el período o solo una parte: no es lo mismo que el período esté vacío que haber elegido un alcance donde no cae nadie, y confundirlos lleva a buscar el problema en el sitio equivocado.', e: [['ArgumentException', 'No se indicó el plan.'], ['InvalidOperationException', 'El plan no existe.']], l: 47 },
     },
   },
-  'Horarios.Scheduler.Candidatos': {
-    s: 'Docentes, aulas y bloques que una sesión puede usar sin romper reglas duras.',
-    m: {
-      'Combinaciones': { f: 'public long Combinaciones', s: 'Tamaño del espacio de búsqueda de la sesión, para poder ordenarlas.', l: 79 },
-    },
-  },
-  'Horarios.Scheduler.ColaTrabajosPesados': {
-    s: 'Cola de trabajos que tardan más de lo que una petición web debería esperar, como generar un horario. La página encola y responde; un servicio en segundo plano va vaciando la cola.\n\nLa capacidad está acotada a propósito: si se llena, encolar falla con un mensaje claro en lugar de aceptar trabajo que nunca se va a alcanzar a procesar.',
-    m: {
-      'Encolar': { f: 'public Guid Encolar(string nombre, Func<CancellationToken, Task> trabajo)', s: 'Deja un trabajo en la cola y devuelve su identificador.', e: [['ArgumentException', 'El nombre viene vacío.'], ['InvalidOperationException', 'La cola está llena.']], l: 25 },
-      'ProcesarSiguienteAsync': { f: 'public async Task<bool> ProcesarSiguienteAsync(CancellationToken cancellationToken = default)', s: 'Ejecuta el siguiente trabajo de la cola.', r: 'Falso cuando no había nada que hacer.', l: 45 },
-    },
-  },
-  'Horarios.Scheduler.EvaluadorRestriccionesBlandas': {
-    s: 'Mide qué tan conveniente es un horario ya armado.\n\nTodo lo que llega aquí cumple ya las reglas obligatorias; esto solo puntúa preferencias: sesiones del mismo curso que quedaron sueltas, ventanas muertas de una cohorte, días que terminan tarde sin necesidad, caminatas del docente entre clases seguidas y desbalance de carga. Menos puntaje es mejor.\n\nEs la única definición del puntaje blando: la usa el motor para decidir si un movimiento mejora el horario, y también para informar la calidad inicial y final de la generación.',
-  },
-  'Horarios.Scheduler.ExpansorSesiones': {
-    m: {
-      'Expandir': { f: 'public ImmutableArray<SesionRequeridaMotor> Expandir(Guid planId, IEnumerable<RequisitoCursoMotor> requisitos)', s: 'Expande los requisitos del período en las sesiones semanales que el motor debe colocar.\n\nEl identificador de cada sesión se deriva del plan, del grupo y del número de sesión: así regenerar el mismo plan reescribe sus propias filas, y dos planes del mismo período —dos versiones del mismo horario, por ejemplo— no compiten por la misma clave primaria de `horarios.sesiones`, que es global y no por horario.', l: 17 },
-    },
-  },
-  'Horarios.Scheduler.MejoraLocal': {
-    s: 'Mejora local por primera mejora.\n\nPara cada sesión ya colocada: se retira del horario —para que su propia ocupación no bloquee sus propios candidatos—, se prueban los pares (bloque, aula) que no rompen ninguna regla dura y se acepta el primero que baje el puntaje blando. El docente no se toca: cambiarlo rompería la continuidad del curso, que es una regla dura.\n\nSe repiten pasadas mientras alguna encuentre mejoras. Cada candidato se puntúa evaluando el horario completo, que es caro, así que el reloj se comprueba dentro del bucle de candidatos y no solo entre sesiones. Al agotarse el presupuesto se devuelve lo mejor encontrado hasta ese momento, que siempre es un horario válido.',
-    m: {
-      'BuscarMovimiento': { f: 'private SesionAsignadaMotor? BuscarMovimiento(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacion, CancellationToken cancellationToken)', s: 'Primera colocación válida que baje el puntaje para una sesión ya retirada de la ocupación, o nulo si ninguna lo baja. El horario de trabajo se deja como estaba: cada candidato se escribe solo para puntuarlo y se deshace enseguida.', l: 333 },
-      'Puntuar': { f: 'private decimal Puntuar(Guid sesionId, SesionAsignadaMotor candidata, SesionAsignadaMotor original)', s: 'Puntúa el horario completo como quedaría con esa colocación, y deja el horario de trabajo tal como estaba.', l: 374 },
-      'SinPresupuesto': { f: 'private bool SinPresupuesto', s: '¿Se acabó el tiempo que la instantánea concede a la mejora?', l: 275 },
-      'UnaPasada': { f: 'private bool UnaPasada(IReadOnlyList<Guid> orden, CancellationToken cancellationToken)', s: 'Recorre todas las sesiones una vez, moviendo las que puedan mejorar.', r: 'Verdadero si movió alguna; en falso ya no hay nada que ganar.', l: 296 },
-    },
-  },
-  'Horarios.Scheduler.MotorHorario': {
-    s: 'Motor de generación de horarios.\n\nTrabaja en dos fases: 1. Construcción voraz con la regla «más restringido primero»: la sesión con menos combinaciones factibles se coloca antes que las demás, porque es la que menos alternativas tiene si otra le ocupa el sitio. 2. Mejora local por primera mejora: se recorren las sesiones ya colocadas buscando un hueco que baje el puntaje blando, conservando siempre un horario válido.\n\nLas reglas obligatorias las deciden `ReglasDuras` (autorización, capacidad, recursos) y `OcupacionHorario` (choques y disponibilidad). La calidad la mide `EvaluadorRestriccionesBlandas`.\n\nLa mejora está acotada por número de pasadas y por presupuesto de reloj, y comprueba tanto el reloj como la cancelación dentro del bucle de candidatos.',
-    m: {
-      'CalcularCandidatos': { f: 'private static Dictionary<Guid, Candidatos> CalcularCandidatos(InstantaneaMotor instantanea, OcupacionHorario ocupacion)', s: 'Resuelve, antes de empezar, qué docentes, aulas y bloques puede usar cada sesión. Se hace una sola vez porque las reglas duras que dependen solo de la sesión no cambian durante la ejecución: lo que cambia es quién está ocupado, y eso lo lleva `OcupacionHorario`.\n\nEl orden de cada lista es el orden en que la búsqueda los va a probar: bloques en orden cronológico, docentes de mayor prioridad primero y aulas de menor capacidad suficiente primero, para no gastar las aulas grandes en grupos pequeños.', l: 92 },
-      'CargaMaximaAlcanzada': { f: 'private static bool CargaMaximaAlcanzada(DocenteMotor docente, IReadOnlyDictionary<Guid, HashSet<string>> cursosPorDocente)', s: 'Indica si el docente ya llegó a su tope de cursos distintos. Un docente que todavía no tiene cursos asignados no aparece en el diccionario, y en ese caso su carga es cero.', l: 210 },
-      'Diagnosticar': { f: 'private static string Diagnosticar(string claveCurso, Candidatos candidatos, IReadOnlyDictionary<string, Guid> docentePorCurso, IReadOnlyDictionary<Guid, HashSet<string>> cursosPorDocente)', s: 'Explica en español por qué una sesión no encontró sitio. Se revisan las causas de la más concreta a la más general, para que el mensaje señale lo que de verdad falta.', l: 390 },
-      'Ejecutar': { h: 'Horarios.Contratos.Motor.IMotorHorarios' },
-      'OrdenarMasRestringidaPrimero': { f: 'private static IEnumerable<SesionRequeridaMotor> OrdenarMasRestringidaPrimero(InstantaneaMotor instantanea, IReadOnlyDictionary<Guid, Candidatos> candidatos)', s: 'Ordena las sesiones de menos a más combinaciones posibles. Una sesión con un solo laboratorio y un solo docente autorizado tiene que elegir antes que una que cabe en cualquier aula, o se quedará sin sitio.', l: 161 },
-    },
-  },
-  'Horarios.Scheduler.OcupacionHorario': {
-    s: 'Quién está ocupado y cuándo, mientras el motor arma el horario.\n\nUna clase ocupa tres cosas a la vez: el docente, el aula y las cohortes. Aquí se anota cada una de ellas en las casillas (día, slot) que usa, y preguntar si un candidato cabe es preguntar si esas casillas están libres.\n\nUna sesión de varios slots ocupa slots consecutivos del mismo día, así que todos los métodos recorren la duración completa y no solo el slot de inicio.',
-    m: {
-      'AulaLibre': { f: 'public bool AulaLibre(Guid aulaId, BloqueMotor bloque, int duracionSlots)', s: 'El aula no tiene ya otra clase en esos slots.', l: 102 },
-      'CabeEnLaJornada': { f: 'public bool CabeEnLaJornada(SesionRequeridaMotor sesion, BloqueMotor bloque)', s: 'Comprueba que la jornada tenga slots asignables consecutivos para cubrir la sesión completa desde el bloque indicado. Como los descansos y el fin del día no existen como casillas, una sesión que los cruzara no encuentra dónde caber.', l: 61 },
-      'CohortesLibres': { f: 'public bool CohortesLibres(SesionRequeridaMotor sesion, BloqueMotor bloque)', s: 'Ninguna de las cohortes de la sesión tiene ya clase en esos slots.', l: 106 },
-      'DocenteDisponible': { f: 'public bool DocenteDisponible(Guid docenteId, BloqueMotor bloque, int duracionSlots)', s: 'El docente declaró disponibilidad en todos los slots que ocuparía la sesión, dentro de la jornada del bloque. La disponibilidad de otra jornada no cuenta, aunque caiga en el mismo día y en el mismo número de slot.', l: 84 },
-      'DocenteLibre': { f: 'public bool DocenteLibre(Guid docenteId, BloqueMotor bloque, int duracionSlots)', s: 'El docente no tiene ya otra clase en esos slots.', l: 98 },
-      'Liberar': { f: 'public void Liberar(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacion, BloqueMotor bloque)', s: 'Deshace lo que hizo `Ocupar`.', l: 123 },
-      'Ocupar': { f: 'public void Ocupar(SesionRequeridaMotor sesion, SesionAsignadaMotor asignacion, BloqueMotor bloque)', s: 'Marca como ocupados el docente, el aula y las cohortes de la sesión.', l: 119 },
-    },
-  },
-  'Horarios.Scheduler.ReglasDuras': {
-    s: 'Única definición de las reglas duras que deciden si una sesión puede ocupar un docente o un aula.\n\nEl motor las usa para generar candidatos y el verificador para aceptar o rechazar el resultado. Cuando cada uno llevaba su propia copia, las dos se desincronizaron y un horario que el motor daba por bueno podía ser rechazado después. Con una sola definición eso no puede pasar.\n\nLas reglas que dependen de la ocupación acumulada (colisiones, disponibilidad a lo largo de varios slots) viven en `OcupacionHorario`.',
-    m: {
-      'ClaveCurso': { f: 'public static string ClaveCurso(SesionRequeridaMotor sesion)', s: 'Identidad de un curso impartido a unas cohortes concretas. Es la unidad que debe conservar el mismo docente y la que cuenta para su carga máxima.', l: 58 },
-      'CursosDeLaSesion': { f: 'public static ImmutableArray<Guid> CursosDeLaSesion(SesionRequeridaMotor sesion)', s: 'Cursos que la sesión imparte a la vez. Una sesión de área común agrupa varios cursos equivalentes y exige un docente autorizado para todos ellos.', l: 24 },
-    },
-  },
-  'Horarios.Scheduler.TrabajoPesado': {
-    s: 'Un trabajo encolado, con su nombre para poder identificarlo en los registros.',
-  },
-  'Horarios.Scheduler.VerificadorHorario': {
-    m: {
-      'BuscarColisiones': { f: 'private static void BuscarColisiones(IReadOnlyList<AsignacionConDatos> asignaciones, ICollection<ViolacionDura> violaciones)', s: 'Detecta colisiones ocupando un índice por (entidad, día, slot). Cada sesión se registra una sola vez por slot, así que el costo es proporcional a las sesiones y no al cuadrado de ellas.', l: 220 },
-    },
-  },
   'Horarios.Infraestructura.Academia.CarreraFila': {
     s: 'La fila de `carreras` tal como viene de la base.',
     m: {
@@ -1570,30 +1294,31 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Infraestructura.Academia.DatosGestionAcademicaPostgres': {
     s: 'Persistencia del catálogo académico sobre Supabase: pensums, cursos, cohortes y agrupaciones. Qué hace cada método está explicado en `IDatosGestionAcademica`.\n\nLo que se lee en dos pasos o cruza varias tablas —cohortes activas, agrupaciones— sale de vistas y funciones de la base, no de consultas armadas aquí.',
     m: {
-      'AEstado': { f: 'private static EstadoPensum AEstado(string estado)', s: 'Traduce el estado del pensum. `en_retiro` se trata aparte porque su nombre en la base lleva guion bajo y el análisis por nombre no lo reconocería.', l: 262 },
+      'AEstado': { f: 'private static EstadoPensum AEstado(string estado)', s: 'Traduce el estado del pensum. `en_retiro` se trata aparte porque su nombre en la base lleva guion bajo y el análisis por nombre no lo reconocería.', l: 285 },
       'ActivarCohortePeriodoAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'ActualizarAgrupacionAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'ActualizarCohorteAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'ActualizarCursoAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'ActualizarCursoPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
+      'ActualizarCursoComunAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
+      'ActualizarCursoEnPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'ActualizarPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'AgregarCursoPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'CrearAgrupacionAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'CrearCohorteAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'CrearCursoAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
+      'CrearCursoComunAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
+      'CrearCursoEnPensumAsync': { f: 'public Task<CursoDePensum> CrearCursoEnPensumAsync(CrearCursoEnPensumSolicitud solicitud, CancellationToken cancellationToken = default)', s: 'Va por función de la base porque el alta toca dos tablas —el curso y su fila de malla— y las dos tienen que quedar o no quedar juntas.', l: 33 },
       'CrearPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'DesactivarCohortePeriodoAsync': { f: 'public async Task<bool> DesactivarCohortePeriodoAsync(Guid cohorteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Baja lógica de la activación: el disparador de validación solo exige cursos en el pensum cuando la fila queda activa, así que apagarla siempre procede.', l: 81 },
+      'DesactivarCohortePeriodoAsync': { f: 'public async Task<bool> DesactivarCohortePeriodoAsync(Guid cohorteId, Guid periodoId, CancellationToken cancellationToken = default)', s: 'Baja lógica de la activación: el disparador de validación solo exige cursos en el pensum cuando la fila queda activa, así que apagarla siempre procede.', l: 87 },
       'EliminarAgrupacionAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'EliminarAsync': { f: 'private async Task<bool> EliminarAsync(string tabla, Guid id, CancellationToken cancellationToken)', s: 'Borrado lógico compartido. Exigir que no estuviera borrada hace que un segundo intento devuelva falso en lugar de volver a marcarla con otra fecha.', l: 282 },
+      'EliminarAsync': { f: 'private async Task<bool> EliminarAsync(string tabla, Guid id, CancellationToken cancellationToken)', s: 'Borrado lógico compartido. Exigir que no estuviera borrada hace que un segundo intento devuelva falso en lugar de volver a marcarla con otra fecha.', l: 305 },
       'EliminarCohorteAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'EliminarCursoAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'EliminarCursoPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
+      'EliminarCursoAsync': { f: 'public Task<bool> EliminarCursoAsync(Guid id, CancellationToken cancellationToken = default)', s: 'La baja también toca dos tablas y además saca al curso del grupo de equivalentes en que estuviera, así que va por función de la base.', l: 243 },
+      'EliminarCursoComunAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'EliminarPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
-      'FiltrosActivos': { f: 'private static KeyValuePair<string, string?>[] FiltrosActivos(Guid id)', s: 'Los dos filtros que lleva toda escritura sobre una fila: que sea esa, y que no esté ya borrada.', l: 272 },
-      'ListarAgrupacionesAsync': { f: 'public async Task<IReadOnlyList<AgrupacionAreaComun>> ListarAgrupacionesAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Va por función de la base porque cada agrupación arrastra dos listas —cursos y cohortes— y armarlas aquí serían varias consultas más.', l: 250 },
-      'ListarCohortesActivasAsync': { f: 'public async Task<IReadOnlyList<CohorteActivaPeriodo>> ListarCohortesActivasAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Lee la vista `api_cohortes_activas`, que ya trae el semestre y la matrícula del período en vez de los de la cohorte.', l: 237 },
+      'FiltrosActivos': { f: 'private static KeyValuePair<string, string?>[] FiltrosActivos(Guid id)', s: 'Los dos filtros que lleva toda escritura sobre una fila: que sea esa, y que no esté ya borrada.', l: 295 },
+      'ListarAgrupacionesAsync': { f: 'public async Task<IReadOnlyList<AgrupacionAreaComun>> ListarAgrupacionesAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Va por función de la base porque cada agrupación arrastra dos listas —cursos y cohortes— y armarlas aquí serían varias consultas más.', l: 273 },
+      'ListarCohortesActivasAsync': { f: 'public async Task<IReadOnlyList<CohorteActivaPeriodo>> ListarCohortesActivasAsync(Guid periodoId, CancellationToken cancellationToken = default)', s: 'Lee la vista `api_cohortes_activas`, que ya trae el semestre y la matrícula del período en vez de los de la cohorte.', l: 260 },
       'ListarCohortesAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'ListarCursosAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
+      'ListarCursosComunesAsync': { f: 'public async Task<IReadOnlyList<CursoComun>> ListarCursosComunesAsync(CancellationToken cancellationToken = default)', s: 'Va por función de la base por lo mismo que las agrupaciones: cada grupo arrastra su lista de cursos y armarla aquí serían varias consultas más.', l: 145 },
       'ListarCursosPensumAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
       'ListarPensumsAsync': { h: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica' },
     },
@@ -1626,7 +1351,7 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Infraestructura.Academia.PensumFila': {
     s: 'La fila de `pensums`, con el estado todavía como texto.',
     m: {
-      'ADominio': { f: 'public Pensum ADominio()', s: 'Convierte la fila en el pensum del dominio.', l: 292 },
+      'ADominio': { f: 'public Pensum ADominio()', s: 'Convierte la fila en el pensum del dominio.', l: 315 },
     },
   },
   'Horarios.Infraestructura.Academia.PeriodoFila': {
@@ -1772,38 +1497,11 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Infraestructura.Docentes.PertenenciaFila': {
     s: 'Fila de la tabla puente leída al revés: qué docentes hay en una facultad.',
   },
-  'Horarios.Infraestructura.Motor.AlcanceConsulta': {
-    s: 'Alcance ya traducido a arreglos para pasarlo como parámetro. Un arreglo vacío desactiva su filtro; así una sola consulta sirve para plan acotado y plan total.',
-  },
-  'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres': {
-    s: 'Arma la foto de datos que el motor necesita para generar un horario, leyéndola de Postgres.\n\nEs el único adaptador del proyecto que se conecta a Postgres con Npgsql y SQL crudo; el resto pasa por `ClienteDatosSupabase` (la API de datos, PostgREST). El motivo es la forma de las consultas: aquí se cruzan pensums, cohortes, jornadas y descansos, se generan bloques con `generate_series` y se agregan arreglos por fila. Eso no se expresa en PostgREST, y traerlo tabla por tabla para cruzarlo en memoria significaría decenas de viajes por generación. El precio de esa decisión es que estas consultas corren con la credencial de la conexión y no con el token del usuario, así que no las protege la seguridad por fila: la autorización ya se resolvió antes, en el caso de uso que pide generar.',
-    m: {
-      'ADia': { f: 'private static DiaSemana ADia(string valor)', s: 'Convierte el día tal como lo devuelve Postgres (el enum de la base leído como texto) al enum del dominio. Sin distinguir mayúsculas porque las dos escrituras no coinciden.', l: 339 },
-      'AgregarAlcance': { f: 'private static void AgregarAlcance(NpgsqlCommand comando, AlcanceConsulta alcance)', s: 'Pasa el alcance como dos arreglos de uuid. Van siempre los dos, aunque estén vacíos, porque el SQL los nombra siempre.', l: 87 },
-      'CargarAulasAsync': { f: 'private async Task<ImmutableArray<AulaMotor>> CargarAulasAsync(CancellationToken cancellationToken)', s: 'Aulas activas con su capacidad, su tipo y los recursos que tienen instalados. Los recursos se traen como arreglo de códigos porque así los compara el motor contra lo que pide cada curso. El `join` es externo: un aula sin recursos sigue siendo usable.', l: 246 },
-      'CargarBloquesAsync': { f: 'private async Task<ImmutableArray<BloqueMotor>> CargarBloquesAsync(Guid periodoId, AlcanceConsulta alcance, CancellationToken cancellationToken)', s: 'Bloques donde se puede dar clase, calculados en la base de datos en vez de guardados: se combinan los días activos de cada jornada con sus slots por día y se descartan los que caen en un descanso. Solo se consideran las jornadas de las cohortes del período, así que un plan no recibe huecos de jornadas que no usa.', l: 127 },
-      'CargarCohortesAsync': { f: 'private async Task<ImmutableArray<CohorteMotor>> CargarCohortesAsync(Guid periodoId, AlcanceConsulta alcance, CancellationToken cancellationToken)', s: 'Cohortes activas del período dentro del alcance, con su matrícula estimada. La matrícula es lo que después decide si un aula alcanza.', l: 97 },
-      'CargarDisponibilidadAsync': { f: 'private async Task<IReadOnlyDictionary<Guid, ImmutableArray<Guid>>> CargarDisponibilidadAsync(Guid periodoId, CancellationToken cancellationToken)', s: 'Bloques en que cada docente dijo que puede dar clase, solo de disponibilidades confirmadas: un borrador sin confirmar no debe condicionar una generación.', r: 'Diccionario de docente a bloques, sin repetidos. Un docente que no aparece es un docente sin disponibilidad declarada, y para el motor eso significa que no puede tomar ninguna sesión.', l: 173 },
-      'CargarDocentesAsync': { f: 'private async Task<ImmutableArray<DocenteMotor>> CargarDocentesAsync(IReadOnlyDictionary<Guid, ImmutableArray<Guid>> disponibilidad, CancellationToken cancellationToken)', s: 'Docentes activos con su carga máxima, su prioridad y los cursos que tienen autorizados. El `join` con las asignaciones es interno a propósito: un docente sin ningún curso vigente no puede recibir sesiones, así que no vale la pena mandárselo al motor.', p: [['disponibilidad', 'Resultado de `CargarDisponibilidadAsync`, que se adjunta a cada docente para no hacer una segunda consulta por persona.']], l: 210 },
-      'CargarRequisitosAsync': { f: 'private async Task<ImmutableArray<RequisitoCursoMotor>> CargarRequisitosAsync(Guid periodoId, AlcanceConsulta alcance, CancellationToken cancellationToken)', s: 'Qué cursos le toca cursar a cada cohorte en el período, con lo que exige cada uno: bloques semanales, duración, laboratorio y recursos.\n\nEl `left join lateral` busca si el par curso–cohorte pertenece a una agrupación de área común; cuando pertenece, el identificador de la agrupación viaja con el requisito y es lo que después permite juntar varias cohortes en una misma sesión. El orden final agrupa por área para que ese emparejamiento quede contiguo.', l: 284 },
-      'PrepararAsync': { f: 'public async Task<InstantaneaMotor> PrepararAsync(PlanHorario plan, CancellationToken cancellationToken = default)', s: 'Lee todo lo que el motor va a necesitar para un plan y lo devuelve como una sola instantánea inmutable. A partir de aquí el motor no vuelve a tocar la base de datos, así que dos corridas sobre la misma instantánea son comparables.', p: [['plan', 'Plan a generar; de él salen el período y el alcance (carreras y jornadas).']], e: [['ArgumentNullException', 'Si `plan` es nulo.']], l: 37 },
-    },
-  },
   'Horarios.Infraestructura.Planes.CarreraAlcanceFila': {
     s: 'Una carrera del alcance, embebida en la fila del plan.',
   },
-  'Horarios.Infraestructura.Planes.ConflictoAGuardar': {
-    s: 'Una regla rota, con las sesiones implicadas.',
-  },
   'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres': {
-    s: 'Persistencia de las corridas del motor y del horario que producen.\n\nTodo va por funciones de la base: guardar un resultado son miles de filas entre sesiones, pendientes y conflictos, y tienen que quedar todas o ninguna.',
-    m: {
-      'ConsultarAsync': { f: 'public Task<HorarioGeneradoDto> ConsultarAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Lee el horario generado para mostrarlo. Se pide una sola página grande, que basta para un período completo con el volumen actual.', l: 138 },
-      'CrearMensajes': { f: 'private static List<MensajeGeneracionDto> CrearMensajes(ResultadoMotor? resultado, ResultadoVerificacion? verificacion, string? error)', s: 'Junta en una sola lista todo lo que hay que contar de la corrida: los avisos del motor, las reglas rotas que encontró la verificación y, si lo hubo, el error que la tumbó.\n\nLas reglas rotas y el error van con severidad alta y los avisos del motor con media: unos impiden publicar y los otros solo advierten.', l: 157 },
-      'FinalizarAsync': { h: 'Horarios.Aplicacion.Motor.IDatosGeneraciones' },
-      'IniciarAsync': { f: 'public async Task<GeneracionHorarioDto> IniciarAsync(PlanHorario plan, Guid? solicitadaPorId, string versionMotor, InstantaneaMotor instantanea, CancellationToken cancellationToken = default)', s: 'Abre el registro de la generación y guarda la instantánea con que se va a trabajar.\n\nLa clave de solicitud junta el plan y su versión de fila, así que dos intentos sobre el mismo plan sin cambios de por medio chocan contra la restricción de unicidad. Ese choque, y el aviso de generación activa, se traducen aquí al error propio del dominio en lugar de dejar salir un mensaje de Postgres.', e: [['GeneracionPlanEnCursoException', 'El plan ya tiene una generación activa.']], l: 28 },
-      'ListarPorPlanAsync': { f: 'public async Task<IReadOnlyList<GeneracionHorarioDto>> ListarPorPlanAsync(Guid planId, CancellationToken cancellationToken = default)', s: 'Historial de intentos del plan. Va por función porque cada generación arrastra sus mensajes y su desglose de puntaje.', l: 126 },
-    },
+    s: 'Persistencia transaccional de generaciones y horarios.',
   },
   'Horarios.Infraestructura.Planes.DatosPlanesPostgres': {
     s: 'Persistencia de planes de horario sobre Supabase. Qué hace cada método está explicado en `IDatosPlanes`.\n\nEl alcance del plan —sus carreras y jornadas— vive en dos tablas puente. Se lee embebido y se escribe con una rutina que reemplaza el conjunto entero.',
@@ -1825,31 +1523,17 @@ export const DOCS: Record<string, DocClase> = {
       'ObtenerConteosAsync': { h: 'Horarios.Aplicacion.Planes.IDatosRevisionPlanes' },
     },
   },
-  'Horarios.Infraestructura.Planes.HorarioAGuardar': {
-    s: 'Traduce el resultado del motor a las filas que espera `horarios.guardar_resultado_generacion`. Los minutos de inicio y fin y el curso del pensum los resuelve la base de datos a partir de la jornada y de la cohorte.',
-    m: {
-      'Conflictos': { f: 'public IReadOnlyList<ConflictoAGuardar> Conflictos { get; }', s: 'Las reglas rotas que encontró la verificación.', l: 255 },
-      'Pendientes': { f: 'public IReadOnlyList<PendienteAGuardar> Pendientes { get; }', s: 'Las que quedaron sin colocar.', l: 252 },
-      'Sesiones': { f: 'public IReadOnlyList<SesionAGuardar> Sesiones { get; }', s: 'Las clases colocadas.', l: 249 },
-    },
-  },
   'Horarios.Infraestructura.Planes.IdFila': {
     s: 'Fila de la que solo interesa que exista.',
   },
   'Horarios.Infraestructura.Planes.JornadaAlcanceFila': {
     s: 'Una jornada del alcance, embebida en la fila del plan.',
   },
-  'Horarios.Infraestructura.Planes.PendienteAGuardar': {
-    s: 'Una clase que no se pudo colocar, con la razón.',
-  },
   'Horarios.Infraestructura.Planes.PlanFila': {
     s: 'La fila de `horarios`, con su alcance embebido cuando la consulta lo pidió.',
     m: {
       'ADominio': { f: 'public PlanHorario ADominio()', s: 'Convierte usando el alcance que vino embebido. Sin él queda como plan que cubre todo el período, que es lo que significa el alcance vacío.', l: 223 },
     },
-  },
-  'Horarios.Infraestructura.Planes.SesionAGuardar': {
-    s: 'Una clase colocada, en la forma que espera la rutina que la guarda.',
   },
   'Horarios.Infraestructura.Supabase.ClienteDatosSupabase': {
     s: 'Cliente de la API de datos de Supabase (PostgREST) y de su almacenamiento de archivos.\n\nEs la única pieza del proyecto que habla HTTP con Supabase; todos los adaptadores de persistencia pasan por aquí. Se llama a la API REST en vez de conectarse a Postgres directamente para que las políticas de acceso por fila se apliquen con el token del usuario, no con una credencial de servicio.',
@@ -1918,7 +1602,7 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Blazor.Acceso.EndpointsAcceso': {
     s: 'Endpoints HTTP de inicio y cierre de sesión.\n\nNo son componentes de Blazor porque hay que escribir y borrar la cookie de autenticación, y eso exige tener las cabeceras de la respuesta todavía abiertas: en un circuito interactivo ya se enviaron. Por eso la pantalla de acceso es un formulario que hace POST aquí y se responde con una redirección.',
     m: {
-      'CerrarSesionAsync': { f: 'private static async Task<IResult> CerrarSesionAsync(HttpContext contexto, CerrarSesion cerrarSesion, CancellationToken cancellationToken)', s: 'Cierra la sesión en Supabase y borra la cookie.\n\nSi Supabase no responde, se sigue adelante igual: dejar a alguien encerrado en una sesión que quiso cerrar es peor que un token que seguirá vivo en Supabase hasta que caduque solo.', l: 124 },
+      'CerrarSesionAsync': { f: 'private static async Task<IResult> CerrarSesionAsync(HttpContext contexto, CerrarSesion cerrarSesion, CancellationToken cancellationToken)', s: 'Cierra la sesión en Supabase y borra la cookie.\n\nSi Supabase no responde, se sigue adelante igual: dejar a alguien encerrado en una sesión que quiso cerrar es peor que un token que seguirá vivo en Supabase hasta que caduque solo.', l: 135 },
       'IniciarSesionAsync': { f: 'private static async Task<IResult> IniciarSesionAsync(HttpContext contexto, IniciarSesion iniciarSesion, ObtenerAlcanceUsuario obtenerAlcance, ILoggerFactory loggerFactory, [FromForm] CredencialesFormulario formulario, CancellationToken cancellationToken)', s: 'Valida las credenciales contra Supabase y, si son correctas, arma la cookie de sesión.\n\nDentro de la cookie se guardan los roles, los permisos y el alcance (docente y facultades) además de los tokens de Supabase. Se guardan porque cada pantalla los consulta muchas veces y volver a la base de datos en cada una sería caro; el costo de esa decisión es que un cambio de permisos no se aplica hasta el siguiente inicio de sesión. También se guarda la versión de la fila del usuario, que es lo que después permite invalidar la cookie desde el servidor (ver `Program.cs`, `OnValidatePrincipal`).\n\nLa cookie no es persistente ni se renueva sola, y caduca junto con la sesión de Supabase.\n\nNingún fallo devuelve un error crudo: siempre se redirige a la pantalla de acceso con un código en la URL. Se distingue entre credenciales inválidas —que no se registran, porque son normales— y Supabase caído o respondiendo algo inesperado, que sí se registran con la excepción completa. El mensaje que ve el usuario no dice cuál de los dos datos falló, para no ayudar a averiguar qué correos existen.', l: 50 },
       'Mapear': { f: 'public static void Mapear(WebApplication app)', s: 'Registra las dos rutas. Iniciar sesión es anónimo por necesidad; cerrar sesión exige estar autenticado, porque necesita el token guardado en la cookie para avisarle a Supabase.', l: 24 },
     },
@@ -1940,6 +1624,13 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Blazor.ColaGeneracionesEnMemoria': {
     s: 'Encola la generación en la cola de trabajos pesados que ya procesa `ProcesadorTrabajosPesados` en segundo plano.\n\nEl trabajo abre su propio ámbito de dependencias porque los adaptadores de datos son por petición y esta ya habrá terminado. El token de Supabase del usuario que solicitó la generación viaja con el trabajo para que las políticas de acceso sigan aplicando.',
   },
+  'Horarios.Blazor.ColaTrabajosPesados': {
+    s: 'Cola de trabajos que tardan más de lo que una petición web debería esperar, como generar un horario. La página encola y responde; un servicio en segundo plano va vaciando la cola.\n\nLa capacidad está acotada a propósito: si se llena, encolar falla con un mensaje claro en lugar de aceptar trabajo que nunca se va a alcanzar a procesar.',
+    m: {
+      'Encolar': { f: 'public Guid Encolar(string nombre, Func<CancellationToken, Task> trabajo)', s: 'Deja un trabajo en la cola y devuelve su identificador.', e: [['ArgumentException', 'El nombre viene vacío.'], ['InvalidOperationException', 'La cola está llena.']], l: 25 },
+      'ProcesarSiguienteAsync': { f: 'public async Task<bool> ProcesarSiguienteAsync(CancellationToken cancellationToken = default)', s: 'Ejecuta el siguiente trabajo de la cola.', r: 'Falso cuando no había nada que hacer.', l: 45 },
+    },
+  },
   'Horarios.Blazor.Components.PaginaConMensaje': {
     s: 'Base de las páginas con formulario: concentra el mensaje de resultado y el envoltorio try/catch que cada página repetía por su cuenta.\n\nEstaba copiado en cuatro páginas y las copias ya habían divergido. La de Aulas no capturaba `UnauthorizedAccessException`, así que un usuario con permiso `aulas:leer` pero sin `aulas:crear` pasaba la política de la página y tumbaba el circuito al guardar, porque el permiso se vuelve a exigir en la capa de aplicación (`AutorizacionAplicacion.Exigir`). Las otras tres sí lo capturaban, pero mostraban el texto crudo de la excepción y le filtraban al usuario el nombre del índice de Postgres en vez de la explicación de `PresentacionErroresCatalogo`.',
     m: {
@@ -1951,7 +1642,7 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Blazor.PresentacionErroresCatalogo': {
     s: 'Traduce a lenguaje entendible los errores de restricción única que devuelve la base de datos.\n\nCuando Postgres rechaza una fila repetida, el mensaje que sube trae el nombre del índice (`aulas_codigo_uq` y parecidos). Mostrar eso en pantalla no le sirve a nadie, así que aquí se reconoce el índice y se dice qué fue lo que ya existía. Está en presentación porque son decisiones de redacción, y los textos son constantes públicas para que las pruebas comparen contra ellas y no contra literales copiados.',
     m: {
-      'Explicar': { f: 'public static string Explicar(Exception excepcion)', s: 'Devuelve el texto que se le muestra al usuario. Si el error no es de los conocidos, se devuelve el mensaje original: preferimos mostrar algo técnico antes que ocultar un fallo tras una frase genérica.', e: [['ArgumentNullException', 'Si `excepcion` es nula.']], l: 29 },
+      'Explicar': { f: 'public static string Explicar(Exception excepcion)', s: 'Devuelve el texto que se le muestra al usuario. Si el error no es de los conocidos, se devuelve el mensaje original: preferimos mostrar algo técnico antes que ocultar un fallo tras una frase genérica.', e: [['ArgumentNullException', 'Si `excepcion` es nula.']], l: 30 },
     },
   },
   'Horarios.Blazor.PresentacionGeneraciones': {
@@ -1965,10 +1656,13 @@ export const DOCS: Record<string, DocClase> = {
   'Horarios.Blazor.ProcesadorTrabajosPesados': {
     s: 'Servicio en segundo plano que va vaciando la `ColaTrabajosPesados`.\n\nExiste porque hay trabajos —generar un horario, importar un archivo— que tardan más de lo que una petición HTTP debería esperar. La página encola y responde; este servicio ejecuta. Es un solo consumidor a propósito: los trabajos son intensivos en CPU y correr varios a la vez solo se quitarían tiempo entre ellos.',
     m: {
-      'ExecuteAsync': { f: 'protected override async Task ExecuteAsync(CancellationToken stoppingToken)', s: 'Bucle de consumo. Cuando no hay nada que hacer espera 250 ms antes de volver a mirar, en lugar de girar en vacío.\n\nUn trabajo que falla no puede tumbar el procesador: si eso pasara, la aplicación seguiría en pie pero ninguna generación volvería a completarse. Por eso se registra el error y se sigue, con una pausa de un segundo para no entrar en un ciclo de fallos seguidos. La cancelación al apagar la aplicación sí termina el bucle.', l: 26 },
+      'ExecuteAsync': { f: 'protected override async Task ExecuteAsync(CancellationToken stoppingToken)', s: 'Bucle de consumo. Cuando no hay nada que hacer espera 250 ms antes de volver a mirar, en lugar de girar en vacío.\n\nUn trabajo que falla no puede tumbar el procesador: si eso pasara, la aplicación seguiría en pie pero ninguna generación volvería a completarse. Por eso se registra el error y se sigue, con una pausa de un segundo para no entrar en un ciclo de fallos seguidos. La cancelación al apagar la aplicación sí termina el bucle.', l: 24 },
     },
+  },
+  'Horarios.Blazor.TrabajoPesado': {
+    s: 'Un trabajo encolado, con su nombre para poder identificarlo en los registros.',
   },
 };
 
-export const TOTAL_CLASES_DOC = 274;
-export const TOTAL_MIEMBROS_DOC = 720;
+export const TOTAL_CLASES_DOC = 225;
+export const TOTAL_MIEMBROS_DOC = 623;

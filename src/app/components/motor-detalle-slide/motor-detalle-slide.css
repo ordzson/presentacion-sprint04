@@ -1,0 +1,994 @@
+/* Mismo lenguaje visual que la slide 5: el mapa de carriles arriba, y debajo las
+   tablas y fichas que no caben dentro de él. Nada se esconde tras una interacción. */
+
+.slide {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1.4rem clamp(1.5rem, 3.5vw, 3.5rem) 1rem;
+  box-sizing: border-box;
+  gap: 0.7rem;
+}
+
+/* ------------------------------------------------------------ encabezado */
+
+.slide-header {
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.slide-header h1 {
+  margin: 0 0 0.3rem;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 72rem;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------- cuerpo */
+
+.cuerpo {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+  padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bloque-titulo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.pista,
+.pie {
+  margin: 0;
+  max-width: 74rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.pie {
+  font-style: italic;
+}
+
+/* ═════════════════════════════════════════════════════════════════ el mapa */
+
+.mapa {
+  --gutter: 11rem;
+  --cols: var(--gutter) repeat(5, minmax(0, 0.62fr)) 2fr;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.fila,
+.puente,
+.banda {
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: stretch;
+}
+
+.fila.cabecera {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--border) 30%, transparent);
+}
+
+.titulo-capa {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.05rem;
+  padding: 0.4rem 0.5rem;
+}
+
+.capa-nombre {
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.capa-proyecto {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.64rem;
+  color: var(--text-faint);
+}
+
+/* --- banda: el tramo de tiempo, con lo que lo dispara y lo que lo cierra */
+
+.banda {
+  padding: 0.18rem 0;
+  background: color-mix(in srgb, var(--c) 9%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--c) 22%, transparent);
+}
+
+.banda-cuerpo {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.1rem 0.6rem 0.2rem;
+}
+
+.banda-titulo {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--c) 78%, #241f18);
+}
+
+.banda-dato {
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+.banda-etiqueta {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0 0.25rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: color-mix(in srgb, var(--c) 80%, #241f18);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* --- los carriles por hilo: los tres siempre a la vista */
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.grupo-filas {
+  position: relative;
+}
+
+.pista-hilos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  padding: 0 0.4rem;
+  border-right: 1px solid var(--border);
+}
+
+.track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+/* La línea vertical dice que ese hilo sigue vivo en esa fila. */
+.track.viva::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: color-mix(in srgb, var(--c, var(--text-faint)) 40%, transparent);
+}
+
+.track-n {
+  position: relative;
+  z-index: 1;
+  min-width: 1.25rem;
+  padding: 0.02rem 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, var(--border));
+  border-radius: 999px;
+  background: var(--bg);
+  text-align: center;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--c, var(--text-faint));
+}
+
+.track-titulo {
+  align-self: center;
+  padding: 0.35rem 0.1rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.track-titulo[data-hilo='web'] {
+  color: #3f6fd6;
+}
+
+.track-titulo[data-hilo='fondo'] {
+  color: #b5791b;
+}
+
+.track-titulo[data-hilo='base'] {
+  color: #7a4ea8;
+}
+
+/* --- celdas y cajas */
+
+.celda {
+  display: flex;
+  align-items: center;
+  padding: 0.07rem 0.3rem;
+  border-left: 1px dashed color-mix(in srgb, var(--border) 85%, transparent);
+}
+
+.celda:nth-child(2) {
+  border-left: none;
+}
+
+.celda.ocupada {
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+}
+
+.caja {
+  display: block;
+  width: 100%;
+  padding: 0.16rem 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, var(--border));
+  border-left: 3px solid var(--c);
+  border-radius: 5px;
+  background: var(--bg);
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.ficha {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.06rem;
+  padding: 0.22rem 0.6rem;
+  border-left: 1px solid var(--border);
+}
+
+.ficha-metodo code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--accent-primary) 80%, #241f18);
+  overflow-wrap: anywhere;
+}
+
+.ficha-que {
+  font-size: 0.76rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.ficha-io {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.57rem;
+  line-height: 1.25;
+  color: var(--text-faint);
+}
+
+.ficha-io code {
+  font-family: inherit;
+}
+
+.ficha-io .sale {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ficha-flecha {
+  color: var(--text-faint);
+  margin-right: 0.2rem;
+}
+
+.ficha-base {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.56rem;
+  line-height: 1.3;
+  color: #1d6b4b;
+  overflow-wrap: anywhere;
+}
+
+.marca-base {
+  display: inline-block;
+  margin-right: 0.3rem;
+  padding: 0 0.25rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, #2a9468 16%, transparent);
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* --- puentes entre pasos: la barra dice qué frontera cruza la información */
+
+.puente {
+  align-items: center;
+  min-height: 0.5rem;
+}
+
+.puente-barra {
+  height: 2px;
+  margin: 0 0.8rem;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--c) 55%, transparent);
+  position: relative;
+}
+
+.puente-barra::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -3px;
+  border-left: 6px solid color-mix(in srgb, var(--c) 70%, transparent);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* --- leyenda de hilos */
+
+.leyenda {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.leyenda-hilo {
+  padding: 0.35rem 0.6rem;
+  border-left: 3px solid var(--text-faint);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--border) 22%, transparent);
+}
+
+.leyenda-hilo[data-hilo='web'] {
+  border-left-color: #3f6fd6;
+  background: color-mix(in srgb, #3f6fd6 8%, transparent);
+}
+
+.leyenda-hilo[data-hilo='fondo'] {
+  border-left-color: #b5791b;
+  background: color-mix(in srgb, #b5791b 8%, transparent);
+}
+
+.leyenda-hilo[data-hilo='base'] {
+  border-left-color: #7a4ea8;
+  background: color-mix(in srgb, #7a4ea8 8%, transparent);
+}
+
+.leyenda-titulo {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.leyenda-nota {
+  display: block;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════ qué se pide a quién: la tabla */
+
+.tabla {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.peticiones .tr {
+  display: grid;
+  grid-template-columns: 11rem 10rem 14rem 7rem minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.peticiones .tr.cabecera {
+  border-top: none;
+  background: color-mix(in srgb, var(--border) 30%, transparent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.td-quien {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.td-aquien {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
+}
+
+.td-contrato code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.td-lleva {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.td-devuelve {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.td-nota {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.frontera {
+  display: inline-block;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.frontera[data-frontera='proceso'],
+.frontera[data-frontera='memoria'] {
+  background: color-mix(in srgb, var(--text-faint) 20%, transparent);
+  color: var(--text-muted);
+}
+
+.frontera[data-frontera='hilo'] {
+  background: color-mix(in srgb, #b5791b 20%, transparent);
+  color: #8a5a10;
+}
+
+.frontera[data-frontera='rpc'],
+.frontera[data-frontera='sql'] {
+  background: color-mix(in srgb, #2a9468 18%, transparent);
+  color: #1d6b4b;
+}
+
+.frontera[data-frontera='render'] {
+  background: color-mix(in srgb, #3f6fd6 18%, transparent);
+  color: #2f57a8;
+}
+
+/* ═════════════════════════════════════════════ las reglas, una a una */
+
+.reglas-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 0.7rem;
+}
+
+.regla-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--text-faint);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.regla-ficha[data-momento='previa'] {
+  border-left-color: #3f6fd6;
+}
+.regla-ficha[data-momento='bucle'] {
+  border-left-color: #c4562f;
+}
+.regla-ficha[data-momento='fijada'] {
+  border-left-color: #b5791b;
+}
+.regla-ficha[data-momento='verificacion'] {
+  border-left-color: #2a9468;
+}
+.regla-ficha[data-momento='base'] {
+  border-left-color: #7a4ea8;
+}
+
+.regla-ficha header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.regla-ficha header strong {
+  font-size: 0.88rem;
+}
+
+.regla-momento {
+  margin-left: auto;
+  font-size: 0.64rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.regla-ficha p {
+  margin: 0;
+  font-size: 0.79rem;
+  line-height: 1.35;
+}
+
+.regla-donde code,
+.regla-espejo {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.regla-pregunta {
+  font-weight: 600;
+}
+
+.regla-cuando,
+.regla-sino {
+  color: var(--text-muted);
+}
+
+.reglas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.regla {
+  display: inline-block;
+  padding: 0.05rem 0.32rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent-primary) 13%, transparent);
+  color: #26468f;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+}
+
+.disp-etiqueta {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0 0.28rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  color: #2f57a8;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ═════════════════════════════════════ lo que se recuerda mientras tanto */
+
+.estructuras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 0.7rem;
+}
+
+.estructura {
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.estructura header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.estructura header code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.estructura-archivo {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.6rem;
+  color: var(--text-faint);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.estructura p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.estructura-guarda code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.estructura-responde {
+  font-weight: 600;
+}
+
+.estructura-clave,
+.estructura-cambia,
+.estructura-porque {
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════ los órdenes */
+
+.ordenes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 0.6rem;
+}
+
+.orden {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.orden h3 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.orden-donde {
+  margin: 0 0 0.3rem;
+}
+
+.orden-donde code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  color: var(--text-muted);
+}
+
+.criterios {
+  margin: 0 0 0.3rem;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.criterios li {
+  font-size: 0.84rem;
+  line-height: 1.3;
+}
+
+.nota-porque {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════ dato individual contra el lote */
+
+.tramos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.tramo {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-primary);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 0.6rem 0.8rem 0.5rem;
+}
+
+.tramo-cabecera {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tramo-cabecera h3 {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.tramo-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.lectura {
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.lectura.lote {
+  background: color-mix(in srgb, var(--accent-primary) 6%, var(--bg));
+}
+
+.lectura-etiqueta {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+
+.lectura-unidad {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+
+.lectura ul {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.lectura li {
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.tramo-cardinalidad {
+  margin: 0.45rem 0 0;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+
+/* ══════════════════════════════════════════════════════════ los avisos */
+
+.avisos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
+  gap: 0.6rem;
+}
+
+.aviso {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--text-faint);
+  border-radius: 7px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.aviso[data-origen='aplicacion'] {
+  border-left-color: #3f6fd6;
+}
+.aviso[data-origen='motor'] {
+  border-left-color: #b5791b;
+}
+.aviso[data-origen='verificador'] {
+  border-left-color: #2a9468;
+}
+.aviso[data-origen='base'] {
+  border-left-color: #7a4ea8;
+}
+
+.aviso header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.aviso header code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.aviso-origen {
+  font-size: 0.64rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.aviso p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.aviso-cuando {
+  color: var(--text-faint);
+  font-size: 0.74rem;
+}
+
+.aviso-mensaje {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: #9a4a20;
+  overflow-wrap: anywhere;
+}
+
+.aviso-arreglo {
+  color: var(--text-muted);
+}
+
+/* ═════════════════════════════════════════════════ dónde se rompe cada paso */
+
+.notas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  gap: 0.6rem;
+}
+
+.nota {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c);
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.nota-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.nota-cabecera code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.etapa-ref {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c, var(--text-faint)) 22%, transparent);
+  color: color-mix(in srgb, var(--c, var(--text-muted)) 75%, #241f18);
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.63rem;
+  font-weight: 700;
+}
+
+.nota p {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════ las cifras */
+
+.cifras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.5rem;
+}
+
+.cifra {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.cifra-valor {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.cifra-que {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cifra-nota {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}
+
+/* ─────────────────────────────────────────────────────── pantallas justas */
+
+@media (max-width: 1280px) {
+  .mapa {
+    --gutter: 8.2rem;
+    --cols: var(--gutter) repeat(5, minmax(0, 0.7fr)) 1.7fr;
+  }
+
+  .tramo-columnas {
+    grid-template-columns: 1fr;
+  }
+
+  .peticiones .tr {
+    grid-template-columns: 9rem 8rem 11rem 6rem minmax(0, 1fr);
+    font-size: 0.72rem;
+  }
+}

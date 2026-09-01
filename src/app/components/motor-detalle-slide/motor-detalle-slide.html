@@ -1,0 +1,315 @@
+<section class="slide">
+  <header class="slide-header">
+    <p class="eyebrow">{{ detalle().eyebrow }}</p>
+    <h1>{{ detalle().titulo }}</h1>
+    <p class="subtitle">{{ detalle().subtitulo }}</p>
+  </header>
+
+  <div class="cuerpo">
+    <!-- ═══════════════════════════════════════════════════════ el mapa -->
+    <section class="bloque">
+      <div class="mapa" role="table" aria-label="Recorrido por capas y por hilos">
+        <div class="fila cabecera" role="row">
+          <div class="pista-hilos" role="columnheader">
+            @for (h of hilos; track h.id) {
+              <span class="track-titulo" [attr.data-hilo]="h.id">{{ h.titulo }}</span>
+            }
+          </div>
+          @for (c of capas; track c.id) {
+            <div class="celda titulo-capa" role="columnheader">
+              <span class="capa-nombre">{{ c.titulo }}</span>
+              <span class="capa-proyecto">{{ c.proyecto }}</span>
+            </div>
+          }
+          <div class="ficha titulo-capa" role="columnheader">
+            <span class="capa-nombre">Qué hace, y qué entra y sale</span>
+          </div>
+        </div>
+
+        @for (g of grupos(); track g.banda.id) {
+          <div class="grupo">
+            <div class="banda" [style.--c]="g.banda.color" role="row">
+              <div class="banda-cuerpo">
+                <span class="banda-titulo">{{ g.banda.titulo }}</span>
+                <span class="banda-dato">
+                  <span class="banda-etiqueta">Lo dispara</span>{{ g.banda.disparo }}
+                </span>
+                <span class="banda-dato">
+                  <span class="banda-etiqueta">Termina</span>{{ g.banda.fin }}
+                </span>
+              </div>
+            </div>
+
+            <div class="grupo-filas">
+              @for (p of g.pasos; track p.n; let i = $index) {
+                @if (!$first) {
+                  <div class="puente" role="presentation">
+                    <span class="pista-hilos" role="presentation" [style.--c]="g.banda.color">
+                      @for (h of hilos; track h.id) {
+                        <span class="track" [class.viva]="g.banda.hilo === h.id"></span>
+                      }
+                    </span>
+                    <span
+                      class="puente-barra"
+                      [style.grid-column]="
+                        puente(g.pasos[i - 1], p).inicio + ' / ' + puente(g.pasos[i - 1], p).fin
+                      "
+                      [style.--c]="g.banda.color"
+                    ></span>
+                  </div>
+                }
+
+                <div class="fila" role="row">
+                  <div class="pista-hilos" [style.--c]="g.banda.color">
+                    @for (h of hilos; track h.id) {
+                      <span class="track" [class.viva]="hiloDe(p) === h.id">
+                        @if (hiloDe(p) === h.id) {
+                          <span class="track-n">{{ p.n }}</span>
+                        }
+                      </span>
+                    }
+                  </div>
+                  @for (c of capas; track c.id; let j = $index) {
+                    <div class="celda" [class.ocupada]="columnaDe(p) === j + 1" role="cell">
+                      @if (columnaDe(p) === j + 1) {
+                        <span
+                          class="caja"
+                          [style.--c]="g.banda.color"
+                          [title]="p.proyecto + '/' + p.archivo"
+                        >
+                          {{ p.clase }}
+                        </span>
+                      }
+                    </div>
+                  }
+                  <div class="ficha" role="cell">
+                    <span class="ficha-metodo"><code>{{ p.metodo }}</code></span>
+                    <span class="ficha-que">{{ p.hace }}</span>
+                    <span class="ficha-io">
+                      <code>{{ p.entra }}</code>
+                      <span class="ficha-flecha">→</span>
+                      <code class="sale">{{ p.sale }}</code>
+                    </span>
+                    @if (p.base) {
+                      <span class="ficha-base"><span class="marca-base">base</span>{{ p.base }}</span>
+                    }
+                    @if (p.reglas?.length) {
+                      <span class="reglas">
+                        @for (r of p.reglas; track r) {
+                          <span class="regla">{{ r }}</span>
+                        }
+                      </span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="leyenda">
+        @for (h of hilos; track h.id) {
+          <div class="leyenda-hilo" [attr.data-hilo]="h.id">
+            <span class="leyenda-titulo">{{ h.titulo }}</span>
+            <span class="leyenda-nota">{{ h.quien }}</span>
+          </div>
+        }
+      </div>
+
+      <p class="pie">{{ detalle().piePasos }}</p>
+    </section>
+
+    <!-- ═══════════════════ qué información se pide, a quién y con qué contrato -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué se le pide a quién, y con qué contrato</h2>
+      <p class="pista">{{ detalle().peticionesPista }}</p>
+
+      <div class="tabla peticiones" role="table">
+        <div class="tr cabecera" role="row">
+          <span role="columnheader">Quién pregunta</span>
+          <span role="columnheader">A quién</span>
+          <span role="columnheader">Contrato</span>
+          <span role="columnheader">Frontera</span>
+          <span role="columnheader">Qué pide y qué recibe</span>
+        </div>
+        @for (p of detalle().peticiones; track p.contrato) {
+          <div class="tr" role="row">
+            <span class="td-quien" role="cell">{{ p.quien }}</span>
+            <span class="td-aquien" role="cell">{{ p.aQuien }}</span>
+            <span class="td-contrato" role="cell"><code>{{ p.contrato }}</code></span>
+            <span role="cell">
+              <span class="frontera" [attr.data-frontera]="p.frontera">{{ nombreFrontera(p) }}</span>
+            </span>
+            <span class="td-lleva" role="cell">
+              <span class="td-pide">{{ p.pide }}</span>
+              <span class="td-devuelve"><span class="ficha-flecha">→</span>{{ p.devuelve }}</span>
+              <span class="td-nota">{{ p.nota }}</span>
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ qué regla decide, dónde y cuándo -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué regla lo decide, dónde vive y de qué SQL es espejo</h2>
+      <p class="pista">{{ detalle().reglasPista }}</p>
+
+      <div class="reglas-lista">
+        @for (r of detalle().reglas; track r.codigo) {
+          <article class="regla-ficha" [attr.data-momento]="r.momento">
+            <header>
+              <span class="regla">{{ r.codigo }}</span>
+              <strong>{{ r.nombre }}</strong>
+              <span class="regla-momento">{{ nombreMomento(r) }}</span>
+            </header>
+            <p class="regla-donde"><code>{{ r.donde }}</code></p>
+            <p class="regla-cuando"><span class="disp-etiqueta">Cuándo</span>{{ r.cuando }}</p>
+            <p class="regla-pregunta">{{ r.pregunta }}</p>
+            <p class="regla-espejo"><span class="disp-etiqueta">Espejo de</span>{{ r.espejo }}</p>
+            <p class="regla-sino"><span class="disp-etiqueta">Si no</span>{{ r.siNo }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ lo que se recuerda mientras tanto -->
+    @if (detalle().estructuras?.length) {
+      <section class="bloque">
+        <h2 class="bloque-titulo">Lo que se recuerda mientras el bucle avanza</h2>
+        <p class="pista">{{ detalle().estructurasPista }}</p>
+
+        <div class="estructuras">
+          @for (e of detalle().estructuras; track e.clase) {
+            <article class="estructura">
+              <header>
+                <code>{{ e.clase }}</code>
+                <span class="estructura-archivo">{{ e.archivo }}</span>
+              </header>
+              <p class="estructura-guarda"><code>{{ e.guarda }}</code></p>
+              <p class="estructura-clave"><span class="disp-etiqueta">Clave</span>{{ e.clave }}</p>
+              <p class="estructura-responde"><span class="disp-etiqueta">Responde</span>{{ e.responde }}</p>
+              <p class="estructura-cambia"><span class="disp-etiqueta">Cambia</span>{{ e.cambia }}</p>
+              <p class="estructura-porque">{{ e.porque }}</p>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ══════════════════════════════════ los órdenes de preferencia -->
+    @if (detalle().ordenes?.length) {
+      <section class="bloque">
+        <h2 class="bloque-titulo">En qué orden se prueba cada cosa</h2>
+        <p class="pista">{{ detalle().ordenesPista }}</p>
+
+        <div class="ordenes">
+          @for (o of detalle().ordenes; track o.que) {
+            <article class="orden">
+              <h3>{{ o.que }}</h3>
+              <p class="orden-donde"><code>{{ o.donde }}</code></p>
+              <ol class="criterios">
+                @for (c of o.criterios; track c) {
+                  <li>{{ c }}</li>
+                }
+              </ol>
+              <p class="nota-porque">{{ o.porque }}</p>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ══════════════════════════════════ dato individual contra lote -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué le pasa a un dato suelto y qué le pasa al lote</h2>
+      <p class="pista">{{ detalle().lecturasPista }}</p>
+
+      <div class="tramos">
+        @for (t of detalle().lecturas; track t.titulo) {
+          <article class="tramo">
+            <header class="tramo-cabecera">
+              <h3>{{ t.titulo }}</h3>
+            </header>
+
+            <div class="tramo-columnas">
+              <div class="lectura individual">
+                <span class="lectura-etiqueta">Un dato individual</span>
+                <span class="lectura-unidad">{{ t.individual.unidad }}</span>
+                <ul>
+                  @for (p of t.individual.pasos; track p) {
+                    <li>{{ p }}</li>
+                  }
+                </ul>
+              </div>
+
+              <div class="lectura lote">
+                <span class="lectura-etiqueta">En batch</span>
+                <span class="lectura-unidad">{{ t.lote.unidad }}</span>
+                <ul>
+                  @for (p of t.lote.pasos; track p) {
+                    <li>{{ p }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+
+            <p class="tramo-cardinalidad">{{ t.cardinalidad }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════ dónde se rompe y qué se dice -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué se dice cuando algo no cuadra</h2>
+      <p class="pista">{{ detalle().fallosPista }}</p>
+
+      <div class="avisos">
+        @for (f of detalle().fallos; track f.codigo) {
+          <article class="aviso" [attr.data-origen]="f.origen">
+            <header>
+              <code>{{ f.codigo }}</code>
+              <span class="aviso-origen">{{ nombreOrigen(f) }}</span>
+            </header>
+            <p class="aviso-cuando">{{ f.cuando }}</p>
+            <p class="aviso-mensaje">{{ f.mensaje }}</p>
+            <p class="aviso-arreglo"><strong>Qué significa:</strong> {{ f.arreglo }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ lo que cada paso no hace -->
+    @if (pasosConNota().length) {
+      <section class="bloque">
+        <h2 class="bloque-titulo">Dónde se rompe cada paso</h2>
+        <div class="notas">
+          @for (p of pasosConNota(); track p.n) {
+            <article class="nota" [style.--c]="colorDeBanda(p.banda)">
+              <span class="nota-cabecera">
+                <span class="etapa-ref">{{ p.n }}</span>
+                <code>{{ p.clase }}</code>
+              </span>
+              <p class="nota-falla">{{ p.siFalla }}</p>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ══════════════════════════════════════════════════════ cifras -->
+    <section class="bloque">
+      <div class="cifras">
+        @for (c of detalle().cifras; track c.que) {
+          <div class="cifra">
+            <span class="cifra-valor">{{ c.valor }}</span>
+            <span class="cifra-que">{{ c.que }}</span>
+            <span class="cifra-nota">{{ c.nota }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</section>

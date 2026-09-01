@@ -1,30 +1,31 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  afterRenderEffect,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import {
+  AVISOS,
+  CONTRATOS,
+  Contrato,
+  DISPARADORES,
+  FRONTERAS,
+  Fase,
+  HILOS,
+  HiloId,
+  PARALELO,
+  VALIDACIONES,
+  BUCLE,
   CADENA,
-  COHORTES_GRILLA,
-  DIAGNOSTICOS,
-  ENTRADA,
-  HERRAMIENTAS,
-  HORAS_GRILLA,
-  PASOS,
-  PERIODOS_GRILLA,
-  PIEZAS_POR_ID,
-  Pieza,
-  PiezaId,
-  REGLAS_BLANDAS,
-  REGLAS_DURAS,
+  CAPAS,
+  CAPA_DE_PROYECTO,
+  CIFRAS,
+  CODIGOS_VERIFICADOR,
+  Comprobacion,
+  ETAPAS,
+  Etapa,
+  FASES,
+  NIVELES,
+  ORDENES,
+  PIEZAS,
+  TOCA_BASE,
+  TRAMOS,
 } from '../../data/motor-data';
-
-type Vista = 'cadena' | 'ejemplo' | 'reglas';
 
 @Component({
   selector: 'app-motor-slide',
@@ -34,79 +35,85 @@ type Vista = 'cadena' | 'ejemplo' | 'reglas';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MotorSlide {
+  readonly etapas = ETAPAS;
+  readonly hilos = HILOS;
+  readonly paralelo = PARALELO;
+  readonly disparadores = DISPARADORES;
+  readonly contratos = CONTRATOS;
+  readonly validaciones = VALIDACIONES;
+  readonly fases = FASES;
+  readonly capas = CAPAS;
+  readonly tramos = TRAMOS;
+  readonly piezas = PIEZAS;
   readonly cadena = CADENA;
-  readonly herramientas = HERRAMIENTAS;
-  readonly pasos = PASOS;
-  readonly entrada = ENTRADA;
-  readonly reglasDuras = REGLAS_DURAS;
-  readonly reglasBlandas = REGLAS_BLANDAS;
-  readonly diagnosticos = DIAGNOSTICOS;
+  readonly bucle = BUCLE;
+  readonly ordenes = ORDENES;
+  readonly avisos = AVISOS;
+  readonly codigos = CODIGOS_VERIFICADOR;
+  readonly niveles = NIVELES;
+  readonly cifras = CIFRAS;
 
-  readonly cohortesGrilla = COHORTES_GRILLA;
-  readonly periodosGrilla = PERIODOS_GRILLA;
-  readonly horasGrilla = HORAS_GRILLA;
+  /**
+   * El mapa se dibuja por fases y no etapa a etapa, porque cada fase es un tramo de
+   * tiempo entero: dentro del de fondo hay que poder pintar, sobre las diez filas de
+   * golpe, lo que el hilo web sigue haciendo mientras tanto.
+   */
+  readonly grupos: { fase: Fase; etapas: Etapa[] }[] = FASES.map((fase) => ({
+    fase,
+    etapas: ETAPAS.filter((e) => e.fase === fase.id),
+  }));
 
-  /** Lo que viaja por cada flecha de la cadena, en el mismo orden que las piezas. */
-  readonly cargas: Record<PiezaId, string> = {
-    expansor: 'SesionRequeridaMotor[]',
-    instantanea: 'InstantaneaMotor',
-    motor: 'ResultadoMotor',
-    verificador: 'ResultadoVerificacion',
-    reglas: '',
-    ocupacion: '',
-    evaluador: '',
-    mejora: '',
-  };
+  /** Las etapas que dejan una advertencia de lectura, para la lista de avisos del mapa. */
+  readonly etapasConNota = ETAPAS.filter((e) => e.siFalla || e.noHace);
 
-  readonly vista = signal<Vista>('cadena');
-  readonly piezaActiva = signal<PiezaId>('motor');
-  readonly pasoActivo = signal<number>(1);
-
-  readonly pieza = computed<Pieza>(() => PIEZAS_POR_ID[this.piezaActiva()]);
-  readonly paso = computed(() => this.pasos.find((p) => p.n === this.pasoActivo()) ?? this.pasos[0]);
-  readonly piezaDelPaso = computed<Pieza>(() => PIEZAS_POR_ID[this.paso().pieza]);
-
-  private readonly host = inject(ElementRef<HTMLElement>);
-
-  constructor() {
-    // La lista de pasos no cabe entera: al avanzar con las flechas el paso activo
-    // se quedaría fuera de la parte visible.
-    afterRenderEffect({
-      write: () => {
-        this.pasoActivo();
-        this.host.nativeElement
-          .querySelector('.paso-item.activo')
-          ?.scrollIntoView({ block: 'nearest' });
-      },
-    });
+  /**
+   * En qué carril se dibuja la etapa. El mapa tiene una columna por capa, así que
+   * el zigzag de las cajas es literalmente el paso de la información de una a otra.
+   */
+  columnaDe(e: Etapa): number {
+    const capa = CAPA_DE_PROYECTO[e.proyecto];
+    return this.capas.findIndex((c) => c.id === capa) + 1;
   }
 
-  piezaPorId(id: PiezaId): Pieza {
-    return PIEZAS_POR_ID[id];
+  /** Qué hace esta etapa contra Postgres, si es que hace algo. */
+  base(e: Etapa): string {
+    return TOCA_BASE[e.id] ?? '';
   }
 
-  verVista(v: Vista): void {
-    this.vista.set(v);
+  /** Los tipos que entran o salen, en una sola línea. */
+  tipos(datos: { tipo: string }[]): string {
+    return datos.map((d) => d.tipo).join(' + ');
   }
 
-  verPieza(id: PiezaId): void {
-    this.piezaActiva.set(id);
+  /** Quién ejecuta la etapa. La lectura la pide otra vez el hilo de la petición. */
+  hiloDe(e: Etapa): HiloId {
+    return this.faseDe(e).hilo;
   }
 
-  verPaso(n: number): void {
-    if (n >= 1 && n <= this.pasos.length) this.pasoActivo.set(n);
+  nombreFrontera(c: Contrato): string {
+    return FRONTERAS[c.frontera];
+  }
+
+  colorDeFase(id: string): string {
+    return this.fases.find((f) => f.id === id)?.color ?? '#6b6153';
+  }
+
+  faseDe(e: Etapa) {
+    return this.fases.find((f) => f.id === e.fase) ?? this.fases[0];
   }
 
   /**
-   * Flechas para recorrer el ejemplo. La navegación entre slides usa PageUp/PageDown,
-   * así que aquí no hay choque.
+   * El puente entre dos etapas seguidas: las líneas de rejilla que la barra tiene que
+   * cruzar. Cuando las dos están en la misma capa la barra es corta; cuando no, se ve
+   * exactamente qué frontera cruza el dato. La columna 1 es el carril de hilos.
    */
-  @HostListener('window:keydown', ['$event'])
-  onTecla(event: KeyboardEvent): void {
-    if (this.vista() !== 'ejemplo') return;
-    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') this.verPaso(this.pasoActivo() + 1);
-    else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') this.verPaso(this.pasoActivo() - 1);
-    else return;
-    event.preventDefault();
+  puente(anterior: Etapa, actual: Etapa): { inicio: number; fin: number } {
+    const a = this.columnaDe(anterior);
+    const b = this.columnaDe(actual);
+    return { inicio: Math.min(a, b) + 1, fin: Math.max(a, b) + 2 };
+  }
+
+  comprobacionesDe(nivel: Comprobacion['nivel']): Comprobacion[] {
+    return this.bucle.filter((c) => c.nivel === nivel);
   }
 }

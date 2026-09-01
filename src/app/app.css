@@ -87,3 +87,21 @@
   max-width: 9rem;
   padding-left: 0.4rem;
 }
+
+/* las sub-slides del motor: mismo carril, punto más pequeño y algo metido hacia dentro,
+   para que se lea que dependen de la slide 5 y no que son ocho slides sueltas más */
+.punto.subpunto {
+  padding: 0 0.2rem;
+}
+
+.punto.subpunto::before {
+  width: 0.34rem;
+  height: 0.34rem;
+  background: color-mix(in srgb, var(--text-faint) 65%, transparent);
+}
+
+.punto.subpunto.activo::before {
+  width: 0.95rem;
+  height: 0.4rem;
+  background: var(--accent-primary);
+}

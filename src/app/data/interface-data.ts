@@ -82,7 +82,6 @@ export const CAPTURAS: Captura[] = [
     imagen: 'capturas/docentes.png',
     puntos: [
       'Buscador reutilizable <BarraBusqueda /> con icono SVG en línea y botón de limpiar.',
-      'La carga («1–4 cursos») se muestra en la tabla porque es una restricción dura del motor.',
       'Acción de continuidad arriba a la derecha: «Configurar disponibilidad →» encadena con el paso 5.',
     ],
     archivo: 'Components/Pages/Docentes.razor · Shared/BarraBusqueda.razor',
@@ -100,20 +99,6 @@ export const CAPTURAS: Captura[] = [
       'Contador vivo «12 períodos marcados» + atajos «Marcar todo» / «Limpiar selección».',
     ],
     archivo: 'Components/Pages/DisponibilidadDocente.razor',
-  },
-  {
-    id: 'planes',
-    ruta: '/planes',
-    titulo: 'Planes de horario · paso 6',
-    resumen:
-      'Donde se dispara el motor. El alcance se elige con casillas explícitas para que quede claro qué entra en la generación.',
-    imagen: 'capturas/planes.png',
-    puntos: [
-      'Cada bloque es un .workspace-card numerado con .step-number: crear, revisar, generar.',
-      'Alcance por carreras y jornadas en dos columnas; vacío significa «todo el período» y se dice en texto.',
-      'Los errores del motor se traducen a español llano antes de mostrarse (PresentacionErroresCatalogo).',
-    ],
-    archivo: 'Components/Pages/Planes.razor',
   },
 ];
 

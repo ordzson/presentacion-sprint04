@@ -12,16 +12,21 @@
     <app-architecture-slide />
   }
   @case (5) {
-    <app-interface-slide />
-  }
-  @case (6) {
-    <app-catalogo-slide />
-  }
-  @case (7) {
     <app-motor-slide />
   }
-  @case (8) {
+  @case (11) {
+    <app-interface-slide />
+  }
+  @case (12) {
+    <app-catalogo-slide />
+  }
+  @case (13) {
     <app-preguntas-slide />
+  }
+  @default {
+    @if (detalleActual(); as d) {
+      <app-motor-detalle-slide [detalle]="d" />
+    }
   }
 }
 
@@ -39,6 +44,7 @@
       type="button"
       class="punto"
       [class.activo]="actual() === s.n"
+      [class.subpunto]="s.sub"
       [title]="s.n + ' · ' + s.titulo"
       [attr.aria-current]="actual() === s.n"
       (click)="ir(s.n)"

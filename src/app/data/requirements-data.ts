@@ -102,14 +102,6 @@ const rf: Requirement[] = [
 
   // 4.3 Configuración general
   {
-    id: 'RF-014', categoria: 'RF', seccion: '4.3 Configuración general', titulo: 'Parámetros del motor',
-    descripcion: 'El superadministrador deberá poder configurar las prioridades utilizadas para evaluar la calidad de los horarios.',
-    contexto: [
-      'Los pesos de la función de costo de las restricciones blandas son configurables.',
-      'Restricción técnica del proyecto: el motor de optimización no puede usar herramientas de terceros ya hechas para armar horarios; debe construirse desde cero por el equipo.',
-    ],
-  },
-  {
     id: 'RF-015', categoria: 'RF', seccion: '4.3 Configuración general', titulo: 'Políticas de acceso',
     descripcion: 'El superadministrador deberá poder configurar reglas de contraseña, duración de sesión y límites de intentos de acceso.',
     contexto: ['Referencia original: expiración de sesión a las 8 horas de inactividad; contraseñas con hash+salt.'],
@@ -188,12 +180,10 @@ const rf: Requirement[] = [
   {
     id: 'RF-028', categoria: 'RF', seccion: '4.5 Aulas y laboratorios', titulo: 'Equipamiento especial',
     descripcion: 'El sistema deberá permitir indicar el equipamiento o tipo de laboratorio requerido por un curso.',
-    contexto: ['Los cursos que requieren laboratorio deben asignarse a un espacio con el equipamiento correspondiente (validado por el motor de generación).'],
   },
   {
     id: 'RF-029', categoria: 'RF', seccion: '4.5 Aulas y laboratorios', titulo: 'Ubicación de aulas',
     descripcion: 'El sistema deberá permitir registrar la ubicación de las aulas para evaluar los desplazamientos entre sesiones consecutivas.',
-    contexto: ['Se registran coordenadas de piso y número de aula; el motor procura minimizar la distancia de caminata entre aulas usadas consecutivamente por un mismo grupo.'],
   },
 
   // 4.6 Docentes y disponibilidad
@@ -215,7 +205,6 @@ const rf: Requirement[] = [
   {
     id: 'RF-033', categoria: 'RF', seccion: '4.6 Docentes y disponibilidad', titulo: 'Prioridad docente',
     descripcion: 'El coordinador deberá poder asignar un nivel de prioridad para distribuir la carga académica.',
-    contexto: ['El motor usa esta prioridad para balancear la carga entre docentes como último nivel de optimización de restricciones blandas.'],
   },
   {
     id: 'RF-034', categoria: 'RF', seccion: '4.6 Docentes y disponibilidad', titulo: 'Ventana de disponibilidad',
@@ -234,7 +223,6 @@ const rf: Requirement[] = [
   {
     id: 'RF-037', categoria: 'RF', seccion: '4.6 Docentes y disponibilidad', titulo: 'Consulta de disponibilidad',
     descripcion: 'El coordinador deberá poder consultar y verificar la disponibilidad registrada por los docentes.',
-    contexto: ['Esta matriz de disponibilidad es la que el motor de generación usa para respetar la restricción blanda de mayor prioridad.'],
   },
 
   // 4.7 Generación automática
@@ -253,7 +241,6 @@ const rf: Requirement[] = [
     contexto: [
       'Restricciones duras: sin solapes de docente, sin solapes de aula, capacidad respetada, equipamiento de laboratorio disponible, continuidad docente intra-carrera.',
       'Los cursos de área común se modelan como una única sesión física (un docente, un aula, un bloque) compartida, bloqueando el slot en los horarios de todas las carreras involucradas.',
-      'Restricción tecnológica del proyecto: el motor debe implementarse desde cero por el equipo, sin herramientas externas de armado de horarios.',
     ],
   },
   {
@@ -322,7 +309,6 @@ const rf: Requirement[] = [
   {
     id: 'RF-051', categoria: 'RF', seccion: '4.9 Incidencias y sustituciones', titulo: 'Validación del sustituto',
     descripcion: 'El sistema deberá verificar que el sustituto pueda impartir el curso y que no tenga conflictos de horario.',
-    contexto: ['Se apoya en la lista de cursos autorizados por docente y en las mismas reglas de exclusividad docente usadas por el motor de generación.'],
   },
   {
     id: 'RF-052', categoria: 'RF', seccion: '4.9 Incidencias y sustituciones', titulo: 'Suspensión de sesiones',
@@ -370,7 +356,6 @@ const rn: Requirement[] = [
   {
     id: 'RN-001', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Exclusividad docente',
     descripcion: 'Un docente no podrá impartir dos sesiones diferentes en el mismo bloque horario.',
-    contexto: ['Restricción dura del motor de generación: "sin solapes de docente".'],
   },
   {
     id: 'RN-002', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Área común',
@@ -380,7 +365,6 @@ const rn: Requirement[] = [
   {
     id: 'RN-003', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Exclusividad del aula',
     descripcion: 'Un aula no podrá asignarse a más de una sesión durante el mismo bloque.',
-    contexto: ['Restricción dura del motor de generación: "sin solapes de aula".'],
   },
   {
     id: 'RN-004', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Capacidad del aula',
@@ -394,12 +378,10 @@ const rn: Requirement[] = [
   {
     id: 'RN-006', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Equipamiento',
     descripcion: 'Los cursos que requieran laboratorio deberán asignarse a un espacio con el equipamiento correspondiente.',
-    contexto: ['Cada curso puede declarar si requiere laboratorio y qué tipo de laboratorio necesita; el motor lo valida como restricción dura.'],
   },
   {
     id: 'RN-007', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Continuidad docente',
     descripcion: 'Un mismo docente deberá impartir todas las sesiones semanales de un curso para una carrera y grupo específicos.',
-    contexto: ['Descrita originalmente como "continuidad docente intra-carrera", es restricción dura del motor.'],
   },
   {
     id: 'RN-008', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Cobertura por jornada',
@@ -429,7 +411,6 @@ const rn: Requirement[] = [
   {
     id: 'RN-013', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Desplazamiento',
     descripcion: 'Se procurará minimizar la distancia entre aulas utilizadas consecutivamente por un mismo grupo.',
-    contexto: ['Tercer nivel de prioridad entre las restricciones blandas del motor.'],
   },
   {
     id: 'RN-014', categoria: 'RN', seccion: 'Reglas de negocio', titulo: 'Distribución docente',
@@ -454,7 +435,6 @@ const rnf: Requirement[] = [
     id: 'RNF-003', categoria: 'RNF', seccion: '6.1 Rendimiento', titulo: 'Usuarios concurrentes',
     descripcion: 'El sistema deberá soportar hasta 500 usuarios concurrentes en operaciones de consulta.',
     contexto: [
-      'El motor de optimización debe poder escalar horizontalmente, ejecutándose como servicio independiente para distribuir carga.',
       'Capacidad de datos de referencia: 30 carreras, 100 cohortes activas, 200 docentes, 50 aulas, 1500 sesiones por periodo.',
     ],
   },
@@ -521,15 +501,6 @@ const rnf: Requirement[] = [
       'Disponibilidad mínima objetivo: 99% durante el periodo académico activo.',
       'Backups automáticos diarios con retención mínima de 30 días.',
       'Ante una caída, el sistema se restablece en menos de 30 minutos, con una pérdida máxima de datos de 24 horas.',
-    ],
-  },
-  {
-    id: 'RNF-014', categoria: 'RNF', seccion: '6.4 Confiabilidad y mantenimiento', titulo: 'Separación del motor',
-    descripcion: 'El motor de generación deberá mantenerse separado de la interfaz para facilitar sus pruebas y mantenimiento.',
-    contexto: [
-      'Debe implementarse como módulo independiente, con una forma de conexión estable, reemplazable sin afectar el resto del sistema.',
-      'Cobertura de pruebas objetivo: 70% en el motor de optimización, 50% en el resto del sistema.',
-      'La comunicación entre las partes del sistema debe quedar documentada, y el despliegue debe ser automatizado y repetible.',
     ],
   },
   {

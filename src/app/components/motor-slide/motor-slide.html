@@ -1,273 +1,516 @@
 <section class="slide">
   <header class="slide-header">
-    <div>
-      <p class="eyebrow">Fase 6 · El motor</p>
-      <h1>Cómo se arma un horario, clase por clase</h1>
-      <p class="subtitle">
-        Ocho piezas que se pasan objetos con nombre y apellido: sesiones que colocar, un tablero
-        de casillas ocupadas, una propuesta y un veredicto.
-      </p>
-    </div>
-
-    <div class="metricas">
-      <div class="metrica"><strong>2</strong><span>fases del motor</span></div>
-      <div class="metrica"><strong>11</strong><span>reglas que no se rompen</span></div>
-      <div class="metrica"><strong>5</strong><span>que se puntúan</span></div>
-    </div>
+    <p class="eyebrow">Fase 4 · El motor</p>
+    <h1>El recorrido completo de la información, de un clic a un horario</h1>
+    <p class="subtitle">
+      Dieciocho etapas, dos hilos y cuatro capas en un solo mapa. A la izquierda, los dos hilos en
+      paralelo: se ve qué acción arranca el trabajo de fondo y qué sigue haciendo la pantalla
+      mientras tanto. A la derecha, la capa que ejecuta y el contrato que entra y sale. Debajo,
+      los relojes, los contratos, quién valida qué, y qué le pasa a un dato suelto y a todo el lote.
+    </p>
   </header>
 
-  <nav class="tabs" role="tablist">
-    <button type="button" role="tab" class="tab" [class.active]="vista() === 'cadena'"
-      [attr.aria-selected]="vista() === 'cadena'" (click)="verVista('cadena')">
-      <span class="tab-code">01</span><span class="tab-label">Las piezas y qué se pasan</span>
-    </button>
-    <button type="button" role="tab" class="tab" [class.active]="vista() === 'ejemplo'"
-      [attr.aria-selected]="vista() === 'ejemplo'" (click)="verVista('ejemplo')">
-      <span class="tab-code">02</span><span class="tab-label">Un caso pequeño, paso a paso</span>
-    </button>
-    <button type="button" role="tab" class="tab" [class.active]="vista() === 'reglas'"
-      [attr.aria-selected]="vista() === 'reglas'" (click)="verVista('reglas')">
-      <span class="tab-code">03</span><span class="tab-label">Lo que nunca se rompe</span>
-    </button>
-  </nav>
-
-  <!-- ─────────────────────────────────────────── 01 · las piezas y qué se pasan -->
-  @if (vista() === 'cadena') {
-    <div class="cuerpo dos-columnas">
-      <div class="diagrama">
-        <p class="pista">Entra un paquete de datos y sale un horario con veredicto.</p>
-
-        <div class="mapa">
-          <div class="columna">
-            <div class="actor">PreparadorInstantaneaMotorPostgres</div>
-            <div class="flecha"><span><code>RequisitoCursoMotor[]</code> — qué cursos, a qué grupos y cuántas veces por semana</span></div>
-
-            @for (id of cadena; track id) {
-              @let p = piezaPorId(id);
-              <button
-                type="button"
-                class="caja"
-                [class.activa]="piezaActiva() === id"
-                [style.--c]="p.color"
-                (click)="verPieza(id)"
-              >
-                <span class="caja-clase">{{ p.clase }}</span>
-                <span class="caja-rol">{{ p.rol }}</span>
-              </button>
-
-              <div class="flecha" [class.final]="id === 'verificador'">
-                <span><code>{{ cargas[id] }}</code></span>
-              </div>
+  <div class="cuerpo">
+    <!-- ═══════════════════════════════════════════════════════ el mapa -->
+    <section class="bloque">
+      <div class="mapa" role="table" aria-label="Flujo de la información por capas y por hilos">
+        <div class="fila cabecera" role="row">
+          <div class="pista-hilos" role="columnheader">
+            @for (h of hilos; track h.id) {
+              <span class="track-titulo" [attr.data-hilo]="h.id">{{ h.titulo }}</span>
             }
-
-            <div class="actor">EjecutarGeneracionPlan · Completada o Inviable</div>
           </div>
-
-          <div class="rail">
-            <p class="rail-titulo">Por dentro del motor</p>
-            @for (id of herramientas; track id) {
-              @let h = piezaPorId(id);
-              <button
-                type="button"
-                class="banda"
-                [class.activa]="piezaActiva() === id"
-                [style.--c]="h.color"
-                (click)="verPieza(id)"
-              >
-                <span class="banda-clase">{{ h.clase }}</span>
-                <span class="banda-rol">{{ h.rol }}</span>
-              </button>
-            }
+          @for (c of capas; track c.id) {
+            <div class="celda titulo-capa" role="columnheader">
+              <span class="capa-nombre">{{ c.titulo }}</span>
+              <span class="capa-proyecto">{{ c.proyecto }}</span>
+            </div>
+          }
+          <div class="celda-base titulo-capa" role="columnheader">
+            <span class="capa-nombre">Postgres</span>
+            <span class="capa-proyecto">supabase</span>
+          </div>
+          <div class="ficha titulo-capa" role="columnheader">
+            <span class="capa-nombre">Qué le pasa a la información aquí</span>
           </div>
         </div>
 
-        <p class="regla-oro">
-          <strong>Nada de esto toca la base de datos.</strong> El motor recibe una copia de los datos,
-          calcula en memoria y devuelve una propuesta. Con la misma copia da siempre el mismo horario.
-        </p>
+        @for (g of grupos; track g.fase.id) {
+          <div class="grupo">
+            <div class="banda" [style.--c]="g.fase.color" role="row">
+              <div class="banda-cuerpo">
+                <span class="banda-titulo">{{ g.fase.titulo }}</span>
+                <span class="banda-dato">
+                  <span class="banda-etiqueta">Lo dispara</span>{{ g.fase.disparo }}
+                </span>
+                <span class="banda-dato">
+                  <span class="banda-etiqueta">Termina</span>{{ g.fase.fin }}
+                </span>
+              </div>
+            </div>
+
+            <div class="grupo-filas">
+              @if (g.fase.hilo === 'fondo') {
+                <aside class="carril-paralelo" aria-label="Lo que el hilo web hace a la vez">
+                  <span class="paralelo-titulo">{{ paralelo.titulo }}</span>
+                  <span class="paralelo-reloj">{{ paralelo.reloj }}</span>
+                  <span class="paralelo-base">{{ paralelo.base }}</span>
+                  <span class="paralelo-nota">a la vez que las etapas {{ paralelo.durante[0] }}–{{ paralelo.durante[1] }}</span>
+                </aside>
+              }
+
+              @for (e of g.etapas; track e.n; let i = $index) {
+                @if (!$first) {
+                  <div class="puente" role="presentation">
+                    <span class="pista-hilos" role="presentation" [style.--c]="g.fase.color">
+                      <span class="track" [class.viva]="g.fase.hilo === 'web'"></span>
+                      <span class="track" [class.viva]="g.fase.hilo === 'fondo'"></span>
+                    </span>
+                    <span
+                      class="puente-barra"
+                      [style.grid-column]="
+                        puente(g.etapas[i - 1], e).inicio + ' / ' + puente(g.etapas[i - 1], e).fin
+                      "
+                      [style.--c]="g.fase.color"
+                    ></span>
+                  </div>
+                }
+
+                <div class="fila" role="row">
+                  <div class="pista-hilos" [style.--c]="g.fase.color">
+                    @for (h of hilos; track h.id) {
+                      <span class="track" [class.viva]="hiloDe(e) === h.id">
+                        @if (hiloDe(e) === h.id) {
+                          <span class="track-n">{{ e.n }}</span>
+                        }
+                      </span>
+                    }
+                  </div>
+                  @for (c of capas; track c.id; let j = $index) {
+                    <div class="celda" [class.ocupada]="columnaDe(e) === j + 1" role="cell">
+                      @if (columnaDe(e) === j + 1) {
+                        <span
+                          class="caja"
+                          [style.--c]="g.fase.color"
+                          [title]="e.proyecto + '/' + e.archivo"
+                        >
+                          {{ e.clase }}
+                        </span>
+                      }
+                    </div>
+                  }
+                  <div class="celda-base" role="cell">
+                    @if (base(e)) {
+                      <span class="marca-base">{{ base(e) }}</span>
+                    }
+                  </div>
+                  <div class="ficha" role="cell">
+                    <span class="ficha-que">{{ e.titulo }}</span>
+                    <span class="ficha-io">
+                      <code>{{ tipos(e.entra) }}</code>
+                      <span class="ficha-flecha">→</span>
+                      <code class="sale">{{ tipos(e.sale) }}</code>
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
       </div>
 
-      <aside class="panel" [style.--c]="pieza().color">
-        <div class="panel-cabecera">
-          <span class="chip">{{ pieza().rol }}</span>
-          <h2>{{ pieza().clase }}</h2>
-          <p class="ruta"><code>{{ pieza().archivo }}</code></p>
-          <p class="analogia">{{ pieza().llano }}</p>
-        </div>
-
-        <div class="panel-cuerpo">
-          <div class="contrato">
-            <div class="contrato-fila">
-              <span class="etiqueta envia">Recibe</span>
-              <code>{{ pieza().recibe }}</code>
-            </div>
-            <div class="contrato-fila">
-              <span class="etiqueta devuelve">Devuelve</span>
-              <code>{{ pieza().devuelve }}</code>
-            </div>
+      <div class="leyenda">
+        @for (h of hilos; track h.id) {
+          <div class="leyenda-hilo" [attr.data-hilo]="h.id">
+            <span class="leyenda-titulo">{{ h.titulo }}</span>
+            <span class="leyenda-nota">{{ h.quien }}</span>
           </div>
-
-          <ul class="lista">
-            @for (d of pieza().detalles; track d) {
-              <li>{{ d }}</li>
-            }
-          </ul>
+        }
+        <div class="leyenda-hilo" data-hilo="paralelo">
+          <span class="leyenda-titulo">Lo que ocurre a la vez</span>
+          <span class="leyenda-nota">
+            Las etapas {{ paralelo.durante[0] }} a {{ paralelo.durante[1] }} corren en el hilo de
+            fondo mientras el hilo web, a su izquierda, sigue sondeando. {{ paralelo.termina }}
+          </span>
         </div>
-      </aside>
-    </div>
-  }
+      </div>
 
-  <!-- ────────────────────────────────────────── 02 · un caso pequeño, paso a paso -->
-  @if (vista() === 'ejemplo') {
-    <div class="cuerpo ejemplo">
-      <div class="entrada">
-        @for (f of entrada; track f.titulo) {
-          <article class="ficha">
-            <h3>{{ f.titulo }}</h3>
-            <ul>
-              @for (fila of f.filas; track fila.nombre) {
-                <li><strong>{{ fila.nombre }}</strong><span>{{ fila.detalle }}</span></li>
+      <p class="pie">
+        Cinco puntos tocan la base y once no la tocan nunca: entre la etapa 7 y la 16 el motor
+        trabaja solo con lo que se llevó en la instantánea. Ese hueco es lo que hace que dos
+        corridas sobre la misma entrada den el mismo horario.
+      </p>
+    </section>
+
+    <!-- ═════════════════════════════ qué dispara qué, y con qué reloj se mide -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué arranca cada cosa, y cómo se sabe cuándo termina</h2>
+      <p class="pista">
+        Los siete relojes del recorrido. Todo número de aquí sale del código: 250 ms de recogida,
+        2 s de sondeo, 300 s de presupuesto, 20 s de margen, 100 trabajos de cola.
+      </p>
+
+      <div class="disparadores">
+        @for (d of disparadores; track d.id) {
+          <article class="disparador">
+            <p class="disp-dispara"><span class="disp-etiqueta">Lo dispara</span>{{ d.dispara }}</p>
+            <p class="disp-arranca">{{ d.arranca }}</p>
+            <p class="disp-mecanismo"><code>{{ d.mecanismo }}</code></p>
+            <p class="disp-reloj"><span class="disp-etiqueta">Reloj</span>{{ d.reloj }}</p>
+            <p class="disp-fin"><span class="disp-etiqueta">Termina</span>{{ d.fin }}</p>
+            <p class="disp-limite"><span class="disp-etiqueta">Si se pasa</span>{{ d.limite }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ════════════════════════ los contratos: qué tipo lleva qué, y hasta dónde -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué contrato transporta qué dato, y hasta dónde</h2>
+      <p class="pista">
+        Ningún tipo cruza dos fronteras distintas. La columna «frontera» dice qué separa el origen
+        del destino: una llamada en proceso no cuesta nada, un cambio de hilo obliga a que el dato
+        sea inmutable, y una RPC obliga a que quepa en JSON.
+      </p>
+
+      <div class="tabla contratos" role="table">
+        <div class="tr cabecera" role="row">
+          <span role="columnheader">Contrato</span>
+          <span role="columnheader">De</span>
+          <span role="columnheader">A</span>
+          <span role="columnheader">Frontera</span>
+          <span role="columnheader">Qué lleva dentro</span>
+        </div>
+        @for (c of contratos; track c.tipo) {
+          <div class="tr" role="row">
+            <span class="td-tipo" role="cell">
+              <code>{{ c.tipo }}</code>
+              <span class="td-proyecto">{{ c.proyecto }}</span>
+            </span>
+            <span class="td-de" role="cell">{{ c.de }}</span>
+            <span class="td-a" role="cell">{{ c.a }}</span>
+            <span class="td-frontera" role="cell">
+              <span class="frontera" [attr.data-frontera]="c.frontera">{{ nombreFrontera(c) }}</span>
+            </span>
+            <span class="td-lleva" role="cell">
+              {{ c.lleva }}
+              <span class="td-nota">{{ c.nota }}</span>
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ qué se valida, dónde y cuándo -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué se valida, quién lo valida y en qué momento</h2>
+      <p class="pista">
+        El dominio valida una sola cosa —que el salto de estado esté permitido y tenga motivo—, y
+        no valida nada más. Las reglas de forma están en los constructores del contrato, las de
+        suficiencia en el caso de uso, las duras en el motor, y las de concurrencia en la base.
+      </p>
+
+      <div class="validaciones">
+        @for (v of validaciones; track v.id) {
+          <article class="validacion" [attr.data-capa]="v.capa">
+            <header>
+              <span class="val-capa">{{ v.capa }}</span>
+              <code class="val-donde">{{ v.donde }}</code>
+            </header>
+            <p class="val-cuando"><span class="disp-etiqueta">Cuándo</span>{{ v.cuando }}</p>
+            <ul class="val-que">
+              @for (q of v.que; track q) {
+                <li>{{ q }}</li>
               }
             </ul>
+            <p class="val-falla"><span class="disp-etiqueta">Si no pasa</span>{{ v.siFalla }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════ dato individual contra lote -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué hace la información en cada tramo</h2>
+      <p class="pista">
+        El mismo tramo leído dos veces. A la izquierda, lo que le pasa a una unidad suelta; a la
+        derecha, lo que le pasa al conjunto, que casi nunca es «lo mismo N veces»: el bucle de uno
+        está metido dentro del bucle del otro.
+      </p>
+
+      <div class="tramos">
+        @for (t of tramos; track t.id) {
+          <article class="tramo" [style.--c]="colorDeFase(t.fase)">
+            <header class="tramo-cabecera">
+              <span class="tramo-etapas">
+                @for (n of t.etapas; track n) {
+                  <span class="etapa-ref">{{ n }}</span>
+                }
+              </span>
+              <h3>{{ t.titulo }}</h3>
+              <span class="tramo-io">
+                <code>{{ t.entra }}</code>
+                <span class="ficha-flecha">→</span>
+                <code class="sale">{{ t.sale }}</code>
+              </span>
+            </header>
+
+            <div class="tramo-columnas">
+              <div class="lectura individual">
+                <span class="lectura-etiqueta">Un dato individual</span>
+                <span class="lectura-unidad">{{ t.individual.unidad }}</span>
+                <ul>
+                  @for (p of t.individual.pasos; track p) {
+                    <li>{{ p }}</li>
+                  }
+                </ul>
+              </div>
+
+              <div class="lectura lote">
+                <span class="lectura-etiqueta">En batch</span>
+                <span class="lectura-unidad">{{ t.lote.unidad }}</span>
+                <ul>
+                  @for (p of t.lote.pasos; track p) {
+                    <li>{{ p }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+
+            <p class="tramo-cardinalidad">{{ t.cardinalidad }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════ lo que se da por hecho y no es -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Dónde se rompe y qué no hace cada etapa</h2>
+      <div class="notas">
+        @for (e of etapasConNota; track e.n) {
+          <article class="nota" [style.--c]="faseDe(e).color">
+            <span class="nota-cabecera">
+              <span class="etapa-ref">{{ e.n }}</span>
+              <code>{{ e.clase }}</code>
+            </span>
+            @if (e.siFalla) {
+              <p class="nota-falla"><strong>Si algo no cuadra:</strong> {{ e.siFalla }}</p>
+            }
+            @if (e.noHace) {
+              <p class="nota-ojo"><strong>Lo que no hace:</strong> {{ e.noHace }}</p>
+            }
+            @if (e.reglas?.length) {
+              <p class="reglas">
+                @for (r of e.reglas; track r) {
+                  <span class="regla">{{ r }}</span>
+                }
+              </p>
+            }
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ la memoria del colocador -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">La memoria del colocador</h2>
+      <p class="pista">
+        Ninguna de estas siete piezas aparece en el mapa, porque ninguna se llama una vez: se
+        consultan y se actualizan miles de veces mientras el bucle avanza. Las cuatro primeras
+        guardan estado; las tres últimas no guardan nada, y son las únicas que el verificador
+        comparte con el colocador.
+      </p>
+
+      <div class="piezas">
+        @for (p of piezas; track p.id) {
+          <article class="pieza" [attr.data-tipo]="p.tipo">
+            <header>
+              <code>{{ p.clase }}</code>
+              <span class="pieza-tipo">{{
+                p.tipo === 'registro' ? 'guarda estado' : 'regla pura'
+              }}</span>
+            </header>
+            <p class="pieza-pregunta">{{ p.pregunta }}</p>
+            <p class="pieza-guarda">
+              <code>{{ p.guarda }}</code>
+            </p>
+            <p class="pieza-actualiza"><strong>Se actualiza:</strong> {{ p.actualiza }}</p>
+            <p class="pieza-porque">{{ p.porque }}</p>
+            <p class="reglas">
+              @for (r of p.reglas; track r) {
+                <span class="regla">{{ r }}</span>
+              }
+            </p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════ en qué se convierte el dato -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">La misma información, siete formas</h2>
+      <p class="pista">
+        De izquierda a derecha, lo que una fila de la base va siendo hasta volver a ella, campo por
+        campo.
+      </p>
+
+      <div class="cadena">
+        @for (e of cadena; track e.id) {
+          @if (!$first) {
+            <span class="cadena-flecha">→</span>
+          }
+          <span class="eslabon">{{ e.tipo }}</span>
+        }
+      </div>
+
+      <div class="datos">
+        @for (e of cadena; track e.id) {
+          <article class="dato">
+            <header>
+              <code>{{ e.tipo }}</code>
+              <span class="dato-produce">{{ e.producidoPor }} → {{ e.consumidoPor }}</span>
+            </header>
+            <p class="dato-transformacion">{{ e.transformacion }}</p>
+            <table class="campos">
+              <tbody>
+                @for (c of e.campos; track c.nombre) {
+                  <tr>
+                    <th scope="row">
+                      <code>{{ c.nombre }}</code>
+                    </th>
+                    <td>{{ c.de }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════ el bucle -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">El orden de las preguntas, que no se reordena</h2>
+      <p class="pista">
+        De la más barata y restrictiva a la más cara. Cada una se comprueba antes de ocupar nada, y
+        ninguna se comprueba dos veces con dos códigos distintos.
+      </p>
+
+      <div class="escalera">
+        @for (c of bucle; track c.n) {
+          <div class="escalon" [attr.data-nivel]="c.nivel">
+            <span class="escalon-n">{{ c.n }}</span>
+            <div class="escalon-cuerpo">
+              <span class="escalon-cabecera">
+                <span class="regla">{{ c.codigo }}</span>
+                <strong>{{ c.nombre }}</strong>
+                <span class="escalon-nivel">
+                  {{
+                    c.nivel === 'asignacion'
+                      ? 'por docente candidato'
+                      : c.nivel === 'colocacion'
+                        ? 'por hora candidata'
+                        : 'por aula candidata'
+                  }}
+                </span>
+              </span>
+              <p class="escalon-pregunta">{{ c.pregunta }}</p>
+              <p class="escalon-sino"><strong>Si no:</strong> {{ c.siNo }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <p class="pie">
+        Si todas dicen que sí, la sesión se ocupa. Si alguna sesión de la asignación no encuentra
+        sitio, se deshacen todas las de ese docente y se prueba el siguiente: o entran todas, o
+        ninguna.
+      </p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ los órdenes -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Los cuatro órdenes que deciden a quién se le ofrece qué</h2>
+      <p class="pista">
+        Esto es lo que sustituye al evaluador de restricciones blandas del motor anterior. No
+        optimiza: ordena.
+      </p>
+
+      <div class="ordenes">
+        @for (o of ordenes; track o.id) {
+          <article class="orden">
+            <h3>{{ o.que }}</h3>
+            <ol class="criterios">
+              @for (c of o.criterios; track c) {
+                <li>{{ c }}</li>
+              }
+            </ol>
+            <p class="nota-porque">{{ o.porque }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════ avisos -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Lo que el motor dice cuando algo no cabe</h2>
+      <p class="pista">Ningún aviso es un fallo del motor: todos describen los datos.</p>
+
+      <div class="avisos">
+        @for (a of avisos; track a.codigo) {
+          <article class="aviso" [attr.data-origen]="a.origen">
+            <header>
+              <code>{{ a.codigo }}</code>
+              <span class="aviso-origen">
+                {{
+                  a.origen === 'carga'
+                    ? 'cargador'
+                    : a.origen === 'precalculo'
+                      ? 'precálculo'
+                      : a.origen === 'pendiente'
+                        ? 'colocador'
+                        : 'verificador'
+                }}
+              </span>
+            </header>
+            <p>{{ a.significa }}</p>
+            <p class="aviso-arreglo"><strong>Se arregla:</strong> {{ a.arreglo }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ promesas y cifras -->
+    <section class="bloque">
+      <h2 class="bloque-titulo">Qué se promete y qué solo se avisa</h2>
+      <div class="niveles">
+        @for (n of niveles; track n.nivel) {
+          <article class="nivel">
+            <span class="nivel-titulo">{{ n.nivel }}</span>
+            <span class="nivel-promesa">{{ n.promesa }}</span>
+            <p>{{ n.texto }}</p>
           </article>
         }
       </div>
 
-      <div class="dos-columnas recorrido">
-        <div class="pasos">
-          <ol class="lista-pasos">
-            @for (p of pasos; track p.n) {
-              @let c = piezaPorId(p.pieza);
-              <li>
-                <button
-                  type="button"
-                  class="paso-item"
-                  [class.activo]="pasoActivo() === p.n"
-                  [style.--c]="c.color"
-                  (click)="verPaso(p.n)"
-                >
-                  <span class="paso-n">{{ p.n }}</span>
-                  <span class="paso-texto">
-                    <span class="paso-titulo">{{ p.titulo }}</span>
-                    <span class="paso-clase">{{ c.clase }}</span>
-                  </span>
-                </button>
-              </li>
-            }
-          </ol>
+      <h3 class="codigos-titulo">
+        Los veinte códigos de violación dura, en el orden fijo en que se reportan
+      </h3>
+      <p class="codigos">
+        @for (c of codigos; track c) {
+          <span class="codigo">{{ c }}</span>
+        }
+      </p>
 
-          @if (paso().grilla; as g) {
-            <div class="grilla" [style.--c]="piezaDelPaso().color">
-              <div class="celda cabecera"></div>
-              @for (periodo of periodosGrilla; track periodo; let i = $index) {
-                <div class="celda cabecera">
-                  <strong>{{ periodo }}</strong>
-                  <span>{{ horasGrilla[i] }}</span>
-                </div>
-              }
-
-              @for (fila of g; track $index; let f = $index) {
-                <div class="celda fila">{{ cohortesGrilla[f] }}</div>
-                @for (celda of fila; track $index) {
-                  <div class="celda" [class.llena]="!!celda" [class.cambio]="celda?.cambio">
-                    @if (celda) {
-                      <strong>{{ celda.curso }}</strong>
-                      <span>{{ celda.docente }} · {{ celda.aula }}</span>
-                    } @else {
-                      <span class="vacia">—</span>
-                    }
-                  </div>
-                }
-              }
-            </div>
-          }
-        </div>
-
-        <aside class="panel" [style.--c]="piezaDelPaso().color">
-          <div class="panel-cabecera">
-            <span class="chip">Paso {{ paso().n }} de {{ pasos.length }} · {{ piezaDelPaso().clase }}</span>
-            <h2>{{ paso().titulo }}</h2>
-            <p class="analogia">{{ paso().llano }}</p>
+      <div class="cifras">
+        @for (c of cifras; track c.que) {
+          <div class="cifra">
+            <span class="cifra-valor">{{ c.valor }}</span>
+            <span class="cifra-que">{{ c.que }}</span>
+            <span class="cifra-nota">{{ c.nota }}</span>
           </div>
-
-          <div class="panel-cuerpo">
-            <div class="contrato">
-              <div class="contrato-fila">
-                <span class="etiqueta envia">Se llama</span>
-                <code>{{ paso().envia }}</code>
-              </div>
-              <div class="contrato-fila">
-                <span class="etiqueta devuelve">Sale</span>
-                <code>{{ paso().devuelve }}</code>
-              </div>
-            </div>
-
-            @if (paso().nota) {
-              <p class="nota"><strong>Detalle:</strong> {{ paso().nota }}</p>
-            }
-
-            <div class="navegacion">
-              <button type="button" [disabled]="paso().n === 1" (click)="verPaso(paso().n - 1)">‹ Anterior</button>
-              <button type="button" [disabled]="paso().n === pasos.length" (click)="verPaso(paso().n + 1)">Siguiente ›</button>
-            </div>
-          </div>
-        </aside>
+        }
       </div>
-    </div>
-  }
-
-  <!-- ──────────────────────────────────────────────── 03 · lo que nunca se rompe -->
-  @if (vista() === 'reglas') {
-    <div class="cuerpo">
-      <div class="bloque">
-        <h2 class="bloque-titulo">Reglas duras · o se cumplen, o la sesión no se coloca</h2>
-        <div class="grid duras">
-          @for (r of reglasDuras; track r.llamada) {
-            <article class="tarjeta">
-              <code>{{ r.llamada }}</code>
-              <p>{{ r.texto }}</p>
-            </article>
-          }
-        </div>
-      </div>
-
-      <div class="bloque">
-        <h2 class="bloque-titulo">Reglas blandas · no prohíben nada, suman puntos que hay que bajar</h2>
-        <div class="grid blandas">
-          @for (b of reglasBlandas; track b.nombre) {
-            <article class="tarjeta suave">
-              <div class="peso-fila">
-                <h3>{{ b.nombre }}</h3>
-                <span class="peso">× {{ b.peso }}</span>
-              </div>
-              <p>{{ b.texto }}</p>
-            </article>
-          }
-        </div>
-        <p class="regla-oro">
-          <strong>La diferencia está en qué se hace con ellas.</strong> Una regla dura descarta la
-          combinación antes de mirarla; una blanda la deja pasar y le cobra. El motor busca el horario
-          legal con la cuenta más baja, no el horario perfecto.
-        </p>
-      </div>
-
-      <div class="bloque">
-        <h2 class="bloque-titulo">Cuando una sesión no cabe en ningún lado</h2>
-        <p class="pista">
-          En vez de dejar el hueco en blanco, el motor explica por qué se quedó fuera. Ese texto es el
-          que llega a la pantalla, tal cual.
-        </p>
-        <ul class="motivos">
-          @for (d of diagnosticos; track d) {
-            <li>{{ d }}</li>
-          }
-        </ul>
-        <p class="regla-oro">
-          La sesión sale como <code>SesionPendienteMotor</code> con su motivo, el verificador la cuenta
-          como violación y la generación se cierra en <strong>Inviable</strong>. El horario a medias
-          nunca se guarda como bueno.
-        </p>
-      </div>
-    </div>
-  }
+    </section>
+  </div>
 </section>

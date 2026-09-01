@@ -164,7 +164,7 @@ export class CatalogoSlide {
     for (const o of this.resultado().lista) {
       const clave = `${o.cat}·${o.grupo}`;
       if (!actual || actual.clave !== clave) {
-        // el rótulo lleva la categoría delante: «Motor» significa una cosa en
+        // el rótulo lleva la categoría delante: «Horarios» significa una cosa en
         // las tablas y otra en las claves foráneas
         const cat = CATEGORIAS.find((c) => c.id === o.cat)!;
         const titulo = cat.label === o.grupo ? o.grupo : `${cat.label} · ${o.grupo}`;

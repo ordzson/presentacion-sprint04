@@ -1,6 +1,6 @@
 // GENERADO — no editar a mano.
 // Fuente: docs/database.sql · script: scripts/gen-erd.py
-// 57 tablas · 110 claves foráneas
+// 59 tablas · 112 claves foráneas
 
 export type DominioId =
   | 'academico'
@@ -56,20 +56,20 @@ export interface Dominio {
 }
 
 export const DOMINIOS: Dominio[] = [
-  { id: 'academico', label: 'Académico', descripcion: 'Catálogo institucional: facultades, carreras, pensums, cursos, cohortes y calendario.', color: '#3f6fd6', tablas: 15, x: 1794.6, y: 489.7, w: 1130.9, h: 951.3 },
-  { id: 'infraestructura', label: 'Infraestructura', descripcion: 'Aulas, recursos físicos y los requisitos de recurso que exige cada curso.', color: '#2a9468', tablas: 4, x: 1967.8, y: 36.0, w: 692.1, h: 288.1 },
-  { id: 'docentes', label: 'Docentes', descripcion: 'Plantilla docente, asignación a cursos, disponibilidad declarada y sustituciones.', color: '#b5791b', tablas: 6, x: 3391.7, y: 178.0, w: 947.9, h: 521.0 },
-  { id: 'motor', label: 'Motor', descripcion: 'Configuración del generador, restricciones, planes y trazas de cada corrida.', color: '#8b52d9', tablas: 9, x: 3732.9, y: 796.5, w: 1140.3, h: 697.3 },
-  { id: 'horarios', label: 'Horarios', descripcion: 'Resultado: horarios, versiones, sesiones ubicadas y sus conflictos.', color: '#c2504b', tablas: 10, x: 2840.5, y: 1100.6, w: 826.3, h: 886.4 },
-  { id: 'importacion', label: 'Importación', descripcion: 'Cargas masivas desde archivo, plantillas y errores por fila.', color: '#0f8a94', tablas: 3, x: 459.8, y: 321.8, w: 567.2, h: 316.3 },
-  { id: 'seguridad', label: 'Seguridad', descripcion: 'Usuarios, roles, permisos y alcance por facultad.', color: '#5a6474', tablas: 6, x: 1107.3, y: 1214.0, w: 880.8, h: 597.4 },
-  { id: 'operacion', label: 'Operación', descripcion: 'Notificaciones, reportes y bitácora de auditoría.', color: '#a1568c', tablas: 4, x: 36.0, y: 928.8, w: 824.0, h: 467.0 },
+  { id: 'academico', label: 'Académico', descripcion: 'Catálogo institucional: facultades, carreras, pensums, cursos, cohortes y calendario.', color: '#3f6fd6', tablas: 16, x: 1783.8, y: 487.7, w: 1168.2, h: 977.0 },
+  { id: 'infraestructura', label: 'Infraestructura', descripcion: 'Aulas, recursos físicos y los requisitos de recurso que exige cada curso.', color: '#2a9468', tablas: 4, x: 1969.6, y: 36.0, w: 697.3, h: 272.0 },
+  { id: 'docentes', label: 'Docentes', descripcion: 'Plantilla docente, asignación a cursos, disponibilidad declarada y sustituciones.', color: '#b5791b', tablas: 7, x: 3391.0, y: 201.0, w: 964.9, h: 520.1 },
+  { id: 'motor', label: 'Motor', descripcion: 'Configuración del generador, restricciones, planes y trazas de cada corrida.', color: '#8b52d9', tablas: 9, x: 3737.9, y: 816.9, w: 1141.7, h: 692.1 },
+  { id: 'horarios', label: 'Horarios', descripcion: 'Resultado: horarios, versiones, sesiones ubicadas y sus conflictos.', color: '#c2504b', tablas: 10, x: 2851.8, y: 1091.9, w: 814.9, h: 903.7 },
+  { id: 'importacion', label: 'Importación', descripcion: 'Cargas masivas desde archivo, plantillas y errores por fila.', color: '#0f8a94', tablas: 3, x: 457.8, y: 324.9, w: 561.3, h: 318.6 },
+  { id: 'seguridad', label: 'Seguridad', descripcion: 'Usuarios, roles, permisos y alcance por facultad.', color: '#5a6474', tablas: 6, x: 1105.5, y: 1218.4, w: 880.0, h: 597.5 },
+  { id: 'operacion', label: 'Operación', descripcion: 'Notificaciones, reportes y bitácora de auditoría.', color: '#a1568c', tablas: 4, x: 36.0, y: 931.9, w: 823.0, h: 469.1 },
 ];
 
 export const TABLAS: Tabla[] = [
   {
     id: 'agrupacion_area_comun_cohortes', dominio: 'academico',
-    x: 2672.4, y: 710.7, w: 256.0, h: 56.0, grado: 2,
+    x: 2674.2, y: 654.2, w: 256.0, h: 56.0, grado: 2,
     cols: [
       { n: 'agrupacion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'cohorte_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -77,7 +77,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'agrupacion_area_comun_cursos', dominio: 'academico',
-    x: 2681.9, y: 1201.8, w: 241.2, h: 56.0, grado: 2,
+    x: 2571.3, y: 1323.7, w: 241.2, h: 56.0, grado: 2,
     cols: [
       { n: 'agrupacion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'curso_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -85,7 +85,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'agrupaciones_area_comun', dominio: 'academico',
-    x: 2526.2, y: 1290.1, w: 204.2, h: 76.0, grado: 6,
+    x: 2683.3, y: 1145.5, w: 204.2, h: 76.0, grado: 6,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'periodo_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -101,7 +101,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'asignaciones_docente_curso', dominio: 'docentes',
-    x: 3538.9, y: 471.7, w: 226.4, h: 76.0, grado: 5,
+    x: 3538.2, y: 649.1, w: 226.4, h: 76.0, grado: 5,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'docente_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -118,7 +118,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'auditoria', dominio: 'operacion',
-    x: 441.6, y: 1323.9, w: 150.0, h: 76.0, grado: 1,
+    x: 436.5, y: 1329.0, w: 150.0, h: 76.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'usuario_id', t: 'uuid', pk: false, fk: true, nn: false, gen: false, enum: false },
@@ -135,7 +135,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'aula_recursos', dominio: 'infraestructura',
-    x: 2390.8, y: 100.0, w: 150.0, h: 60.0, grado: 2,
+    x: 2401.0, y: 100.0, w: 150.0, h: 60.0, grado: 2,
     cols: [
       { n: 'aula_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'recurso_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -144,7 +144,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'aulas', dominio: 'infraestructura',
-    x: 2550.9, y: 195.4, w: 150.0, h: 76.0, grado: 2,
+    x: 2557.9, y: 198.4, w: 150.0, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'codigo', t: 'varchar(30)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -155,7 +155,6 @@ export const TABLAS: Tabla[] = [
       { n: 'numero_aula', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'posicion_x', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'posicion_y', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
-      { n: 'equipamiento_especial', t: 'jsonb', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'esta_activa', t: 'boolean', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'creado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'actualizado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -165,7 +164,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'cambios_detectados', dominio: 'horarios',
-    x: 3549.2, y: 1548.6, w: 167.2, h: 76.0, grado: 2,
+    x: 3549.1, y: 1557.0, w: 167.2, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'version_horario_id', t: 'uuid', pk: false, fk: true, nn: false, gen: false, enum: false },
@@ -178,7 +177,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'carrera_jornadas', dominio: 'academico',
-    x: 2348.4, y: 1379.1, w: 152.4, h: 56.0, grado: 3,
+    x: 2400.9, y: 1402.7, w: 152.4, h: 56.0, grado: 3,
     cols: [
       { n: 'carrera_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'jornada_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -186,7 +185,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'carreras', dominio: 'academico',
-    x: 2328.9, y: 938.1, w: 150.0, h: 76.0, grado: 7,
+    x: 2397.3, y: 1143.0, w: 150.0, h: 76.0, grado: 6,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'facultad_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -203,7 +202,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'cohorte_periodos', dominio: 'academico',
-    x: 2190.7, y: 1235.6, w: 152.4, h: 76.0, grado: 2,
+    x: 2220.6, y: 1341.0, w: 152.4, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'cohorte_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -219,7 +218,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'cohortes', dominio: 'academico',
-    x: 2488.9, y: 1066.2, w: 150.0, h: 76.0, grado: 11,
+    x: 2539.1, y: 1009.8, w: 150.0, h: 76.0, grado: 11,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'carrera_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -237,7 +236,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'configuracion_motor_restricciones', dominio: 'motor',
-    x: 4700.2, y: 1070.9, w: 278.2, h: 60.0, grado: 2,
+    x: 4706.5, y: 1090.1, w: 278.2, h: 60.0, grado: 2,
     cols: [
       { n: 'configuracion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'restriccion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -246,7 +245,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'configuraciones_motor', dominio: 'motor',
-    x: 4602.4, y: 1262.6, w: 189.4, h: 76.0, grado: 2,
+    x: 4604.9, y: 1276.4, w: 189.4, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'nombre', t: 'varchar(120)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -260,7 +259,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'conflicto_sesiones', dominio: 'horarios',
-    x: 3522.8, y: 1720.7, w: 167.2, h: 56.0, grado: 2,
+    x: 3525.3, y: 1726.4, w: 167.2, h: 56.0, grado: 2,
     cols: [
       { n: 'conflicto_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'sesion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -268,7 +267,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'conflictos', dominio: 'horarios',
-    x: 3392.2, y: 1834.8, w: 150.0, h: 76.0, grado: 3,
+    x: 3396.7, y: 1844.6, w: 150.0, h: 76.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -280,16 +279,28 @@ export const TABLAS: Tabla[] = [
     ],
   },
   {
-    id: 'curso_carreras_compartidas', dominio: 'academico',
-    x: 1941.8, y: 875.0, w: 226.4, h: 56.0, grado: 2,
+    id: 'curso_comun', dominio: 'academico',
+    x: 1892.8, y: 919.1, w: 150.0, h: 72.0, grado: 1,
     cols: [
+      { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
+      { n: 'nombre', t: 'varchar(150)', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'creado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'actualizado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'eliminado_en', t: 'timestamptz', pk: false, fk: false, nn: false, gen: false, enum: false },
+      { n: 'version_fila', t: 'bigint', pk: false, fk: false, nn: true, gen: false, enum: false },
+    ],
+  },
+  {
+    id: 'curso_comun_cursos', dominio: 'academico',
+    x: 1997.5, y: 716.7, w: 167.2, h: 56.0, grado: 2,
+    cols: [
+      { n: 'curso_comun_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'curso_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
-      { n: 'carrera_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
     ],
   },
   {
     id: 'curso_recursos_requeridos', dominio: 'infraestructura',
-    x: 2111.3, y: 260.1, w: 219.0, h: 60.0, grado: 2,
+    x: 2113.1, y: 244.0, w: 219.0, h: 60.0, grado: 2,
     cols: [
       { n: 'curso_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'recurso_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -298,7 +309,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'cursos', dominio: 'academico',
-    x: 2565.8, y: 880.5, w: 150.0, h: 76.0, grado: 10,
+    x: 2569.4, y: 826.1, w: 150.0, h: 76.0, grado: 11,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'codigo', t: 'varchar(30)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -310,11 +321,12 @@ export const TABLAS: Tabla[] = [
       { n: 'actualizado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'eliminado_en', t: 'timestamptz', pk: false, fk: false, nn: false, gen: false, enum: false },
       { n: 'version_fila', t: 'bigint', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'pensum_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
     ],
   },
   {
     id: 'cursos_en_pensum', dominio: 'academico',
-    x: 2078.8, y: 678.6, w: 152.4, h: 76.0, grado: 3,
+    x: 2210.7, y: 602.1, w: 152.4, h: 76.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'pensum_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -331,7 +343,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'disponibilidad_docente_slots', dominio: 'docentes',
-    x: 4184.9, y: 403.6, w: 241.2, h: 68.0, grado: 2,
+    x: 4201.3, y: 465.6, w: 241.2, h: 68.0, grado: 2,
     cols: [
       { n: 'disponibilidad_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'jornada_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -342,7 +354,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'disponibilidades_docente', dominio: 'docentes',
-    x: 3931.5, y: 435.3, w: 211.6, h: 72.0, grado: 3,
+    x: 3905.3, y: 271.0, w: 211.6, h: 72.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'docente_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -353,11 +365,19 @@ export const TABLAS: Tabla[] = [
     ],
   },
   {
+    id: 'docente_facultades', dominio: 'docentes',
+    x: 3866.5, y: 481.7, w: 167.2, h: 60.0, grado: 2,
+    cols: [
+      { n: 'docente_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
+      { n: 'facultad_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
+      { n: 'creado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
+    ],
+  },
+  {
     id: 'docentes', dominio: 'docentes',
-    x: 3614.2, y: 627.0, w: 150.0, h: 76.0, grado: 7,
+    x: 3623.7, y: 473.0, w: 150.0, h: 76.0, grado: 7,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
-      { n: 'facultad_id', t: 'uuid', pk: false, fk: true, nn: false, gen: false, enum: false },
       { n: 'codigo', t: 'varchar(30)', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'nombre_completo', t: 'varchar(200)', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'correo', t: 'varchar(254)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -374,7 +394,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'eventos_sustitucion', dominio: 'docentes',
-    x: 3711.9, y: 372.7, w: 174.6, h: 76.0, grado: 4,
+    x: 3685.2, y: 314.8, w: 174.6, h: 76.0, grado: 4,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'tipo', t: 'tipo_evento_sustitucion', pk: false, fk: false, nn: true, gen: false, enum: true },
@@ -403,7 +423,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'facultades', dominio: 'academico',
-    x: 2332.1, y: 635.1, w: 150.0, h: 76.0, grado: 4,
+    x: 2158.2, y: 1053.5, w: 150.0, h: 76.0, grado: 4,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'codigo', t: 'varchar(20)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -418,7 +438,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'generaciones', dominio: 'motor',
-    x: 4013.5, y: 1313.7, w: 150.0, h: 76.0, grado: 6,
+    x: 4020.7, y: 1327.7, w: 150.0, h: 76.0, grado: 6,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'periodo_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -447,7 +467,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'historial_estados_horario', dominio: 'horarios',
-    x: 3012.1, y: 1835.9, w: 219.0, h: 76.0, grado: 2,
+    x: 3014.8, y: 1843.7, w: 219.0, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -460,7 +480,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'horarios', dominio: 'horarios',
-    x: 3103.5, y: 1517.0, w: 150.0, h: 76.0, grado: 19,
+    x: 3114.9, y: 1521.2, w: 150.0, h: 76.0, grado: 19,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'periodo_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -486,7 +506,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'importacion_errores', dominio: 'importacion',
-    x: 708.8, y: 393.8, w: 174.6, h: 76.0, grado: 1,
+    x: 706.1, y: 396.9, w: 174.6, h: 76.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'importacion_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -500,7 +520,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'importaciones', dominio: 'importacion',
-    x: 918.0, y: 484.2, w: 150.0, h: 76.0, grado: 3,
+    x: 910.1, y: 494.4, w: 150.0, h: 76.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'tipo_archivo', t: 'tipo_archivo_importacion', pk: false, fk: false, nn: true, gen: false, enum: true },
@@ -521,7 +541,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'jornada_descansos', dominio: 'academico',
-    x: 2549.8, y: 559.7, w: 159.8, h: 72.0, grado: 1,
+    x: 2475.2, y: 557.7, w: 159.8, h: 72.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'jornada_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -533,7 +553,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'jornadas', dominio: 'academico',
-    x: 2816.5, y: 839.0, w: 150.0, h: 76.0, grado: 7,
+    x: 2812.3, y: 818.7, w: 150.0, h: 76.0, grado: 7,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'nombre', t: 'varchar(100)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -542,18 +562,18 @@ export const TABLAS: Tabla[] = [
       { n: 'hora_fin', t: 'time without time zone', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'duracion_bloque_minutos', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'bloques_por_dia', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
-      { n: 'receso_despues_bloque', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
-      { n: 'duracion_receso_minutos', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'esta_activa', t: 'boolean', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'creado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'actualizado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'eliminado_en', t: 'timestamptz', pk: false, fk: false, nn: false, gen: false, enum: false },
       { n: 'version_fila', t: 'bigint', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'receso_despues_bloque', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'duracion_receso_minutos', t: 'integer', pk: false, fk: false, nn: true, gen: false, enum: false },
     ],
   },
   {
     id: 'mensajes_generacion', dominio: 'motor',
-    x: 4470.8, y: 1412.8, w: 174.6, h: 76.0, grado: 1,
+    x: 4474.0, y: 1422.8, w: 174.6, h: 76.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'generacion_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -568,7 +588,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'notificaciones', dominio: 'operacion',
-    x: 234.8, y: 1227.0, w: 150.0, h: 76.0, grado: 2,
+    x: 232.8, y: 1228.7, w: 150.0, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'destinatario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -585,7 +605,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'pensums', dominio: 'academico',
-    x: 2112.7, y: 964.0, w: 150.0, h: 76.0, grado: 4,
+    x: 2275.5, y: 843.9, w: 150.0, h: 76.0, grado: 5,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'carrera_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -599,7 +619,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'periodos_academicos', dominio: 'academico',
-    x: 2792.8, y: 1034.4, w: 174.6, h: 76.0, grado: 6,
+    x: 2830.7, y: 1007.2, w: 174.6, h: 76.0, grado: 6,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'nombre', t: 'varchar(150)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -614,7 +634,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'permisos_acceso', dominio: 'seguridad',
-    x: 1433.2, y: 1745.4, w: 150.0, h: 64.0, grado: 1,
+    x: 1415.2, y: 1749.9, w: 150.0, h: 64.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'recurso', t: 'varchar(100)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -624,7 +644,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'plan_carreras', dominio: 'motor',
-    x: 4226.3, y: 1429.9, w: 150.0, h: 60.0, grado: 2,
+    x: 4235.9, y: 1445.0, w: 150.0, h: 60.0, grado: 2,
     cols: [
       { n: 'plan_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'carrera_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -633,7 +653,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'plan_jornadas', dominio: 'motor',
-    x: 4324.2, y: 1024.7, w: 150.0, h: 60.0, grado: 2,
+    x: 4334.8, y: 1069.1, w: 150.0, h: 60.0, grado: 2,
     cols: [
       { n: 'plan_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'jornada_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -642,7 +662,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'plantillas_importacion', dominio: 'importacion',
-    x: 592.2, y: 566.1, w: 196.8, h: 76.0, grado: 1,
+    x: 590.2, y: 571.5, w: 196.8, h: 76.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'codigo', t: 'varchar(80)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -658,7 +678,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'plantillas_notificacion', dominio: 'operacion',
-    x: 172.1, y: 1000.8, w: 204.2, h: 76.0, grado: 1,
+    x: 172.1, y: 1003.9, w: 204.2, h: 76.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'codigo_plantilla', t: 'varchar(80)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -672,7 +692,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'recursos', dominio: 'infraestructura',
-    x: 2213.8, y: 119.4, w: 150.0, h: 76.0, grado: 2,
+    x: 2224.0, y: 112.7, w: 150.0, h: 76.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'codigo', t: 'varchar(40)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -683,11 +703,12 @@ export const TABLAS: Tabla[] = [
       { n: 'actualizado_en', t: 'timestamptz', pk: false, fk: false, nn: true, gen: false, enum: false },
       { n: 'eliminado_en', t: 'timestamptz', pk: false, fk: false, nn: false, gen: false, enum: false },
       { n: 'version_fila', t: 'bigint', pk: false, fk: false, nn: true, gen: false, enum: false },
+      { n: 'tipo', t: 'tipo_recurso', pk: false, fk: false, nn: true, gen: false, enum: true },
     ],
   },
   {
     id: 'reportes', dominio: 'operacion',
-    x: 751.0, y: 1143.1, w: 150.0, h: 76.0, grado: 3,
+    x: 750.0, y: 1149.1, w: 150.0, h: 76.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'titulo', t: 'varchar(200)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -703,7 +724,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'restricciones_horario', dominio: 'motor',
-    x: 4621.9, y: 866.5, w: 189.4, h: 72.0, grado: 1,
+    x: 4635.6, y: 886.9, w: 189.4, h: 72.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'nombre', t: 'varchar(120)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -715,7 +736,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'resultado_edicion_conflictos', dominio: 'horarios',
-    x: 3200.3, y: 1924.9, w: 241.2, h: 56.0, grado: 2,
+    x: 3205.7, y: 1933.6, w: 241.2, h: 56.0, grado: 2,
     cols: [
       { n: 'resultado_edicion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'conflicto_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -723,7 +744,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'resultados_edicion', dominio: 'horarios',
-    x: 2958.1, y: 1680.7, w: 167.2, h: 76.0, grado: 5,
+    x: 2969.4, y: 1686.9, w: 167.2, h: 76.0, grado: 5,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -744,7 +765,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'rol_permisos', dominio: 'seguridad',
-    x: 1268.7, y: 1652.1, w: 150.0, h: 56.0, grado: 2,
+    x: 1259.5, y: 1648.1, w: 150.0, h: 56.0, grado: 2,
     cols: [
       { n: 'rol_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'permiso_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -752,7 +773,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'roles', dominio: 'seguridad',
-    x: 1216.3, y: 1464.0, w: 150.0, h: 72.0, grado: 2,
+    x: 1214.5, y: 1461.0, w: 150.0, h: 72.0, grado: 2,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'nombre', t: 'varchar(100)', pk: false, fk: false, nn: true, gen: false, enum: false },
@@ -764,7 +785,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'sesion_cohortes', dominio: 'horarios',
-    x: 3211.6, y: 1172.6, w: 150.0, h: 76.0, grado: 6,
+    x: 3232.3, y: 1163.9, w: 150.0, h: 76.0, grado: 6,
     cols: [
       { n: 'sesion_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'cohorte_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -783,7 +804,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'sesiones', dominio: 'horarios',
-    x: 3316.5, y: 1364.0, w: 150.0, h: 76.0, grado: 12,
+    x: 3327.8, y: 1357.1, w: 150.0, h: 76.0, grado: 12,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -808,7 +829,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'sesiones_no_asignadas', dominio: 'motor',
-    x: 3996.7, y: 958.3, w: 189.4, h: 76.0, grado: 3,
+    x: 3998.4, y: 973.7, w: 189.4, h: 76.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -822,7 +843,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'sugerencias_seccion', dominio: 'motor',
-    x: 3854.2, y: 1139.5, w: 174.6, h: 76.0, grado: 5,
+    x: 3859.2, y: 1151.7, w: 174.6, h: 76.0, grado: 5,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -842,7 +863,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'usuario_facultades', dominio: 'seguridad',
-    x: 1630.0, y: 1641.2, w: 167.2, h: 56.0, grado: 2,
+    x: 1611.6, y: 1669.1, w: 167.2, h: 56.0, grado: 2,
     cols: [
       { n: 'usuario_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'facultad_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -850,7 +871,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'usuario_roles', dominio: 'seguridad',
-    x: 1351.1, y: 1276.0, w: 150.0, h: 56.0, grado: 2,
+    x: 1350.3, y: 1280.4, w: 150.0, h: 56.0, grado: 2,
     cols: [
       { n: 'usuario_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
       { n: 'rol_id', t: 'uuid', pk: true, fk: true, nn: true, gen: false, enum: false },
@@ -858,7 +879,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'usuarios', dominio: 'seguridad',
-    x: 1879.1, y: 1430.1, w: 150.0, h: 76.0, grado: 19,
+    x: 1876.5, y: 1429.2, w: 150.0, h: 76.0, grado: 19,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'auth_user_id', t: 'uuid', pk: false, fk: false, nn: false, gen: false, enum: false },
@@ -878,7 +899,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'ventanas_disponibilidad', dominio: 'docentes',
-    x: 3952.5, y: 250.0, w: 204.2, h: 76.0, grado: 1,
+    x: 4139.5, y: 304.9, w: 204.2, h: 76.0, grado: 1,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'periodo_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -891,7 +912,7 @@ export const TABLAS: Tabla[] = [
   },
   {
     id: 'versiones_horario', dominio: 'horarios',
-    x: 3241.7, y: 1735.8, w: 159.8, h: 76.0, grado: 3,
+    x: 3241.5, y: 1746.6, w: 159.8, h: 76.0, grado: 3,
     cols: [
       { n: 'id', t: 'uuid', pk: true, fk: false, nn: true, gen: false, enum: false },
       { n: 'horario_id', t: 'uuid', pk: false, fk: true, nn: true, gen: false, enum: false },
@@ -937,17 +958,19 @@ export const RELACIONES: Relacion[] = [
   { id: 'conflicto_sesiones_conflicto_id_fkey', de: 'conflicto_sesiones', a: 'conflictos', cols: ['conflicto_id'], onDelete: 'CASCADE' },
   { id: 'conflicto_sesiones_sesion_id_fkey', de: 'conflicto_sesiones', a: 'sesiones', cols: ['sesion_id'], onDelete: 'CASCADE' },
   { id: 'conflictos_horario_id_fkey', de: 'conflictos', a: 'horarios', cols: ['horario_id'], onDelete: 'CASCADE' },
-  { id: 'curso_carreras_compartidas_carrera_id_fkey', de: 'curso_carreras_compartidas', a: 'carreras', cols: ['carrera_id'], onDelete: 'RESTRICT' },
-  { id: 'curso_carreras_compartidas_curso_id_fkey', de: 'curso_carreras_compartidas', a: 'cursos', cols: ['curso_id'], onDelete: 'CASCADE' },
+  { id: 'curso_comun_cursos_grupo_fkey', de: 'curso_comun_cursos', a: 'curso_comun', cols: ['curso_comun_id'], onDelete: 'CASCADE' },
+  { id: 'curso_comun_cursos_curso_fkey', de: 'curso_comun_cursos', a: 'cursos', cols: ['curso_id'], onDelete: 'CASCADE' },
   { id: 'curso_recursos_requeridos_curso_id_fkey', de: 'curso_recursos_requeridos', a: 'cursos', cols: ['curso_id'], onDelete: 'CASCADE' },
   { id: 'curso_recursos_requeridos_recurso_id_fkey', de: 'curso_recursos_requeridos', a: 'recursos', cols: ['recurso_id'], onDelete: 'RESTRICT' },
-  { id: 'cursos_en_pensum_curso_id_fkey', de: 'cursos_en_pensum', a: 'cursos', cols: ['curso_id'], onDelete: 'RESTRICT' },
+  { id: 'cursos_pensum_id_fkey', de: 'cursos', a: 'pensums', cols: ['pensum_id'], onDelete: 'RESTRICT' },
+  { id: 'cursos_en_pensum_curso_pensum_fkey', de: 'cursos_en_pensum', a: 'cursos', cols: ['curso_id', 'pensum_id'], onDelete: 'RESTRICT' },
   { id: 'cursos_en_pensum_pensum_id_fkey', de: 'cursos_en_pensum', a: 'pensums', cols: ['pensum_id'], onDelete: 'CASCADE' },
   { id: 'disponibilidad_docente_slots_disponibilidad_id_fkey', de: 'disponibilidad_docente_slots', a: 'disponibilidades_docente', cols: ['disponibilidad_id'], onDelete: 'CASCADE' },
   { id: 'disponibilidad_docente_slots_jornada_id_fkey', de: 'disponibilidad_docente_slots', a: 'jornadas', cols: ['jornada_id'], onDelete: 'RESTRICT' },
   { id: 'disponibilidades_docente_docente_id_fkey', de: 'disponibilidades_docente', a: 'docentes', cols: ['docente_id'], onDelete: 'RESTRICT' },
   { id: 'disponibilidades_docente_periodo_id_fkey', de: 'disponibilidades_docente', a: 'periodos_academicos', cols: ['periodo_id'], onDelete: 'RESTRICT' },
-  { id: 'docentes_facultad_id_fkey', de: 'docentes', a: 'facultades', cols: ['facultad_id'], onDelete: 'RESTRICT' },
+  { id: 'docente_facultades_docente_id_fkey', de: 'docente_facultades', a: 'docentes', cols: ['docente_id'], onDelete: 'CASCADE' },
+  { id: 'docente_facultades_facultad_id_fkey', de: 'docente_facultades', a: 'facultades', cols: ['facultad_id'], onDelete: 'RESTRICT' },
   { id: 'eventos_sustitucion_docente_entrante_id_fkey', de: 'eventos_sustitucion', a: 'docentes', cols: ['docente_entrante_id'], onDelete: 'RESTRICT' },
   { id: 'eventos_sustitucion_docente_original_id_fkey', de: 'eventos_sustitucion', a: 'docentes', cols: ['docente_original_id'], onDelete: 'RESTRICT' },
   { id: 'eventos_sustitucion_sesion_afectada_id_fkey', de: 'eventos_sustitucion', a: 'sesiones', cols: ['sesion_afectada_id'], onDelete: 'RESTRICT' },
@@ -1022,6 +1045,6 @@ export const REFERENCIAS_EXTERNAS: { de: string; col: string; destino: string }[
   { de: 'usuarios', col: 'auth_user_id', destino: 'auth.users' },
 ];
 
-export const LIENZO = { ancho: 4909.3, alto: 2022.9 };
-export const TOTAL_COLUMNAS = 493;
-export const TOTAL_FK = 111;
+export const LIENZO = { ancho: 4915.6, alto: 2031.6 };
+export const TOTAL_COLUMNAS = 502;
+export const TOTAL_FK = 113;

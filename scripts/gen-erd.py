@@ -1,27 +1,33 @@
 #!/usr/bin/env python3
-"""Parsea docs/database.sql y genera src/app/data/erd-data.ts con layout precalculado."""
+"""Parsea docs/database.sql y genera src/app/data/erd-data.ts con layout precalculado.
+
+El volcado es un `pg_dump` (PostgreSQL 17.6): entrecomilla todos los
+identificadores y usa `CREATE TABLE IF NOT EXISTS`, así que el parseo tolera
+comillas en nombres de esquema, tabla, columna y tipo.
+"""
 import math
 import random
 import re
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path("/home/ordson/Documentos/Universidad/HORARIOS/Horarios-develop")
-SQL = ROOT / "docs" / "database.sql"
-OUT = ROOT / "presentacion-sprint04" / "src" / "app" / "data" / "erd-data.ts"
+FUENTE = Path("/home/ordson/Documentos/Universidad/HORARIOS/Horarios-develop")
+SQL = FUENTE / "docs" / "database.sql"
+OUT = Path(__file__).resolve().parent.parent / "src" / "app" / "data" / "erd-data.ts"
 
 DOMINIOS = {
     "academico": [
         "facultades", "carreras", "pensums", "cursos", "cursos_en_pensum",
-        "curso_carreras_compartidas", "cohortes", "cohorte_periodos",
+        "curso_comun", "curso_comun_cursos", "cohortes", "cohorte_periodos",
         "periodos_academicos", "jornadas", "jornada_descansos", "carrera_jornadas",
         "agrupaciones_area_comun", "agrupacion_area_comun_cursos",
         "agrupacion_area_comun_cohortes",
     ],
     "infraestructura": ["aulas", "recursos", "aula_recursos", "curso_recursos_requeridos"],
     "docentes": [
-        "docentes", "asignaciones_docente_curso", "disponibilidades_docente",
-        "disponibilidad_docente_slots", "ventanas_disponibilidad", "eventos_sustitucion",
+        "docentes", "docente_facultades", "asignaciones_docente_curso",
+        "disponibilidades_docente", "disponibilidad_docente_slots",
+        "ventanas_disponibilidad", "eventos_sustitucion",
     ],
     "motor": [
         "configuraciones_motor", "configuracion_motor_restricciones", "restricciones_horario",
@@ -34,7 +40,8 @@ DOMINIOS = {
         "resultado_edicion_conflictos", "cambios_detectados",
     ],
     "importacion": ["importaciones", "importacion_errores", "plantillas_importacion"],
-    "seguridad": ["usuarios", "roles", "permisos_acceso", "rol_permisos", "usuario_roles", "usuario_facultades"],
+    "seguridad": ["usuarios", "roles", "permisos_acceso", "rol_permisos", "usuario_roles",
+                  "usuario_facultades"],
     "operacion": ["notificaciones", "plantillas_notificacion", "auditoria", "reportes"],
 }
 DOM_DE = {t: d for d, ts in DOMINIOS.items() for t in ts}
@@ -43,53 +50,72 @@ DOM_DE = {t: d for d, ts in DOMINIOS.items() for t in ts}
 
 sql = SQL.read_text(encoding="utf-8")
 
-enums = set(re.findall(r"CREATE TYPE horarios\.(\w+) AS ENUM", sql))
+# `"horarios"."tabla"` o `horarios.tabla`: el volcado entrecomilla, los scripts
+# escritos a mano no.
+def q(nombre):
+    return r'"?' + nombre + r'"?'
+
+CAL = q("horarios") + r"\." + q(r"(\w+)")
+
+enums = set(re.findall(r"CREATE TYPE " + CAL + r" AS ENUM", sql))
+
+def limpia_tipo(t):
+    t = re.sub(r'"(\w+)"', r"\1", t).strip()
+    t = re.sub(r"\bhorarios\.", "", t)
+    t = t.replace("character varying", "varchar")
+    t = t.replace("timestamp with time zone", "timestamptz")
+    t = t.replace("timestamp without time zone", "timestamp")
+    t = t.replace("double precision", "float8")
+    return t.strip()
 
 tablas = {}
-for m in re.finditer(r"CREATE TABLE horarios\.(\w+) \((.*?)\n\);", sql, re.S):
+for m in re.finditer(
+    r"CREATE TABLE (?:IF NOT EXISTS )?" + CAL + r" \((.*?)\n\);", sql, re.S
+):
     nombre, cuerpo = m.group(1), m.group(2)
     cols = []
     for linea in cuerpo.split("\n"):
         linea = linea.strip().rstrip(",")
-        if not linea or linea.startswith("CONSTRAINT"):
+        # el volcado mete los CHECK dentro del cuerpo; no son columnas
+        if not linea or linea.startswith("CONSTRAINT") or linea.startswith("CHECK"):
             continue
-        partes = linea.split(None, 1)
-        if len(partes) < 2:
+        partes = re.match(r'"?(\w+)"?\s+(.*)$', linea)
+        if not partes:
             continue
-        col, resto = partes
+        col, resto = partes.group(1), partes.group(2)
         nn = "NOT NULL" in resto
         generada = "GENERATED ALWAYS" in resto
-        tipo = re.split(r"\s+(?:DEFAULT|NOT NULL|GENERATED|COLLATE)\b", resto)[0].strip()
-        tipo = tipo.replace("horarios.", "").replace("character varying", "varchar")
-        tipo = tipo.replace("timestamp with time zone", "timestamptz")
-        tipo = tipo.replace("timestamp without time zone", "timestamp")
-        tipo = tipo.replace("double precision", "float8").strip()
+        tipo = re.split(r"\s+(?:DEFAULT|NOT NULL|GENERATED|COLLATE)\b", resto)[0]
+        tipo = limpia_tipo(tipo)
         cols.append({"n": col, "t": tipo, "nn": nn, "gen": generada,
                      "enum": tipo.split("(")[0] in enums})
     tablas[nombre] = {"cols": cols, "pk": [], "fks": []}
 
+def desentrecomilla(lista):
+    return [c.strip().strip('"') for c in lista.split(",")]
+
 for m in re.finditer(
-    r"ALTER TABLE ONLY horarios\.(\w+)\s*\n\s*ADD CONSTRAINT \w+ PRIMARY KEY \(([^)]+)\);", sql
+    r"ALTER TABLE ONLY " + CAL + r"\s*\n\s*ADD CONSTRAINT \"?\w+\"? PRIMARY KEY \(([^)]+)\);", sql
 ):
     if m.group(1) in tablas:
-        tablas[m.group(1)]["pk"] = [c.strip() for c in m.group(2).split(",")]
+        tablas[m.group(1)]["pk"] = desentrecomilla(m.group(2))
 
 externas = []
 for m in re.finditer(
-    r"ALTER TABLE ONLY horarios\.(\w+)\s*\n\s*ADD CONSTRAINT \w+ FOREIGN KEY \(([^)]+)\)"
-    r" REFERENCES (?!horarios\.)(\w+)\.(\w+)\(", sql
+    r"ALTER TABLE ONLY " + CAL + r"\s*\n\s*ADD CONSTRAINT \"?\w+\"? FOREIGN KEY \(([^)]+)\)"
+    r' REFERENCES (?!"?horarios"?\.)"?(\w+)"?\."?(\w+)"?\(', sql
 ):
-    externas.append({"de": m.group(1), "col": m.group(2).strip(),
+    externas.append({"de": m.group(1), "col": desentrecomilla(m.group(2))[0],
                      "esquema": m.group(3), "tabla": m.group(4)})
 
 aristas = []
 for m in re.finditer(
-    r"ALTER TABLE ONLY horarios\.(\w+)\s*\n\s*ADD CONSTRAINT (\w+) FOREIGN KEY \(([^)]+)\)"
-    r" REFERENCES horarios\.(\w+)\(([^)]+)\)([^;]*);", sql
+    r"ALTER TABLE ONLY " + CAL + r"\s*\n\s*ADD CONSTRAINT \"?(\w+)\"? FOREIGN KEY \(([^)]+)\)"
+    r" REFERENCES " + CAL + r"\(([^)]+)\)([^;]*);", sql
 ):
     origen, constraint, cols, destino, _, cola = m.groups()
     onde = re.search(r"ON DELETE (CASCADE|RESTRICT|SET NULL|SET DEFAULT|NO ACTION)", cola)
-    cols = [c.strip() for c in cols.split(",")]
+    cols = desentrecomilla(cols)
     if origen in tablas:
         tablas[origen]["fks"].extend(cols)
     aristas.append({"id": constraint, "de": origen, "a": destino, "cols": cols,
@@ -97,10 +123,10 @@ for m in re.finditer(
 
 faltan = [t for t in tablas if t not in DOM_DE]
 if faltan:
-    print("SIN DOMINIO:", faltan)
+    raise SystemExit(f"SIN DOMINIO: {faltan} — clasifícalas en DOMINIOS antes de generar")
 sueltas = [t for d in DOMINIOS.values() for t in d if t not in tablas]
 if sueltas:
-    print("EN MAPA PERO NO EN SQL:", sueltas)
+    raise SystemExit(f"EN MAPA PERO NO EN SQL: {sueltas} — el volcado ya no las trae")
 
 # ------------------------------------------------------------------ layout
 

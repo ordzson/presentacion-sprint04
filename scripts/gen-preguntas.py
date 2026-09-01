@@ -27,8 +27,7 @@ SECCIONES = [
     ("s3", "Arquitectura", "#7a3fa8"),
     ("s4", "Módulos", "#2f8f4e"),
     ("s5", "Incómodas", "#c0392b"),
-    ("s6", "Motor", "#b07408"),
-    ("s7", "Glosario", "#4a6b8a"),
+    ("s6", "Glosario", "#4a6b8a"),
     ("fuentes", "Fuentes", "#6b6153"),
 ]
 LABEL_SEC = dict((i, l) for i, l, _ in SECCIONES)
@@ -385,7 +384,7 @@ for idx, linea in enumerate(lineas):
     ms = re.match(r"^(\d+)\.(\d+) +(.*)$", txt)
     if ms:
         grupo = "%s.%s %s" % (ms.group(1), ms.group(2), ms.group(3))
-        kind = "glosario" if sec == "s7" else "nota"
+        kind = "glosario" if sec == "s6" else "nota"
         abrir(kind, "sub%s%s" % (ms.group(1), ms.group(2)), ms.group(3), idx, grupo)
         continue
 
