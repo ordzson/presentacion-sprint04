@@ -18,21 +18,24 @@ OUT = Path("/home/ordson/Documentos/presentacion-sprint04/src/app/data/clases-da
 OUT_DOCS = Path("/home/ordson/Documentos/presentacion-sprint04/src/app/data/clases-docs.ts")
 
 # proyecto -> capa
-# El motor (Horarios.Scheduler / Horarios.Motor) se dejó fuera del deck el
-# 2026-08-29; no se mapea para que sus .cs no entren en el diagrama.
+# El motor volvió al diagrama el 2026-09-01: Horarios.Motor es una capa propia y
+# los sub-namespaces .Motor de las demás capas entran como el módulo «Motor» de
+# la suya. Horarios.Scheduler (el motor v1) está vacío y no se mapea.
 CAPAS = {
     "Horarios.Dominio": "dominio",
     "Horarios.Contratos": "contratos",
     "Horarios.Aplicacion": "aplicacion",
+    "Horarios.Motor": "motor",
     "Horarios.Infraestructura": "infraestructura",
     "Horarios.Blazor": "blazor",
 }
-ORDEN = ["dominio", "contratos", "aplicacion", "infraestructura", "blazor"]
+ORDEN = ["dominio", "contratos", "aplicacion", "motor", "infraestructura", "blazor"]
 
 META = {
     "dominio":         ("Dominio",         "Entidades y enums del negocio: sin dependencias hacia fuera.",                 "#3f6fd6"),
     "contratos":       ("Contratos",       "DTOs, puertos e interfaces que atraviesan las capas.",                         "#0f8a94"),
     "aplicacion":      ("Aplicación",      "Casos de uso: orquestan repositorios, validan y aplican reglas.",              "#2a9468"),
+    "motor":           ("Motor",           "El generador de horarios: rejilla, precálculo, colocación y verificación.",    "#7a4fbf"),
     "infraestructura": ("Infraestructura", "Adaptadores a Supabase/PostgREST que implementan los puertos.",                "#b5791b"),
     "blazor":          ("Blazor",          "Interfaz web: componentes, estado de sesión y arranque de la app.",            "#c2504b"),
 }
@@ -382,11 +385,6 @@ for cs in sorted(FUENTE.rglob("*.cs")):
     capa = CAPAS.get(proyecto)
     if capa is None:
         continue
-    # el motor v2 vive ahora en sub-namespaces .Motor de los proyectos mapeados
-    # (Horarios.Contratos.Motor, .Aplicacion.Motor…); fuera del deck desde el
-    # 2026-08-29, igual que la antigua capa Scheduler.
-    if "Motor" in cs.relative_to(FUENTE).parts or "Scheduler" in cs.relative_to(FUENTE).parts:
-        continue
     raw = cs.read_text(encoding="utf-8", errors="replace")
     texto = limpiar(raw)
     ns = "?"
@@ -394,9 +392,6 @@ for cs in sorted(FUENTE.rglob("*.cs")):
     mns = re.search(r"\bnamespace\s+([\w.]+)", texto)
     if mns:
         ns = mns.group(1)
-    if "Motor" in ns.split(".") or "Scheduler" in ns.split("."):
-        continue
-
     for m in DECL.finditer(texto):
         kind = re.sub(r"\s+", " ", m.group("kind"))
         nombre = m.group("name")

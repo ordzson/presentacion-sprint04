@@ -17,11 +17,11 @@
 //   src/Horarios.Aplicacion/{Aulas,Consultas,Motor}/
 //   src/Horarios.Contratos/{Motor/ContratoMotor.cs, Consultas/, Planes/}
 //   src/Horarios.Blazor/Components/Pages/{Planes,Consultas,Aulas,InicioDocente}.razor
-//   docs/database.sql  (pg_dump de PostgreSQL 17.6)
+//   docs/database.sql de esta presentación (instantánea local del 2026-09-09)
 //
 // Los códigos D-nn y P-nn son los de docs/motor-v2-fase1.md del repositorio fuente:
 // 43 reglas, D-01…D-35 duras del SQL y P-01…P-08 del proyecto. No hay ninguno inventado
-// aquí, y los números de línea de database.sql son los que el propio código cita.
+// aquí. Las referencias SQL apuntan a las mismas reglas en la instantánea actual.
 
 /** Los cinco carriles del mapa. El quinto es la base, que no es una capa del .NET. */
 export type CapaDetalleId = 'blazor' | 'aplicacion' | 'infraestructura' | 'motor' | 'postgres';
@@ -457,7 +457,7 @@ const AULAS: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'guardar_resultado_generacion',
-      archivo: 'docs/database.sql:2475',
+      archivo: 'docs/database.sql:2751',
       metodo: 'insert into horarios.sesiones … aula_id',
       hace:
         'Borra el horario anterior del plan entero e inserta el nuevo. Cada inserción dispara la validación del aula contra el curso visible de cada cohorte.',
@@ -542,7 +542,7 @@ const AULAS: DetalleMotor = {
       donde: 'PreparadorInstantaneaMotorPostgres · CargarAulasAsync',
       cuando: 'Al cargar C-5, como cláusula where.',
       pregunta: '¿El aula está activa y no está borrada?',
-      espejo: 'completar_sesion_cohorte, database.sql:1059 — a.eliminado_en is not null or not a.esta_activa',
+      espejo: 'completar_sesion_cohorte, database.sql:985 — a.eliminado_en is not null or not a.esta_activa',
       siNo: 'No entra a la instantánea. Para el motor, un aula inactiva no existe.',
     },
     {
@@ -553,7 +553,7 @@ const AULAS: DetalleMotor = {
       cuando: 'Precálculo, una vez por (aula, asignación); y otra vez en el verificador.',
       pregunta:
         '¿Si algún curso visible de la sesión exige laboratorio, el aula es de tipo laboratorio o mixta?',
-      espejo: 'completar_sesion_cohorte, database.sql:1061 — c.requiere_laboratorio and a.tipo not in (…)',
+      espejo: 'completar_sesion_cohorte, database.sql:987 — c.requiere_laboratorio and a.tipo not in (…)',
       siNo: 'El aula se descarta. Fuera de esta regla, el tipo de aula no filtra nada (P-03).',
     },
     {
@@ -564,7 +564,7 @@ const AULAS: DetalleMotor = {
       cuando: 'Precálculo, junto a D-24.',
       pregunta: '¿El aula ofrece exactamente el tipo de laboratorio que el curso pide?',
       espejo:
-        'completar_sesion_cohorte, database.sql:1063 — a.tipo_laboratorio_disponible is distinct from c.tipo_laboratorio_requerido',
+        'completar_sesion_cohorte, database.sql:989 — a.tipo_laboratorio_disponible is distinct from c.tipo_laboratorio_requerido',
       siNo:
         'Se descarta. El SQL usa is distinct from: un aula sin tipo declarado no sirve para un curso que sí lo exige.',
     },
@@ -575,7 +575,7 @@ const AULAS: DetalleMotor = {
       donde: 'ReglasAula.AulaTieneRecursos',
       cuando: 'Precálculo, por cada recurso requerido.',
       pregunta: '¿Por cada recurso que el curso pide, el aula lo declara con cantidad suficiente?',
-      espejo: 'completar_sesion_cohorte, database.sql:1078 — ar.cantidad >= crr.cantidad',
+      espejo: 'completar_sesion_cohorte, database.sql:1004 — ar.cantidad >= crr.cantidad',
       siNo:
         'Se descarta. El motor v1 comparaba solo el código del recurso y daba por buena un aula con un proyector donde el curso pedía tres.',
     },
@@ -586,7 +586,7 @@ const AULAS: DetalleMotor = {
       donde: 'ReglasAula.AulaTieneCapacidad',
       cuando: 'Precálculo, sumando la matrícula de todas las participaciones.',
       pregunta: '¿La capacidad del aula cubre la suma de matrículas de todas las cohortes de la sesión?',
-      espejo: 'completar_sesion_cohorte, database.sql:1116 — v_matricula_total > v_capacidad_aula',
+      espejo: 'completar_sesion_cohorte, database.sql:1042 — v_matricula_total > v_capacidad_aula',
       siNo:
         'Se descarta. En área común comparten aula, así que la cohorte que cabe sola puede no caber acompañada.',
     },
@@ -597,7 +597,7 @@ const AULAS: DetalleMotor = {
       donde: 'RegistroOcupacion.Libre · instancia de aulas',
       cuando: 'Dentro del bucle, por cada aula candidata de cada colocación candidata.',
       pregunta: '¿Tiene el aula libres todos los minutos de esa colocación, ese día?',
-      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:6224',
+      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:6399',
       siNo: 'Se prueba la siguiente aula de la lista, y se cuenta un rechazo D-29.',
     },
   ],
@@ -807,7 +807,7 @@ const DOCENTE: DetalleMotor = {
         'Trae qué cursos valen por cuál, para que un docente autorizado por el curso equivalente no se descarte.',
       entra: 'los cursos de C-3 y los que pertenecen a un curso_comun',
       sale: 'ImmutableDictionary<Guid, ImmutableHashSet<Guid>>',
-      base: 'función cursos_equivalentes, database.sql:2102',
+      base: 'función cursos_equivalentes, database.sql:2147',
       reglas: ['D-17'],
       siFalla: 'Un curso ausente del diccionario equivale solo a sí mismo, que es lo que devuelve el SQL.',
     },
@@ -957,7 +957,7 @@ const DOCENTE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'completar_sesion_cohorte',
-      archivo: 'docs/database.sql:1040',
+      archivo: 'docs/database.sql:966',
       metodo: 'trigger sobre sesion_cohortes',
       hace:
         'Al insertar cada participación, comprueba que la agrupación de área común no tenga ya sesiones con otro docente.',
@@ -973,7 +973,7 @@ const DOCENTE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'validar_horario_publicable',
-      archivo: 'docs/database.sql:3400 · :3496 · :3578 · :3596',
+      archivo: 'docs/database.sql:3690 · :3786 · :3868 · :3886',
       metodo: 'al publicar el horario, no al generarlo',
       hace:
         'La última red: autorización (D-17), disponibilidad (D-20), continuidad por cohorte-curso (D-18), un docente por área común (D-19) y carga máxima (D-21).',
@@ -1060,7 +1060,7 @@ const DOCENTE: DetalleMotor = {
       cuando: 'Precálculo, una vez por (docente, asignación); y otra en el verificador, por participación.',
       pregunta:
         '¿Está autorizado para el curso visible de cada cohorte —o para un equivalente— y con la jornada de la autorización?',
-      espejo: 'completar_sesion_cohorte, database.sql:1018 — adc.curso_id in (select … cursos_equivalentes(…))',
+      espejo: 'completar_sesion_cohorte, database.sql:944 — adc.curso_id in (select … cursos_equivalentes(…))',
       siNo: 'No entra en DocentesFactibles. Si ninguno entra: diagnóstico SIN_DOCENTE_FACTIBLE.',
     },
     {
@@ -1070,7 +1070,7 @@ const DOCENTE: DetalleMotor = {
       donde: 'ReglasDocente.DocenteDisponible',
       cuando: 'En el precálculo para saber si es candidato, y en el bucle para cada colocación concreta.',
       pregunta: '¿Cubre su disponibilidad confirmada todos los slots de esa colocación?',
-      espejo: 'validar_horario_publicable, database.sql:3496 — generate_series(slot_inicio, slot_inicio + duracion − 1)',
+      espejo: 'validar_horario_publicable, database.sql:3786 — generate_series(slot_inicio, slot_inicio + duracion − 1)',
       siNo: 'Rechazo D-20: «docente sin disponibilidad confirmada» en el motivo de la pendiente.',
     },
     {
@@ -1080,7 +1080,7 @@ const DOCENTE: DetalleMotor = {
       donde: 'RegistroCarga + la comparación en ColocadorVoraz.Atender',
       cuando: 'Antes de probar la primera colocación de cada docente candidato.',
       pregunta: '¿Le cabe una asignación más, contando claves distintas y no clases?',
-      espejo: 'validar_horario_publicable, database.sql:3596 — count(*) sobre las llaves distintas',
+      espejo: 'validar_horario_publicable, database.sql:3886 — count(*) sobre las llaves distintas',
       siNo:
         'Rechazo D-21: «docente con la carga llena». Una asignación puede quedarse fuera sin haber llegado a probar ni una colocación, y por eso también se cuenta.',
     },
@@ -1091,7 +1091,7 @@ const DOCENTE: DetalleMotor = {
       donde: 'RegistroContinuidad · estructural, no es una función',
       cuando: 'Siempre: no hay un momento en que se compruebe.',
       pregunta: '¿La misma cohorte tiene el mismo curso visible con dos docentes distintos?',
-      espejo: 'validar_horario_publicable, database.sql:3578',
+      espejo: 'validar_horario_publicable, database.sql:3868',
       siNo:
         'No puede pasar: la clave CURSO:{visible}:COHORTE:{cohorte} tiene un solo docente en el diccionario, y Elegir lanza si se intenta cambiar.',
     },
@@ -1102,7 +1102,7 @@ const DOCENTE: DetalleMotor = {
       donde: 'RegistroContinuidad · estructural, misma clase',
       cuando: 'Siempre, por la misma razón.',
       pregunta: '¿Un área común entera está repartida entre varios docentes?',
-      espejo: 'validar_horario_publicable, database.sql:3481',
+      espejo: 'validar_horario_publicable, database.sql:3771',
       siNo:
         'No puede pasar: la clave AREA:{agrupación} es una sola entrada del mismo diccionario. Por eso basta un diccionario y no hacen falta dos registros.',
     },
@@ -1113,7 +1113,7 @@ const DOCENTE: DetalleMotor = {
       donde: 'RegistroOcupacion.Libre · instancia de docentes',
       cuando: 'Dentro del bucle, después de las cohortes, P-02 y la disponibilidad.',
       pregunta: '¿Está dando otra clase en esos mismos minutos?',
-      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:6232',
+      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:6407',
       siNo: 'Rechazo D-28: «docente ocupado». Se prueba la siguiente colocación.',
     },
   ],
@@ -1455,7 +1455,7 @@ const OCUPACION: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'sesiones_aula_no_solapada',
-      archivo: 'docs/database.sql:6224',
+      archivo: 'docs/database.sql:6399',
       metodo: 'EXCLUDE USING gist',
       hace:
         'La base lo impide físicamente: horario_id =, aula_id =, fecha =, dia =, y rango_minutos && (se solapan).',
@@ -1530,7 +1530,7 @@ const OCUPACION: DetalleMotor = {
       donde: 'ocupacionAulas.Libre',
       cuando: 'Dentro del bucle de aulas, después de haber fijado día, hora y docente.',
       pregunta: '¿Hay otra clase de este horario en esta aula, este día, en esos minutos?',
-      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:6224',
+      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:6399',
       siNo: 'Rechazo D-29 y se prueba la siguiente aula de la lista ordenada.',
     },
     {
@@ -1540,7 +1540,7 @@ const OCUPACION: DetalleMotor = {
       donde: 'ocupacionDocentes.Libre',
       cuando: 'Antes de entrar al bucle de aulas: descarta la colocación entera.',
       pregunta: '¿El docente ya elegido está dando otra clase en esos minutos?',
-      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:6232',
+      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:6407',
       siNo: 'Rechazo D-28 y se prueba la siguiente colocación.',
     },
     {
@@ -1550,7 +1550,7 @@ const OCUPACION: DetalleMotor = {
       donde: 'ocupacionCohortes.Libre, por cada participación',
       cuando: 'La primera pregunta de todas, sobre la colocación candidata.',
       pregunta: '¿Alguna de las cohortes de la sesión ya tiene clase en esos minutos?',
-      espejo: 'EXCLUDE USING gist sesion_cohortes_no_solapadas, database.sql:6208',
+      espejo: 'EXCLUDE USING gist sesion_cohortes_no_solapadas, database.sql:6383',
       siNo: 'Rechazo D-30 y se prueba la siguiente colocación.',
     },
     {
@@ -1878,7 +1878,7 @@ const CRUCE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'aplicar_receso_a_sesion',
-      archivo: 'docs/database.sql:544',
+      archivo: 'docs/database.sql:486',
       metodo: 'trigger BEFORE INSERT OR UPDATE sobre sesiones',
       hace:
         'Antes de guardar, recalcula minuto_inicio_dia y minuto_fin_dia sumando el receso, y lanza si la sesión se pasa del fin de la jornada.',
@@ -1894,7 +1894,7 @@ const CRUCE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'sesiones.rango_minutos',
-      archivo: 'docs/database.sql:5371',
+      archivo: 'docs/database.sql:5574',
       metodo: 'GENERATED ALWAYS AS int4range(minuto_inicio_dia, minuto_fin_dia, «[)») STORED',
       hace:
         'La columna que las tres restricciones de exclusión comparan. Es un rango semiabierto, igual que las franjas del motor.',
@@ -1967,7 +1967,7 @@ const CRUCE: DetalleMotor = {
       donde: 'RejillaTiempo.ColocacionesDe · jornada.DiasActivos',
       cuando: 'Al generar el catálogo de colocaciones.',
       pregunta: '¿La jornada trabaja ese día?',
-      espejo: 'validar_sesion_en_jornada, database.sql:3796',
+      espejo: 'validar_sesion_en_jornada, database.sql:4082',
       siNo: 'Ese día no produce ninguna colocación.',
     },
     {
@@ -1977,7 +1977,7 @@ const CRUCE: DetalleMotor = {
       donde: 'RejillaTiempo.EsValida · ValidarRangoSlots',
       cuando: 'Al generar el catálogo, y al traducir cualquier colocación a minutos.',
       pregunta: '¿El último slot de la sesión sigue dentro de bloques_por_dia?',
-      espejo: 'validar_sesion_en_jornada, database.sql:3800',
+      espejo: 'validar_sesion_en_jornada, database.sql:4086',
       siNo:
         'Se descarta. Una duración mayor que los bloques del día deja la lista vacía y produce el diagnóstico correspondiente.',
     },
@@ -1988,7 +1988,7 @@ const CRUCE: DetalleMotor = {
       donde: 'RejillaTiempo.EsValida · fin > jornada.MinutoFin',
       cuando: 'Al generar el catálogo, ya con el receso sumado.',
       pregunta: '¿El minuto final de la sesión pasa de la hora de fin?',
-      espejo: 'validar_sesion_en_jornada, database.sql:3813',
+      espejo: 'validar_sesion_en_jornada, database.sql:4099',
       siNo: 'Se descarta. También lo comprueba el disparador de la base al insertar.',
     },
     {
@@ -1998,7 +1998,7 @@ const CRUCE: DetalleMotor = {
       donde: 'RejillaTiempo.EsValida · jornada.Descansos',
       cuando: 'Al generar el catálogo.',
       pregunta: '¿El tramo de la sesión se cruza con algún descanso de ese día?',
-      espejo: 'validar_sesion_en_jornada, database.sql:3817',
+      espejo: 'validar_sesion_en_jornada, database.sql:4103',
       siNo:
         'Se descarta. La comparación es de rangos semiabiertos: descanso.SlotDesde < finExclusivo && slotInicio < descanso.SlotHasta.',
     },
@@ -2009,7 +2009,7 @@ const CRUCE: DetalleMotor = {
       donde: 'RejillaTiempo.CalcularMinutos',
       cuando: 'En cada traducción de bloque a minutos.',
       pregunta: '¿La sesión empieza o termina después del receso?',
-      espejo: 'aplicar_receso_a_sesion, database.sql:552',
+      espejo: 'aplicar_receso_a_sesion, database.sql:494',
       siNo:
         'Si empieza después, se le suma el receso al inicio y al fin; si solo termina después, solo al fin. Una sesión que cruza el receso se lo come.',
     },
@@ -2020,7 +2020,7 @@ const CRUCE: DetalleMotor = {
       donde: 'ReglasCohorte.CohortesEnLaJornadaDeLaSesion',
       cuando: 'Al expandir, y otra vez en el verificador.',
       pregunta: '¿Toda cohorte de la sesión cursa la jornada de la sesión?',
-      espejo: 'completar_sesion_cohorte, database.sql:945',
+      espejo: 'completar_sesion_cohorte, database.sql:871',
       siNo:
         'Es la regla que sostiene todo el razonamiento en slots: como una cohorte solo tiene sesiones de su propia jornada, para ella el índice de slot ya identifica la hora.',
     },
@@ -2229,7 +2229,7 @@ const CONSULTA: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'consultar_revision_horario',
-      archivo: 'docs/database.sql:1544',
+      archivo: 'docs/database.sql:1460',
       metodo: 'LANGUAGE sql STABLE · tres CTE y un jsonb_build_object',
       hace:
         'sesiones_filtradas une sesiones con curso, docente, aula, jornada, cohorte y carrera; pagina la ordena y la recorta; conflictos y pendientes se leen enteros.',
@@ -2303,7 +2303,7 @@ const CONSULTA: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'consultar_datos_reporte',
-      archivo: 'docs/database.sql:1373',
+      archivo: 'docs/database.sql:1295',
       metodo: 'LANGUAGE plpgsql STABLE',
       hace:
         'Resuelve el plan y el estado de la generación; si la vista es diagnóstico lee mensajes_generacion, y si no, arma nueve columnas fijas uniendo por el curso visible de cada cohorte.',

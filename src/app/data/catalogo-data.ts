@@ -1,6 +1,6 @@
 // GENERADO — no editar a mano.
 // Fuente: docs/database.sql · script: scripts/gen-catalogo.py
-// 615 objetos · el catálogo del script sin los objetos del motor
+// 784 objetos · 10313 líneas · cobertura 100.0% del archivo
 
 export type CategoriaId =
   | 'tabla'
@@ -56,16 +56,16 @@ export interface Categoria {
 }
 
 export const CATEGORIAS: Categoria[] = [
-  { id: 'tabla', label: 'Tablas', color: '#3f6fd6', n: 48 },
-  { id: 'tipo', label: 'Tipos ENUM', color: '#0f8a94', n: 20 },
-  { id: 'vista', label: 'Vistas', color: '#2a9468', n: 8 },
-  { id: 'funcion', label: 'Funciones', color: '#8b52d9', n: 46 },
-  { id: 'trigger', label: 'Triggers', color: '#b5791b', n: 38 },
-  { id: 'restriccion', label: 'Llaves y restricciones', color: '#c2504b', n: 61 },
-  { id: 'fk', label: 'Claves foráneas', color: '#a1568c', n: 91 },
-  { id: 'indice', label: 'Índices', color: '#5a6474', n: 40 },
-  { id: 'rls', label: 'Seguridad por fila', color: '#3a3229', n: 256 },
-  { id: 'base', label: 'Preámbulo', color: '#8c8171', n: 7 },
+  { id: 'tabla', label: 'Tablas', color: '#3f6fd6', n: 59 },
+  { id: 'tipo', label: 'Tipos ENUM', color: '#0f8a94', n: 22 },
+  { id: 'vista', label: 'Vistas', color: '#2a9468', n: 10 },
+  { id: 'funcion', label: 'Funciones', color: '#8b52d9', n: 72 },
+  { id: 'trigger', label: 'Triggers', color: '#b5791b', n: 44 },
+  { id: 'restriccion', label: 'Llaves y restricciones', color: '#c2504b', n: 74 },
+  { id: 'fk', label: 'Claves foráneas', color: '#a1568c', n: 115 },
+  { id: 'indice', label: 'Índices', color: '#5a6474', n: 57 },
+  { id: 'rls', label: 'Seguridad por fila', color: '#3a3229', n: 313 },
+  { id: 'base', label: 'Preámbulo', color: '#8c8171', n: 18 },
 ];
 
 export const OBJETOS: Objeto[] = [
@@ -78,13 +78,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 3513,
+    linea: 4481,
     claves: 'agrupacion_id cohorte_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.agrupacion_area_comun_cohortes (
-    agrupacion_id uuid NOT NULL,
-    cohorte_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."agrupacion_area_comun_cohortes" (
+    "agrupacion_id" "uuid" NOT NULL,
+    "cohorte_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -96,13 +96,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 3523,
+    linea: 4491,
     claves: 'agrupacion_id curso_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.agrupacion_area_comun_cursos (
-    agrupacion_id uuid NOT NULL,
-    curso_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."agrupacion_area_comun_cursos" (
+    "agrupacion_id" "uuid" NOT NULL,
+    "curso_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -110,25 +110,27 @@ export const OBJETOS: Objeto[] = [
     nombre: 'agrupaciones_area_comun',
     cat: 'tabla',
     grupo: 'Académico',
-    desc: 'Cabecera de un área común: el curso principal que varias cohortes toman juntas en un período.',
+    desc: 'Clase compartida identificada por período, curso común y jornada. Sus cursos y cohortes se derivan del catálogo y de las cohortes activas.',
     detalle: '',
-    nota: '10 columnas · borrado lógico · bloqueo optimista',
+    nota: '12 columnas · borrado lógico · bloqueo optimista',
     tabla: 'agrupaciones_area_comun',
-    linea: 3533,
-    claves: 'id periodo_id nombre curso_principal_id creada_por_id creada_en actualizado_en esta_activa eliminado_en version_fila',
+    linea: 4501,
+    claves: 'id periodo_id nombre curso_principal_id creada_por_id creada_en actualizado_en esta_activa eliminado_en version_fila curso_comun_id jornada_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.agrupaciones_area_comun (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    periodo_id uuid NOT NULL,
-    nombre character varying(150) NOT NULL,
-    curso_principal_id uuid,
-    creada_por_id uuid,
-    creada_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    esta_activa boolean DEFAULT true NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL
+    sql: `CREATE TABLE "horarios"."agrupaciones_area_comun" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "nombre" character varying(150) NOT NULL,
+    "curso_principal_id" "uuid",
+    "creada_por_id" "uuid",
+    "creada_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    "curso_comun_id" "uuid" NOT NULL,
+    "jornada_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -140,13 +142,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'carrera_jornadas',
-    linea: 3940,
+    linea: 4946,
     claves: 'carrera_id jornada_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.carrera_jornadas (
-    carrera_id uuid NOT NULL,
-    jornada_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."carrera_jornadas" (
+    "carrera_id" "uuid" NOT NULL,
+    "jornada_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -156,27 +158,27 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Carreras de cada facultad, con código, nivel académico y duración en semestres. Esa duración es la que valida que una cohorte no pase de su último semestre.',
     detalle: '',
-    nota: '14 columnas · borrado lógico · bloqueo optimista',
+    nota: '11 columnas · borrado lógico · bloqueo optimista',
     tabla: 'carreras',
-    linea: 3668,
-    claves: 'id facultad_id codigo nombre nivel_academico duracion_en_semestres esta_activa creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 4652,
+    claves: 'id facultad_id codigo nombre nivel_academico duracion_en_semestres esta_activa creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.carreras (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    facultad_id uuid NOT NULL,
-    codigo character varying(20) NOT NULL,
-    nombre character varying(150) NOT NULL,
-    nivel_academico character varying(50) NOT NULL,
-    duracion_en_semestres integer NOT NULL,
-    esta_activa boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT carreras_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT carreras_duracion_en_semestres_check CHECK ((duracion_en_semestres > 0)),
-    CONSTRAINT carreras_nombre_check CHECK ((length(TRIM(BOTH FROM nombre)) > 0))
+    sql: `CREATE TABLE "horarios"."carreras" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "facultad_id" "uuid" NOT NULL,
+    "codigo" character varying(20) NOT NULL,
+    "nombre" character varying(150) NOT NULL,
+    "nivel_academico" character varying(50) NOT NULL,
+    "duracion_en_semestres" integer NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "carreras_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
+    CONSTRAINT "carreras_duracion_en_semestres_check" CHECK (("duracion_en_semestres" > 0)),
+    CONSTRAINT "carreras_nombre_check" CHECK (("length"(TRIM(BOTH FROM "nombre")) > 0))
 );`,
   },
   {
@@ -184,27 +186,27 @@ export const OBJETOS: Objeto[] = [
     nombre: 'cohorte_periodos',
     cat: 'tabla',
     grupo: 'Académico',
-    desc: 'Qué cohortes están activas en cada período, en qué semestre va cada una y con cuánta matrícula.',
+    desc: 'Qué cohortes están activas en cada período, en qué semestre va cada una y con cuánta matrícula. Es la entrada principal del motor.',
     detalle: '',
-    nota: '12 columnas · borrado lógico · bloqueo optimista',
+    nota: '10 columnas · borrado lógico · bloqueo optimista',
     tabla: 'cohorte_periodos',
-    linea: 3610,
-    claves: 'id cohorte_id periodo_id semestre_asignado matricula_estimada esta_activa creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT',
+    linea: 4594,
+    claves: 'id cohorte_id periodo_id semestre_asignado matricula_estimada esta_activa creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.cohorte_periodos (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    cohorte_id uuid NOT NULL,
-    periodo_id uuid NOT NULL,
-    semestre_asignado integer NOT NULL,
-    matricula_estimada integer NOT NULL,
-    esta_activa boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT cohorte_periodos_matricula_estimada_check CHECK ((matricula_estimada >= 0)),
-    CONSTRAINT cohorte_periodos_semestre_asignado_check CHECK ((semestre_asignado > 0))
+    sql: `CREATE TABLE "horarios"."cohorte_periodos" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "cohorte_id" "uuid" NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "semestre_asignado" integer NOT NULL,
+    "matricula_estimada" integer NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "cohorte_periodos_matricula_estimada_check" CHECK (("matricula_estimada" >= 0)),
+    CONSTRAINT "cohorte_periodos_semestre_asignado_check" CHECK (("semestre_asignado" > 0))
 );`,
   },
   {
@@ -214,46 +216,69 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Grupos de estudiantes: carrera + pensum + jornada + año de ingreso + sección, con su matrícula estimada y su estado.',
     detalle: '',
-    nota: '15 columnas · borrado lógico · bloqueo optimista',
+    nota: '12 columnas · borrado lógico · bloqueo optimista',
     tabla: 'cohortes',
-    linea: 3630,
-    claves: 'id carrera_id pensum_id jornada_id anio_ingreso seccion matricula_estimada estado creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 4614,
+    claves: 'id carrera_id pensum_id jornada_id anio_ingreso seccion matricula_estimada estado creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.cohortes (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    carrera_id uuid NOT NULL,
-    pensum_id uuid NOT NULL,
-    jornada_id uuid NOT NULL,
-    anio_ingreso integer NOT NULL,
-    seccion character varying(20) NOT NULL,
-    matricula_estimada integer NOT NULL,
-    estado horarios.estado_cohorte DEFAULT 'activa'::horarios.estado_cohorte NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT cohortes_anio_ingreso_check CHECK ((anio_ingreso >= 1900)),
-    CONSTRAINT cohortes_matricula_estimada_check CHECK ((matricula_estimada >= 0)),
-    CONSTRAINT cohortes_seccion_check CHECK ((length(TRIM(BOTH FROM seccion)) > 0))
+    sql: `CREATE TABLE "horarios"."cohortes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "carrera_id" "uuid" NOT NULL,
+    "pensum_id" "uuid" NOT NULL,
+    "jornada_id" "uuid" NOT NULL,
+    "anio_ingreso" integer NOT NULL,
+    "seccion" character varying(20) NOT NULL,
+    "matricula_estimada" integer NOT NULL,
+    "estado" "horarios"."estado_cohorte" DEFAULT 'activa'::"horarios"."estado_cohorte" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "cohortes_anio_ingreso_check" CHECK (("anio_ingreso" >= 1900)),
+    CONSTRAINT "cohortes_matricula_estimada_check" CHECK (("matricula_estimada" >= 0)),
+    CONSTRAINT "cohortes_seccion_check" CHECK (("length"(TRIM(BOTH FROM "seccion")) > 0))
 );`,
   },
   {
-    id: 'tabla-curso_carreras_compartidas',
-    nombre: 'curso_carreras_compartidas',
+    id: 'tabla-curso_comun',
+    nombre: 'curso_comun',
     cat: 'tabla',
     grupo: 'Académico',
-    desc: 'Puente N:M. Carreras que comparten un mismo curso; es la base para agrupar el área común.',
+    desc: 'Grupos de cursos equivalentes de distintos pensums: una misma clase compartida con varios nombres en las mallas.',
     detalle: '',
-    nota: '2 columnas',
-    tabla: 'curso_carreras_compartidas',
-    linea: 4006,
-    claves: 'curso_id carrera_id',
+    nota: '6 columnas · borrado lógico · bloqueo optimista',
+    tabla: 'curso_comun',
+    linea: 5012,
+    claves: 'id nombre creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.curso_carreras_compartidas (
-    curso_id uuid NOT NULL,
-    carrera_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."curso_comun" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(150) NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "curso_comun_nombre_check" CHECK (("length"(TRIM(BOTH FROM "nombre")) > 0))
+);`,
+  },
+  {
+    id: 'tabla-curso_comun_cursos',
+    nombre: 'curso_comun_cursos',
+    cat: 'tabla',
+    grupo: 'Académico',
+    desc: 'Cursos de cada grupo de equivalencia. Un curso solo pertenece a un curso común y no se repite el pensum dentro del grupo.',
+    detalle: '',
+    nota: '2 columnas',
+    tabla: 'curso_comun_cursos',
+    linea: 5034,
+    claves: 'curso_comun_id curso_id',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."curso_comun_cursos" (
+    "curso_comun_id" "uuid" NOT NULL,
+    "curso_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -261,28 +286,29 @@ export const OBJETOS: Objeto[] = [
     nombre: 'cursos',
     cat: 'tabla',
     grupo: 'Académico',
-    desc: 'Catálogo de materias: código, nombre, si exige laboratorio y si es de área común.',
+    desc: 'Materias propias de cada pensum: código, nombre, requisitos de laboratorio y marca de área común.',
     detalle: '',
-    nota: '13 columnas · borrado lógico · bloqueo optimista',
+    nota: '11 columnas · borrado lógico · bloqueo optimista',
     tabla: 'cursos',
-    linea: 3690,
-    claves: 'id codigo nombre requiere_laboratorio tipo_laboratorio_requerido es_area_comun creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 4674,
+    claves: 'id codigo nombre requiere_laboratorio tipo_laboratorio_requerido es_area_comun creado_en actualizado_en eliminado_en version_fila pensum_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.cursos (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    codigo character varying(30) NOT NULL,
-    nombre character varying(180) NOT NULL,
-    requiere_laboratorio boolean DEFAULT false NOT NULL,
-    tipo_laboratorio_requerido character varying(80),
-    es_area_comun boolean DEFAULT false NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT cursos_check CHECK ((requiere_laboratorio OR (tipo_laboratorio_requerido IS NULL))),
-    CONSTRAINT cursos_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT cursos_nombre_check CHECK ((length(TRIM(BOTH FROM nombre)) > 0))
+    sql: `CREATE TABLE "horarios"."cursos" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo" character varying(30) NOT NULL,
+    "nombre" character varying(180) NOT NULL,
+    "requiere_laboratorio" boolean DEFAULT false NOT NULL,
+    "tipo_laboratorio_requerido" character varying(80),
+    "es_area_comun" boolean DEFAULT false NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    "pensum_id" "uuid" NOT NULL,
+    CONSTRAINT "cursos_check" CHECK (("requiere_laboratorio" OR ("tipo_laboratorio_requerido" IS NULL))),
+    CONSTRAINT "cursos_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
+    CONSTRAINT "cursos_nombre_check" CHECK (("length"(TRIM(BOTH FROM "nombre")) > 0))
 );`,
   },
   {
@@ -292,27 +318,27 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'La malla curricular: qué curso va en qué semestre de qué pensum, cuántos bloques semanales exige y si los prefiere consecutivos.',
     detalle: '',
-    nota: '14 columnas · borrado lógico · bloqueo optimista',
+    nota: '11 columnas · borrado lógico · bloqueo optimista',
     tabla: 'cursos_en_pensum',
-    linea: 3711,
-    claves: 'id pensum_id curso_id semestre_asignado bloques_semanales_exactos prefiere_bloques_consecutivos creado_en actualizado_en eliminado_en version_fila duracion_slots CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 4696,
+    claves: 'id pensum_id curso_id semestre_asignado bloques_semanales_exactos prefiere_bloques_consecutivos creado_en actualizado_en eliminado_en version_fila duracion_slots',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.cursos_en_pensum (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    pensum_id uuid NOT NULL,
-    curso_id uuid NOT NULL,
-    semestre_asignado integer NOT NULL,
-    bloques_semanales_exactos integer NOT NULL,
-    prefiere_bloques_consecutivos boolean DEFAULT false NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    duracion_slots integer DEFAULT 1 NOT NULL,
-    CONSTRAINT cursos_en_pensum_bloques_semanales_exactos_check CHECK ((bloques_semanales_exactos > 0)),
-    CONSTRAINT cursos_en_pensum_duracion_slots_check CHECK ((duracion_slots > 0)),
-    CONSTRAINT cursos_en_pensum_semestre_asignado_check CHECK ((semestre_asignado > 0))
+    sql: `CREATE TABLE "horarios"."cursos_en_pensum" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pensum_id" "uuid" NOT NULL,
+    "curso_id" "uuid" NOT NULL,
+    "semestre_asignado" integer NOT NULL,
+    "bloques_semanales_exactos" integer NOT NULL,
+    "prefiere_bloques_consecutivos" boolean DEFAULT false NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    "duracion_slots" integer DEFAULT 1 NOT NULL,
+    CONSTRAINT "cursos_en_pensum_bloques_semanales_exactos_check" CHECK (("bloques_semanales_exactos" > 0)),
+    CONSTRAINT "cursos_en_pensum_duracion_slots_check" CHECK (("duracion_slots" > 0)),
+    CONSTRAINT "cursos_en_pensum_semestre_asignado_check" CHECK (("semestre_asignado" > 0))
 );`,
   },
   {
@@ -322,24 +348,24 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Facultades de la universidad. Es la raíz del alcance: a un usuario se le asignan facultades y solo ve lo que cuelga de ellas.',
     detalle: '',
-    nota: '11 columnas · borrado lógico · bloqueo optimista',
+    nota: '9 columnas · borrado lógico · bloqueo optimista',
     tabla: 'facultades',
-    linea: 4119,
-    claves: 'id codigo nombre nombre_decano esta_activa creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT',
+    linea: 5164,
+    claves: 'id codigo nombre nombre_decano esta_activa creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.facultades (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    codigo character varying(20) NOT NULL,
-    nombre character varying(150) NOT NULL,
-    nombre_decano character varying(200),
-    esta_activa boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT facultades_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT facultades_nombre_check CHECK ((length(TRIM(BOTH FROM nombre)) > 0))
+    sql: `CREATE TABLE "horarios"."facultades" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo" character varying(20) NOT NULL,
+    "nombre" character varying(150) NOT NULL,
+    "nombre_decano" character varying(200),
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "facultades_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
+    CONSTRAINT "facultades_nombre_check" CHECK (("length"(TRIM(BOTH FROM "nombre")) > 0))
 );`,
   },
   {
@@ -349,21 +375,21 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Recesos concretos dentro de una jornada, por día y rango de bloques. Una restricción de exclusión impide que dos se pisen.',
     detalle: '',
-    nota: '8 columnas · columnas generadas',
+    nota: '6 columnas · columnas generadas',
     tabla: 'jornada_descansos',
-    linea: 4249,
-    claves: 'id jornada_id dia indice_slot_inicio duracion_slots rango_slots CONSTRAINT CONSTRAINT',
+    linea: 5294,
+    claves: 'id jornada_id dia indice_slot_inicio duracion_slots rango_slots',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.jornada_descansos (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    jornada_id uuid NOT NULL,
-    dia horarios.dia_semana NOT NULL,
-    indice_slot_inicio integer NOT NULL,
-    duracion_slots integer NOT NULL,
-    rango_slots int4range GENERATED ALWAYS AS (int4range(indice_slot_inicio, (indice_slot_inicio + duracion_slots), '[)'::text)) STORED,
-    CONSTRAINT jornada_descansos_duracion_slots_check CHECK ((duracion_slots > 0)),
-    CONSTRAINT jornada_descansos_indice_slot_inicio_check CHECK ((indice_slot_inicio > 0))
+    sql: `CREATE TABLE "horarios"."jornada_descansos" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "jornada_id" "uuid" NOT NULL,
+    "dia" "horarios"."dia_semana" NOT NULL,
+    "indice_slot_inicio" integer NOT NULL,
+    "duracion_slots" integer NOT NULL,
+    "rango_slots" "int4range" GENERATED ALWAYS AS ("int4range"("indice_slot_inicio", ("indice_slot_inicio" + "duracion_slots"), '[)'::"text")) STORED,
+    CONSTRAINT "jornada_descansos_duracion_slots_check" CHECK (("duracion_slots" > 0)),
+    CONSTRAINT "jornada_descansos_indice_slot_inicio_check" CHECK (("indice_slot_inicio" > 0))
 );`,
   },
   {
@@ -373,33 +399,33 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Matutina, vespertina…: días activos, hora de inicio y fin, duración del bloque, bloques por día y el receso (después de qué bloque y cuántos minutos).',
     detalle: '',
-    nota: '20 columnas · borrado lógico · bloqueo optimista',
+    nota: '14 columnas · borrado lógico · bloqueo optimista',
     tabla: 'jornadas',
-    linea: 4265,
-    claves: 'id nombre dias_activos hora_inicio hora_fin duracion_bloque_minutos bloques_por_dia receso_despues_bloque duracion_receso_minutos esta_activa creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5310,
+    claves: 'id nombre dias_activos hora_inicio hora_fin duracion_bloque_minutos bloques_por_dia esta_activa creado_en actualizado_en eliminado_en version_fila receso_despues_bloque duracion_receso_minutos',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.jornadas (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    nombre character varying(100) NOT NULL,
-    dias_activos horarios.dia_semana[] NOT NULL,
-    hora_inicio time without time zone NOT NULL,
-    hora_fin time without time zone NOT NULL,
-    duracion_bloque_minutos integer NOT NULL,
-    bloques_por_dia integer NOT NULL,
-    receso_despues_bloque integer DEFAULT 0 NOT NULL,
-    duracion_receso_minutos integer DEFAULT 0 NOT NULL,
-    esta_activa boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT jornadas_bloques_por_dia_check CHECK ((bloques_por_dia > 0)),
-    CONSTRAINT jornadas_check CHECK ((hora_fin > hora_inicio)),
-    CONSTRAINT jornadas_check1 CHECK (((((bloques_por_dia * duracion_bloque_minutos) + duracion_receso_minutos))::numeric <= (EXTRACT(epoch FROM (hora_fin - hora_inicio)) / (60)::numeric))),
-    CONSTRAINT jornadas_dias_activos_check CHECK ((cardinality(dias_activos) > 0)),
-    CONSTRAINT jornadas_duracion_bloque_minutos_check CHECK ((duracion_bloque_minutos > 0)),
-    CONSTRAINT jornadas_receso_check CHECK ((((duracion_receso_minutos = 0) AND (receso_despues_bloque = 0)) OR ((duracion_receso_minutos > 0) AND (receso_despues_bloque > 0) AND (receso_despues_bloque < bloques_por_dia))))
+    sql: `CREATE TABLE "horarios"."jornadas" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(100) NOT NULL,
+    "dias_activos" "horarios"."dia_semana"[] NOT NULL,
+    "hora_inicio" time without time zone NOT NULL,
+    "hora_fin" time without time zone NOT NULL,
+    "duracion_bloque_minutos" integer NOT NULL,
+    "bloques_por_dia" integer NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    "receso_despues_bloque" integer DEFAULT 0 NOT NULL,
+    "duracion_receso_minutos" integer DEFAULT 0 NOT NULL,
+    CONSTRAINT "jornadas_bloques_por_dia_check" CHECK (("bloques_por_dia" > 0)),
+    CONSTRAINT "jornadas_check" CHECK (("hora_fin" > "hora_inicio")),
+    CONSTRAINT "jornadas_check1" CHECK ((((("bloques_por_dia" * "duracion_bloque_minutos") + "duracion_receso_minutos"))::numeric <= (EXTRACT(epoch FROM ("hora_fin" - "hora_inicio")) / (60)::numeric))),
+    CONSTRAINT "jornadas_dias_activos_check" CHECK (("cardinality"("dias_activos") > 0)),
+    CONSTRAINT "jornadas_duracion_bloque_minutos_check" CHECK (("duracion_bloque_minutos" > 0)),
+    CONSTRAINT "jornadas_receso_check" CHECK (((("duracion_receso_minutos" = 0) AND ("receso_despues_bloque" = 0)) OR (("duracion_receso_minutos" > 0) AND ("receso_despues_bloque" > 0) AND ("receso_despues_bloque" < "bloques_por_dia"))))
 );`,
   },
   {
@@ -409,22 +435,22 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Planes de estudio de una carrera, uno por año de creación, con su estado (borrador, vigente, en retiro, archivado).',
     detalle: '',
-    nota: '9 columnas · borrado lógico · bloqueo optimista',
+    nota: '8 columnas · borrado lógico · bloqueo optimista',
     tabla: 'pensums',
-    linea: 3733,
-    claves: 'id carrera_id anio_creacion estado fecha_creacion actualizado_en eliminado_en version_fila CONSTRAINT',
+    linea: 4718,
+    claves: 'id carrera_id anio_creacion estado fecha_creacion actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.pensums (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    carrera_id uuid NOT NULL,
-    anio_creacion integer NOT NULL,
-    estado horarios.estado_pensum DEFAULT 'borrador'::horarios.estado_pensum NOT NULL,
-    fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT pensums_anio_creacion_check CHECK ((anio_creacion >= 1900))
+    sql: `CREATE TABLE "horarios"."pensums" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "carrera_id" "uuid" NOT NULL,
+    "anio_creacion" integer NOT NULL,
+    "estado" "horarios"."estado_pensum" DEFAULT 'borrador'::"horarios"."estado_pensum" NOT NULL,
+    "fecha_creacion" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "pensums_anio_creacion_check" CHECK (("anio_creacion" >= 1900))
 );`,
   },
   {
@@ -434,23 +460,23 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Académico',
     desc: 'Semestres o cuatrimestres: nombre, fecha de inicio y fin, y estado del período.',
     detalle: '',
-    nota: '10 columnas · borrado lógico · bloqueo optimista',
+    nota: '9 columnas · borrado lógico · bloqueo optimista',
     tabla: 'periodos_academicos',
-    linea: 4329,
-    claves: 'id nombre fecha_inicio fecha_fin estado creado_en actualizado_en eliminado_en version_fila CONSTRAINT',
+    linea: 5374,
+    claves: 'id nombre fecha_inicio fecha_fin estado creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.periodos_academicos (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    nombre character varying(150) NOT NULL,
-    fecha_inicio date NOT NULL,
-    fecha_fin date NOT NULL,
-    estado horarios.estado_periodo DEFAULT 'borrador'::horarios.estado_periodo NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT periodos_academicos_check CHECK ((fecha_fin >= fecha_inicio))
+    sql: `CREATE TABLE "horarios"."periodos_academicos" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(150) NOT NULL,
+    "fecha_inicio" "date" NOT NULL,
+    "fecha_fin" "date" NOT NULL,
+    "estado" "horarios"."estado_periodo" DEFAULT 'borrador'::"horarios"."estado_periodo" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "periodos_academicos_check" CHECK (("fecha_fin" >= "fecha_inicio"))
 );`,
   },
   {
@@ -460,17 +486,17 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Infraestructura',
     desc: 'Puente N:M con cantidad. Qué recursos tiene cada aula y cuántos.',
     detalle: '',
-    nota: '4 columnas',
+    nota: '3 columnas',
     tabla: 'aula_recursos',
-    linea: 3791,
-    claves: 'aula_id recurso_id cantidad CONSTRAINT',
+    linea: 4776,
+    claves: 'aula_id recurso_id cantidad',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.aula_recursos (
-    aula_id uuid NOT NULL,
-    recurso_id uuid NOT NULL,
-    cantidad integer DEFAULT 1 NOT NULL,
-    CONSTRAINT aula_recursos_cantidad_check CHECK ((cantidad > 0))
+    sql: `CREATE TABLE "horarios"."aula_recursos" (
+    "aula_id" "uuid" NOT NULL,
+    "recurso_id" "uuid" NOT NULL,
+    "cantidad" integer DEFAULT 1 NOT NULL,
+    CONSTRAINT "aula_recursos_cantidad_check" CHECK (("cantidad" > 0))
 );`,
   },
   {
@@ -480,31 +506,29 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Infraestructura',
     desc: 'Salones: código, capacidad máxima, tipo (teórica, laboratorio, mixta, virtual), piso, número y equipamiento especial.',
     detalle: '',
-    nota: '18 columnas · borrado lógico · bloqueo optimista',
+    nota: '14 columnas · borrado lógico · bloqueo optimista',
     tabla: 'aulas',
-    linea: 3899,
-    claves: 'id codigo capacidad_maxima tipo tipo_laboratorio_disponible piso numero_aula posicion_x posicion_y equipamiento_especial esta_activa creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 4907,
+    claves: 'id codigo capacidad_maxima tipo tipo_laboratorio_disponible piso numero_aula posicion_x posicion_y esta_activa creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.aulas (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    codigo character varying(30) NOT NULL,
-    capacidad_maxima integer NOT NULL,
-    tipo horarios.tipo_aula NOT NULL,
-    tipo_laboratorio_disponible character varying(80),
-    piso integer DEFAULT 1 NOT NULL,
-    numero_aula integer NOT NULL,
-    posicion_x integer DEFAULT 0 NOT NULL,
-    posicion_y integer DEFAULT 0 NOT NULL,
-    equipamiento_especial jsonb DEFAULT '[]'::jsonb NOT NULL,
-    esta_activa boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT aulas_capacidad_maxima_check CHECK ((capacidad_maxima > 0)),
-    CONSTRAINT aulas_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT aulas_equipamiento_especial_check CHECK ((jsonb_typeof(equipamiento_especial) = 'array'::text))
+    sql: `CREATE TABLE "horarios"."aulas" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo" character varying(30) NOT NULL,
+    "capacidad_maxima" integer NOT NULL,
+    "tipo" "horarios"."tipo_aula" NOT NULL,
+    "tipo_laboratorio_disponible" character varying(80),
+    "piso" integer DEFAULT 1 NOT NULL,
+    "numero_aula" integer NOT NULL,
+    "posicion_x" integer DEFAULT 0 NOT NULL,
+    "posicion_y" integer DEFAULT 0 NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "aulas_capacidad_maxima_check" CHECK (("capacidad_maxima" > 0)),
+    CONSTRAINT "aulas_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo"))))
 );`,
   },
   {
@@ -512,19 +536,19 @@ export const OBJETOS: Objeto[] = [
     nombre: 'curso_recursos_requeridos',
     cat: 'tabla',
     grupo: 'Infraestructura',
-    desc: 'Puente N:M con cantidad. Qué recursos exige un curso: solo puede ocupar aulas que los tengan.',
+    desc: 'Puente N:M con cantidad. Qué recursos exige un curso; el motor solo lo coloca en aulas que los tengan.',
     detalle: '',
-    nota: '4 columnas',
+    nota: '3 columnas',
     tabla: 'curso_recursos_requeridos',
-    linea: 4016,
-    claves: 'curso_id recurso_id cantidad CONSTRAINT',
+    linea: 5044,
+    claves: 'curso_id recurso_id cantidad',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.curso_recursos_requeridos (
-    curso_id uuid NOT NULL,
-    recurso_id uuid NOT NULL,
-    cantidad integer DEFAULT 1 NOT NULL,
-    CONSTRAINT curso_recursos_requeridos_cantidad_check CHECK ((cantidad > 0))
+    sql: `CREATE TABLE "horarios"."curso_recursos_requeridos" (
+    "curso_id" "uuid" NOT NULL,
+    "recurso_id" "uuid" NOT NULL,
+    "cantidad" integer DEFAULT 1 NOT NULL,
+    CONSTRAINT "curso_recursos_requeridos_cantidad_check" CHECK (("cantidad" > 0))
 );`,
   },
   {
@@ -534,24 +558,269 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Infraestructura',
     desc: 'Catálogo de recursos físicos: proyector, laboratorio de cómputo, etc.',
     detalle: '',
-    nota: '11 columnas · borrado lógico · bloqueo optimista',
+    nota: '10 columnas · borrado lógico · bloqueo optimista',
     tabla: 'recursos',
-    linea: 3803,
-    claves: 'id codigo nombre descripcion esta_activo creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT',
+    linea: 4788,
+    claves: 'id codigo nombre descripcion esta_activo creado_en actualizado_en eliminado_en version_fila tipo',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.recursos (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    codigo character varying(40) NOT NULL,
-    nombre character varying(120) NOT NULL,
-    descripcion text,
-    esta_activo boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT recursos_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT recursos_nombre_check CHECK ((length(TRIM(BOTH FROM nombre)) > 0))
+    sql: `CREATE TABLE "horarios"."recursos" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo" character varying(40) NOT NULL,
+    "nombre" character varying(120) NOT NULL,
+    "descripcion" "text",
+    "esta_activo" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    "tipo" "horarios"."tipo_recurso" DEFAULT 'fijo'::"horarios"."tipo_recurso" NOT NULL,
+    CONSTRAINT "recursos_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
+    CONSTRAINT "recursos_nombre_check" CHECK (("length"(TRIM(BOTH FROM "nombre")) > 0))
+);`,
+  },
+  {
+    id: 'tabla-configuracion_motor_restricciones',
+    nombre: 'configuracion_motor_restricciones',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Puente N:M con peso. Qué restricciones usa una configuración y cuánto pesa cada una.',
+    detalle: '',
+    nota: '3 columnas',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 4956,
+    claves: 'configuracion_id restriccion_id peso',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."configuracion_motor_restricciones" (
+    "configuracion_id" "uuid" NOT NULL,
+    "restriccion_id" "uuid" NOT NULL,
+    "peso" numeric(12,4) NOT NULL,
+    CONSTRAINT "configuracion_motor_restricciones_peso_check" CHECK (("peso" >= (0)::numeric))
+);`,
+  },
+  {
+    id: 'tabla-configuraciones_motor',
+    nombre: 'configuraciones_motor',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Parámetros de una corrida del generador: tiempo máximo, iteraciones y tolerancia a violaciones blandas.',
+    detalle: '',
+    nota: '8 columnas',
+    tabla: 'configuraciones_motor',
+    linea: 4968,
+    claves: 'id nombre tiempo_maximo_generacion_ms maximo_iteraciones tolerancia_violaciones_blandas esta_activa creado_en actualizado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."configuraciones_motor" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(120) NOT NULL,
+    "tiempo_maximo_generacion_ms" bigint NOT NULL,
+    "maximo_iteraciones" integer NOT NULL,
+    "tolerancia_violaciones_blandas" numeric(8,4) DEFAULT 0 NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "configuraciones_motor_maximo_iteraciones_check" CHECK (("maximo_iteraciones" > 0)),
+    CONSTRAINT "configuraciones_motor_tiempo_maximo_generacion_ms_check" CHECK (("tiempo_maximo_generacion_ms" > 0)),
+    CONSTRAINT "configuraciones_motor_tolerancia_violaciones_blandas_check" CHECK (("tolerancia_violaciones_blandas" >= (0)::numeric))
+);`,
+  },
+  {
+    id: 'tabla-generaciones',
+    nombre: 'generaciones',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Cada ejecución del motor: estado, semilla, duración, memoria, costo final, violaciones, la entrada usada y el resultado completo en JSON.',
+    detalle: '',
+    nota: '23 columnas · idempotencia',
+    tabla: 'generaciones',
+    linea: 5183,
+    claves: 'id periodo_id tipo_plan plan_id configuracion_id solicitada_por_id clave_solicitud estado version_motor semilla duracion_ms tiempo_primera_solucion_ms memoria_maxima_mb hardware_referencia costo_final total_violaciones_duras total_violaciones_blandas total_sesiones_pendientes instantanea_entrada resultado puntaje_desglose iniciada_en finalizada_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."generaciones" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "tipo_plan" "horarios"."tipo_plan_horario" DEFAULT 'clases'::"horarios"."tipo_plan_horario" NOT NULL,
+    "plan_id" "uuid",
+    "configuracion_id" "uuid",
+    "solicitada_por_id" "uuid",
+    "clave_solicitud" character varying(120),
+    "estado" "horarios"."estado_generacion" DEFAULT 'pendiente'::"horarios"."estado_generacion" NOT NULL,
+    "version_motor" character varying(80) NOT NULL,
+    "semilla" bigint,
+    "duracion_ms" bigint,
+    "tiempo_primera_solucion_ms" bigint,
+    "memoria_maxima_mb" numeric(12,2),
+    "hardware_referencia" "text",
+    "costo_final" numeric(14,4),
+    "total_violaciones_duras" integer DEFAULT 0 NOT NULL,
+    "total_violaciones_blandas" integer DEFAULT 0 NOT NULL,
+    "total_sesiones_pendientes" integer DEFAULT 0 NOT NULL,
+    "instantanea_entrada" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "resultado" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "puntaje_desglose" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "iniciada_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "finalizada_en" timestamp with time zone,
+    CONSTRAINT "generaciones_completada_sin_pendientes_check" CHECK ((("estado" <> 'completada'::"horarios"."estado_generacion") OR (("total_violaciones_duras" = 0) AND ("total_sesiones_pendientes" = 0)))),
+    CONSTRAINT "generaciones_duracion_ms_check" CHECK ((("duracion_ms" IS NULL) OR ("duracion_ms" >= 0))),
+    CONSTRAINT "generaciones_estado_terminal_check" CHECK ((("estado" = ANY (ARRAY['pendiente'::"horarios"."estado_generacion", 'generando'::"horarios"."estado_generacion"])) OR ("finalizada_en" IS NOT NULL))),
+    CONSTRAINT "generaciones_instantanea_entrada_check" CHECK (("jsonb_typeof"("instantanea_entrada") = 'object'::"text")),
+    CONSTRAINT "generaciones_memoria_maxima_mb_check" CHECK ((("memoria_maxima_mb" IS NULL) OR ("memoria_maxima_mb" >= (0)::numeric))),
+    CONSTRAINT "generaciones_puntaje_desglose_check" CHECK (("jsonb_typeof"("puntaje_desglose") = 'object'::"text")),
+    CONSTRAINT "generaciones_puntaje_desglose_sprint5_ck" CHECK (("jsonb_typeof"("puntaje_desglose") = 'object'::"text")),
+    CONSTRAINT "generaciones_resultado_check" CHECK (("jsonb_typeof"("resultado") = 'object'::"text")),
+    CONSTRAINT "generaciones_tiempo_primera_solucion_ms_check" CHECK ((("tiempo_primera_solucion_ms" IS NULL) OR ("tiempo_primera_solucion_ms" >= 0))),
+    CONSTRAINT "generaciones_total_sesiones_pendientes_check" CHECK (("total_sesiones_pendientes" >= 0)),
+    CONSTRAINT "generaciones_total_violaciones_blandas_check" CHECK (("total_violaciones_blandas" >= 0)),
+    CONSTRAINT "generaciones_total_violaciones_duras_check" CHECK (("total_violaciones_duras" >= 0))
+);`,
+  },
+  {
+    id: 'tabla-mensajes_generacion',
+    nombre: 'mensajes_generacion',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Bitácora de una corrida: mensajes por severidad, con código y entidad afectada.',
+    detalle: '',
+    nota: '9 columnas',
+    tabla: 'mensajes_generacion',
+    linea: 5338,
+    claves: 'id generacion_id severidad codigo mensaje entidad entidad_id datos creado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."mensajes_generacion" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "generacion_id" "uuid" NOT NULL,
+    "severidad" "horarios"."nivel_severidad" DEFAULT 'media'::"horarios"."nivel_severidad" NOT NULL,
+    "codigo" character varying(80),
+    "mensaje" "text" NOT NULL,
+    "entidad" character varying(120),
+    "entidad_id" "uuid",
+    "datos" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL
+);`,
+  },
+  {
+    id: 'tabla-plan_carreras',
+    nombre: 'plan_carreras',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Puente N:M. Qué carreras entran en el alcance de un plan de horario.',
+    detalle: '',
+    nota: '3 columnas',
+    tabla: 'plan_carreras',
+    linea: 5404,
+    claves: 'plan_id carrera_id creado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."plan_carreras" (
+    "plan_id" "uuid" NOT NULL,
+    "carrera_id" "uuid" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL
+);`,
+  },
+  {
+    id: 'tabla-plan_jornadas',
+    nombre: 'plan_jornadas',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Puente N:M. Qué jornadas entran en el alcance de un plan de horario.',
+    detalle: '',
+    nota: '3 columnas',
+    tabla: 'plan_jornadas',
+    linea: 5415,
+    claves: 'plan_id jornada_id creado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."plan_jornadas" (
+    "plan_id" "uuid" NOT NULL,
+    "jornada_id" "uuid" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL
+);`,
+  },
+  {
+    id: 'tabla-restricciones_horario',
+    nombre: 'restricciones_horario',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Catálogo de reglas del motor, con su peso y si es dura (obligatoria) o blanda (preferencia).',
+    detalle: '',
+    nota: '6 columnas',
+    tabla: 'restricciones_horario',
+    linea: 5484,
+    claves: 'id nombre descripcion peso es_dura esta_activa',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."restricciones_horario" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(120) NOT NULL,
+    "descripcion" "text" NOT NULL,
+    "peso" numeric(12,4) NOT NULL,
+    "es_dura" boolean NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    CONSTRAINT "restricciones_horario_peso_check" CHECK (("peso" >= (0)::numeric))
+);`,
+  },
+  {
+    id: 'tabla-sesiones_no_asignadas',
+    nombre: 'sesiones_no_asignadas',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Lo que el motor no pudo colocar y por qué, con los recursos que faltaron y una sugerencia de resolución.',
+    detalle: '',
+    nota: '8 columnas',
+    tabla: 'sesiones_no_asignadas',
+    linea: 5619,
+    claves: 'id horario_id curso_id cohorte_id motivo_no_asignacion recursos_faltantes sugerencia_resolucion creado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."sesiones_no_asignadas" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "curso_id" "uuid" NOT NULL,
+    "cohorte_id" "uuid" NOT NULL,
+    "motivo_no_asignacion" "text" NOT NULL,
+    "recursos_faltantes" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "sugerencia_resolucion" "text",
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "sesiones_no_asignadas_recursos_faltantes_check" CHECK (("jsonb_typeof"("recursos_faltantes") = 'array'::"text"))
+);`,
+  },
+  {
+    id: 'tabla-sugerencias_seccion',
+    nombre: 'sugerencias_seccion',
+    cat: 'tabla',
+    grupo: 'Motor',
+    desc: 'Avisos del tipo «este grupo no cabe, abrí otra sección», con la matrícula detectada, la capacidad disponible y su estado de resolución.',
+    detalle: '',
+    nota: '14 columnas · borrado lógico',
+    tabla: 'sugerencias_seccion',
+    linea: 5636,
+    claves: 'id horario_id cohorte_id curso_id matricula_detectada capacidad_maxima_disponible seccion_sugerida motivo estado solicitada_por_id resuelta_por_id resuelta_en creado_en eliminado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."sugerencias_seccion" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "cohorte_id" "uuid" NOT NULL,
+    "curso_id" "uuid",
+    "matricula_detectada" integer NOT NULL,
+    "capacidad_maxima_disponible" integer NOT NULL,
+    "seccion_sugerida" character varying(20) NOT NULL,
+    "motivo" "text" NOT NULL,
+    "estado" "horarios"."estado_sugerencia_seccion" DEFAULT 'pendiente'::"horarios"."estado_sugerencia_seccion" NOT NULL,
+    "solicitada_por_id" "uuid",
+    "resuelta_por_id" "uuid",
+    "resuelta_en" timestamp with time zone,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    CONSTRAINT "sugerencias_seccion_capacidad_maxima_disponible_check" CHECK (("capacidad_maxima_disponible" >= 0)),
+    CONSTRAINT "sugerencias_seccion_check" CHECK (((("estado" = ANY (ARRAY['aprobada'::"horarios"."estado_sugerencia_seccion", 'rechazada'::"horarios"."estado_sugerencia_seccion", 'aplicada'::"horarios"."estado_sugerencia_seccion"])) AND ("resuelta_por_id" IS NOT NULL) AND ("resuelta_en" IS NOT NULL)) OR ("estado" = ANY (ARRAY['pendiente'::"horarios"."estado_sugerencia_seccion", 'cancelada'::"horarios"."estado_sugerencia_seccion"])))),
+    CONSTRAINT "sugerencias_seccion_matricula_detectada_check" CHECK (("matricula_detectada" >= 0)),
+    CONSTRAINT "sugerencias_seccion_motivo_check" CHECK (("length"(TRIM(BOTH FROM "motivo")) > 0)),
+    CONSTRAINT "sugerencias_seccion_seccion_sugerida_check" CHECK (("length"(TRIM(BOTH FROM "seccion_sugerida")) > 0))
 );`,
   },
   {
@@ -563,18 +832,18 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '7 columnas',
     tabla: 'cambios_detectados',
-    linea: 3925,
+    linea: 4931,
     claves: 'id version_horario_id sesion_id campo_modificado valor_anterior valor_nuevo creado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.cambios_detectados (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    version_horario_id uuid,
-    sesion_id uuid NOT NULL,
-    campo_modificado character varying(100) NOT NULL,
-    valor_anterior text,
-    valor_nuevo text,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL
+    sql: `CREATE TABLE "horarios"."cambios_detectados" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "version_horario_id" "uuid",
+    "sesion_id" "uuid" NOT NULL,
+    "campo_modificado" character varying(100) NOT NULL,
+    "valor_anterior" "text",
+    "valor_nuevo" "text",
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL
 );`,
   },
   {
@@ -586,13 +855,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'conflicto_sesiones',
-    linea: 3981,
+    linea: 4987,
     claves: 'conflicto_id sesion_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.conflicto_sesiones (
-    conflicto_id uuid NOT NULL,
-    sesion_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."conflicto_sesiones" (
+    "conflicto_id" "uuid" NOT NULL,
+    "sesion_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -604,18 +873,18 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '7 columnas',
     tabla: 'conflictos',
-    linea: 3991,
+    linea: 4997,
     claves: 'id horario_id tipo descripcion severidad es_restriccion_dura creado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.conflictos (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    horario_id uuid NOT NULL,
-    tipo character varying(100) NOT NULL,
-    descripcion text NOT NULL,
-    severidad horarios.nivel_severidad NOT NULL,
-    es_restriccion_dura boolean NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL
+    sql: `CREATE TABLE "horarios"."conflictos" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "tipo" character varying(100) NOT NULL,
+    "descripcion" "text" NOT NULL,
+    "severidad" "horarios"."nivel_severidad" NOT NULL,
+    "es_restriccion_dura" boolean NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL
 );`,
   },
   {
@@ -625,22 +894,22 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Horarios',
     desc: 'Bitácora de transiciones de estado de un horario: de qué estado a cuál, quién y por qué.',
     detalle: '',
-    nota: '9 columnas',
+    nota: '7 columnas',
     tabla: 'historial_estados_horario',
-    linea: 4181,
-    claves: 'id horario_id estado_anterior estado_nuevo cambiado_por_id motivo cambiado_en CONSTRAINT CONSTRAINT',
+    linea: 5226,
+    claves: 'id horario_id estado_anterior estado_nuevo cambiado_por_id motivo cambiado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.historial_estados_horario (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    horario_id uuid NOT NULL,
-    estado_anterior horarios.estado_horario,
-    estado_nuevo horarios.estado_horario NOT NULL,
-    cambiado_por_id uuid,
-    motivo text NOT NULL,
-    cambiado_en timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT historial_estados_horario_check CHECK (((estado_anterior IS NULL) OR (estado_anterior <> estado_nuevo))),
-    CONSTRAINT historial_estados_horario_motivo_check CHECK ((length(TRIM(BOTH FROM motivo)) > 0))
+    sql: `CREATE TABLE "horarios"."historial_estados_horario" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "estado_anterior" "horarios"."estado_horario",
+    "estado_nuevo" "horarios"."estado_horario" NOT NULL,
+    "cambiado_por_id" "uuid",
+    "motivo" "text" NOT NULL,
+    "cambiado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "historial_estados_horario_check" CHECK ((("estado_anterior" IS NULL) OR ("estado_anterior" <> "estado_nuevo"))),
+    CONSTRAINT "historial_estados_horario_motivo_check" CHECK (("length"(TRIM(BOTH FROM "motivo")) > 0))
 );`,
   },
   {
@@ -650,39 +919,39 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Horarios',
     desc: 'Cabecera de un plan de horario: período, tipo (clases o exámenes), versión, estado, quién lo generó, aprobó y publicó, costo y violaciones duras.',
     detalle: '',
-    nota: '26 columnas · borrado lógico · bloqueo optimista',
+    nota: '20 columnas · borrado lógico · bloqueo optimista',
     tabla: 'horarios',
-    linea: 4198,
-    claves: 'id periodo_id tipo_plan horario_origen_id numero_version estado fecha_generacion fecha_aprobacion fecha_publicacion costo_total_calculado cantidad_violaciones_duras configuracion_plan generado_por_id aprobado_por_id publicado_por_id motivo_estado creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5243,
+    claves: 'id periodo_id tipo_plan horario_origen_id numero_version estado fecha_generacion fecha_aprobacion fecha_publicacion costo_total_calculado cantidad_violaciones_duras configuracion_plan generado_por_id aprobado_por_id publicado_por_id motivo_estado creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.horarios (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    periodo_id uuid NOT NULL,
-    tipo_plan horarios.tipo_plan_horario DEFAULT 'clases'::horarios.tipo_plan_horario NOT NULL,
-    horario_origen_id uuid,
-    numero_version integer NOT NULL,
-    estado horarios.estado_horario DEFAULT 'borrador'::horarios.estado_horario NOT NULL,
-    fecha_generacion timestamp with time zone,
-    fecha_aprobacion timestamp with time zone,
-    fecha_publicacion timestamp with time zone,
-    costo_total_calculado numeric(14,4) DEFAULT 0 NOT NULL,
-    cantidad_violaciones_duras integer DEFAULT 0 NOT NULL,
-    configuracion_plan jsonb DEFAULT '{}'::jsonb NOT NULL,
-    generado_por_id uuid,
-    aprobado_por_id uuid,
-    publicado_por_id uuid,
-    motivo_estado text,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT horarios_cantidad_violaciones_duras_check CHECK ((cantidad_violaciones_duras >= 0)),
-    CONSTRAINT horarios_check CHECK (((horario_origen_id IS NULL) OR (horario_origen_id <> id))),
-    CONSTRAINT horarios_check1 CHECK (((fecha_aprobacion IS NULL) OR (fecha_generacion IS NULL) OR (fecha_aprobacion >= fecha_generacion))),
-    CONSTRAINT horarios_check2 CHECK (((fecha_publicacion IS NULL) OR ((fecha_aprobacion IS NOT NULL) AND (fecha_publicacion >= fecha_aprobacion)))),
-    CONSTRAINT horarios_configuracion_plan_check CHECK ((jsonb_typeof(configuracion_plan) = 'object'::text)),
-    CONSTRAINT horarios_numero_version_check CHECK ((numero_version > 0))
+    sql: `CREATE TABLE "horarios"."horarios" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "tipo_plan" "horarios"."tipo_plan_horario" DEFAULT 'clases'::"horarios"."tipo_plan_horario" NOT NULL,
+    "horario_origen_id" "uuid",
+    "numero_version" integer NOT NULL,
+    "estado" "horarios"."estado_horario" DEFAULT 'borrador'::"horarios"."estado_horario" NOT NULL,
+    "fecha_generacion" timestamp with time zone,
+    "fecha_aprobacion" timestamp with time zone,
+    "fecha_publicacion" timestamp with time zone,
+    "costo_total_calculado" numeric(14,4) DEFAULT 0 NOT NULL,
+    "cantidad_violaciones_duras" integer DEFAULT 0 NOT NULL,
+    "configuracion_plan" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "generado_por_id" "uuid",
+    "aprobado_por_id" "uuid",
+    "publicado_por_id" "uuid",
+    "motivo_estado" "text",
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "horarios_cantidad_violaciones_duras_check" CHECK (("cantidad_violaciones_duras" >= 0)),
+    CONSTRAINT "horarios_check" CHECK ((("horario_origen_id" IS NULL) OR ("horario_origen_id" <> "id"))),
+    CONSTRAINT "horarios_check1" CHECK ((("fecha_aprobacion" IS NULL) OR ("fecha_generacion" IS NULL) OR ("fecha_aprobacion" >= "fecha_generacion"))),
+    CONSTRAINT "horarios_check2" CHECK ((("fecha_publicacion" IS NULL) OR (("fecha_aprobacion" IS NOT NULL) AND ("fecha_publicacion" >= "fecha_aprobacion")))),
+    CONSTRAINT "horarios_configuracion_plan_check" CHECK (("jsonb_typeof"("configuracion_plan") = 'object'::"text")),
+    CONSTRAINT "horarios_numero_version_check" CHECK (("numero_version" > 0))
 );`,
   },
   {
@@ -694,13 +963,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'resultado_edicion_conflictos',
-    linea: 4454,
+    linea: 5499,
     claves: 'resultado_edicion_id conflicto_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.resultado_edicion_conflictos (
-    resultado_edicion_id uuid NOT NULL,
-    conflicto_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."resultado_edicion_conflictos" (
+    "resultado_edicion_id" "uuid" NOT NULL,
+    "conflicto_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -710,32 +979,32 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Horarios',
     desc: 'Resultado de mover una sesión a mano: la solicitud, el vecindario recalculado, las sesiones movidas y el costo antes y después.',
     detalle: '',
-    nota: '19 columnas · idempotencia',
+    nota: '15 columnas · idempotencia',
     tabla: 'resultados_edicion',
-    linea: 4464,
-    claves: 'id horario_id horario_origen_id sesion_fijada_id fue_exitoso mensaje_resultado clave_solicitud solicitud_edicion sesiones_vecindario sesiones_movidas costo_antes costo_despues tiempo_reparacion_ms creado_por_id creado_en CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5509,
+    claves: 'id horario_id horario_origen_id sesion_fijada_id fue_exitoso mensaje_resultado clave_solicitud solicitud_edicion sesiones_vecindario sesiones_movidas costo_antes costo_despues tiempo_reparacion_ms creado_por_id creado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.resultados_edicion (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    horario_id uuid NOT NULL,
-    horario_origen_id uuid,
-    sesion_fijada_id uuid,
-    fue_exitoso boolean NOT NULL,
-    mensaje_resultado text NOT NULL,
-    clave_solicitud character varying(120),
-    solicitud_edicion jsonb DEFAULT '{}'::jsonb NOT NULL,
-    sesiones_vecindario jsonb DEFAULT '[]'::jsonb NOT NULL,
-    sesiones_movidas jsonb DEFAULT '[]'::jsonb NOT NULL,
-    costo_antes numeric(14,4),
-    costo_despues numeric(14,4),
-    tiempo_reparacion_ms bigint,
-    creado_por_id uuid,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT resultados_edicion_sesiones_movidas_check CHECK ((jsonb_typeof(sesiones_movidas) = 'array'::text)),
-    CONSTRAINT resultados_edicion_sesiones_vecindario_check CHECK ((jsonb_typeof(sesiones_vecindario) = 'array'::text)),
-    CONSTRAINT resultados_edicion_solicitud_edicion_check CHECK ((jsonb_typeof(solicitud_edicion) = 'object'::text)),
-    CONSTRAINT resultados_edicion_tiempo_reparacion_ms_check CHECK (((tiempo_reparacion_ms IS NULL) OR (tiempo_reparacion_ms >= 0)))
+    sql: `CREATE TABLE "horarios"."resultados_edicion" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "horario_origen_id" "uuid",
+    "sesion_fijada_id" "uuid",
+    "fue_exitoso" boolean NOT NULL,
+    "mensaje_resultado" "text" NOT NULL,
+    "clave_solicitud" character varying(120),
+    "solicitud_edicion" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "sesiones_vecindario" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "sesiones_movidas" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "costo_antes" numeric(14,4),
+    "costo_despues" numeric(14,4),
+    "tiempo_reparacion_ms" bigint,
+    "creado_por_id" "uuid",
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "resultados_edicion_sesiones_movidas_check" CHECK (("jsonb_typeof"("sesiones_movidas") = 'array'::"text")),
+    CONSTRAINT "resultados_edicion_sesiones_vecindario_check" CHECK (("jsonb_typeof"("sesiones_vecindario") = 'array'::"text")),
+    CONSTRAINT "resultados_edicion_solicitud_edicion_check" CHECK (("jsonb_typeof"("solicitud_edicion") = 'object'::"text")),
+    CONSTRAINT "resultados_edicion_tiempo_reparacion_ms_check" CHECK ((("tiempo_reparacion_ms" IS NULL) OR ("tiempo_reparacion_ms" >= 0)))
 );`,
   },
   {
@@ -745,31 +1014,31 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Horarios',
     desc: 'Qué cohortes asisten a cada sesión. Repite día, bloques y minutos a propósito, para poder vigilar solapes por grupo y leer su horario sin joins.',
     detalle: '',
-    nota: '18 columnas · columnas generadas',
+    nota: '13 columnas · columnas generadas',
     tabla: 'sesion_cohortes',
-    linea: 4515,
-    claves: 'sesion_id cohorte_id curso_en_pensum_id curso_visible_id horario_id fecha_sesion dia indice_slot_inicio duracion_slots rango_slots minuto_inicio_dia minuto_fin_dia rango_minutos CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5560,
+    claves: 'sesion_id cohorte_id curso_en_pensum_id curso_visible_id horario_id fecha_sesion dia indice_slot_inicio duracion_slots rango_slots minuto_inicio_dia minuto_fin_dia rango_minutos',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.sesion_cohortes (
-    sesion_id uuid NOT NULL,
-    cohorte_id uuid NOT NULL,
-    curso_en_pensum_id uuid NOT NULL,
-    curso_visible_id uuid NOT NULL,
-    horario_id uuid NOT NULL,
-    fecha_sesion date,
-    dia horarios.dia_semana NOT NULL,
-    indice_slot_inicio integer NOT NULL,
-    duracion_slots integer NOT NULL,
-    rango_slots int4range GENERATED ALWAYS AS (int4range(indice_slot_inicio, (indice_slot_inicio + duracion_slots), '[)'::text)) STORED,
-    minuto_inicio_dia integer NOT NULL,
-    minuto_fin_dia integer NOT NULL,
-    rango_minutos int4range GENERATED ALWAYS AS (int4range(minuto_inicio_dia, minuto_fin_dia, '[)'::text)) STORED,
-    CONSTRAINT sesion_cohortes_check CHECK ((minuto_fin_dia > minuto_inicio_dia)),
-    CONSTRAINT sesion_cohortes_duracion_slots_check CHECK ((duracion_slots > 0)),
-    CONSTRAINT sesion_cohortes_indice_slot_inicio_check CHECK ((indice_slot_inicio > 0)),
-    CONSTRAINT sesion_cohortes_minuto_fin_dia_check CHECK ((minuto_fin_dia <= 1440)),
-    CONSTRAINT sesion_cohortes_minuto_inicio_dia_check CHECK ((minuto_inicio_dia >= 0))
+    sql: `CREATE TABLE "horarios"."sesion_cohortes" (
+    "sesion_id" "uuid" NOT NULL,
+    "cohorte_id" "uuid" NOT NULL,
+    "curso_en_pensum_id" "uuid" NOT NULL,
+    "curso_visible_id" "uuid" NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "fecha_sesion" "date",
+    "dia" "horarios"."dia_semana" NOT NULL,
+    "indice_slot_inicio" integer NOT NULL,
+    "duracion_slots" integer NOT NULL,
+    "rango_slots" "int4range" GENERATED ALWAYS AS ("int4range"("indice_slot_inicio", ("indice_slot_inicio" + "duracion_slots"), '[)'::"text")) STORED,
+    "minuto_inicio_dia" integer NOT NULL,
+    "minuto_fin_dia" integer NOT NULL,
+    "rango_minutos" "int4range" GENERATED ALWAYS AS ("int4range"("minuto_inicio_dia", "minuto_fin_dia", '[)'::"text")) STORED,
+    CONSTRAINT "sesion_cohortes_check" CHECK (("minuto_fin_dia" > "minuto_inicio_dia")),
+    CONSTRAINT "sesion_cohortes_duracion_slots_check" CHECK (("duracion_slots" > 0)),
+    CONSTRAINT "sesion_cohortes_indice_slot_inicio_check" CHECK (("indice_slot_inicio" > 0)),
+    CONSTRAINT "sesion_cohortes_minuto_fin_dia_check" CHECK (("minuto_fin_dia" <= 1440)),
+    CONSTRAINT "sesion_cohortes_minuto_inicio_dia_check" CHECK (("minuto_inicio_dia" >= 0))
 );`,
   },
   {
@@ -779,38 +1048,38 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Horarios',
     desc: 'Cada clase colocada en el calendario: horario, curso, docente, aula, jornada, día y bloques. Sus rangos son columnas generadas y tres restricciones de exclusión impiden solapes de docente, aula y cohorte.',
     detalle: '',
-    nota: '25 columnas · columnas generadas',
+    nota: '19 columnas · columnas generadas',
     tabla: 'sesiones',
-    linea: 4541,
-    claves: 'id horario_id curso_id docente_id aula_id jornada_id fecha_sesion dia indice_slot_inicio duracion_slots rango_slots minuto_inicio_dia minuto_fin_dia rango_minutos esta_fijada es_area_comun agrupacion_area_comun_id creado_en actualizado_en CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5586,
+    claves: 'id horario_id curso_id docente_id aula_id jornada_id fecha_sesion dia indice_slot_inicio duracion_slots rango_slots minuto_inicio_dia minuto_fin_dia rango_minutos esta_fijada es_area_comun agrupacion_area_comun_id creado_en actualizado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.sesiones (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    horario_id uuid NOT NULL,
-    curso_id uuid NOT NULL,
-    docente_id uuid NOT NULL,
-    aula_id uuid NOT NULL,
-    jornada_id uuid NOT NULL,
-    fecha_sesion date,
-    dia horarios.dia_semana NOT NULL,
-    indice_slot_inicio integer NOT NULL,
-    duracion_slots integer NOT NULL,
-    rango_slots int4range GENERATED ALWAYS AS (int4range(indice_slot_inicio, (indice_slot_inicio + duracion_slots), '[)'::text)) STORED,
-    minuto_inicio_dia integer NOT NULL,
-    minuto_fin_dia integer NOT NULL,
-    rango_minutos int4range GENERATED ALWAYS AS (int4range(minuto_inicio_dia, minuto_fin_dia, '[)'::text)) STORED,
-    esta_fijada boolean DEFAULT false NOT NULL,
-    es_area_comun boolean DEFAULT false NOT NULL,
-    agrupacion_area_comun_id uuid,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT sesiones_check CHECK ((minuto_fin_dia > minuto_inicio_dia)),
-    CONSTRAINT sesiones_check1 CHECK (((es_area_comun AND (agrupacion_area_comun_id IS NOT NULL)) OR ((NOT es_area_comun) AND (agrupacion_area_comun_id IS NULL)))),
-    CONSTRAINT sesiones_duracion_slots_check CHECK ((duracion_slots > 0)),
-    CONSTRAINT sesiones_indice_slot_inicio_check CHECK ((indice_slot_inicio > 0)),
-    CONSTRAINT sesiones_minuto_fin_dia_check CHECK ((minuto_fin_dia <= 1440)),
-    CONSTRAINT sesiones_minuto_inicio_dia_check CHECK ((minuto_inicio_dia >= 0))
+    sql: `CREATE TABLE "horarios"."sesiones" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "curso_id" "uuid" NOT NULL,
+    "docente_id" "uuid" NOT NULL,
+    "aula_id" "uuid" NOT NULL,
+    "jornada_id" "uuid" NOT NULL,
+    "fecha_sesion" "date",
+    "dia" "horarios"."dia_semana" NOT NULL,
+    "indice_slot_inicio" integer NOT NULL,
+    "duracion_slots" integer NOT NULL,
+    "rango_slots" "int4range" GENERATED ALWAYS AS ("int4range"("indice_slot_inicio", ("indice_slot_inicio" + "duracion_slots"), '[)'::"text")) STORED,
+    "minuto_inicio_dia" integer NOT NULL,
+    "minuto_fin_dia" integer NOT NULL,
+    "rango_minutos" "int4range" GENERATED ALWAYS AS ("int4range"("minuto_inicio_dia", "minuto_fin_dia", '[)'::"text")) STORED,
+    "esta_fijada" boolean DEFAULT false NOT NULL,
+    "es_area_comun" boolean DEFAULT false NOT NULL,
+    "agrupacion_area_comun_id" "uuid",
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "sesiones_check" CHECK (("minuto_fin_dia" > "minuto_inicio_dia")),
+    CONSTRAINT "sesiones_check1" CHECK ((("es_area_comun" AND ("agrupacion_area_comun_id" IS NOT NULL)) OR ((NOT "es_area_comun") AND ("agrupacion_area_comun_id" IS NULL)))),
+    CONSTRAINT "sesiones_duracion_slots_check" CHECK (("duracion_slots" > 0)),
+    CONSTRAINT "sesiones_indice_slot_inicio_check" CHECK (("indice_slot_inicio" > 0)),
+    CONSTRAINT "sesiones_minuto_fin_dia_check" CHECK (("minuto_fin_dia" <= 1440)),
+    CONSTRAINT "sesiones_minuto_inicio_dia_check" CHECK (("minuto_inicio_dia" >= 0))
 );`,
   },
   {
@@ -820,22 +1089,22 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Horarios',
     desc: 'Instantánea JSON de las sesiones de un horario, numerada, para historial y comparación.',
     detalle: '',
-    nota: '9 columnas',
+    nota: '7 columnas',
     tabla: 'versiones_horario',
-    linea: 4654,
-    claves: 'id horario_id numero_version fecha_creacion motivo_cambio creado_por_id instantanea_sesiones CONSTRAINT CONSTRAINT',
+    linea: 5699,
+    claves: 'id horario_id numero_version fecha_creacion motivo_cambio creado_por_id instantanea_sesiones',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.versiones_horario (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    horario_id uuid NOT NULL,
-    numero_version integer NOT NULL,
-    fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
-    motivo_cambio text NOT NULL,
-    creado_por_id uuid,
-    instantanea_sesiones jsonb NOT NULL,
-    CONSTRAINT versiones_horario_instantanea_sesiones_check CHECK ((jsonb_typeof(instantanea_sesiones) = ANY (ARRAY['array'::text, 'object'::text]))),
-    CONSTRAINT versiones_horario_numero_version_check CHECK ((numero_version > 0))
+    sql: `CREATE TABLE "horarios"."versiones_horario" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "horario_id" "uuid" NOT NULL,
+    "numero_version" integer NOT NULL,
+    "fecha_creacion" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "motivo_cambio" "text" NOT NULL,
+    "creado_por_id" "uuid",
+    "instantanea_sesiones" "jsonb" NOT NULL,
+    CONSTRAINT "versiones_horario_instantanea_sesiones_check" CHECK (("jsonb_typeof"("instantanea_sesiones") = ANY (ARRAY['array'::"text", 'object'::"text"]))),
+    CONSTRAINT "versiones_horario_numero_version_check" CHECK (("numero_version" > 0))
 );`,
   },
   {
@@ -845,22 +1114,22 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Importación',
     desc: 'Qué falló en una importación, con hoja, fila, columna, código de error y el valor recibido.',
     detalle: '',
-    nota: '9 columnas',
+    nota: '8 columnas',
     tabla: 'importacion_errores',
-    linea: 4232,
-    claves: 'id importacion_id hoja fila columna codigo_error mensaje valor_recibido CONSTRAINT',
+    linea: 5277,
+    claves: 'id importacion_id hoja fila columna codigo_error mensaje valor_recibido',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.importacion_errores (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    importacion_id uuid NOT NULL,
-    hoja character varying(120),
-    fila integer,
-    columna character varying(120),
-    codigo_error character varying(80) NOT NULL,
-    mensaje text NOT NULL,
-    valor_recibido text,
-    CONSTRAINT importacion_errores_fila_check CHECK (((fila IS NULL) OR (fila > 0)))
+    sql: `CREATE TABLE "horarios"."importacion_errores" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "importacion_id" "uuid" NOT NULL,
+    "hoja" character varying(120),
+    "fila" integer,
+    "columna" character varying(120),
+    "codigo_error" character varying(80) NOT NULL,
+    "mensaje" "text" NOT NULL,
+    "valor_recibido" "text",
+    CONSTRAINT "importacion_errores_fila_check" CHECK ((("fila" IS NULL) OR ("fila" > 0)))
 );`,
   },
   {
@@ -870,33 +1139,33 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Importación',
     desc: 'Cabecera de una carga masiva: archivo, hash, plantilla y versión, clave de idempotencia, estado y conteo de filas válidas e inválidas.',
     detalle: '',
-    nota: '20 columnas · idempotencia',
+    nota: '15 columnas · idempotencia',
     tabla: 'importaciones',
-    linea: 3837,
-    claves: 'id tipo_archivo nombre_archivo hash_archivo plantilla_id plantilla_version clave_solicitud estado total_filas filas_validas filas_invalidas solicitada_por_id creada_en finalizada_en resumen CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 4830,
+    claves: 'id tipo_archivo nombre_archivo hash_archivo plantilla_id plantilla_version clave_solicitud estado total_filas filas_validas filas_invalidas solicitada_por_id creada_en finalizada_en resumen',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.importaciones (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    tipo_archivo horarios.tipo_archivo_importacion NOT NULL,
-    nombre_archivo character varying(255) NOT NULL,
-    hash_archivo character varying(128) NOT NULL,
-    plantilla_id uuid,
-    plantilla_version character varying(50),
-    clave_solicitud character varying(120),
-    estado horarios.estado_importacion DEFAULT 'recibida'::horarios.estado_importacion NOT NULL,
-    total_filas integer DEFAULT 0 NOT NULL,
-    filas_validas integer DEFAULT 0 NOT NULL,
-    filas_invalidas integer DEFAULT 0 NOT NULL,
-    solicitada_por_id uuid,
-    creada_en timestamp with time zone DEFAULT now() NOT NULL,
-    finalizada_en timestamp with time zone,
-    resumen jsonb DEFAULT '{}'::jsonb NOT NULL,
-    CONSTRAINT importaciones_check CHECK (((filas_validas + filas_invalidas) <= total_filas)),
-    CONSTRAINT importaciones_filas_invalidas_check CHECK ((filas_invalidas >= 0)),
-    CONSTRAINT importaciones_filas_validas_check CHECK ((filas_validas >= 0)),
-    CONSTRAINT importaciones_resumen_check CHECK ((jsonb_typeof(resumen) = 'object'::text)),
-    CONSTRAINT importaciones_total_filas_check CHECK ((total_filas >= 0))
+    sql: `CREATE TABLE "horarios"."importaciones" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "tipo_archivo" "horarios"."tipo_archivo_importacion" NOT NULL,
+    "nombre_archivo" character varying(255) NOT NULL,
+    "hash_archivo" character varying(128) NOT NULL,
+    "plantilla_id" "uuid",
+    "plantilla_version" character varying(50),
+    "clave_solicitud" character varying(120),
+    "estado" "horarios"."estado_importacion" DEFAULT 'recibida'::"horarios"."estado_importacion" NOT NULL,
+    "total_filas" integer DEFAULT 0 NOT NULL,
+    "filas_validas" integer DEFAULT 0 NOT NULL,
+    "filas_invalidas" integer DEFAULT 0 NOT NULL,
+    "solicitada_por_id" "uuid",
+    "creada_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "finalizada_en" timestamp with time zone,
+    "resumen" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    CONSTRAINT "importaciones_check" CHECK ((("filas_validas" + "filas_invalidas") <= "total_filas")),
+    CONSTRAINT "importaciones_filas_invalidas_check" CHECK (("filas_invalidas" >= 0)),
+    CONSTRAINT "importaciones_filas_validas_check" CHECK (("filas_validas" >= 0)),
+    CONSTRAINT "importaciones_resumen_check" CHECK (("jsonb_typeof"("resumen") = 'object'::"text")),
+    CONSTRAINT "importaciones_total_filas_check" CHECK (("total_filas" >= 0))
 );`,
   },
   {
@@ -906,26 +1175,26 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Importación',
     desc: 'Formatos de archivo aceptados: código, versión, reglas de validación y si está vigente.',
     detalle: '',
-    nota: '13 columnas',
+    nota: '10 columnas',
     tabla: 'plantillas_importacion',
-    linea: 4381,
-    claves: 'id codigo version descripcion formatos_soportados reglas ruta_guia esta_vigente creado_en actualizado_en CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5426,
+    claves: 'id codigo version descripcion formatos_soportados reglas ruta_guia esta_vigente creado_en actualizado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.plantillas_importacion (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    codigo character varying(80) NOT NULL,
-    version character varying(50) NOT NULL,
-    descripcion text,
-    formatos_soportados horarios.tipo_archivo_importacion[] NOT NULL,
-    reglas jsonb DEFAULT '{}'::jsonb NOT NULL,
-    ruta_guia text,
-    esta_vigente boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT plantillas_importacion_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT plantillas_importacion_formatos_soportados_check CHECK ((cardinality(formatos_soportados) > 0)),
-    CONSTRAINT plantillas_importacion_reglas_check CHECK ((jsonb_typeof(reglas) = 'object'::text))
+    sql: `CREATE TABLE "horarios"."plantillas_importacion" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo" character varying(80) NOT NULL,
+    "version" character varying(50) NOT NULL,
+    "descripcion" "text",
+    "formatos_soportados" "horarios"."tipo_archivo_importacion"[] NOT NULL,
+    "reglas" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "ruta_guia" "text",
+    "esta_vigente" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "plantillas_importacion_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
+    CONSTRAINT "plantillas_importacion_formatos_soportados_check" CHECK (("cardinality"("formatos_soportados") > 0)),
+    CONSTRAINT "plantillas_importacion_reglas_check" CHECK (("jsonb_typeof"("reglas") = 'object'::"text"))
 );`,
   },
   {
@@ -937,15 +1206,15 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '4 columnas',
     tabla: 'permisos_acceso',
-    linea: 4347,
+    linea: 5392,
     claves: 'id recurso accion descripcion',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.permisos_acceso (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    recurso character varying(100) NOT NULL,
-    accion horarios.accion_permiso NOT NULL,
-    descripcion text
+    sql: `CREATE TABLE "horarios"."permisos_acceso" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "recurso" character varying(100) NOT NULL,
+    "accion" "horarios"."accion_permiso" NOT NULL,
+    "descripcion" "text"
 );`,
   },
   {
@@ -957,13 +1226,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'rol_permisos',
-    linea: 4491,
+    linea: 5536,
     claves: 'rol_id permiso_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.rol_permisos (
-    rol_id uuid NOT NULL,
-    permiso_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."rol_permisos" (
+    "rol_id" "uuid" NOT NULL,
+    "permiso_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -975,17 +1244,17 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '6 columnas · borrado lógico',
     tabla: 'roles',
-    linea: 4501,
+    linea: 5546,
     claves: 'id nombre descripcion creado_en actualizado_en eliminado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.roles (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    nombre character varying(100) NOT NULL,
-    descripcion text,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone
+    sql: `CREATE TABLE "horarios"."roles" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(100) NOT NULL,
+    "descripcion" "text",
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone
 );`,
   },
   {
@@ -997,13 +1266,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'usuario_facultades',
-    linea: 4618,
+    linea: 5663,
     claves: 'usuario_id facultad_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.usuario_facultades (
-    usuario_id uuid NOT NULL,
-    facultad_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."usuario_facultades" (
+    "usuario_id" "uuid" NOT NULL,
+    "facultad_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -1015,13 +1284,13 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '2 columnas',
     tabla: 'usuario_roles',
-    linea: 4628,
+    linea: 5673,
     claves: 'usuario_id rol_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.usuario_roles (
-    usuario_id uuid NOT NULL,
-    rol_id uuid NOT NULL
+    sql: `CREATE TABLE "horarios"."usuario_roles" (
+    "usuario_id" "uuid" NOT NULL,
+    "rol_id" "uuid" NOT NULL
 );`,
   },
   {
@@ -1031,29 +1300,29 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Seguridad',
     desc: 'Usuarios del sistema. Enlaza con `auth.users` de Supabase por `auth_user_id` y puede apuntar al docente o a la cohorte de la persona.',
     detalle: '',
-    nota: '16 columnas · borrado lógico · bloqueo optimista',
+    nota: '14 columnas · borrado lógico · bloqueo optimista',
     tabla: 'usuarios',
-    linea: 3570,
-    claves: 'id auth_user_id tipo nombre_completo correo_institucional estado docente_id cohorte_id carnet fecha_creacion actualizado_en fecha_ultimo_acceso eliminado_en version_fila CONSTRAINT CONSTRAINT',
+    linea: 4554,
+    claves: 'id auth_user_id tipo nombre_completo correo_institucional estado docente_id cohorte_id carnet fecha_creacion actualizado_en fecha_ultimo_acceso eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.usuarios (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    auth_user_id uuid,
-    tipo horarios.tipo_usuario NOT NULL,
-    nombre_completo character varying(200) NOT NULL,
-    correo_institucional character varying(254) NOT NULL,
-    estado horarios.estado_usuario DEFAULT 'activo'::horarios.estado_usuario NOT NULL,
-    docente_id uuid,
-    cohorte_id uuid,
-    carnet character varying(50),
-    fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    fecha_ultimo_acceso timestamp with time zone,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT usuarios_check CHECK ((((tipo = 'docente'::horarios.tipo_usuario) AND (docente_id IS NOT NULL) AND (cohorte_id IS NULL)) OR ((tipo = 'alumno'::horarios.tipo_usuario) AND (cohorte_id IS NOT NULL) AND (docente_id IS NULL)) OR ((tipo = ANY (ARRAY['superadministrador'::horarios.tipo_usuario, 'coordinador_academico'::horarios.tipo_usuario, 'decano'::horarios.tipo_usuario])) AND (docente_id IS NULL) AND (cohorte_id IS NULL)))),
-    CONSTRAINT usuarios_correo_institucional_check CHECK (((correo_institucional)::text = lower(TRIM(BOTH FROM correo_institucional))))
+    sql: `CREATE TABLE "horarios"."usuarios" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "auth_user_id" "uuid",
+    "tipo" "horarios"."tipo_usuario" NOT NULL,
+    "nombre_completo" character varying(200) NOT NULL,
+    "correo_institucional" character varying(254) NOT NULL,
+    "estado" "horarios"."estado_usuario" DEFAULT 'activo'::"horarios"."estado_usuario" NOT NULL,
+    "docente_id" "uuid",
+    "cohorte_id" "uuid",
+    "carnet" character varying(50),
+    "fecha_creacion" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "fecha_ultimo_acceso" timestamp with time zone,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "usuarios_check" CHECK (((("tipo" = 'docente'::"horarios"."tipo_usuario") AND ("docente_id" IS NOT NULL) AND ("cohorte_id" IS NULL)) OR (("tipo" = 'alumno'::"horarios"."tipo_usuario") AND ("cohorte_id" IS NOT NULL) AND ("docente_id" IS NULL)) OR (("tipo" = ANY (ARRAY['superadministrador'::"horarios"."tipo_usuario", 'coordinador_academico'::"horarios"."tipo_usuario", 'decano'::"horarios"."tipo_usuario"])) AND ("docente_id" IS NULL) AND ("cohorte_id" IS NULL)))),
+    CONSTRAINT "usuarios_correo_institucional_check" CHECK ((("correo_institucional")::"text" = "lower"(TRIM(BOTH FROM "correo_institucional"))))
 );`,
   },
   {
@@ -1065,22 +1334,22 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '11 columnas',
     tabla: 'auditoria',
-    linea: 3551,
+    linea: 4535,
     claves: 'id usuario_id fecha accion entidad entidad_id valores_anteriores valores_nuevos motivo direccion_ip user_agent',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.auditoria (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    usuario_id uuid,
-    fecha timestamp with time zone DEFAULT now() NOT NULL,
-    accion character varying(80) NOT NULL,
-    entidad character varying(120) NOT NULL,
-    entidad_id uuid,
-    valores_anteriores jsonb,
-    valores_nuevos jsonb,
-    motivo text,
-    direccion_ip inet,
-    user_agent text
+    sql: `CREATE TABLE "horarios"."auditoria" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "usuario_id" "uuid",
+    "fecha" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "accion" character varying(80) NOT NULL,
+    "entidad" character varying(120) NOT NULL,
+    "entidad_id" "uuid",
+    "valores_anteriores" "jsonb",
+    "valores_nuevos" "jsonb",
+    "motivo" "text",
+    "direccion_ip" "inet",
+    "user_agent" "text"
 );`,
   },
   {
@@ -1092,22 +1361,22 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '11 columnas · idempotencia',
     tabla: 'notificaciones',
-    linea: 4310,
+    linea: 5355,
     claves: 'id destinatario_id plantilla_id tipo_notificacion asunto mensaje_cuerpo canal_envio clave_solicitud fecha_creacion fecha_lectura estado',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.notificaciones (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    destinatario_id uuid NOT NULL,
-    plantilla_id uuid,
-    tipo_notificacion character varying(100) NOT NULL,
-    asunto text NOT NULL,
-    mensaje_cuerpo text NOT NULL,
-    canal_envio horarios.canal_notificacion DEFAULT 'interno'::horarios.canal_notificacion NOT NULL,
-    clave_solicitud character varying(120),
-    fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
-    fecha_lectura timestamp with time zone,
-    estado horarios.estado_notificacion DEFAULT 'pendiente'::horarios.estado_notificacion NOT NULL
+    sql: `CREATE TABLE "horarios"."notificaciones" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "destinatario_id" "uuid" NOT NULL,
+    "plantilla_id" "uuid",
+    "tipo_notificacion" character varying(100) NOT NULL,
+    "asunto" "text" NOT NULL,
+    "mensaje_cuerpo" "text" NOT NULL,
+    "canal_envio" "horarios"."canal_notificacion" DEFAULT 'interno'::"horarios"."canal_notificacion" NOT NULL,
+    "clave_solicitud" character varying(120),
+    "fecha_creacion" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "fecha_lectura" timestamp with time zone,
+    "estado" "horarios"."estado_notificacion" DEFAULT 'pendiente'::"horarios"."estado_notificacion" NOT NULL
 );`,
   },
   {
@@ -1117,23 +1386,23 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Operación',
     desc: 'Plantillas de aviso: código, asunto, cuerpo y las variables que exige.',
     detalle: '',
-    nota: '10 columnas',
+    nota: '8 columnas',
     tabla: 'plantillas_notificacion',
-    linea: 4402,
-    claves: 'id codigo_plantilla plantilla_asunto plantilla_cuerpo variables_requeridas esta_activa creado_en actualizado_en CONSTRAINT CONSTRAINT',
+    linea: 5447,
+    claves: 'id codigo_plantilla plantilla_asunto plantilla_cuerpo variables_requeridas esta_activa creado_en actualizado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.plantillas_notificacion (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    codigo_plantilla character varying(80) NOT NULL,
-    plantilla_asunto text NOT NULL,
-    plantilla_cuerpo text NOT NULL,
-    variables_requeridas jsonb DEFAULT '[]'::jsonb NOT NULL,
-    esta_activa boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT plantillas_notificacion_codigo_plantilla_check CHECK (((codigo_plantilla)::text = upper(TRIM(BOTH FROM codigo_plantilla)))),
-    CONSTRAINT plantillas_notificacion_variables_requeridas_check CHECK ((jsonb_typeof(variables_requeridas) = 'array'::text))
+    sql: `CREATE TABLE "horarios"."plantillas_notificacion" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo_plantilla" character varying(80) NOT NULL,
+    "plantilla_asunto" "text" NOT NULL,
+    "plantilla_cuerpo" "text" NOT NULL,
+    "variables_requeridas" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "plantillas_notificacion_codigo_plantilla_check" CHECK ((("codigo_plantilla")::"text" = "upper"(TRIM(BOTH FROM "codigo_plantilla")))),
+    CONSTRAINT "plantillas_notificacion_variables_requeridas_check" CHECK (("jsonb_typeof"("variables_requeridas") = 'array'::"text"))
 );`,
   },
   {
@@ -1143,24 +1412,24 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Operación',
     desc: 'Exportaciones generadas (PDF o XLSX): título, archivo, quién lo pidió y de qué horario o corrida salió.',
     detalle: '',
-    nota: '11 columnas',
+    nota: '10 columnas',
     tabla: 'reportes',
-    linea: 4420,
-    claves: 'id titulo formato nombre_archivo contenido_binario ruta_almacenamiento fecha_generacion generado_por_id horario_id generacion_id CONSTRAINT',
+    linea: 5465,
+    claves: 'id titulo formato nombre_archivo contenido_binario ruta_almacenamiento fecha_generacion generado_por_id horario_id generacion_id',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.reportes (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    titulo character varying(200) NOT NULL,
-    formato horarios.formato_reporte NOT NULL,
-    nombre_archivo character varying(255) NOT NULL,
-    contenido_binario bytea,
-    ruta_almacenamiento text,
-    fecha_generacion timestamp with time zone DEFAULT now() NOT NULL,
-    generado_por_id uuid,
-    horario_id uuid,
-    generacion_id uuid,
-    CONSTRAINT reportes_check CHECK (((contenido_binario IS NOT NULL) OR (ruta_almacenamiento IS NOT NULL)))
+    sql: `CREATE TABLE "horarios"."reportes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "titulo" character varying(200) NOT NULL,
+    "formato" "horarios"."formato_reporte" NOT NULL,
+    "nombre_archivo" character varying(255) NOT NULL,
+    "contenido_binario" "bytea",
+    "ruta_almacenamiento" "text",
+    "fecha_generacion" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "generado_por_id" "uuid",
+    "horario_id" "uuid",
+    "generacion_id" "uuid",
+    CONSTRAINT "reportes_check" CHECK ((("contenido_binario" IS NOT NULL) OR ("ruta_almacenamiento" IS NOT NULL)))
 );`,
   },
   {
@@ -1172,22 +1441,23 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '11 columnas · borrado lógico · bloqueo optimista',
     tabla: 'asignaciones_docente_curso',
-    linea: 3880,
+    linea: 4873,
     claves: 'id docente_id curso_id carrera_id facultad_id jornada_id fecha_asignacion actualizado_en esta_vigente eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.asignaciones_docente_curso (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    docente_id uuid NOT NULL,
-    curso_id uuid NOT NULL,
-    carrera_id uuid,
-    facultad_id uuid,
-    jornada_id uuid,
-    fecha_asignacion timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    esta_vigente boolean DEFAULT true NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL
+    sql: `CREATE TABLE "horarios"."asignaciones_docente_curso" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "docente_id" "uuid" NOT NULL,
+    "curso_id" "uuid" NOT NULL,
+    "carrera_id" "uuid",
+    "facultad_id" "uuid",
+    "jornada_id" "uuid",
+    "fecha_asignacion" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "esta_vigente" boolean DEFAULT true NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "asignaciones_docente_curso_sin_alcance_redundante" CHECK ((("carrera_id" IS NULL) AND ("facultad_id" IS NULL)))
 );`,
   },
   {
@@ -1195,21 +1465,21 @@ export const OBJETOS: Objeto[] = [
     nombre: 'disponibilidad_docente_slots',
     cat: 'tabla',
     grupo: 'Docentes',
-    desc: 'La disponibilidad expandida a bloques concretos (jornada, día, índice de bloque).',
+    desc: 'La disponibilidad expandida a bloques concretos (jornada, día, índice de bloque). Es lo que consulta el motor.',
     detalle: '',
-    nota: '6 columnas',
+    nota: '5 columnas',
     tabla: 'disponibilidad_docente_slots',
-    linea: 4028,
-    claves: 'disponibilidad_id jornada_id dia indice_slot esta_disponible CONSTRAINT',
+    linea: 5056,
+    claves: 'disponibilidad_id jornada_id dia indice_slot esta_disponible',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.disponibilidad_docente_slots (
-    disponibilidad_id uuid NOT NULL,
-    jornada_id uuid NOT NULL,
-    dia horarios.dia_semana NOT NULL,
-    indice_slot integer NOT NULL,
-    esta_disponible boolean DEFAULT true NOT NULL,
-    CONSTRAINT disponibilidad_docente_slots_indice_slot_check CHECK ((indice_slot > 0))
+    sql: `CREATE TABLE "horarios"."disponibilidad_docente_slots" (
+    "disponibilidad_id" "uuid" NOT NULL,
+    "jornada_id" "uuid" NOT NULL,
+    "dia" "horarios"."dia_semana" NOT NULL,
+    "indice_slot" integer NOT NULL,
+    "esta_disponible" boolean DEFAULT true NOT NULL,
+    CONSTRAINT "disponibilidad_docente_slots_indice_slot_check" CHECK (("indice_slot" > 0))
 );`,
   },
   {
@@ -1221,17 +1491,36 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: '6 columnas',
     tabla: 'disponibilidades_docente',
-    linea: 4042,
+    linea: 5070,
     claves: 'id docente_id periodo_id fecha_registro esta_confirmada actualizado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.disponibilidades_docente (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    docente_id uuid NOT NULL,
-    periodo_id uuid NOT NULL,
-    fecha_registro timestamp with time zone DEFAULT now() NOT NULL,
-    esta_confirmada boolean DEFAULT false NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL
+    sql: `CREATE TABLE "horarios"."disponibilidades_docente" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "docente_id" "uuid" NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "fecha_registro" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "esta_confirmada" boolean DEFAULT false NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL
+);`,
+  },
+  {
+    id: 'tabla-docente_facultades',
+    nombre: 'docente_facultades',
+    cat: 'tabla',
+    grupo: 'Docentes',
+    desc: 'Puente N:M. Facultades a las que pertenece cada docente; sustituye la pertenencia a una sola facultad.',
+    detalle: '',
+    nota: '3 columnas',
+    tabla: 'docente_facultades',
+    linea: 5084,
+    claves: 'docente_id facultad_id creado_en',
+    params: [],
+    pasos: [],
+    sql: `CREATE TABLE "horarios"."docente_facultades" (
+    "docente_id" "uuid" NOT NULL,
+    "facultad_id" "uuid" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL
 );`,
   },
   {
@@ -1241,31 +1530,30 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Docentes',
     desc: 'Plantilla docente: código, nombre, correo, prioridad y carga mínima y máxima de cursos.',
     detalle: '',
-    nota: '18 columnas · borrado lógico · bloqueo optimista',
+    nota: '13 columnas · borrado lógico · bloqueo optimista',
     tabla: 'docentes',
-    linea: 4056,
-    claves: 'id facultad_id codigo nombre_completo correo telefono nivel_prioridad carga_minima_cursos carga_maxima_cursos esta_activo creado_en actualizado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5102,
+    claves: 'id codigo nombre_completo correo telefono nivel_prioridad carga_minima_cursos carga_maxima_cursos esta_activo creado_en actualizado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.docentes (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    facultad_id uuid,
-    codigo character varying(30) NOT NULL,
-    nombre_completo character varying(200) NOT NULL,
-    correo character varying(254) NOT NULL,
-    telefono character varying(50),
-    nivel_prioridad integer DEFAULT 0 NOT NULL,
-    carga_minima_cursos integer DEFAULT 1 NOT NULL,
-    carga_maxima_cursos integer DEFAULT 6 NOT NULL,
-    esta_activo boolean DEFAULT true NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT docentes_carga_minima_cursos_check CHECK ((carga_minima_cursos >= 1)),
-    CONSTRAINT docentes_check CHECK ((carga_maxima_cursos >= carga_minima_cursos)),
-    CONSTRAINT docentes_codigo_check CHECK (((codigo)::text = upper(TRIM(BOTH FROM codigo)))),
-    CONSTRAINT docentes_correo_check CHECK (((correo)::text = lower(TRIM(BOTH FROM correo))))
+    sql: `CREATE TABLE "horarios"."docentes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "codigo" character varying(30) NOT NULL,
+    "nombre_completo" character varying(200) NOT NULL,
+    "correo" character varying(254) NOT NULL,
+    "telefono" character varying(50),
+    "nivel_prioridad" integer DEFAULT 0 NOT NULL,
+    "carga_minima_cursos" integer DEFAULT 1 NOT NULL,
+    "carga_maxima_cursos" integer DEFAULT 6 NOT NULL,
+    "esta_activo" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "docentes_carga_minima_cursos_check" CHECK (("carga_minima_cursos" >= 1)),
+    CONSTRAINT "docentes_check" CHECK (("carga_maxima_cursos" >= "carga_minima_cursos")),
+    CONSTRAINT "docentes_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
+    CONSTRAINT "docentes_correo_check" CHECK ((("correo")::"text" = "lower"(TRIM(BOTH FROM "correo"))))
 );`,
   },
   {
@@ -1275,42 +1563,42 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Docentes',
     desc: 'Ausencias, reemplazos, cancelaciones y recuperaciones sobre una sesión concreta, con sus fechas y el docente entrante.',
     detalle: '',
-    nota: '29 columnas · borrado lógico · bloqueo optimista',
+    nota: '23 columnas · borrado lógico · bloqueo optimista',
     tabla: 'eventos_sustitucion',
-    linea: 4082,
-    claves: 'id tipo sesion_afectada_id docente_original_id docente_entrante_id fecha_registro actualizado_en registrado_por_id motivo_evento estado fecha_inicio fecha_fin fecha_cambio fecha_ausencia fecha_recuperacion recuperacion_dia recuperacion_indice_slot_inicio recuperacion_duracion_slots fecha_cancelada motivo_anulacion anulado_en eliminado_en version_fila CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT CONSTRAINT',
+    linea: 5127,
+    claves: 'id tipo sesion_afectada_id docente_original_id docente_entrante_id fecha_registro actualizado_en registrado_por_id motivo_evento estado fecha_inicio fecha_fin fecha_cambio fecha_ausencia fecha_recuperacion recuperacion_dia recuperacion_indice_slot_inicio recuperacion_duracion_slots fecha_cancelada motivo_anulacion anulado_en eliminado_en version_fila',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.eventos_sustitucion (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    tipo horarios.tipo_evento_sustitucion NOT NULL,
-    sesion_afectada_id uuid NOT NULL,
-    docente_original_id uuid NOT NULL,
-    docente_entrante_id uuid,
-    fecha_registro timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    registrado_por_id uuid,
-    motivo_evento text NOT NULL,
-    estado horarios.estado_evento_sustitucion DEFAULT 'activo'::horarios.estado_evento_sustitucion NOT NULL,
-    fecha_inicio date,
-    fecha_fin date,
-    fecha_cambio date,
-    fecha_ausencia date,
-    fecha_recuperacion date,
-    recuperacion_dia horarios.dia_semana,
-    recuperacion_indice_slot_inicio integer,
-    recuperacion_duracion_slots integer,
-    fecha_cancelada date,
-    motivo_anulacion text,
-    anulado_en timestamp with time zone,
-    eliminado_en timestamp with time zone,
-    version_fila bigint DEFAULT 0 NOT NULL,
-    CONSTRAINT eventos_sustitucion_check CHECK (((docente_entrante_id IS NULL) OR (docente_entrante_id <> docente_original_id))),
-    CONSTRAINT eventos_sustitucion_check1 CHECK (((fecha_fin IS NULL) OR (fecha_inicio IS NULL) OR (fecha_fin >= fecha_inicio))),
-    CONSTRAINT eventos_sustitucion_check2 CHECK ((((tipo = 'sustitucion_temporal'::horarios.tipo_evento_sustitucion) AND (docente_entrante_id IS NOT NULL) AND (fecha_inicio IS NOT NULL) AND (fecha_fin IS NOT NULL)) OR ((tipo = 'sustitucion_permanente'::horarios.tipo_evento_sustitucion) AND (docente_entrante_id IS NOT NULL) AND (fecha_cambio IS NOT NULL)) OR ((tipo = 'permiso_ausencia'::horarios.tipo_evento_sustitucion) AND (fecha_ausencia IS NOT NULL)) OR ((tipo = 'cancelacion_sesion'::horarios.tipo_evento_sustitucion) AND (fecha_cancelada IS NOT NULL)))),
-    CONSTRAINT eventos_sustitucion_motivo_evento_check CHECK ((length(TRIM(BOTH FROM motivo_evento)) > 0)),
-    CONSTRAINT eventos_sustitucion_recuperacion_duracion_slots_check CHECK (((recuperacion_duracion_slots IS NULL) OR (recuperacion_duracion_slots > 0))),
-    CONSTRAINT eventos_sustitucion_recuperacion_indice_slot_inicio_check CHECK (((recuperacion_indice_slot_inicio IS NULL) OR (recuperacion_indice_slot_inicio > 0)))
+    sql: `CREATE TABLE "horarios"."eventos_sustitucion" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "tipo" "horarios"."tipo_evento_sustitucion" NOT NULL,
+    "sesion_afectada_id" "uuid" NOT NULL,
+    "docente_original_id" "uuid" NOT NULL,
+    "docente_entrante_id" "uuid",
+    "fecha_registro" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "registrado_por_id" "uuid",
+    "motivo_evento" "text" NOT NULL,
+    "estado" "horarios"."estado_evento_sustitucion" DEFAULT 'activo'::"horarios"."estado_evento_sustitucion" NOT NULL,
+    "fecha_inicio" "date",
+    "fecha_fin" "date",
+    "fecha_cambio" "date",
+    "fecha_ausencia" "date",
+    "fecha_recuperacion" "date",
+    "recuperacion_dia" "horarios"."dia_semana",
+    "recuperacion_indice_slot_inicio" integer,
+    "recuperacion_duracion_slots" integer,
+    "fecha_cancelada" "date",
+    "motivo_anulacion" "text",
+    "anulado_en" timestamp with time zone,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    CONSTRAINT "eventos_sustitucion_check" CHECK ((("docente_entrante_id" IS NULL) OR ("docente_entrante_id" <> "docente_original_id"))),
+    CONSTRAINT "eventos_sustitucion_check1" CHECK ((("fecha_fin" IS NULL) OR ("fecha_inicio" IS NULL) OR ("fecha_fin" >= "fecha_inicio"))),
+    CONSTRAINT "eventos_sustitucion_check2" CHECK (((("tipo" = 'sustitucion_temporal'::"horarios"."tipo_evento_sustitucion") AND ("docente_entrante_id" IS NOT NULL) AND ("fecha_inicio" IS NOT NULL) AND ("fecha_fin" IS NOT NULL)) OR (("tipo" = 'sustitucion_permanente'::"horarios"."tipo_evento_sustitucion") AND ("docente_entrante_id" IS NOT NULL) AND ("fecha_cambio" IS NOT NULL)) OR (("tipo" = 'permiso_ausencia'::"horarios"."tipo_evento_sustitucion") AND ("fecha_ausencia" IS NOT NULL)) OR (("tipo" = 'cancelacion_sesion'::"horarios"."tipo_evento_sustitucion") AND ("fecha_cancelada" IS NOT NULL)))),
+    CONSTRAINT "eventos_sustitucion_motivo_evento_check" CHECK (("length"(TRIM(BOTH FROM "motivo_evento")) > 0)),
+    CONSTRAINT "eventos_sustitucion_recuperacion_duracion_slots_check" CHECK ((("recuperacion_duracion_slots" IS NULL) OR ("recuperacion_duracion_slots" > 0))),
+    CONSTRAINT "eventos_sustitucion_recuperacion_indice_slot_inicio_check" CHECK ((("recuperacion_indice_slot_inicio" IS NULL) OR ("recuperacion_indice_slot_inicio" > 0)))
 );`,
   },
   {
@@ -1320,21 +1608,21 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Docentes',
     desc: 'Ventana de captura por período: entre qué fechas los docentes pueden declarar su disponibilidad, y en qué estado está (programada, abierta, cerrada, cancelada).',
     detalle: '',
-    nota: '8 columnas',
+    nota: '7 columnas',
     tabla: 'ventanas_disponibilidad',
-    linea: 4638,
-    claves: 'id periodo_id fecha_apertura fecha_cierre estado creado_en actualizado_en CONSTRAINT',
+    linea: 5683,
+    claves: 'id periodo_id fecha_apertura fecha_cierre estado creado_en actualizado_en',
     params: [],
     pasos: [],
-    sql: `CREATE TABLE horarios.ventanas_disponibilidad (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    periodo_id uuid NOT NULL,
-    fecha_apertura timestamp with time zone NOT NULL,
-    fecha_cierre timestamp with time zone NOT NULL,
-    estado horarios.estado_ventana_disponibilidad DEFAULT 'programada'::horarios.estado_ventana_disponibilidad NOT NULL,
-    creado_en timestamp with time zone DEFAULT now() NOT NULL,
-    actualizado_en timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT ventanas_disponibilidad_check CHECK ((fecha_cierre > fecha_apertura))
+    sql: `CREATE TABLE "horarios"."ventanas_disponibilidad" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "fecha_apertura" timestamp with time zone NOT NULL,
+    "fecha_cierre" timestamp with time zone NOT NULL,
+    "estado" "horarios"."estado_ventana_disponibilidad" DEFAULT 'programada'::"horarios"."estado_ventana_disponibilidad" NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "ventanas_disponibilidad_check" CHECK (("fecha_cierre" > "fecha_apertura"))
 );`,
   },
   {
@@ -1346,11 +1634,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 107,
+    linea: 80,
     claves: 'activa inactiva egresada archivada',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_cohorte AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_cohorte" AS ENUM (
     'activa',
     'inactiva',
     'egresada',
@@ -1366,14 +1654,36 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '3 valores admitidos',
     tabla: '',
-    linea: 119,
+    linea: 92,
     claves: 'activo anulado finalizado',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_evento_sustitucion AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_evento_sustitucion" AS ENUM (
     'activo',
     'anulado',
     'finalizado'
+);`,
+  },
+  {
+    id: 'tipo-estado_generacion',
+    nombre: 'estado_generacion',
+    cat: 'tipo',
+    grupo: 'Estados',
+    desc: 'Estado de una corrida del motor: pendiente, generando, completada, fallida, inviable o cancelada.',
+    detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
+    nota: '6 valores admitidos',
+    tabla: '',
+    linea: 103,
+    claves: 'pendiente generando completada fallida inviable cancelada',
+    params: [],
+    pasos: [],
+    sql: `CREATE TYPE "horarios"."estado_generacion" AS ENUM (
+    'pendiente',
+    'generando',
+    'completada',
+    'fallida',
+    'inviable',
+    'cancelada'
 );`,
   },
   {
@@ -1385,11 +1695,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '10 valores admitidos',
     tabla: '',
-    linea: 144,
+    linea: 117,
     claves: 'borrador generando generado en_revision pendiente_aprobacion aprobado publicado archivado fallido inviable',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_horario AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_horario" AS ENUM (
     'borrador',
     'generando',
     'generado',
@@ -1411,11 +1721,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '5 valores admitidos',
     tabla: '',
-    linea: 162,
+    linea: 135,
     claves: 'recibida validando aplicada rechazada fallida',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_importacion AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_importacion" AS ENUM (
     'recibida',
     'validando',
     'aplicada',
@@ -1432,11 +1742,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 175,
+    linea: 148,
     claves: 'pendiente enviada leida fallida',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_notificacion AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_notificacion" AS ENUM (
     'pendiente',
     'enviada',
     'leida',
@@ -1452,11 +1762,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 187,
+    linea: 160,
     claves: 'borrador vigente en_retiro archivado',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_pensum AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_pensum" AS ENUM (
     'borrador',
     'vigente',
     'en_retiro',
@@ -1472,11 +1782,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 199,
+    linea: 172,
     claves: 'borrador vigente cerrado archivado',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_periodo AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_periodo" AS ENUM (
     'borrador',
     'vigente',
     'cerrado',
@@ -1492,11 +1802,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '5 valores admitidos',
     tabla: '',
-    linea: 211,
+    linea: 184,
     claves: 'pendiente aprobada rechazada aplicada cancelada',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_sugerencia_seccion AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_sugerencia_seccion" AS ENUM (
     'pendiente',
     'aprobada',
     'rechazada',
@@ -1513,11 +1823,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '3 valores admitidos',
     tabla: '',
-    linea: 224,
+    linea: 197,
     claves: 'activo inactivo bloqueado',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_usuario AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_usuario" AS ENUM (
     'activo',
     'inactivo',
     'bloqueado'
@@ -1532,11 +1842,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 235,
+    linea: 208,
     claves: 'programada abierta cerrada cancelada',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.estado_ventana_disponibilidad AS ENUM (
+    sql: `CREATE TYPE "horarios"."estado_ventana_disponibilidad" AS ENUM (
     'programada',
     'abierta',
     'cerrada',
@@ -1552,11 +1862,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '2 valores admitidos',
     tabla: '',
-    linea: 269,
+    linea: 242,
     claves: 'csv xlsx',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.tipo_archivo_importacion AS ENUM (
+    sql: `CREATE TYPE "horarios"."tipo_archivo_importacion" AS ENUM (
     'csv',
     'xlsx'
 );`,
@@ -1570,11 +1880,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 279,
+    linea: 252,
     claves: 'teorica laboratorio mixta virtual',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.tipo_aula AS ENUM (
+    sql: `CREATE TYPE "horarios"."tipo_aula" AS ENUM (
     'teorica',
     'laboratorio',
     'mixta',
@@ -1590,11 +1900,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 291,
+    linea: 264,
     claves: 'sustitucion_temporal sustitucion_permanente permiso_ausencia cancelacion_sesion',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.tipo_evento_sustitucion AS ENUM (
+    sql: `CREATE TYPE "horarios"."tipo_evento_sustitucion" AS ENUM (
     'sustitucion_temporal',
     'sustitucion_permanente',
     'permiso_ausencia',
@@ -1610,13 +1920,31 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '2 valores admitidos',
     tabla: '',
-    linea: 303,
+    linea: 276,
     claves: 'clases examenes',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.tipo_plan_horario AS ENUM (
+    sql: `CREATE TYPE "horarios"."tipo_plan_horario" AS ENUM (
     'clases',
     'examenes'
+);`,
+  },
+  {
+    id: 'tipo-tipo_recurso',
+    nombre: 'tipo_recurso',
+    cat: 'tipo',
+    grupo: 'Clasificaciones',
+    desc: 'Clasifica los recursos físicos que pueden tener las aulas y requerir los cursos.',
+    detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
+    nota: '2 valores admitidos',
+    tabla: '',
+    linea: 286,
+    claves: 'fijo opcional',
+    params: [],
+    pasos: [],
+    sql: `CREATE TYPE "horarios"."tipo_recurso" AS ENUM (
+    'fijo',
+    'opcional'
 );`,
   },
   {
@@ -1628,11 +1956,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '5 valores admitidos',
     tabla: '',
-    linea: 313,
+    linea: 296,
     claves: 'superadministrador coordinador_academico decano docente alumno',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.tipo_usuario AS ENUM (
+    sql: `CREATE TYPE "horarios"."tipo_usuario" AS ENUM (
     'superadministrador',
     'coordinador_academico',
     'decano',
@@ -1649,11 +1977,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '11 valores admitidos',
     tabla: '',
-    linea: 64,
+    linea: 37,
     claves: 'leer crear actualizar eliminar generar aprobar publicar archivar importar exportar administrar',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.accion_permiso AS ENUM (
+    sql: `CREATE TYPE "horarios"."accion_permiso" AS ENUM (
     'leer',
     'crear',
     'actualizar',
@@ -1676,11 +2004,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '1 valores admitidos',
     tabla: '',
-    linea: 83,
+    linea: 56,
     claves: 'interno',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.canal_notificacion AS ENUM (
+    sql: `CREATE TYPE "horarios"."canal_notificacion" AS ENUM (
     'interno'
 );`,
   },
@@ -1693,11 +2021,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '7 valores admitidos',
     tabla: '',
-    linea: 92,
+    linea: 65,
     claves: 'lunes martes miercoles jueves viernes sabado domingo',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.dia_semana AS ENUM (
+    sql: `CREATE TYPE "horarios"."dia_semana" AS ENUM (
     'lunes',
     'martes',
     'miercoles',
@@ -1716,11 +2044,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '2 valores admitidos',
     tabla: '',
-    linea: 247,
+    linea: 220,
     claves: 'pdf xlsx',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.formato_reporte AS ENUM (
+    sql: `CREATE TYPE "horarios"."formato_reporte" AS ENUM (
     'pdf',
     'xlsx'
 );`,
@@ -1734,11 +2062,11 @@ export const OBJETOS: Objeto[] = [
     detalle: 'La base rechaza cualquier valor fuera de esta lista: estos campos no son texto libre.',
     nota: '4 valores admitidos',
     tabla: '',
-    linea: 257,
+    linea: 230,
     claves: 'baja media alta critica',
     params: [],
     pasos: [],
-    sql: `CREATE TYPE horarios.nivel_severidad AS ENUM (
+    sql: `CREATE TYPE "horarios"."nivel_severidad" AS ENUM (
     'baja',
     'media',
     'alta',
@@ -1754,20 +2082,20 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'security_invoker = true · respeta RLS de quien consulta',
     tabla: '',
-    linea: 3594,
+    linea: 4578,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.api_auditoria WITH (security_invoker='true') AS
- SELECT a.id,
-    a.fecha,
-    a.accion,
-    a.entidad,
-    a.entidad_id,
-    u.nombre_completo AS usuario,
-    a.motivo
-   FROM (horarios.auditoria a
-     LEFT JOIN horarios.usuarios u ON ((u.id = a.usuario_id)));`,
+    sql: `CREATE VIEW "horarios"."api_auditoria" WITH ("security_invoker"='true') AS
+ SELECT "a"."id",
+    "a"."fecha",
+    "a"."accion",
+    "a"."entidad",
+    "a"."entidad_id",
+    "u"."nombre_completo" AS "usuario",
+    "a"."motivo"
+   FROM ("horarios"."auditoria" "a"
+     LEFT JOIN "horarios"."usuarios" "u" ON (("u"."id" = "a"."usuario_id")));`,
   },
   {
     id: 'vista-api_cohortes_activas',
@@ -1778,61 +2106,61 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'security_invoker = true · respeta RLS de quien consulta',
     tabla: '',
-    linea: 3653,
+    linea: 4637,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.api_cohortes_activas WITH (security_invoker='true') AS
- SELECT cp.cohorte_id,
-    cp.periodo_id,
-    cp.semestre_asignado,
-    cp.matricula_estimada,
-    c.seccion
-   FROM (horarios.cohorte_periodos cp
-     JOIN horarios.cohortes c ON (((c.id = cp.cohorte_id) AND (c.eliminado_en IS NULL))))
-  WHERE (cp.esta_activa AND (cp.eliminado_en IS NULL));`,
+    sql: `CREATE VIEW "horarios"."api_cohortes_activas" WITH ("security_invoker"='true') AS
+ SELECT "cp"."cohorte_id",
+    "cp"."periodo_id",
+    "cp"."semestre_asignado",
+    "cp"."matricula_estimada",
+    "c"."seccion"
+   FROM ("horarios"."cohorte_periodos" "cp"
+     JOIN "horarios"."cohortes" "c" ON ((("c"."id" = "cp"."cohorte_id") AND ("c"."eliminado_en" IS NULL))))
+  WHERE ("cp"."esta_activa" AND ("cp"."eliminado_en" IS NULL));`,
   },
   {
     id: 'vista-api_cursos_periodo',
     nombre: 'api_cursos_periodo',
     cat: 'vista',
     grupo: 'Vistas api_* · atajos del cliente',
-    desc: 'Cursos que toca dictar en un período, derivados de las cohortes activas: pensum de la cohorte × semestre en que está esa cohorte.',
+    desc: 'Cursos que toca dictar en un período, derivados de las cohortes activas. Aplica la misma regla que el motor: pensum de la cohorte × semestre en que está esa cohorte.',
     detalle: '',
     nota: 'security_invoker = true · respeta RLS de quien consulta',
     tabla: '',
-    linea: 3750,
+    linea: 4735,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.api_cursos_periodo WITH (security_invoker='true') AS
- SELECT cp.periodo_id,
-    cp.cohorte_id,
-    cp.semestre_asignado,
-    cp.matricula_estimada,
-    c.carrera_id,
-    ca.nombre AS carrera_nombre,
-    c.jornada_id,
-    c.pensum_id,
-    p.anio_creacion AS pensum_anio,
-    c.anio_ingreso,
-    c.seccion,
-    cep.id AS curso_pensum_id,
-    cep.curso_id,
-    cur.codigo AS curso_codigo,
-    cur.nombre AS curso_nombre,
-    cur.requiere_laboratorio,
-    cur.es_area_comun,
-    cep.bloques_semanales_exactos,
-    cep.duracion_slots,
-    cep.prefiere_bloques_consecutivos
-   FROM (((((horarios.cohorte_periodos cp
-     JOIN horarios.cohortes c ON (((c.id = cp.cohorte_id) AND (c.eliminado_en IS NULL))))
-     JOIN horarios.carreras ca ON (((ca.id = c.carrera_id) AND (ca.eliminado_en IS NULL))))
-     JOIN horarios.pensums p ON (((p.id = c.pensum_id) AND (p.eliminado_en IS NULL))))
-     JOIN horarios.cursos_en_pensum cep ON (((cep.pensum_id = c.pensum_id) AND (cep.semestre_asignado = cp.semestre_asignado) AND (cep.eliminado_en IS NULL))))
-     JOIN horarios.cursos cur ON (((cur.id = cep.curso_id) AND (cur.eliminado_en IS NULL))))
-  WHERE (cp.esta_activa AND (cp.eliminado_en IS NULL));`,
+    sql: `CREATE VIEW "horarios"."api_cursos_periodo" WITH ("security_invoker"='true') AS
+ SELECT "cp"."periodo_id",
+    "cp"."cohorte_id",
+    "cp"."semestre_asignado",
+    "cp"."matricula_estimada",
+    "c"."carrera_id",
+    "ca"."nombre" AS "carrera_nombre",
+    "c"."jornada_id",
+    "c"."pensum_id",
+    "p"."anio_creacion" AS "pensum_anio",
+    "c"."anio_ingreso",
+    "c"."seccion",
+    "cep"."id" AS "curso_pensum_id",
+    "cep"."curso_id",
+    "cur"."codigo" AS "curso_codigo",
+    "cur"."nombre" AS "curso_nombre",
+    "cur"."requiere_laboratorio",
+    "cur"."es_area_comun",
+    "cep"."bloques_semanales_exactos",
+    "cep"."duracion_slots",
+    "cep"."prefiere_bloques_consecutivos"
+   FROM ((((("horarios"."cohorte_periodos" "cp"
+     JOIN "horarios"."cohortes" "c" ON ((("c"."id" = "cp"."cohorte_id") AND ("c"."eliminado_en" IS NULL))))
+     JOIN "horarios"."carreras" "ca" ON ((("ca"."id" = "c"."carrera_id") AND ("ca"."eliminado_en" IS NULL))))
+     JOIN "horarios"."pensums" "p" ON ((("p"."id" = "c"."pensum_id") AND ("p"."eliminado_en" IS NULL))))
+     JOIN "horarios"."cursos_en_pensum" "cep" ON ((("cep"."pensum_id" = "c"."pensum_id") AND ("cep"."semestre_asignado" = "cp"."semestre_asignado") AND ("cep"."eliminado_en" IS NULL))))
+     JOIN "horarios"."cursos" "cur" ON ((("cur"."id" = "cep"."curso_id") AND ("cur"."eliminado_en" IS NULL))))
+  WHERE ("cp"."esta_activa" AND ("cp"."eliminado_en" IS NULL));`,
   },
   {
     id: 'vista-api_recursos_aula',
@@ -1843,19 +2171,19 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'security_invoker = true · respeta RLS de quien consulta',
     tabla: '',
-    linea: 3822,
+    linea: 4815,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.api_recursos_aula WITH (security_invoker='true') AS
- SELECT ar.aula_id,
-    ar.recurso_id,
-    r.codigo,
-    r.nombre,
-    ar.cantidad
-   FROM (horarios.aula_recursos ar
-     JOIN horarios.recursos r ON ((r.id = ar.recurso_id)))
-  WHERE (r.esta_activo AND (r.eliminado_en IS NULL));`,
+    sql: `CREATE VIEW "horarios"."api_recursos_aula" WITH ("security_invoker"='true') AS
+ SELECT "ar"."aula_id",
+    "ar"."recurso_id",
+    "r"."codigo",
+    "r"."nombre",
+    "ar"."cantidad"
+   FROM ("horarios"."aula_recursos" "ar"
+     JOIN "horarios"."recursos" "r" ON (("r"."id" = "ar"."recurso_id")))
+  WHERE ("r"."esta_activo" AND ("r"."eliminado_en" IS NULL));`,
   },
   {
     id: 'vista-api_resumen_importaciones',
@@ -1866,19 +2194,64 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'security_invoker = true · respeta RLS de quien consulta',
     tabla: '',
-    linea: 3865,
+    linea: 4858,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.api_resumen_importaciones WITH (security_invoker='true') AS
- SELECT id AS importacion_id,
-    nombre_archivo AS archivo,
-    (estado)::text AS estado,
-    filas_validas AS aceptadas,
-    filas_invalidas AS rechazadas,
-    GREATEST(((total_filas - filas_validas) - filas_invalidas), 0) AS pendientes,
-    creada_en
-   FROM horarios.importaciones;`,
+    sql: `CREATE VIEW "horarios"."api_resumen_importaciones" WITH ("security_invoker"='true') AS
+ SELECT "id" AS "importacion_id",
+    "nombre_archivo" AS "archivo",
+    ("estado")::"text" AS "estado",
+    "filas_validas" AS "aceptadas",
+    "filas_invalidas" AS "rechazadas",
+    GREATEST((("total_filas" - "filas_validas") - "filas_invalidas"), 0) AS "pendientes",
+    "creada_en"
+   FROM "horarios"."importaciones";`,
+  },
+  {
+    id: 'vista-vista_area_comun_cohortes_derivadas',
+    nombre: 'vista_area_comun_cohortes_derivadas',
+    cat: 'vista',
+    grupo: 'Vistas vista_* · lectura pesada',
+    desc: 'Cohortes activas del período y la jornada que cursan alguna materia de la agrupación en su semestre asignado. Respeta RLS.',
+    detalle: '',
+    nota: 'security_invoker = true · respeta RLS de quien consulta',
+    tabla: '',
+    linea: 5736,
+    claves: 'vista view join',
+    params: [],
+    pasos: [],
+    sql: `CREATE VIEW "horarios"."vista_area_comun_cohortes_derivadas" WITH ("security_invoker"='true') AS
+ SELECT DISTINCT "a"."id" AS "agrupacion_id",
+    "co"."id" AS "cohorte_id"
+   FROM ((((("horarios"."agrupaciones_area_comun" "a"
+     JOIN "horarios"."vista_area_comun_cursos_derivados" "vc" ON (("vc"."agrupacion_id" = "a"."id")))
+     JOIN "horarios"."cursos" "cur" ON (("cur"."id" = "vc"."curso_id")))
+     JOIN "horarios"."cursos_en_pensum" "cep" ON ((("cep"."curso_id" = "cur"."id") AND ("cep"."eliminado_en" IS NULL))))
+     JOIN "horarios"."cohortes" "co" ON ((("co"."pensum_id" = "cur"."pensum_id") AND ("co"."jornada_id" = "a"."jornada_id") AND ("co"."estado" = 'activa'::"horarios"."estado_cohorte") AND ("co"."eliminado_en" IS NULL))))
+     JOIN "horarios"."cohorte_periodos" "cp" ON ((("cp"."cohorte_id" = "co"."id") AND ("cp"."periodo_id" = "a"."periodo_id") AND "cp"."esta_activa" AND ("cp"."eliminado_en" IS NULL) AND ("cp"."semestre_asignado" = "cep"."semestre_asignado"))))
+  WHERE ("a"."eliminado_en" IS NULL);`,
+  },
+  {
+    id: 'vista-vista_area_comun_cursos_derivados',
+    nombre: 'vista_area_comun_cursos_derivados',
+    cat: 'vista',
+    grupo: 'Vistas vista_* · lectura pesada',
+    desc: 'Cursos de cada agrupación derivados de su curso común, excluyendo cursos y agrupaciones borrados. Respeta RLS.',
+    detalle: '',
+    nota: 'security_invoker = true · respeta RLS de quien consulta',
+    tabla: '',
+    linea: 5716,
+    claves: 'vista view join',
+    params: [],
+    pasos: [],
+    sql: `CREATE VIEW "horarios"."vista_area_comun_cursos_derivados" WITH ("security_invoker"='true') AS
+ SELECT "a"."id" AS "agrupacion_id",
+    "ccc"."curso_id"
+   FROM (("horarios"."agrupaciones_area_comun" "a"
+     JOIN "horarios"."curso_comun_cursos" "ccc" ON (("ccc"."curso_comun_id" = "a"."curso_comun_id")))
+     JOIN "horarios"."cursos" "cur" ON ((("cur"."id" = "ccc"."curso_id") AND ("cur"."eliminado_en" IS NULL))))
+  WHERE ("a"."eliminado_en" IS NULL);`,
   },
   {
     id: 'vista-vista_horarios_publicados',
@@ -1889,64 +2262,64 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'sin security_invoker · la usan funciones SECURITY DEFINER',
     tabla: '',
-    linea: 4671,
+    linea: 5759,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.vista_horarios_publicados AS
- SELECT h.id AS horario_id,
-    h.tipo_plan,
-    h.periodo_id,
-    p.nombre AS periodo_nombre,
-    p.fecha_inicio AS periodo_fecha_inicio,
-    p.fecha_fin AS periodo_fecha_fin,
-    s.id AS sesion_id,
-    sc.cohorte_id,
-    fa.id AS facultad_id,
-    fa.nombre AS facultad_nombre,
-    co.carrera_id,
-    ca.codigo AS carrera_codigo,
-    ca.nombre AS carrera_nombre,
-    co.jornada_id,
-    j.nombre AS jornada_nombre,
-    cp.semestre_asignado,
-    cp.matricula_estimada,
-    co.anio_ingreso,
-    co.seccion AS cohorte_seccion,
-    s.curso_id AS curso_sesion_id,
-    COALESCE(sc.curso_visible_id, s.curso_id) AS curso_id,
-    cu.codigo AS curso_codigo,
-    cu.nombre AS curso_nombre,
-    s.docente_id,
-    d.nombre_completo AS docente_nombre,
-    s.aula_id,
-    a.codigo AS aula_codigo,
-    a.capacidad_maxima AS aula_capacidad,
-    a.piso AS aula_piso,
-    a.numero_aula,
-    a.posicion_x AS aula_posicion_x,
-    a.posicion_y AS aula_posicion_y,
-    s.fecha_sesion,
-    s.dia,
-    s.indice_slot_inicio,
-    s.duracion_slots,
-    s.minuto_inicio_dia,
-    s.minuto_fin_dia,
-    s.es_area_comun,
-    s.agrupacion_area_comun_id
-   FROM (((((((((((horarios.horarios h
-     JOIN horarios.periodos_academicos p ON ((p.id = h.periodo_id)))
-     JOIN horarios.sesiones s ON ((s.horario_id = h.id)))
-     LEFT JOIN horarios.sesion_cohortes sc ON ((sc.sesion_id = s.id)))
-     LEFT JOIN horarios.cohortes co ON ((co.id = sc.cohorte_id)))
-     LEFT JOIN horarios.cohorte_periodos cp ON (((cp.cohorte_id = co.id) AND (cp.periodo_id = h.periodo_id) AND cp.esta_activa AND (cp.eliminado_en IS NULL))))
-     LEFT JOIN horarios.carreras ca ON ((ca.id = co.carrera_id)))
-     LEFT JOIN horarios.facultades fa ON ((fa.id = ca.facultad_id)))
-     LEFT JOIN horarios.jornadas j ON ((j.id = co.jornada_id)))
-     JOIN horarios.cursos cu ON ((cu.id = COALESCE(sc.curso_visible_id, s.curso_id))))
-     JOIN horarios.docentes d ON ((d.id = s.docente_id)))
-     JOIN horarios.aulas a ON ((a.id = s.aula_id)))
-  WHERE ((h.estado = 'publicado'::horarios.estado_horario) AND (h.eliminado_en IS NULL));`,
+    sql: `CREATE VIEW "horarios"."vista_horarios_publicados" AS
+ SELECT "h"."id" AS "horario_id",
+    "h"."tipo_plan",
+    "h"."periodo_id",
+    "p"."nombre" AS "periodo_nombre",
+    "p"."fecha_inicio" AS "periodo_fecha_inicio",
+    "p"."fecha_fin" AS "periodo_fecha_fin",
+    "s"."id" AS "sesion_id",
+    "sc"."cohorte_id",
+    "fa"."id" AS "facultad_id",
+    "fa"."nombre" AS "facultad_nombre",
+    "co"."carrera_id",
+    "ca"."codigo" AS "carrera_codigo",
+    "ca"."nombre" AS "carrera_nombre",
+    "co"."jornada_id",
+    "j"."nombre" AS "jornada_nombre",
+    "cp"."semestre_asignado",
+    "cp"."matricula_estimada",
+    "co"."anio_ingreso",
+    "co"."seccion" AS "cohorte_seccion",
+    "s"."curso_id" AS "curso_sesion_id",
+    COALESCE("sc"."curso_visible_id", "s"."curso_id") AS "curso_id",
+    "cu"."codigo" AS "curso_codigo",
+    "cu"."nombre" AS "curso_nombre",
+    "s"."docente_id",
+    "d"."nombre_completo" AS "docente_nombre",
+    "s"."aula_id",
+    "a"."codigo" AS "aula_codigo",
+    "a"."capacidad_maxima" AS "aula_capacidad",
+    "a"."piso" AS "aula_piso",
+    "a"."numero_aula",
+    "a"."posicion_x" AS "aula_posicion_x",
+    "a"."posicion_y" AS "aula_posicion_y",
+    "s"."fecha_sesion",
+    "s"."dia",
+    "s"."indice_slot_inicio",
+    "s"."duracion_slots",
+    "s"."minuto_inicio_dia",
+    "s"."minuto_fin_dia",
+    "s"."es_area_comun",
+    "s"."agrupacion_area_comun_id"
+   FROM ((((((((((("horarios"."horarios" "h"
+     JOIN "horarios"."periodos_academicos" "p" ON (("p"."id" = "h"."periodo_id")))
+     JOIN "horarios"."sesiones" "s" ON (("s"."horario_id" = "h"."id")))
+     LEFT JOIN "horarios"."sesion_cohortes" "sc" ON (("sc"."sesion_id" = "s"."id")))
+     LEFT JOIN "horarios"."cohortes" "co" ON (("co"."id" = "sc"."cohorte_id")))
+     LEFT JOIN "horarios"."cohorte_periodos" "cp" ON ((("cp"."cohorte_id" = "co"."id") AND ("cp"."periodo_id" = "h"."periodo_id") AND "cp"."esta_activa" AND ("cp"."eliminado_en" IS NULL))))
+     LEFT JOIN "horarios"."carreras" "ca" ON (("ca"."id" = "co"."carrera_id")))
+     LEFT JOIN "horarios"."facultades" "fa" ON (("fa"."id" = "ca"."facultad_id")))
+     LEFT JOIN "horarios"."jornadas" "j" ON (("j"."id" = "co"."jornada_id")))
+     JOIN "horarios"."cursos" "cu" ON (("cu"."id" = COALESCE("sc"."curso_visible_id", "s"."curso_id"))))
+     JOIN "horarios"."docentes" "d" ON (("d"."id" = "s"."docente_id")))
+     JOIN "horarios"."aulas" "a" ON (("a"."id" = "s"."aula_id")))
+  WHERE (("h"."estado" = 'publicado'::"horarios"."estado_horario") AND ("h"."eliminado_en" IS NULL));`,
   },
   {
     id: 'vista-vista_horarios_publicados_con_sustituciones',
@@ -1957,73 +2330,73 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'sin security_invoker · la usan funciones SECURITY DEFINER',
     tabla: '',
-    linea: 4760,
+    linea: 5848,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.vista_horarios_publicados_con_sustituciones AS
- SELECT v.horario_id,
-    v.tipo_plan,
-    v.periodo_id,
-    v.periodo_nombre,
-    v.periodo_fecha_inicio,
-    v.periodo_fecha_fin,
-    v.sesion_id,
-    v.cohorte_id,
-    v.facultad_id,
-    v.facultad_nombre,
-    v.carrera_id,
-    v.carrera_codigo,
-    v.carrera_nombre,
-    v.jornada_id,
-    v.jornada_nombre,
-    v.semestre_asignado,
-    v.matricula_estimada,
-    v.anio_ingreso,
-    v.cohorte_seccion,
-    v.curso_sesion_id,
-    v.curso_id,
-    v.curso_codigo,
-    v.curso_nombre,
-    v.docente_id,
-    v.docente_nombre,
-    v.aula_id,
-    v.aula_codigo,
-    v.aula_capacidad,
-    v.aula_piso,
-    v.numero_aula,
-    v.aula_posicion_x,
-    v.aula_posicion_y,
-    v.fecha_sesion,
-    v.dia,
-    v.indice_slot_inicio,
-    v.duracion_slots,
-    v.minuto_inicio_dia,
-    v.minuto_fin_dia,
-    v.es_area_comun,
-    v.agrupacion_area_comun_id,
-    sa.sustitucion_id,
-    sa.tipo AS tipo_sustitucion,
-    sa.docente_original_id,
-    sa.docente_original_nombre,
-    sa.docente_entrante_id,
-    sa.docente_entrante_nombre,
+    sql: `CREATE VIEW "horarios"."vista_horarios_publicados_con_sustituciones" AS
+ SELECT "v"."horario_id",
+    "v"."tipo_plan",
+    "v"."periodo_id",
+    "v"."periodo_nombre",
+    "v"."periodo_fecha_inicio",
+    "v"."periodo_fecha_fin",
+    "v"."sesion_id",
+    "v"."cohorte_id",
+    "v"."facultad_id",
+    "v"."facultad_nombre",
+    "v"."carrera_id",
+    "v"."carrera_codigo",
+    "v"."carrera_nombre",
+    "v"."jornada_id",
+    "v"."jornada_nombre",
+    "v"."semestre_asignado",
+    "v"."matricula_estimada",
+    "v"."anio_ingreso",
+    "v"."cohorte_seccion",
+    "v"."curso_sesion_id",
+    "v"."curso_id",
+    "v"."curso_codigo",
+    "v"."curso_nombre",
+    "v"."docente_id",
+    "v"."docente_nombre",
+    "v"."aula_id",
+    "v"."aula_codigo",
+    "v"."aula_capacidad",
+    "v"."aula_piso",
+    "v"."numero_aula",
+    "v"."aula_posicion_x",
+    "v"."aula_posicion_y",
+    "v"."fecha_sesion",
+    "v"."dia",
+    "v"."indice_slot_inicio",
+    "v"."duracion_slots",
+    "v"."minuto_inicio_dia",
+    "v"."minuto_fin_dia",
+    "v"."es_area_comun",
+    "v"."agrupacion_area_comun_id",
+    "sa"."sustitucion_id",
+    "sa"."tipo" AS "tipo_sustitucion",
+    "sa"."docente_original_id",
+    "sa"."docente_original_nombre",
+    "sa"."docente_entrante_id",
+    "sa"."docente_entrante_nombre",
         CASE
-            WHEN ((sa.tipo = ANY (ARRAY['sustitucion_temporal'::horarios.tipo_evento_sustitucion, 'sustitucion_permanente'::horarios.tipo_evento_sustitucion])) AND (sa.docente_entrante_id IS NOT NULL)) THEN sa.docente_entrante_id
-            ELSE v.docente_id
-        END AS docente_visible_id,
+            WHEN (("sa"."tipo" = ANY (ARRAY['sustitucion_temporal'::"horarios"."tipo_evento_sustitucion", 'sustitucion_permanente'::"horarios"."tipo_evento_sustitucion"])) AND ("sa"."docente_entrante_id" IS NOT NULL)) THEN "sa"."docente_entrante_id"
+            ELSE "v"."docente_id"
+        END AS "docente_visible_id",
         CASE
-            WHEN ((sa.tipo = ANY (ARRAY['sustitucion_temporal'::horarios.tipo_evento_sustitucion, 'sustitucion_permanente'::horarios.tipo_evento_sustitucion])) AND (sa.docente_entrante_nombre IS NOT NULL)) THEN sa.docente_entrante_nombre
-            ELSE v.docente_nombre
-        END AS docente_visible_nombre,
-    sa.fecha_inicio AS sustitucion_fecha_inicio,
-    sa.fecha_fin AS sustitucion_fecha_fin,
-    sa.fecha_cambio AS sustitucion_fecha_cambio,
-    sa.fecha_ausencia AS sustitucion_fecha_ausencia,
-    sa.fecha_cancelada AS sustitucion_fecha_cancelada,
-    sa.motivo_evento AS sustitucion_motivo
-   FROM (horarios.vista_horarios_publicados v
-     LEFT JOIN horarios.vista_sustituciones_activas sa ON ((sa.sesion_afectada_id = v.sesion_id)));`,
+            WHEN (("sa"."tipo" = ANY (ARRAY['sustitucion_temporal'::"horarios"."tipo_evento_sustitucion", 'sustitucion_permanente'::"horarios"."tipo_evento_sustitucion"])) AND ("sa"."docente_entrante_nombre" IS NOT NULL)) THEN "sa"."docente_entrante_nombre"
+            ELSE "v"."docente_nombre"
+        END AS "docente_visible_nombre",
+    "sa"."fecha_inicio" AS "sustitucion_fecha_inicio",
+    "sa"."fecha_fin" AS "sustitucion_fecha_fin",
+    "sa"."fecha_cambio" AS "sustitucion_fecha_cambio",
+    "sa"."fecha_ausencia" AS "sustitucion_fecha_ausencia",
+    "sa"."fecha_cancelada" AS "sustitucion_fecha_cancelada",
+    "sa"."motivo_evento" AS "sustitucion_motivo"
+   FROM ("horarios"."vista_horarios_publicados" "v"
+     LEFT JOIN "horarios"."vista_sustituciones_activas" "sa" ON (("sa"."sesion_afectada_id" = "v"."sesion_id")));`,
   },
   {
     id: 'vista-vista_sustituciones_activas',
@@ -2034,33 +2407,141 @@ export const OBJETOS: Objeto[] = [
     detalle: '',
     nota: 'sin security_invoker · la usan funciones SECURITY DEFINER',
     tabla: '',
-    linea: 4731,
+    linea: 5819,
     claves: 'vista view join',
     params: [],
     pasos: [],
-    sql: `CREATE VIEW horarios.vista_sustituciones_activas AS
- SELECT e.id AS sustitucion_id,
-    s.horario_id,
-    e.sesion_afectada_id,
-    s.fecha_sesion,
-    e.tipo,
-    e.docente_original_id,
-    doc_original.nombre_completo AS docente_original_nombre,
-    e.docente_entrante_id,
-    doc_entrante.nombre_completo AS docente_entrante_nombre,
-    e.fecha_inicio,
-    e.fecha_fin,
-    e.fecha_cambio,
-    e.fecha_ausencia,
-    e.fecha_cancelada,
-    e.motivo_evento,
-    e.estado,
-    e.fecha_registro
-   FROM (((horarios.eventos_sustitucion e
-     JOIN horarios.sesiones s ON ((s.id = e.sesion_afectada_id)))
-     JOIN horarios.docentes doc_original ON ((doc_original.id = e.docente_original_id)))
-     LEFT JOIN horarios.docentes doc_entrante ON ((doc_entrante.id = e.docente_entrante_id)))
-  WHERE ((e.estado = 'activo'::horarios.estado_evento_sustitucion) AND (e.eliminado_en IS NULL) AND (((e.tipo = 'sustitucion_temporal'::horarios.tipo_evento_sustitucion) AND ((CURRENT_DATE >= e.fecha_inicio) AND (CURRENT_DATE <= e.fecha_fin))) OR ((e.tipo = 'sustitucion_permanente'::horarios.tipo_evento_sustitucion) AND (e.fecha_cambio <= CURRENT_DATE)) OR ((e.tipo = 'permiso_ausencia'::horarios.tipo_evento_sustitucion) AND (e.fecha_ausencia = CURRENT_DATE)) OR ((e.tipo = 'cancelacion_sesion'::horarios.tipo_evento_sustitucion) AND (e.fecha_cancelada = CURRENT_DATE))));`,
+    sql: `CREATE VIEW "horarios"."vista_sustituciones_activas" AS
+ SELECT "e"."id" AS "sustitucion_id",
+    "s"."horario_id",
+    "e"."sesion_afectada_id",
+    "s"."fecha_sesion",
+    "e"."tipo",
+    "e"."docente_original_id",
+    "doc_original"."nombre_completo" AS "docente_original_nombre",
+    "e"."docente_entrante_id",
+    "doc_entrante"."nombre_completo" AS "docente_entrante_nombre",
+    "e"."fecha_inicio",
+    "e"."fecha_fin",
+    "e"."fecha_cambio",
+    "e"."fecha_ausencia",
+    "e"."fecha_cancelada",
+    "e"."motivo_evento",
+    "e"."estado",
+    "e"."fecha_registro"
+   FROM ((("horarios"."eventos_sustitucion" "e"
+     JOIN "horarios"."sesiones" "s" ON (("s"."id" = "e"."sesion_afectada_id")))
+     JOIN "horarios"."docentes" "doc_original" ON (("doc_original"."id" = "e"."docente_original_id")))
+     LEFT JOIN "horarios"."docentes" "doc_entrante" ON (("doc_entrante"."id" = "e"."docente_entrante_id")))
+  WHERE (("e"."estado" = 'activo'::"horarios"."estado_evento_sustitucion") AND ("e"."eliminado_en" IS NULL) AND ((("e"."tipo" = 'sustitucion_temporal'::"horarios"."tipo_evento_sustitucion") AND ((CURRENT_DATE >= "e"."fecha_inicio") AND (CURRENT_DATE <= "e"."fecha_fin"))) OR (("e"."tipo" = 'sustitucion_permanente'::"horarios"."tipo_evento_sustitucion") AND ("e"."fecha_cambio" <= CURRENT_DATE)) OR (("e"."tipo" = 'permiso_ausencia'::"horarios"."tipo_evento_sustitucion") AND ("e"."fecha_ausencia" = CURRENT_DATE)) OR (("e"."tipo" = 'cancelacion_sesion'::"horarios"."tipo_evento_sustitucion") AND ("e"."fecha_cancelada" = CURRENT_DATE))));`,
+  },
+  {
+    id: 'fn-crear_usuario_docente',
+    nombre: 'crear_usuario_docente',
+    cat: 'funcion',
+    grupo: 'Seguridad y permisos',
+    desc: 'Vincula una cuenta de Supabase Auth con un docente y le asigna el rol docente.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE · SECURITY DEFINER',
+    tabla: '',
+    linea: 1876,
+    claves: '("uuid", "uuid") rpc funcion p_auth_user_id p_docente_id',
+    params: [
+      { n: 'p_auth_user_id', t: 'uuid', d: '' },
+      { n: 'p_docente_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Serializa el alta con un advisory lock y exige un docente activo.',
+      'Reutiliza el vínculo si coincide; rechaza cuentas, docentes o correos ya asociados de forma incompatible.',
+      'Inserta el usuario y su rol docente y devuelve el perfil creado.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."crear_usuario_docente"("p_auth_user_id" "uuid", "p_docente_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_usuario horarios.usuarios%rowtype;
+    v_docente horarios.docentes%rowtype;
+    v_rol_id uuid;
+begin
+    perform pg_advisory_xact_lock(
+        hashtext('horarios.crear_usuario_docente:' || p_docente_id::text)
+    );
+
+    select * into v_docente
+    from horarios.docentes
+    where id = p_docente_id
+      and esta_activo
+      and eliminado_en is null;
+
+    if not found then
+        raise exception 'docente_inexistente_o_inactivo';
+    end if;
+
+    select * into v_usuario
+    from horarios.usuarios
+    where docente_id = p_docente_id
+      and eliminado_en is null
+    limit 1;
+
+    if found then
+        if v_usuario.auth_user_id is distinct from p_auth_user_id then
+            raise exception 'docente_vinculado_a_otra_cuenta';
+        end if;
+
+        return to_jsonb(v_usuario);
+    end if;
+
+    if exists (
+        select 1 from horarios.usuarios
+        where auth_user_id = p_auth_user_id
+          and eliminado_en is null
+    ) then
+        raise exception 'cuenta_auth_ya_vinculada';
+    end if;
+
+    if exists (
+        select 1 from horarios.usuarios
+        where correo_institucional = lower(trim(v_docente.correo))
+          and eliminado_en is null
+    ) then
+        raise exception 'correo_ya_vinculado';
+    end if;
+
+    select id into v_rol_id
+    from horarios.roles
+    where lower(nombre) = 'docente'
+      and eliminado_en is null;
+
+    if v_rol_id is null then
+        raise exception 'rol_docente_inexistente';
+    end if;
+
+    insert into horarios.usuarios (
+        auth_user_id,
+        tipo,
+        nombre_completo,
+        correo_institucional,
+        estado,
+        docente_id
+    )
+    values (
+        p_auth_user_id,
+        'docente'::horarios.tipo_usuario,
+        trim(v_docente.nombre_completo),
+        lower(trim(v_docente.correo)),
+        'activo'::horarios.estado_usuario,
+        p_docente_id
+    )
+    returning * into v_usuario;
+
+    insert into horarios.usuario_roles (usuario_id, rol_id)
+    values (v_usuario.id, v_rol_id)
+    on conflict do nothing;
+
+    return to_jsonb(v_usuario);
+end;
+$$;`,
   },
   {
     id: 'fn-crear_usuario_inicial',
@@ -2069,10 +2550,10 @@ export const OBJETOS: Objeto[] = [
     grupo: 'Seguridad y permisos',
     desc: 'Da de alta al usuario en `usuarios` y le asigna su rol después de que se registró en Supabase Auth.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe · SECURITY DEFINER',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE · SECURITY DEFINER',
     tabla: '',
-    linea: 1617,
-    claves: '(uuid, text, text, text, text) rpc funcion p_auth_user_id p_tipo p_nombre p_correo p_rol',
+    linea: 1969,
+    claves: '("uuid", "text", "text", "text", "text") rpc funcion p_auth_user_id p_tipo p_nombre p_correo p_rol',
     params: [
       { n: 'p_auth_user_id', t: 'uuid', d: '' },
       { n: 'p_tipo', t: 'text', d: '' },
@@ -2087,9 +2568,9 @@ export const OBJETOS: Objeto[] = [
       'Si ya existe cualquier otro usuario vivo, falla: esta función es solo para el primero.',
       'Crea la fila en `usuarios` y le asigna el rol indicado.',
     ],
-    sql: `CREATE FUNCTION horarios.crear_usuario_inicial(p_auth_user_id uuid, p_tipo text, p_nombre text, p_correo text, p_rol text) RETURNS jsonb
-    LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."crear_usuario_inicial"("p_auth_user_id" "uuid", "p_tipo" "text", "p_nombre" "text", "p_correo" "text", "p_rol" "text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_usuario horarios.usuarios%rowtype;
@@ -2144,8 +2625,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2192,
-    claves: '(uuid) rpc funcion p_usuario_id',
+    linea: 2970,
+    claves: '("uuid") rpc funcion p_usuario_id',
     params: [
       { n: 'p_usuario_id', t: 'uuid', d: '' },
     ],
@@ -2154,9 +2635,9 @@ $$;`,
       'Quita duplicados y ordena por recurso y acción.',
       'Devuelve `[]` cuando no hay ninguno, nunca `null`.',
     ],
-    sql: `CREATE FUNCTION horarios.listar_permisos_usuario(p_usuario_id uuid) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."listar_permisos_usuario"("p_usuario_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce(jsonb_agg(jsonb_build_object(
         'recurso', permisos.recurso,
@@ -2181,8 +2662,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2215,
-    claves: '(uuid) rpc funcion p_usuario_id',
+    linea: 2993,
+    claves: '("uuid") rpc funcion p_usuario_id',
     params: [
       { n: 'p_usuario_id', t: 'uuid', d: '' },
     ],
@@ -2190,9 +2671,9 @@ $$;`,
       'Une `usuario_roles` con `roles`, descartando los roles borrados.',
       'Devuelve los nombres ordenados alfabéticamente, o `[]`.',
     ],
-    sql: `CREATE FUNCTION horarios.listar_roles_usuario(p_usuario_id uuid) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."listar_roles_usuario"("p_usuario_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce(jsonb_agg(r.nombre order by r.nombre), '[]'::jsonb)
     from horarios.usuario_roles ur
@@ -2209,8 +2690,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2261,
-    claves: '(uuid) rpc funcion p_usuario_id',
+    linea: 3039,
+    claves: '("uuid") rpc funcion p_usuario_id',
     params: [
       { n: 'p_usuario_id', t: 'uuid', d: '' },
     ],
@@ -2219,9 +2700,9 @@ $$;`,
       'Le agrega la lista de facultades que tiene asignadas.',
       'Si el usuario no existe, devuelve un alcance vacío en vez de fallar.',
     ],
-    sql: `CREATE FUNCTION horarios.obtener_alcance_usuario(p_usuario_id uuid) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."obtener_alcance_usuario"("p_usuario_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce((
         select jsonb_build_object(
@@ -2244,7 +2725,7 @@ $$;`,
     detalle: 'Es el puente entre Supabase Auth y el sistema. Al filtrar por `estado = \'activo\'`, dar de baja a alguien lo deja fuera aunque su token siga siendo válido.',
     nota: 'devuelve uuid · sql · solo lee (STABLE) · SECURITY DEFINER',
     tabla: '',
-    linea: 2470,
+    linea: 3328,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -2252,9 +2733,9 @@ $$;`,
       'Busca en `usuarios` la fila con ese `auth_user_id` que esté activa y sin borrar.',
       'Devuelve su id, o NULL si no hay sesión válida.',
     ],
-    sql: `CREATE FUNCTION horarios.usuario_actual_id() RETURNS uuid
-    LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'horarios', 'auth', 'public'
+    sql: `CREATE FUNCTION "horarios"."usuario_actual_id"() RETURNS "uuid"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'auth', 'public'
     AS $$
     select id
     from horarios.usuarios
@@ -2270,11 +2751,11 @@ $$;`,
     cat: 'funcion',
     grupo: 'Seguridad y permisos',
     desc: '¿El usuario de la sesión puede hacer (recurso, acción)? Es la función que evalúan casi todas las políticas RLS.',
-    detalle: 'Una sola función sostiene las 242 políticas: se cambia aquí y cambia el control de acceso de todo el esquema.',
+    detalle: 'Centraliza la comprobación de permisos por recurso y acción; las políticas añaden condiciones de alcance y pertenencia.',
     nota: 'devuelve boolean · sql · solo lee (STABLE) · SECURITY DEFINER',
     tabla: '',
-    linea: 2487,
-    claves: '(text, text) rpc funcion p_recurso p_accion',
+    linea: 3345,
+    claves: '("text", "text") rpc funcion p_recurso p_accion',
     params: [
       { n: 'p_recurso', t: 'text', d: '' },
       { n: 'p_accion', t: 'text', d: '' },
@@ -2284,9 +2765,9 @@ $$;`,
       'Descarta usuarios inactivos o borrados y roles borrados.',
       'Devuelve `true` si aparece al menos una fila con ese par (recurso, acción).',
     ],
-    sql: `CREATE FUNCTION horarios.usuario_actual_tiene_permiso(p_recurso text, p_accion text) RETURNS boolean
-    LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'horarios', 'auth', 'public'
+    sql: `CREATE FUNCTION "horarios"."usuario_actual_tiene_permiso"("p_recurso" "text", "p_accion" "text") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'auth', 'public'
     AS $$
     select exists (
         select 1
@@ -2311,8 +2792,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve boolean · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2510,
-    claves: '(uuid, text, text) rpc funcion p_usuario_id p_recurso p_accion',
+    linea: 3368,
+    claves: '("uuid", "text", "text") rpc funcion p_usuario_id p_recurso p_accion',
     params: [
       { n: 'p_usuario_id', t: 'uuid', d: '' },
       { n: 'p_recurso', t: 'text', d: '' },
@@ -2323,9 +2804,9 @@ $$;`,
       'Exige que ese usuario esté activo y sin borrar.',
       'Devuelve `true` si el par (recurso, acción) aparece.',
     ],
-    sql: `CREATE FUNCTION horarios.usuario_tiene_permiso(p_usuario_id uuid, p_recurso text, p_accion text) RETURNS boolean
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."usuario_tiene_permiso"("p_usuario_id" "uuid", "p_recurso" "text", "p_accion" "text") RETURNS boolean
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select exists (
         select 1
@@ -2348,10 +2829,10 @@ $$;`,
     grupo: 'Academia y catálogos',
     desc: 'Activa una cohorte en un período y le fija semestre y matrícula. Es un UPSERT: si ya estaba, la actualiza.',
     detalle: '',
-    nota: 'devuelve void · sql · escribe',
+    nota: 'devuelve void · sql · VOLATILE',
     tabla: '',
-    linea: 326,
-    claves: '(uuid, uuid, integer, integer) rpc funcion p_cohorte_id p_periodo_id p_semestre_asignado p_matricula_estimada',
+    linea: 309,
+    claves: '("uuid", "uuid", integer, integer) rpc funcion p_cohorte_id p_periodo_id p_semestre_asignado p_matricula_estimada',
     params: [
       { n: 'p_cohorte_id', t: 'uuid', d: '' },
       { n: 'p_periodo_id', t: 'uuid', d: '' },
@@ -2363,9 +2844,9 @@ $$;`,
       'Si ya existía —lo decide el índice único entre filas vivas—, actualiza semestre y matrícula, la reactiva y sube `version_fila`.',
       'Todo ocurre en una sola sentencia atómica, sin consultar antes si existe.',
     ],
-    sql: `CREATE FUNCTION horarios.activar_cohorte_periodo(p_cohorte_id uuid, p_periodo_id uuid, p_semestre_asignado integer, p_matricula_estimada integer) RETURNS void
-    LANGUAGE sql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."activar_cohorte_periodo"("p_cohorte_id" "uuid", "p_periodo_id" "uuid", "p_semestre_asignado" integer, "p_matricula_estimada" integer) RETURNS "void"
+    LANGUAGE "sql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     insert into horarios.cohorte_periodos
         (cohorte_id, periodo_id, semestre_asignado, matricula_estimada, esta_activa)
@@ -2386,10 +2867,10 @@ $$;`,
     grupo: 'Academia y catálogos',
     desc: 'Reemplaza por completo los cursos y las cohortes de una agrupación existente.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 347,
-    claves: '(uuid, text, uuid, uuid[], uuid[]) rpc funcion p_id p_nombre p_curso_principal_id p_curso_ids p_cohorte_ids',
+    linea: 330,
+    claves: '("uuid", "text", "uuid", "uuid"[], "uuid"[]) rpc funcion p_id p_nombre p_curso_principal_id p_curso_ids p_cohorte_ids',
     params: [
       { n: 'p_id', t: 'uuid', d: '' },
       { n: 'p_nombre', t: 'text', d: '' },
@@ -2402,16 +2883,27 @@ $$;`,
       'Borra todos los cursos y cohortes anteriores.',
       'Reinserta los recibidos: es un reemplazo completo, no una fusión.',
     ],
-    sql: `CREATE FUNCTION horarios.actualizar_agrupacion_area_comun(p_id uuid, p_nombre text, p_curso_principal_id uuid, p_curso_ids uuid[], p_cohorte_ids uuid[]) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."actualizar_agrupacion_area_comun"("p_id" "uuid", "p_nombre" "text", "p_curso_principal_id" "uuid", "p_curso_ids" "uuid"[], "p_cohorte_ids" "uuid"[]) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_periodo_id uuid;
+    v_curso_comun uuid;
 begin
+    select ccc.curso_comun_id into v_curso_comun
+    from horarios.curso_comun_cursos ccc
+    where ccc.curso_id = p_curso_principal_id;
+
+    if v_curso_comun is null then
+        raise exception 'El curso principal % no pertenece a ningun curso comun: un area comun sale siempre de uno',
+            p_curso_principal_id using errcode = 'check_violation';
+    end if;
+
     update horarios.agrupaciones_area_comun
        set nombre = trim(p_nombre),
-           curso_principal_id = p_curso_principal_id
+           curso_principal_id = p_curso_principal_id,
+           curso_comun_id = v_curso_comun
      where id = p_id
        and esta_activa
        and eliminado_en is null
@@ -2430,6 +2922,8 @@ begin
     insert into horarios.agrupacion_area_comun_cohortes (agrupacion_id, cohorte_id)
     select p_id, valor from unnest(p_cohorte_ids) valor on conflict do nothing;
 
+    perform horarios.validar_agrupacion_area_comun(p_id);
+
     return jsonb_build_object(
         'id', p_id,
         'periodo_id', v_periodo_id,
@@ -2441,16 +2935,123 @@ end;
 $$;`,
   },
   {
+    id: 'fn-actualizar_curso_comun',
+    nombre: 'actualizar_curso_comun',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Renombra un curso común y reemplaza sus materias equivalentes.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 386,
+    claves: '("uuid", "text", "uuid"[]) rpc funcion p_id p_nombre p_curso_ids',
+    params: [
+      { n: 'p_id', t: 'uuid', d: '' },
+      { n: 'p_nombre', t: 'text', d: '' },
+      { n: 'p_curso_ids', t: 'uuid[]', d: '' },
+    ],
+    pasos: [
+      'Actualiza el grupo vivo; falla si no existe.',
+      'Reemplaza los miembros mediante `fijar_cursos_comunes` y devuelve el resultado.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."actualizar_curso_comun"("p_id" "uuid", "p_nombre" "text", "p_curso_ids" "uuid"[]) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+begin
+    update horarios.curso_comun set nombre = p_nombre
+     where id = p_id and eliminado_en is null;
+
+    if not found then
+        raise exception 'No se encontró el curso común.' using errcode = 'no_data_found';
+    end if;
+
+    perform horarios.fijar_cursos_comunes(p_id, p_curso_ids);
+    return jsonb_build_object('id', p_id, 'nombre', p_nombre, 'curso_ids', to_jsonb(p_curso_ids));
+end;
+$$;`,
+  },
+  {
+    id: 'fn-actualizar_curso_en_pensum',
+    nombre: 'actualizar_curso_en_pensum',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Actualiza juntos los datos de una materia y su carga dentro del pensum.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 408,
+    claves: '("uuid", "text", "text", boolean, "text", boolean, integer, integer, boolean, integer) rpc funcion p_curso_id p_codigo p_nombre p_requiere_laboratorio p_tipo_laboratorio_requerido p_es_area_comun p_semestre_asignado p_bloques_semanales_exactos p_prefiere_bloques_consecutivos p_duracion_slots',
+    params: [
+      { n: 'p_curso_id', t: 'uuid', d: '' },
+      { n: 'p_codigo', t: 'text', d: '' },
+      { n: 'p_nombre', t: 'text', d: '' },
+      { n: 'p_requiere_laboratorio', t: 'boolean', d: '' },
+      { n: 'p_tipo_laboratorio_requerido', t: 'text', d: '' },
+      { n: 'p_es_area_comun', t: 'boolean', d: '' },
+      { n: 'p_semestre_asignado', t: 'integer', d: '' },
+      { n: 'p_bloques_semanales_exactos', t: 'integer', d: '' },
+      { n: 'p_prefiere_bloques_consecutivos', t: 'boolean', d: '' },
+      { n: 'p_duracion_slots', t: 'integer', d: '1' },
+    ],
+    pasos: [
+      'Actualiza el curso vivo; si deja de ser área común, retira su pertenencia al grupo de equivalencia.',
+      'Actualiza su malla y devuelve ambas filas; falla si falta el curso o la malla.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."actualizar_curso_en_pensum"("p_curso_id" "uuid", "p_codigo" "text", "p_nombre" "text", "p_requiere_laboratorio" boolean, "p_tipo_laboratorio_requerido" "text", "p_es_area_comun" boolean, "p_semestre_asignado" integer, "p_bloques_semanales_exactos" integer, "p_prefiere_bloques_consecutivos" boolean, "p_duracion_slots" integer DEFAULT 1) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_curso horarios.cursos%rowtype;
+    v_malla horarios.cursos_en_pensum%rowtype;
+begin
+    update horarios.cursos
+       set codigo = p_codigo,
+           nombre = p_nombre,
+           requiere_laboratorio = p_requiere_laboratorio,
+           tipo_laboratorio_requerido = p_tipo_laboratorio_requerido,
+           es_area_comun = p_es_area_comun
+     where id = p_curso_id and eliminado_en is null
+    returning * into v_curso;
+
+    if not found then
+        raise exception 'No se encontró el curso.' using errcode = 'no_data_found';
+    end if;
+
+    -- Dejar de ser área común saca al curso de su grupo: si ya no se cursa junto con
+    -- otras carreras, la equivalencia dejó de ser cierta.
+    if not p_es_area_comun then
+        delete from horarios.curso_comun_cursos where curso_id = p_curso_id;
+    end if;
+
+    update horarios.cursos_en_pensum
+       set semestre_asignado = p_semestre_asignado,
+           bloques_semanales_exactos = p_bloques_semanales_exactos,
+           prefiere_bloques_consecutivos = p_prefiere_bloques_consecutivos,
+           duracion_slots = p_duracion_slots
+     where curso_id = p_curso_id and eliminado_en is null
+    returning * into v_malla;
+
+    if not found then
+        raise exception 'El curso no está en ninguna malla.' using errcode = 'no_data_found';
+    end if;
+
+    return jsonb_build_object('curso', to_jsonb(v_curso), 'en_pensum', to_jsonb(v_malla));
+end;
+$$;`,
+  },
+  {
     id: 'fn-asignar_recurso_aula',
     nombre: 'asignar_recurso_aula',
     cat: 'funcion',
     grupo: 'Academia y catálogos',
     desc: 'Registra cuántas unidades de un recurso tiene un aula. UPSERT: si ya existía, ajusta la cantidad.',
     detalle: '',
-    nota: 'devuelve void · sql · escribe',
+    nota: 'devuelve void · sql · VOLATILE',
     tabla: '',
-    linea: 448,
-    claves: '(uuid, uuid, integer) rpc funcion p_aula_id p_recurso_id p_cantidad',
+    linea: 514,
+    claves: '("uuid", "uuid", integer) rpc funcion p_aula_id p_recurso_id p_cantidad',
     params: [
       { n: 'p_aula_id', t: 'uuid', d: '' },
       { n: 'p_recurso_id', t: 'uuid', d: '' },
@@ -2460,9 +3061,9 @@ $$;`,
       'Inserta el recurso en el aula.',
       'Si esa pareja ya existía, solo ajusta la cantidad.',
     ],
-    sql: `CREATE FUNCTION horarios.asignar_recurso_aula(p_aula_id uuid, p_recurso_id uuid, p_cantidad integer) RETURNS void
-    LANGUAGE sql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."asignar_recurso_aula"("p_aula_id" "uuid", "p_recurso_id" "uuid", "p_cantidad" integer) RETURNS "void"
+    LANGUAGE "sql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     insert into horarios.aula_recursos (aula_id, recurso_id, cantidad)
     values (p_aula_id, p_recurso_id, p_cantidad)
@@ -2477,10 +3078,10 @@ $$;`,
     grupo: 'Academia y catálogos',
     desc: 'Define un área común: curso principal, cursos que la integran y cohortes que asisten juntas.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 1529,
-    claves: '(uuid, text, uuid, uuid[], uuid[], uuid) rpc funcion p_periodo_id p_nombre p_curso_principal_id p_curso_ids p_cohorte_ids p_creada_por_id',
+    linea: 1654,
+    claves: '("uuid", "text", "uuid", "uuid"[], "uuid"[], "uuid") rpc funcion p_periodo_id p_nombre p_curso_principal_id p_curso_ids p_cohorte_ids p_creada_por_id',
     params: [
       { n: 'p_periodo_id', t: 'uuid', d: '' },
       { n: 'p_nombre', t: 'text', d: '' },
@@ -2494,22 +3095,47 @@ $$;`,
       'Vuelca los cursos y las cohortes que llegan como arreglos.',
       'Devuelve el id nuevo con sus miembros.',
     ],
-    sql: `CREATE FUNCTION horarios.crear_agrupacion_area_comun(p_periodo_id uuid, p_nombre text, p_curso_principal_id uuid, p_curso_ids uuid[], p_cohorte_ids uuid[], p_creada_por_id uuid DEFAULT NULL::uuid) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."crear_agrupacion_area_comun"("p_periodo_id" "uuid", "p_nombre" "text", "p_curso_principal_id" "uuid", "p_curso_ids" "uuid"[], "p_cohorte_ids" "uuid"[], "p_creada_por_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_id uuid;
+    v_curso_comun uuid;
+    v_jornada uuid;
 begin
+    select ccc.curso_comun_id into v_curso_comun
+    from horarios.curso_comun_cursos ccc
+    where ccc.curso_id = p_curso_principal_id;
+
+    if v_curso_comun is null then
+        raise exception 'El curso principal % no pertenece a ningun curso comun: un area comun sale siempre de uno',
+            p_curso_principal_id using errcode = 'check_violation';
+    end if;
+
+    -- Escalar a proposito, igual que en el relleno de la columna: dos jornadas entre las
+    -- cohortes elegidas hacen que Postgres pare, que es lo correcto —ninguna sesion podria
+    -- incluirlas a todas—.
+    select distinct co.jornada_id into v_jornada
+    from horarios.cohortes co
+    where co.id = any(p_cohorte_ids) and co.eliminado_en is null;
+
+    if v_jornada is null then
+        raise exception 'Un area comun necesita al menos una cohorte para saber su jornada'
+            using errcode = 'check_violation';
+    end if;
+
     insert into horarios.agrupaciones_area_comun
-        (periodo_id, nombre, curso_principal_id, creada_por_id)
-    values (p_periodo_id, p_nombre, p_curso_principal_id, p_creada_por_id)
+        (periodo_id, nombre, curso_principal_id, curso_comun_id, jornada_id, creada_por_id)
+    values (p_periodo_id, p_nombre, p_curso_principal_id, v_curso_comun, v_jornada, p_creada_por_id)
     returning id into v_id;
 
     insert into horarios.agrupacion_area_comun_cursos (agrupacion_id, curso_id)
     select v_id, valor from unnest(p_curso_ids) valor on conflict do nothing;
     insert into horarios.agrupacion_area_comun_cohortes (agrupacion_id, cohorte_id)
     select v_id, valor from unnest(p_cohorte_ids) valor on conflict do nothing;
+
+    perform horarios.validar_agrupacion_area_comun(v_id);
 
     return jsonb_build_object(
         'id', v_id,
@@ -2522,16 +3148,93 @@ end;
 $$;`,
   },
   {
+    id: 'fn-crear_agrupacion_desde_curso_comun',
+    nombre: 'crear_agrupacion_desde_curso_comun',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Crea una clase compartida para un período y jornada a partir de un grupo de equivalencia.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 1711,
+    claves: '("uuid", "uuid", "uuid", "text", "uuid") rpc funcion p_curso_comun_id p_periodo_id p_jornada_id p_nombre p_creada_por_id',
+    params: [
+      { n: 'p_curso_comun_id', t: 'uuid', d: '' },
+      { n: 'p_periodo_id', t: 'uuid', d: '' },
+      { n: 'p_jornada_id', t: 'uuid', d: '' },
+      { n: 'p_nombre', t: 'text', d: 'NULL' },
+      { n: 'p_creada_por_id', t: 'uuid', d: 'NULL' },
+    ],
+    pasos: [
+      'Comprueba que el curso común exista y crea la agrupación con su período y jornada.',
+      'Recalcula las membresías del período desde las vistas derivadas.',
+      'Fija como principal el curso incluido de menor código y devuelve la agrupación.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."crear_agrupacion_desde_curso_comun"("p_curso_comun_id" "uuid", "p_periodo_id" "uuid", "p_jornada_id" "uuid", "p_nombre" "text" DEFAULT NULL::"text", "p_creada_por_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_id uuid;
+    v_nombre text;
+    v_principal uuid;
+begin
+    select coalesce(nullif(trim(coalesce(p_nombre, '')), ''), g.nombre)
+      into v_nombre
+    from horarios.curso_comun g
+    where g.id = p_curso_comun_id and g.eliminado_en is null;
+
+    if v_nombre is null then
+        raise exception 'El curso comun % no existe o esta eliminado', p_curso_comun_id
+            using errcode = 'no_data_found';
+    end if;
+
+    insert into horarios.agrupaciones_area_comun
+        (periodo_id, nombre, curso_principal_id, curso_comun_id, jornada_id, creada_por_id)
+    values (p_periodo_id, v_nombre, null, p_curso_comun_id, p_jornada_id, p_creada_por_id)
+    returning id into v_id;
+
+    -- El recalculo mira todo el periodo, no solo la nueva. Es a proposito: activar una
+    -- cohorte cambia la membresia de mas de un area comun, y tener dos caminos —uno para
+    -- la recien creada y otro para las demas— es tener dos definiciones de lo mismo.
+    perform horarios.recalcular_areas_comunes_periodo(p_periodo_id);
+
+    -- Curso principal estable: el de codigo menor entre los incluidos.
+    select cur.id into v_principal
+    from horarios.agrupacion_area_comun_cursos aac
+    join horarios.cursos cur on cur.id = aac.curso_id
+    where aac.agrupacion_id = v_id
+    order by cur.codigo
+    limit 1;
+
+    update horarios.agrupaciones_area_comun
+       set curso_principal_id = v_principal
+     where id = v_id;
+
+    return jsonb_build_object(
+        'id', v_id,
+        'periodo_id', p_periodo_id,
+        'jornada_id', p_jornada_id,
+        'nombre', v_nombre,
+        'curso_principal_id', v_principal,
+        'curso_ids', coalesce((select jsonb_agg(curso_id order by curso_id)
+            from horarios.agrupacion_area_comun_cursos where agrupacion_id = v_id), '[]'::jsonb),
+        'cohorte_ids', coalesce((select jsonb_agg(cohorte_id order by cohorte_id)
+            from horarios.agrupacion_area_comun_cohortes where agrupacion_id = v_id), '[]'::jsonb));
+end;
+$$;`,
+  },
+  {
     id: 'fn-crear_cohorte',
     nombre: 'crear_cohorte',
     cat: 'funcion',
     grupo: 'Academia y catálogos',
     desc: 'Crea una cohorte (carrera + pensum + jornada + año + sección) validando que la combinación sea coherente.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 1561,
-    claves: '(uuid, uuid, uuid, integer, text, integer) rpc funcion p_carrera_id p_pensum_id p_jornada_id p_anio_ingreso p_seccion p_matricula_estimada',
+    linea: 1770,
+    claves: '("uuid", "uuid", "uuid", integer, "text", integer) rpc funcion p_carrera_id p_pensum_id p_jornada_id p_anio_ingreso p_seccion p_matricula_estimada',
     params: [
       { n: 'p_carrera_id', t: 'uuid', d: '' },
       { n: 'p_pensum_id', t: 'uuid', d: '' },
@@ -2545,9 +3248,9 @@ $$;`,
       'Inserta la cohorte y devuelve la fila completa.',
       'El resto de la validación la imponen el índice único de identidad y las llaves foráneas.',
     ],
-    sql: `CREATE FUNCTION horarios.crear_cohorte(p_carrera_id uuid, p_pensum_id uuid, p_jornada_id uuid, p_anio_ingreso integer, p_seccion text, p_matricula_estimada integer) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."crear_cohorte"("p_carrera_id" "uuid", "p_pensum_id" "uuid", "p_jornada_id" "uuid", "p_anio_ingreso" integer, "p_seccion" "text", "p_matricula_estimada" integer) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_cohorte horarios.cohortes%rowtype;
@@ -2567,6 +3270,398 @@ end;
 $$;`,
   },
   {
+    id: 'fn-crear_curso_comun',
+    nombre: 'crear_curso_comun',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Crea un grupo de equivalencia entre materias de distintos pensums.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 1796,
+    claves: '("text", "uuid"[]) rpc funcion p_nombre p_curso_ids',
+    params: [
+      { n: 'p_nombre', t: 'text', d: '' },
+      { n: 'p_curso_ids', t: 'uuid[]', d: '' },
+    ],
+    pasos: [
+      'Inserta el grupo con su nombre.',
+      'Delega la validación y la membresía en `fijar_cursos_comunes`; devuelve el grupo y sus cursos.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."crear_curso_comun"("p_nombre" "text", "p_curso_ids" "uuid"[]) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_id uuid;
+begin
+    insert into horarios.curso_comun (nombre) values (p_nombre) returning id into v_id;
+    perform horarios.fijar_cursos_comunes(v_id, p_curso_ids);
+    return jsonb_build_object('id', v_id, 'nombre', p_nombre, 'curso_ids', to_jsonb(p_curso_ids));
+end;
+$$;`,
+  },
+  {
+    id: 'fn-crear_curso_en_pensum',
+    nombre: 'crear_curso_en_pensum',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Crea una materia propia de un pensum y su entrada en la malla curricular.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 1814,
+    claves: '("uuid", "text", "text", boolean, "text", boolean, integer, integer, boolean, integer) rpc funcion p_pensum_id p_codigo p_nombre p_requiere_laboratorio p_tipo_laboratorio_requerido p_es_area_comun p_semestre_asignado p_bloques_semanales_exactos p_prefiere_bloques_consecutivos p_duracion_slots',
+    params: [
+      { n: 'p_pensum_id', t: 'uuid', d: '' },
+      { n: 'p_codigo', t: 'text', d: '' },
+      { n: 'p_nombre', t: 'text', d: '' },
+      { n: 'p_requiere_laboratorio', t: 'boolean', d: '' },
+      { n: 'p_tipo_laboratorio_requerido', t: 'text', d: '' },
+      { n: 'p_es_area_comun', t: 'boolean', d: '' },
+      { n: 'p_semestre_asignado', t: 'integer', d: '' },
+      { n: 'p_bloques_semanales_exactos', t: 'integer', d: '' },
+      { n: 'p_prefiere_bloques_consecutivos', t: 'boolean', d: '' },
+      { n: 'p_duracion_slots', t: 'integer', d: '1' },
+    ],
+    pasos: [
+      'Inserta el curso con su pensum, código, nombre y requisitos de laboratorio y área común.',
+      'Inserta la malla con semestre, bloques, consecutividad y máximo diario; devuelve curso y malla juntos.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."crear_curso_en_pensum"("p_pensum_id" "uuid", "p_codigo" "text", "p_nombre" "text", "p_requiere_laboratorio" boolean, "p_tipo_laboratorio_requerido" "text", "p_es_area_comun" boolean, "p_semestre_asignado" integer, "p_bloques_semanales_exactos" integer, "p_prefiere_bloques_consecutivos" boolean, "p_duracion_slots" integer DEFAULT 1) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_curso horarios.cursos%rowtype;
+    v_malla horarios.cursos_en_pensum%rowtype;
+begin
+    insert into horarios.cursos
+        (pensum_id, codigo, nombre, requiere_laboratorio, tipo_laboratorio_requerido, es_area_comun)
+    values
+        (p_pensum_id, p_codigo, p_nombre, p_requiere_laboratorio,
+         p_tipo_laboratorio_requerido, p_es_area_comun)
+    returning * into v_curso;
+
+    insert into horarios.cursos_en_pensum
+        (pensum_id, curso_id, semestre_asignado, bloques_semanales_exactos,
+         prefiere_bloques_consecutivos, duracion_slots)
+    values
+        (p_pensum_id, v_curso.id, p_semestre_asignado, p_bloques_semanales_exactos,
+         p_prefiere_bloques_consecutivos, p_duracion_slots)
+    returning * into v_malla;
+
+    return jsonb_build_object('curso', to_jsonb(v_curso), 'en_pensum', to_jsonb(v_malla));
+end;
+$$;`,
+  },
+  {
+    id: 'fn-cursos_equivalentes',
+    nombre: 'cursos_equivalentes',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Devuelve el curso consultado y los demás miembros de su curso común vigente.',
+    detalle: '',
+    nota: 'devuelve TABLE(curso_id uuid) · sql · solo lee (STABLE)',
+    tabla: '',
+    linea: 2142,
+    claves: '("uuid") rpc funcion p_curso_id',
+    params: [
+      { n: 'p_curso_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Incluye siempre el identificador recibido.',
+      'Une los cursos del mismo grupo no eliminado y elimina duplicados con UNION.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."cursos_equivalentes"("p_curso_id" "uuid") RETURNS TABLE("curso_id" "uuid")
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select p_curso_id
+    union
+    select gc2.curso_id
+    from horarios.curso_comun_cursos gc1
+    join horarios.curso_comun g
+      on g.id = gc1.curso_comun_id and g.eliminado_en is null
+    join horarios.curso_comun_cursos gc2
+      on gc2.curso_comun_id = gc1.curso_comun_id
+    where gc1.curso_id = p_curso_id;
+$$;`,
+  },
+  {
+    id: 'fn-eliminar_curso_en_pensum',
+    nombre: 'eliminar_curso_en_pensum',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Da de baja lógica un curso y su malla, y retira su equivalencia compartida.',
+    detalle: '',
+    nota: 'devuelve boolean · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2205,
+    claves: '("uuid") rpc funcion p_curso_id',
+    params: [
+      { n: 'p_curso_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Marca el curso y sus filas de malla con `eliminado_en`.',
+      'Borra su vínculo en `curso_comun_cursos`; devuelve false si el curso ya no estaba vivo.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."eliminar_curso_en_pensum"("p_curso_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_borrado boolean := false;
+begin
+    update horarios.cursos
+       set eliminado_en = now()
+     where id = p_curso_id and eliminado_en is null;
+    v_borrado := found;
+
+    if not v_borrado then
+        return false;
+    end if;
+
+    update horarios.cursos_en_pensum
+       set eliminado_en = now()
+     where curso_id = p_curso_id and eliminado_en is null;
+
+    delete from horarios.curso_comun_cursos where curso_id = p_curso_id;
+    return true;
+end;
+$$;`,
+  },
+  {
+    id: 'fn-fijar_cursos_comunes',
+    nombre: 'fijar_cursos_comunes',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Reemplaza los cursos equivalentes exigiendo al menos dos materias de pensums distintos.',
+    detalle: '',
+    nota: 'devuelve void · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2274,
+    claves: '("uuid", "uuid"[]) rpc funcion p_curso_comun_id p_curso_ids',
+    params: [
+      { n: 'p_curso_comun_id', t: 'uuid', d: '' },
+      { n: 'p_curso_ids', t: 'uuid[]', d: '' },
+    ],
+    pasos: [
+      'Exige al menos dos cursos marcados como área común y sin repetir pensum.',
+      'Retira los miembros anteriores y rechaza cursos que ya pertenezcan a otro grupo.',
+      'Inserta la membresía nueva en la misma transacción.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."fijar_cursos_comunes"("p_curso_comun_id" "uuid", "p_curso_ids" "uuid"[]) RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+begin
+    if array_length(p_curso_ids, 1) is null or array_length(p_curso_ids, 1) < 2 then
+        raise exception 'Un curso común necesita al menos dos cursos.' using errcode = 'check_violation';
+    end if;
+
+    if exists (
+        select 1 from horarios.cursos c
+        where c.id = any(p_curso_ids) and (not c.es_area_comun or c.eliminado_en is not null)
+    ) then
+        raise exception 'Solo los cursos marcados como área común pueden agruparse.' using errcode = 'check_violation';
+    end if;
+
+    -- Dos cursos del mismo pensum no son equivalentes: son dos cursos de la misma
+    -- carrera, y agruparlos le daría a una cohorte dos veces la misma sesión.
+    if exists (
+        select 1 from horarios.cursos c
+        where c.id = any(p_curso_ids)
+        group by c.pensum_id having count(*) > 1
+    ) then
+        raise exception 'Un curso común no puede llevar dos cursos del mismo pensum.' using errcode = 'check_violation';
+    end if;
+
+    delete from horarios.curso_comun_cursos
+     where curso_comun_id = p_curso_comun_id and curso_id <> all(p_curso_ids);
+
+    -- Se comprueba antes de insertar en vez de dejar que el índice único lo corte: con
+    -- «on conflict do nothing» el curso ya agrupado se caería en silencio y el grupo
+    -- quedaría con menos miembros de los que se pidieron.
+    if exists (
+        select 1 from horarios.curso_comun_cursos gc
+        where gc.curso_id = any(p_curso_ids) and gc.curso_comun_id <> p_curso_comun_id
+    ) then
+        raise exception 'Un curso solo puede pertenecer a un curso común.' using errcode = 'unique_violation';
+    end if;
+
+    insert into horarios.curso_comun_cursos (curso_comun_id, curso_id)
+    select p_curso_comun_id, valor from unnest(p_curso_ids) valor
+    on conflict (curso_comun_id, curso_id) do nothing;
+end;
+$$;`,
+  },
+  {
+    id: 'fn-guardar_rejilla_cohortes',
+    nombre: 'guardar_rejilla_cohortes',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Activa o desactiva semestres de una fila de la rejilla de cohortes y recalcula sus áreas comunes.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2553,
+    claves: '("uuid", "uuid", "uuid", "uuid", "text", integer[], integer) rpc funcion p_periodo_id p_carrera_id p_jornada_id p_pensum_id p_seccion p_semestres p_matricula',
+    params: [
+      { n: 'p_periodo_id', t: 'uuid', d: '' },
+      { n: 'p_carrera_id', t: 'uuid', d: '' },
+      { n: 'p_jornada_id', t: 'uuid', d: '' },
+      { n: 'p_pensum_id', t: 'uuid', d: '' },
+      { n: 'p_seccion', t: 'text', d: '' },
+      { n: 'p_semestres', t: 'integer[]', d: '' },
+      { n: 'p_matricula', t: 'integer', d: '' },
+    ],
+    pasos: [
+      'Valida período, pensum, carrera, sección y matrícula; garantiza el vínculo carrera-jornada.',
+      'Reutiliza cohortes existentes o crea las necesarias para los semestres seleccionados, conservando matrículas previas.',
+      'Desactiva los semestres desmarcados solo dentro de esa carrera, jornada y sección.',
+      'Recalcula las áreas comunes del período y devuelve los conteos de la operación.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."guardar_rejilla_cohortes"("p_periodo_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pensum_id" "uuid", "p_seccion" "text", "p_semestres" integer[], "p_matricula" integer) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_anio integer;
+    v_seccion text := trim(coalesce(p_seccion, ''));
+    v_semestres integer[] := coalesce(p_semestres, '{}'::integer[]);
+    v_semestre integer;
+    v_anio_ingreso integer;
+    v_cohorte uuid;
+    v_matricula integer;
+    v_creadas integer := 0;
+    v_activadas integer := 0;
+    v_desactivadas integer := 0;
+    v_areas integer;
+begin
+    select extract(year from p.fecha_inicio)::integer into v_anio
+    from horarios.periodos_academicos p
+    where p.id = p_periodo_id and p.eliminado_en is null;
+
+    if v_anio is null then
+        raise exception 'El periodo % no existe o esta eliminado', p_periodo_id
+            using errcode = 'no_data_found';
+    end if;
+
+    if v_seccion = '' then
+        raise exception 'La seccion es obligatoria: es lo que separa dos grupos del mismo año y la misma carrera'
+            using errcode = 'check_violation';
+    end if;
+
+    if not exists (select 1 from horarios.pensums pe
+                    where pe.id = p_pensum_id and pe.carrera_id = p_carrera_id
+                      and pe.eliminado_en is null) then
+        raise exception 'El pensum % no es de la carrera %', p_pensum_id, p_carrera_id
+            using errcode = 'check_violation';
+    end if;
+
+    if p_matricula is null or p_matricula < 0 then
+        raise exception 'La matricula estimada no puede ser negativa'
+            using errcode = 'check_violation';
+    end if;
+
+    -- El par carrera-jornada tiene que existir antes de crear cohortes: la clave foranea
+    -- de cohortes lo exige. crear_cohorte hace lo mismo por la misma razon.
+    insert into horarios.carrera_jornadas (carrera_id, jornada_id)
+    values (p_carrera_id, p_jornada_id)
+    on conflict do nothing;
+
+    foreach v_semestre in array v_semestres
+    loop
+        v_anio_ingreso := v_anio - floor((v_semestre - 1) / 2.0)::integer;
+
+        -- Primero, la que ya cursa ese semestre en este periodo, la prediga la convencion o
+        -- no. Un periodo puede heredar cohortes de otro —PRUEBA reutiliza las de E1…E5— y
+        -- buscar solo por la formula activaria una segunda cohorte al lado de la que ya
+        -- estaba, duplicando en silencio a los mismos estudiantes.
+        select co.id into v_cohorte
+        from horarios.cohortes co
+        join horarios.cohorte_periodos cp on cp.cohorte_id = co.id
+         and cp.periodo_id = p_periodo_id and cp.esta_activa and cp.eliminado_en is null
+         and cp.semestre_asignado = v_semestre
+        where co.carrera_id = p_carrera_id
+          and co.jornada_id = p_jornada_id
+          and lower(co.seccion) = lower(v_seccion)
+          and co.eliminado_en is null
+        order by co.anio_ingreso desc
+        limit 1;
+
+        -- Y si no cursa nadie, la que dice la convencion.
+        if v_cohorte is null then
+            select co.id into v_cohorte
+            from horarios.cohortes co
+            where co.carrera_id = p_carrera_id
+              and co.jornada_id = p_jornada_id
+              and co.anio_ingreso = v_anio_ingreso
+              and lower(co.seccion) = lower(v_seccion)
+              and co.eliminado_en is null;
+        end if;
+
+        if v_cohorte is null then
+            insert into horarios.cohortes
+                (carrera_id, pensum_id, jornada_id, anio_ingreso, seccion, matricula_estimada)
+            values
+                (p_carrera_id, p_pensum_id, p_jornada_id, v_anio_ingreso, v_seccion, p_matricula)
+            returning id into v_cohorte;
+            v_creadas := v_creadas + 1;
+        end if;
+
+        -- La matricula que la casilla ya tenia no se toca, este apagada o encendida: volver
+        -- a marcar una casilla la restaura tal como estaba, y desmarcar y remarcar no puede
+        -- cambiar en silencio con que aulas cabe esa cohorte. La rejilla activa y desactiva;
+        -- corregir una matricula concreta es del formulario de abajo.
+        select cp.matricula_estimada into v_matricula
+        from horarios.cohorte_periodos cp
+        where cp.cohorte_id = v_cohorte and cp.periodo_id = p_periodo_id
+          and cp.eliminado_en is null;
+
+        perform horarios.activar_cohorte_periodo(
+            v_cohorte, p_periodo_id, v_semestre, coalesce(v_matricula, p_matricula));
+        v_activadas := v_activadas + 1;
+    end loop;
+
+    -- Solo se desactiva dentro de esta fila de la rejilla: misma carrera, misma jornada y
+    -- misma seccion. Otra seccion del mismo par es otra fila y no se entera de esta.
+    with apagadas as (
+        update horarios.cohorte_periodos cp
+           set esta_activa = false,
+               actualizado_en = now(),
+               version_fila = cp.version_fila + 1
+         where cp.periodo_id = p_periodo_id
+           and cp.esta_activa
+           and cp.eliminado_en is null
+           and not (cp.semestre_asignado = any (v_semestres))
+           and cp.cohorte_id in (
+               select co.id from horarios.cohortes co
+                where co.carrera_id = p_carrera_id
+                  and co.jornada_id = p_jornada_id
+                  and lower(co.seccion) = lower(v_seccion)
+                  and co.eliminado_en is null)
+        returning 1)
+    select count(*) into v_desactivadas from apagadas;
+
+    -- Quien cursa cada area comun acaba de cambiar. Es la mitad del paso: sin esto, la
+    -- rejilla dejaria las agrupaciones hablando de cohortes que ya no estan.
+    v_areas := horarios.recalcular_areas_comunes_periodo(p_periodo_id);
+
+    return jsonb_build_object(
+        'periodo_id', p_periodo_id,
+        'carrera_id', p_carrera_id,
+        'jornada_id', p_jornada_id,
+        'seccion', v_seccion,
+        'cohortes_creadas', v_creadas,
+        'cohortes_activadas', v_activadas,
+        'cohortes_desactivadas', v_desactivadas,
+        'areas_comunes_recalculadas', v_areas);
+end;
+$$;`,
+  },
+  {
     id: 'fn-listar_agrupaciones_area_comun',
     nombre: 'listar_agrupaciones_area_comun',
     cat: 'funcion',
@@ -2575,8 +3670,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2130,
-    claves: '(uuid) rpc funcion p_periodo_id',
+    linea: 2886,
+    claves: '("uuid") rpc funcion p_periodo_id',
     params: [
       { n: 'p_periodo_id', t: 'uuid', d: '' },
     ],
@@ -2585,9 +3680,9 @@ $$;`,
       'Anida en cada una sus cursos y sus cohortes.',
       'Ordena por nombre y devuelve `[]` si no hay ninguna.',
     ],
-    sql: `CREATE FUNCTION horarios.listar_agrupaciones_area_comun(p_periodo_id uuid) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."listar_agrupaciones_area_comun"("p_periodo_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce(jsonb_agg(resultado.objeto order by resultado.nombre), '[]'::jsonb)
     from (
@@ -2608,16 +3703,196 @@ $$;`,
 $$;`,
   },
   {
+    id: 'fn-listar_cursos_comunes',
+    nombre: 'listar_cursos_comunes',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Lista los grupos de equivalencia vivos con sus identificadores de curso.',
+    detalle: '',
+    nota: 'devuelve jsonb · sql · solo lee (STABLE)',
+    tabla: '',
+    linea: 2934,
+    claves: '() rpc funcion ',
+    params: [],
+    pasos: [
+      'Lee los grupos sin borrado lógico y anida los ids de sus materias.',
+      'Devuelve JSON ordenado por nombre, o un arreglo vacío si no hay grupos.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."listar_cursos_comunes"() RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select coalesce(jsonb_agg(resultado.objeto order by resultado.nombre), '[]'::jsonb)
+    from (
+        select g.nombre, jsonb_build_object(
+            'id', g.id,
+            'nombre', g.nombre,
+            'curso_ids', coalesce((select jsonb_agg(gc.curso_id order by gc.curso_id)
+                from horarios.curso_comun_cursos gc
+                where gc.curso_comun_id = g.id), '[]'::jsonb)) as objeto
+        from horarios.curso_comun g
+        where g.eliminado_en is null
+    ) resultado;
+$$;`,
+  },
+  {
+    id: 'fn-recalcular_areas_comunes_periodo',
+    nombre: 'recalcular_areas_comunes_periodo',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Sincroniza las tablas puente de áreas comunes con los cursos y cohortes derivados del período.',
+    detalle: '',
+    nota: 'devuelve integer · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 3196,
+    claves: '("uuid") rpc funcion p_periodo_id',
+    params: [
+      { n: 'p_periodo_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Recorre las agrupaciones vivas del período.',
+      'Reemplaza cursos y cohortes con el resultado de las dos vistas derivadas.',
+      'Valida cada agrupación y devuelve cuántas recalculó.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."recalcular_areas_comunes_periodo"("p_periodo_id" "uuid") RETURNS integer
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_agrupacion uuid;
+    v_total integer := 0;
+begin
+    for v_agrupacion in
+        select id from horarios.agrupaciones_area_comun
+         where periodo_id = p_periodo_id and eliminado_en is null
+    loop
+        delete from horarios.agrupacion_area_comun_cursos where agrupacion_id = v_agrupacion;
+        insert into horarios.agrupacion_area_comun_cursos (agrupacion_id, curso_id)
+        select agrupacion_id, curso_id
+          from horarios.vista_area_comun_cursos_derivados
+         where agrupacion_id = v_agrupacion;
+
+        delete from horarios.agrupacion_area_comun_cohortes where agrupacion_id = v_agrupacion;
+        insert into horarios.agrupacion_area_comun_cohortes (agrupacion_id, cohorte_id)
+        select agrupacion_id, cohorte_id
+          from horarios.vista_area_comun_cohortes_derivadas
+         where agrupacion_id = v_agrupacion;
+
+        perform horarios.validar_agrupacion_area_comun(v_agrupacion);
+        v_total := v_total + 1;
+    end loop;
+    return v_total;
+end;
+$$;`,
+  },
+  {
+    id: 'fn-validar_agrupacion_area_comun',
+    nombre: 'validar_agrupacion_area_comun',
+    cat: 'funcion',
+    grupo: 'Academia y catálogos',
+    desc: 'Comprueba los cursos equivalentes y la jornada de una agrupación; admite una sola cohorte.',
+    detalle: '',
+    nota: 'devuelve void · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 3391,
+    claves: '("uuid") rpc funcion p_id',
+    params: [
+      { n: 'p_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Exige una agrupación viva con al menos dos cursos y sin repetir pensum.',
+      'Rechaza cursos eliminados o no marcados como área común.',
+      'Impide mezclar cohortes de distintas jornadas; no exige un mínimo de dos cohortes.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."validar_agrupacion_area_comun"("p_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_periodo uuid;
+    v_cursos integer;
+    v_jornadas integer;
+    v_texto text;
+begin
+    select periodo_id into v_periodo
+    from horarios.agrupaciones_area_comun
+    where id = p_id and eliminado_en is null;
+
+    if v_periodo is null then
+        raise exception 'La agrupacion % no existe o esta eliminada', p_id
+            using errcode = 'no_data_found';
+    end if;
+
+    select count(*) into v_cursos
+    from horarios.agrupacion_area_comun_cursos where agrupacion_id = p_id;
+
+    -- Dos cursos siguen siendo obligatorios: un area comun significa «esta clase tiene dos
+    -- nombres», y eso es del catalogo, no del periodo. Las cohortes ya no: cuantas carreras
+    -- la lleven este periodo es un dato que cambia cada semestre, y con una sola la clase
+    -- sigue siendo la misma clase compartida, solo que hoy la cursa una.
+    if v_cursos < 2 then
+        raise exception 'Un area comun necesita al menos dos cursos; tiene %',
+            v_cursos using errcode = 'check_violation';
+    end if;
+
+    -- Dos cursos del mismo pensum harian que una cohorte cursara la misma clase dos
+    -- veces. El catalogo «curso_comun» ya lo prohibe; aqui se cierra la otra puerta.
+    select string_agg(distinct ca.nombre, ', ') into v_texto
+    from horarios.agrupacion_area_comun_cursos aac
+    join horarios.cursos cur on cur.id = aac.curso_id
+    join horarios.pensums p on p.id = cur.pensum_id
+    join horarios.carreras ca on ca.id = p.carrera_id
+    where aac.agrupacion_id = p_id
+      and cur.pensum_id in (
+        select cur2.pensum_id
+        from horarios.agrupacion_area_comun_cursos aac2
+        join horarios.cursos cur2 on cur2.id = aac2.curso_id
+        where aac2.agrupacion_id = p_id
+        group by cur2.pensum_id having count(*) > 1);
+
+    if v_texto is not null then
+        raise exception 'La agrupacion lleva dos cursos del mismo pensum (%): una cohorte cursaria la misma clase dos veces',
+            v_texto using errcode = 'check_violation';
+    end if;
+
+    select string_agg(cur.codigo, ', ' order by cur.codigo) into v_texto
+    from horarios.agrupacion_area_comun_cursos aac
+    join horarios.cursos cur on cur.id = aac.curso_id
+    where aac.agrupacion_id = p_id
+      and (not cur.es_area_comun or cur.eliminado_en is not null);
+
+    if v_texto is not null then
+        raise exception 'Estos cursos no estan marcados como area comun o estan eliminados: %',
+            v_texto using errcode = 'check_violation';
+    end if;
+
+    -- Una sesion tiene una sola jornada y debe incluir a todas las cohortes de la
+    -- agrupacion: si mezclan jornadas, ninguna sesion puede existir.
+    select count(distinct co.jornada_id), string_agg(distinct j.nombre, ', ')
+      into v_jornadas, v_texto
+    from horarios.agrupacion_area_comun_cohortes aacc
+    join horarios.cohortes co on co.id = aacc.cohorte_id
+    join horarios.jornadas j on j.id = co.jornada_id
+    where aacc.agrupacion_id = p_id;
+
+    if v_jornadas > 1 then
+        raise exception 'Las cohortes de un area comun deben compartir jornada; hay varias: %',
+            v_texto using errcode = 'check_violation';
+    end if;
+end;
+$$;`,
+  },
+  {
     id: 'fn-autorizar_curso_docente',
     nombre: 'autorizar_curso_docente',
     cat: 'funcion',
     grupo: 'Docentes',
     desc: 'Autoriza a un docente a impartir un curso, con alcance opcional por carrera, facultad o jornada.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 463,
-    claves: '(uuid, uuid, uuid, uuid, uuid) rpc funcion p_docente_id p_curso_id p_carrera_id p_facultad_id p_jornada_id',
+    linea: 529,
+    claves: '("uuid", "uuid", "uuid", "uuid", "uuid") rpc funcion p_docente_id p_curso_id p_carrera_id p_facultad_id p_jornada_id',
     params: [
       { n: 'p_docente_id', t: 'uuid', d: '' },
       { n: 'p_curso_id', t: 'uuid', d: '' },
@@ -2630,16 +3905,16 @@ $$;`,
       'En ese caso busca la vigente que coincida exactamente en carrera, facultad y jornada.',
       'Falla si no logró ni crearla ni encontrarla; si no, devuelve la fila.',
     ],
-    sql: `CREATE FUNCTION horarios.autorizar_curso_docente(p_docente_id uuid, p_curso_id uuid, p_carrera_id uuid DEFAULT NULL::uuid, p_facultad_id uuid DEFAULT NULL::uuid, p_jornada_id uuid DEFAULT NULL::uuid) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."autorizar_curso_docente"("p_docente_id" "uuid", "p_curso_id" "uuid", "p_carrera_id" "uuid" DEFAULT NULL::"uuid", "p_facultad_id" "uuid" DEFAULT NULL::"uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_asignacion horarios.asignaciones_docente_curso%rowtype;
 begin
     insert into horarios.asignaciones_docente_curso
         (docente_id, curso_id, carrera_id, facultad_id, jornada_id)
-    values (p_docente_id, p_curso_id, p_carrera_id, p_facultad_id, p_jornada_id)
+    values (p_docente_id, p_curso_id, null, null, p_jornada_id)
     on conflict do nothing
     returning * into v_asignacion;
 
@@ -2647,8 +3922,8 @@ begin
         select * into v_asignacion
         from horarios.asignaciones_docente_curso
         where docente_id = p_docente_id and curso_id = p_curso_id
-          and carrera_id is not distinct from p_carrera_id
-          and facultad_id is not distinct from p_facultad_id
+          and carrera_id is null
+          and facultad_id is null
           and jornada_id is not distinct from p_jornada_id
           and esta_vigente and eliminado_en is null
         limit 1;
@@ -2662,16 +3937,60 @@ end;
 $$;`,
   },
   {
+    id: 'fn-fijar_facultades_docente',
+    nombre: 'fijar_facultades_docente',
+    cat: 'funcion',
+    grupo: 'Docentes',
+    desc: 'Reemplaza el conjunto de facultades de un docente existente.',
+    detalle: '',
+    nota: 'devuelve void · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2324,
+    claves: '("uuid", "uuid"[]) rpc funcion p_docente_id p_facultad_ids',
+    params: [
+      { n: 'p_docente_id', t: 'uuid', d: '' },
+      { n: 'p_facultad_ids', t: 'uuid[]', d: 'arreglo vacío' },
+    ],
+    pasos: [
+      'Comprueba que el docente exista y no esté eliminado.',
+      'Retira sus vínculos anteriores e inserta las facultades recibidas sin duplicados.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."fijar_facultades_docente"("p_docente_id" "uuid", "p_facultad_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+begin
+    if not exists (
+        select 1
+        from horarios.docentes
+        where id = p_docente_id
+          and eliminado_en is null
+    ) then
+        raise exception 'docente_inexistente' using errcode = 'no_data_found';
+    end if;
+
+    delete from horarios.docente_facultades
+    where docente_id = p_docente_id
+      and not (facultad_id = any (coalesce(p_facultad_ids, '{}'::uuid[])));
+
+    insert into horarios.docente_facultades (docente_id, facultad_id)
+    select p_docente_id, x
+    from unnest(coalesce(p_facultad_ids, '{}'::uuid[])) as x
+    on conflict do nothing;
+end;
+$$;`,
+  },
+  {
     id: 'fn-guardar_disponibilidad_docente',
     nombre: 'guardar_disponibilidad_docente',
     cat: 'funcion',
     grupo: 'Docentes',
-    desc: 'Guarda las franjas que declara el docente y las expande a bloques concretos en `disponibilidad_docente_slots`.',
-    detalle: 'Las franjas no sirven para consultar: hacen falta bloques. La expansión ocurre aquí, una sola vez.',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    desc: 'Guarda la cabecera de disponibilidad y reemplaza sus bloques en `disponibilidad_docente_slots`.',
+    detalle: 'Los bloques llegan en JSON; `ventanas_disponibilidad` define fechas de captura, no franjas horarias del docente.',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 1917,
-    claves: '(uuid, uuid, boolean, jsonb) rpc funcion p_docente_id p_periodo_id p_confirmar p_slots',
+    linea: 2407,
+    claves: '("uuid", "uuid", boolean, "jsonb") rpc funcion p_docente_id p_periodo_id p_confirmar p_slots',
     params: [
       { n: 'p_docente_id', t: 'uuid', d: '' },
       { n: 'p_periodo_id', t: 'uuid', d: '' },
@@ -2684,9 +4003,9 @@ $$;`,
       'De cada bloque comprueba contra su jornada que el día esté activo y el índice caiga dentro de los bloques del día.',
       'Si un bloque no encaja en su jornada, aborta la operación entera.',
     ],
-    sql: `CREATE FUNCTION horarios.guardar_disponibilidad_docente(p_docente_id uuid, p_periodo_id uuid, p_confirmar boolean, p_slots jsonb) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."guardar_disponibilidad_docente"("p_docente_id" "uuid", "p_periodo_id" "uuid", "p_confirmar" boolean, "p_slots" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_id uuid;
@@ -2729,6 +4048,119 @@ end;
 $$;`,
   },
   {
+    id: 'fn-guardar_mi_disponibilidad_docente',
+    nombre: 'guardar_mi_disponibilidad_docente',
+    cat: 'funcion',
+    grupo: 'Docentes',
+    desc: 'Guarda la disponibilidad del docente identificado por la sesión autenticada.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2456,
+    claves: '("uuid", boolean, "jsonb") rpc funcion p_periodo_id p_confirmar p_slots',
+    params: [
+      { n: 'p_periodo_id', t: 'uuid', d: '' },
+      { n: 'p_confirmar', t: 'boolean', d: '' },
+      { n: 'p_slots', t: 'jsonb', d: '' },
+    ],
+    pasos: [
+      'Resuelve el docente desde `auth.uid()` y exige un usuario docente activo, período válido y lista de bloques.',
+      'Impide confirmar una disponibilidad vacía.',
+      'Crea o actualiza la cabecera, reemplaza los bloques y devuelve la disponibilidad con sus slots.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."guardar_mi_disponibilidad_docente"("p_periodo_id" "uuid", "p_confirmar" boolean, "p_slots" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+declare
+    v_docente_id uuid;
+    v_disponibilidad_id uuid;
+begin
+    if p_periodo_id is null then
+        raise exception 'El período es obligatorio';
+    end if;
+
+    if p_slots is null or jsonb_typeof(p_slots) <> 'array' then
+        raise exception 'Los bloques deben enviarse como una lista';
+    end if;
+
+    select usuario.docente_id
+      into v_docente_id
+      from horarios.usuarios usuario
+     where usuario.auth_user_id = (select auth.uid())
+       and usuario.tipo = 'docente'
+       and usuario.estado = 'activo'
+       and usuario.eliminado_en is null;
+
+    if v_docente_id is null then
+        raise exception 'El usuario autenticado no está asociado a un docente'
+            using errcode = '42501';
+    end if;
+
+    if not exists (
+        select 1
+        from horarios.periodos_academicos periodo
+        where periodo.id = p_periodo_id
+          and periodo.eliminado_en is null
+    ) then
+        raise exception 'No se encontró el período académico';
+    end if;
+
+    if coalesce(p_confirmar, false) and jsonb_array_length(p_slots) = 0 then
+        raise exception 'No se puede confirmar una disponibilidad sin bloques';
+    end if;
+
+    insert into horarios.disponibilidades_docente
+        (docente_id, periodo_id, esta_confirmada)
+    values
+        (v_docente_id, p_periodo_id, coalesce(p_confirmar, false))
+    on conflict (docente_id, periodo_id) do update
+       set esta_confirmada = excluded.esta_confirmada,
+           actualizado_en = now()
+    returning id into v_disponibilidad_id;
+
+    delete from horarios.disponibilidad_docente_slots
+     where disponibilidad_id = v_disponibilidad_id;
+
+    insert into horarios.disponibilidad_docente_slots
+        (disponibilidad_id, jornada_id, dia, indice_slot, esta_disponible)
+    select
+        v_disponibilidad_id,
+        slot.jornada_id,
+        slot.dia::horarios.dia_semana,
+        slot.indice_slot,
+        coalesce(slot.esta_disponible, true)
+    from jsonb_to_recordset(p_slots) as slot(
+        jornada_id uuid,
+        dia text,
+        indice_slot integer,
+        esta_disponible boolean
+    );
+
+    return (
+        select jsonb_build_object(
+            'id', disponibilidad.id,
+            'docente_id', disponibilidad.docente_id,
+            'periodo_id', disponibilidad.periodo_id,
+            'esta_confirmada', disponibilidad.esta_confirmada,
+            'slots', coalesce((
+                select jsonb_agg(jsonb_build_object(
+                    'jornada_id', slot.jornada_id,
+                    'dia', slot.dia::text,
+                    'indice_slot', slot.indice_slot,
+                    'esta_disponible', slot.esta_disponible
+                ) order by slot.jornada_id, slot.dia, slot.indice_slot)
+                from horarios.disponibilidad_docente_slots slot
+                where slot.disponibilidad_id = disponibilidad.id
+            ), '[]'::jsonb)
+        )
+        from horarios.disponibilidades_docente disponibilidad
+        where disponibilidad.id = v_disponibilidad_id
+    );
+end;
+$$;`,
+  },
+  {
     id: 'fn-obtener_disponibilidad_docente',
     nombre: 'obtener_disponibilidad_docente',
     cat: 'funcion',
@@ -2737,8 +4169,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2282,
-    claves: '(uuid, uuid) rpc funcion p_docente_id p_periodo_id',
+    linea: 3060,
+    claves: '("uuid", "uuid") rpc funcion p_docente_id p_periodo_id',
     params: [
       { n: 'p_docente_id', t: 'uuid', d: '' },
       { n: 'p_periodo_id', t: 'uuid', d: '' },
@@ -2748,9 +4180,9 @@ $$;`,
       'Anida sus bloques ordenados por día e índice.',
       'Devuelve la lista de bloques vacía si aún no declaró nada.',
     ],
-    sql: `CREATE FUNCTION horarios.obtener_disponibilidad_docente(p_docente_id uuid, p_periodo_id uuid) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."obtener_disponibilidad_docente"("p_docente_id" "uuid", "p_periodo_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select jsonb_build_object(
         'id', d.id,
@@ -2770,16 +4202,66 @@ $$;`,
 $$;`,
   },
   {
+    id: 'fn-obtener_mi_disponibilidad_docente',
+    nombre: 'obtener_mi_disponibilidad_docente',
+    cat: 'funcion',
+    grupo: 'Docentes',
+    desc: 'Consulta la disponibilidad del docente de la sesión para un período.',
+    detalle: '',
+    nota: 'devuelve jsonb · sql · solo lee (STABLE)',
+    tabla: '',
+    linea: 3119,
+    claves: '("uuid") rpc funcion p_periodo_id',
+    params: [
+      { n: 'p_periodo_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Resuelve el docente desde el usuario activo asociado a `auth.uid()`.',
+      'Lee su cabecera y devuelve los slots ordenados por jornada, día e índice.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."obtener_mi_disponibilidad_docente"("p_periodo_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+    select jsonb_build_object(
+        'id', disponibilidad.id,
+        'docente_id', disponibilidad.docente_id,
+        'periodo_id', disponibilidad.periodo_id,
+        'esta_confirmada', disponibilidad.esta_confirmada,
+        'slots', coalesce((
+            select jsonb_agg(jsonb_build_object(
+                'jornada_id', slot.jornada_id,
+                'dia', slot.dia::text,
+                'indice_slot', slot.indice_slot,
+                'esta_disponible', slot.esta_disponible
+            ) order by slot.jornada_id, slot.dia, slot.indice_slot)
+            from horarios.disponibilidad_docente_slots slot
+            where slot.disponibilidad_id = disponibilidad.id
+        ), '[]'::jsonb)
+    )
+    from horarios.disponibilidades_docente disponibilidad
+    where disponibilidad.periodo_id = p_periodo_id
+      and disponibilidad.docente_id = (
+          select usuario.docente_id
+          from horarios.usuarios usuario
+          where usuario.auth_user_id = (select auth.uid())
+            and usuario.tipo = 'docente'
+            and usuario.estado = 'activo'
+            and usuario.eliminado_en is null
+      );
+$$;`,
+  },
+  {
     id: 'fn-revocar_curso_docente',
     nombre: 'revocar_curso_docente',
     cat: 'funcion',
     grupo: 'Docentes',
     desc: 'Retira la autorización marcando `esta_vigente = false`. No borra el historial.',
     detalle: '',
-    nota: 'devuelve boolean · plpgsql · escribe',
+    nota: 'devuelve boolean · plpgsql · VOLATILE',
     tabla: '',
-    linea: 2450,
-    claves: '(uuid) rpc funcion p_asignacion_id',
+    linea: 3308,
+    claves: '("uuid") rpc funcion p_asignacion_id',
     params: [
       { n: 'p_asignacion_id', t: 'uuid', d: '' },
     ],
@@ -2788,9 +4270,9 @@ $$;`,
       'Solo actúa sobre autorizaciones que seguían vigentes.',
       'Devuelve `true` si llegó a tocar una fila.',
     ],
-    sql: `CREATE FUNCTION horarios.revocar_curso_docente(p_asignacion_id uuid) RETURNS boolean
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."revocar_curso_docente"("p_asignacion_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 begin
     update horarios.asignaciones_docente_curso
@@ -2810,10 +4292,10 @@ $$;`,
     grupo: 'Planes de horario',
     desc: 'Mueve el plan de un estado a otro y deja rastro en el historial. Usa bloqueo optimista: si otra persona lo cambió antes, la operación falla en vez de pisar su trabajo.',
     detalle: 'Es el ejemplo canónico de `version_fila`: el UPDATE lleva `AND version_fila = <la que leí>`; si afecta cero filas, alguien se adelantó.',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 586,
-    claves: '(uuid, text, text, text, bigint, uuid) rpc funcion p_plan_id p_estado_anterior p_estado_nuevo p_motivo p_version_anterior p_usuario_id',
+    linea: 652,
+    claves: '("uuid", "text", "text", "text", bigint, "uuid") rpc funcion p_plan_id p_estado_anterior p_estado_nuevo p_motivo p_version_anterior p_usuario_id',
     params: [
       { n: 'p_plan_id', t: 'uuid', d: '' },
       { n: 'p_estado_anterior', t: 'text', d: '' },
@@ -2828,9 +4310,9 @@ $$;`,
       'Si el UPDATE no afectó ninguna fila, lanza `conflicto_version`: alguien se adelantó.',
       'Registra la transición en `historial_estados_horario`.',
     ],
-    sql: `CREATE FUNCTION horarios.cambiar_estado_plan(p_plan_id uuid, p_estado_anterior text, p_estado_nuevo text, p_motivo text, p_version_anterior bigint, p_usuario_id uuid DEFAULT NULL::uuid) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."cambiar_estado_plan"("p_plan_id" "uuid", "p_estado_anterior" "text", "p_estado_nuevo" "text", "p_motivo" "text", "p_version_anterior" bigint, "p_usuario_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_plan horarios.horarios%rowtype;
@@ -2872,8 +4354,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 1470,
-    claves: '(uuid, uuid[], uuid[]) rpc funcion p_periodo_id p_carrera_ids p_jornada_ids',
+    linea: 1595,
+    claves: '("uuid", "uuid"[], "uuid"[]) rpc funcion p_periodo_id p_carrera_ids p_jornada_ids',
     params: [
       { n: 'p_periodo_id', t: 'uuid', d: '' },
       { n: 'p_carrera_ids', t: 'uuid[]', d: 'arreglo vacío' },
@@ -2884,9 +4366,9 @@ $$;`,
       'Cuenta cohortes, cohortes sin cursos en su semestre, aulas activas, docentes autorizados y docentes con disponibilidad confirmada.',
       'Devuelve todo junto para la pantalla previa a generar.',
     ],
-    sql: `CREATE FUNCTION horarios.conteos_revision_plan(p_periodo_id uuid, p_carrera_ids uuid[] DEFAULT '{}'::uuid[], p_jornada_ids uuid[] DEFAULT '{}'::uuid[]) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."conteos_revision_plan"("p_periodo_id" "uuid", "p_carrera_ids" "uuid"[] DEFAULT '{}'::"uuid"[], "p_jornada_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     with alcance as (
         select cp.cohorte_id, cp.semestre_asignado, c.pensum_id, c.jornada_id
@@ -2945,10 +4427,10 @@ $$;`,
     grupo: 'Planes de horario',
     desc: 'Crea el plan en estado `borrador` y fija su alcance: qué carreras y qué jornadas entran.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 1587,
-    claves: '(uuid, text, uuid, uuid[], uuid[]) rpc funcion p_periodo_id p_tipo p_horario_origen_id p_carrera_ids p_jornada_ids',
+    linea: 1846,
+    claves: '("uuid", "text", "uuid", "uuid"[], "uuid"[]) rpc funcion p_periodo_id p_tipo p_horario_origen_id p_carrera_ids p_jornada_ids',
     params: [
       { n: 'p_periodo_id', t: 'uuid', d: '' },
       { n: 'p_tipo', t: 'text', d: '' },
@@ -2961,9 +4443,9 @@ $$;`,
       'Calcula el número de versión siguiente y crea el plan en estado `borrador`.',
       'Delega en `fijar_alcance_plan` las carreras y jornadas recibidas.',
     ],
-    sql: `CREATE FUNCTION horarios.crear_plan_horario(p_periodo_id uuid, p_tipo text, p_horario_origen_id uuid DEFAULT NULL::uuid, p_carrera_ids uuid[] DEFAULT '{}'::uuid[], p_jornada_ids uuid[] DEFAULT '{}'::uuid[]) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."crear_plan_horario"("p_periodo_id" "uuid", "p_tipo" "text", "p_horario_origen_id" "uuid" DEFAULT NULL::"uuid", "p_carrera_ids" "uuid"[] DEFAULT '{}'::"uuid"[], "p_jornada_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_plan horarios.horarios%rowtype;
@@ -2987,6 +4469,61 @@ end;
 $$;`,
   },
   {
+    id: 'fn-fijar_alcance_plan',
+    nombre: 'fijar_alcance_plan',
+    cat: 'funcion',
+    grupo: 'Planes de horario',
+    desc: 'Cambia las carreras y jornadas del plan. Solo se permite mientras sigue en `borrador`.',
+    detalle: '',
+    nota: 'devuelve void · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2235,
+    claves: '("uuid", "uuid"[], "uuid"[]) rpc funcion p_plan_id p_carrera_ids p_jornada_ids',
+    params: [
+      { n: 'p_plan_id', t: 'uuid', d: '' },
+      { n: 'p_carrera_ids', t: 'uuid[]', d: 'arreglo vacío' },
+      { n: 'p_jornada_ids', t: 'uuid[]', d: 'arreglo vacío' },
+    ],
+    pasos: [
+      'Comprueba que el plan exista y siga en `borrador`; si no, falla con un código propio.',
+      'Borra el alcance anterior.',
+      'Reinserta las carreras y jornadas recibidas.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."fijar_alcance_plan"("p_plan_id" "uuid", "p_carrera_ids" "uuid"[] DEFAULT '{}'::"uuid"[], "p_jornada_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_estado horarios.estado_horario;
+begin
+    select estado into v_estado
+    from horarios.horarios
+    where id = p_plan_id and eliminado_en is null;
+
+    if v_estado is null then
+        raise exception 'plan_inexistente' using errcode = 'no_data_found';
+    end if;
+
+    if v_estado <> 'borrador' then
+        raise exception 'plan_no_editable' using errcode = 'invalid_parameter_value';
+    end if;
+
+    delete from horarios.plan_carreras where plan_id = p_plan_id;
+    delete from horarios.plan_jornadas where plan_id = p_plan_id;
+
+    insert into horarios.plan_carreras (plan_id, carrera_id)
+    select p_plan_id, x
+    from unnest(coalesce(p_carrera_ids, '{}'::uuid[])) as x
+    on conflict do nothing;
+
+    insert into horarios.plan_jornadas (plan_id, jornada_id)
+    select p_plan_id, x
+    from unnest(coalesce(p_jornada_ids, '{}'::uuid[])) as x
+    on conflict do nothing;
+end;
+$$;`,
+  },
+  {
     id: 'fn-plan_es_completo_y_valido',
     nombre: 'plan_es_completo_y_valido',
     cat: 'funcion',
@@ -2995,8 +4532,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve boolean · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2341,
-    claves: '(uuid) rpc funcion p_plan_id',
+    linea: 3156,
+    claves: '("uuid") rpc funcion p_plan_id',
     params: [
       { n: 'p_plan_id', t: 'uuid', d: '' },
     ],
@@ -3004,9 +4541,9 @@ $$;`,
       'Comprueba cuatro condiciones unidas por `and`: hay sesiones, no quedan pendientes, no hay conflictos duros y el contador de violaciones duras está en cero.',
       'Si el plan ni existe, devuelve `false` en lugar de nulo.',
     ],
-    sql: `CREATE FUNCTION horarios.plan_es_completo_y_valido(p_plan_id uuid) RETURNS boolean
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."plan_es_completo_y_valido"("p_plan_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select exists (select 1 from horarios.sesiones where horario_id = p_plan_id)
        and not exists (select 1 from horarios.sesiones_no_asignadas where horario_id = p_plan_id)
@@ -3014,6 +4551,369 @@ $$;`,
                        where horario_id = p_plan_id and es_restriccion_dura)
        and coalesce((select cantidad_violaciones_duras = 0
                      from horarios.horarios where id = p_plan_id), false);
+$$;`,
+  },
+  {
+    id: 'fn-diagnosticar_sistema',
+    nombre: 'diagnosticar_sistema',
+    cat: 'funcion',
+    grupo: 'Motor de generación',
+    desc: 'Tablero de salud: planes que no se pueden publicar, sesiones sin asignar e importaciones atascadas.',
+    detalle: '',
+    nota: 'devuelve jsonb · sql · solo lee (STABLE)',
+    tabla: '',
+    linea: 2169,
+    claves: '() rpc funcion ',
+    params: [],
+    pasos: [
+      'Cuenta horarios no publicables (con violaciones duras o con pendientes), sesiones sin asignar e importaciones atascadas.',
+      'Marca `listo` cuando los tres contadores están en cero.',
+      'Devuelve además los hallazgos redactados en texto.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."diagnosticar_sistema"() RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    with conteos as (
+        select
+          (select count(*)::integer from horarios.horarios h
+             where h.eliminado_en is null
+               and h.estado in ('generado','en_revision','pendiente_aprobacion','aprobado')
+               and (h.cantidad_violaciones_duras > 0 or exists (
+                    select 1 from horarios.sesiones_no_asignadas p where p.horario_id = h.id)))
+              as no_publicables,
+          (select count(*)::integer from horarios.sesiones_no_asignadas p
+             join horarios.horarios h on h.id = p.horario_id
+             where h.eliminado_en is null) as pendientes,
+          (select count(*)::integer from horarios.importaciones
+             where estado in ('recibida','validando')) as importaciones
+    )
+    select jsonb_build_object(
+        'listo', no_publicables + pendientes + importaciones = 0,
+        'horarios_no_publicables', no_publicables,
+        'sesiones_pendientes', pendientes,
+        'importaciones_pendientes', importaciones,
+        'hallazgos', to_jsonb(array_remove(array[
+            case when no_publicables > 0 then no_publicables || ' horario(s) no publicable(s).' end,
+            case when pendientes > 0 then pendientes || ' sesion(es) sin asignar.' end,
+            case when importaciones > 0 then importaciones || ' importacion(es) pendiente(s).' end
+        ], null)))
+    from conteos;
+$$;`,
+  },
+  {
+    id: 'fn-finalizar_generacion',
+    nombre: 'finalizar_generacion',
+    cat: 'funcion',
+    grupo: 'Motor de generación',
+    desc: 'Cierra la corrida y guarda todo el resultado: estado, duración, violaciones, puntajes, sesiones, pendientes, conflictos y mensajes.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2354,
+    claves: '("uuid", "text", bigint, integer, integer, numeric, numeric, integer, "jsonb", "jsonb", "jsonb", "jsonb", "jsonb", "jsonb") rpc funcion p_generacion_id p_estado p_duracion_ms p_total_violaciones_duras p_total_sesiones_pendientes p_puntaje_inicial p_puntaje_final p_total_violaciones_blandas p_puntaje_desglose p_resultado p_mensajes p_sesiones p_pendientes p_conflictos',
+    params: [
+      { n: 'p_generacion_id', t: 'uuid', d: '' },
+      { n: 'p_estado', t: 'text', d: '' },
+      { n: 'p_duracion_ms', t: 'bigint', d: '' },
+      { n: 'p_total_violaciones_duras', t: 'integer', d: '' },
+      { n: 'p_total_sesiones_pendientes', t: 'integer', d: '' },
+      { n: 'p_puntaje_inicial', t: 'numeric', d: '' },
+      { n: 'p_puntaje_final', t: 'numeric', d: '' },
+      { n: 'p_total_violaciones_blandas', t: 'integer', d: '' },
+      { n: 'p_puntaje_desglose', t: 'jsonb', d: '' },
+      { n: 'p_resultado', t: 'jsonb', d: '' },
+      { n: 'p_mensajes', t: 'jsonb', d: '' },
+      { n: 'p_sesiones', t: 'jsonb', d: '\'[]\'' },
+      { n: 'p_pendientes', t: 'jsonb', d: '\'[]\'' },
+      { n: 'p_conflictos', t: 'jsonb', d: '\'[]\'' },
+    ],
+    pasos: [
+      'Cierra la corrida solo si seguía en `generando`; si no, falla.',
+      'Guarda duración, violaciones, puntajes y el resultado completo.',
+      'Vuelca los mensajes recibidos a `mensajes_generacion`.',
+      'Si terminó `completada` o `inviable`, llama a `guardar_resultado_generacion` para escribir el horario.',
+      'Una corrida fallida o cancelada no toca el horario anterior.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."finalizar_generacion"("p_generacion_id" "uuid", "p_estado" "text", "p_duracion_ms" bigint, "p_total_violaciones_duras" integer, "p_total_sesiones_pendientes" integer, "p_puntaje_inicial" numeric, "p_puntaje_final" numeric, "p_total_violaciones_blandas" integer, "p_puntaje_desglose" "jsonb", "p_resultado" "jsonb", "p_mensajes" "jsonb", "p_sesiones" "jsonb" DEFAULT '[]'::"jsonb", "p_pendientes" "jsonb" DEFAULT '[]'::"jsonb", "p_conflictos" "jsonb" DEFAULT '[]'::"jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    SET "jit" TO 'off'
+    AS $$
+declare
+    v_mensaje jsonb;
+    v_horario_id uuid;
+begin
+    update horarios.generaciones
+    set estado = p_estado::horarios.estado_generacion,
+        duracion_ms = greatest(0, p_duracion_ms),
+        total_violaciones_duras = p_total_violaciones_duras,
+        total_sesiones_pendientes = p_total_sesiones_pendientes,
+        costo_final = p_puntaje_final,
+        total_violaciones_blandas = p_total_violaciones_blandas,
+        puntaje_desglose = coalesce(p_puntaje_desglose, '{}'::jsonb),
+        instantanea_entrada = instantanea_entrada || jsonb_build_object('puntaje_inicial', p_puntaje_inicial),
+        resultado = p_resultado,
+        finalizada_en = now()
+    where id = p_generacion_id and estado = 'generando'
+    returning plan_id into v_horario_id;
+    if not found then
+        raise exception 'La generacion no existe o ya habia finalizado';
+    end if;
+
+    for v_mensaje in select value from jsonb_array_elements(p_mensajes)
+    loop
+        insert into horarios.mensajes_generacion
+            (generacion_id, severidad, codigo, mensaje, entidad, entidad_id)
+        values
+            (p_generacion_id,
+             (v_mensaje->>'severidad')::horarios.nivel_severidad,
+             v_mensaje->>'codigo', v_mensaje->>'mensaje',
+             case when v_mensaje->>'sesion_id' is null then null else 'sesion' end,
+             (v_mensaje->>'sesion_id')::uuid);
+    end loop;
+
+    -- Una generacion cancelada o fallida no produjo horario; no se toca el anterior.
+    if p_estado in ('completada', 'inviable') then
+        perform horarios.guardar_resultado_generacion(
+            v_horario_id, p_sesiones, p_pendientes, p_conflictos, p_puntaje_final);
+    end if;
+
+    return horarios.obtener_generacion(p_generacion_id);
+end;
+$$;`,
+  },
+  {
+    id: 'fn-guardar_resultado_generacion',
+    nombre: 'guardar_resultado_generacion',
+    cat: 'funcion',
+    grupo: 'Motor de generación',
+    desc: 'Reemplaza por completo el horario del plan: borra el resultado anterior y escribe el nuevo.',
+    detalle: 'Es un reemplazo total, no una fusión. Por eso las tablas de resultado se consideran desechables entre corridas.',
+    nota: 'devuelve integer · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2750,
+    claves: '("uuid", "jsonb", "jsonb", "jsonb", numeric) rpc funcion p_plan_id p_sesiones p_pendientes p_conflictos p_costo_total',
+    params: [
+      { n: 'p_plan_id', t: 'uuid', d: '' },
+      { n: 'p_sesiones', t: 'jsonb', d: '' },
+      { n: 'p_pendientes', t: 'jsonb', d: '\'[]\'' },
+      { n: 'p_conflictos', t: 'jsonb', d: '\'[]\'' },
+      { n: 'p_costo_total', t: 'numeric', d: '0' },
+    ],
+    pasos: [
+      'Borra el resultado anterior del plan: sesiones, cohortes de sesión, pendientes y conflictos.',
+      'Inserta las sesiones nuevas y, por cada una, las cohortes que asisten.',
+      'Inserta lo que no se pudo colocar y los conflictos con sus sesiones.',
+      'Recalcula las violaciones duras —conflictos duros más pendientes— y las guarda en el plan.',
+      'Devuelve cuántas sesiones quedaron guardadas.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."guardar_resultado_generacion"("p_plan_id" "uuid", "p_sesiones" "jsonb", "p_pendientes" "jsonb" DEFAULT '[]'::"jsonb", "p_conflictos" "jsonb" DEFAULT '[]'::"jsonb", "p_costo_total" numeric DEFAULT 0) RETURNS integer
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    SET "jit" TO 'off'
+    AS $$
+declare
+    v_sesion jsonb;
+    v_conflicto jsonb;
+    v_conflicto_id uuid;
+    v_agrupacion uuid;
+    v_sesiones_guardadas integer;
+    v_violaciones_duras integer;
+begin
+    -- Una generación reemplaza por completo el horario anterior del mismo plan.
+    delete from horarios.sesion_cohortes where horario_id = p_plan_id;
+    delete from horarios.sesiones where horario_id = p_plan_id;
+    delete from horarios.sesiones_no_asignadas where horario_id = p_plan_id;
+    delete from horarios.conflicto_sesiones cs
+        using horarios.conflictos c
+        where cs.conflicto_id = c.id and c.horario_id = p_plan_id;
+    delete from horarios.conflictos where horario_id = p_plan_id;
+
+    for v_sesion in select value from jsonb_array_elements(coalesce(p_sesiones, '[]'::jsonb))
+    loop
+        v_agrupacion := (v_sesion->>'agrupacion_area_comun_id')::uuid;
+
+        insert into horarios.sesiones
+            (id, horario_id, curso_id, docente_id, aula_id, jornada_id, dia,
+             indice_slot_inicio, duracion_slots, es_area_comun, agrupacion_area_comun_id,
+             esta_fijada)
+        values
+            ((v_sesion->>'sesion_id')::uuid,
+             p_plan_id,
+             (v_sesion->>'curso_id')::uuid,
+             (v_sesion->>'docente_id')::uuid,
+             (v_sesion->>'aula_id')::uuid,
+             (v_sesion->>'jornada_id')::uuid,
+             (v_sesion->>'dia')::horarios.dia_semana,
+             (v_sesion->>'indice_slot_inicio')::integer,
+             (v_sesion->>'duracion_slots')::integer,
+             v_agrupacion is not null,
+             v_agrupacion,
+             coalesce((v_sesion->>'esta_fijada')::boolean, false));
+
+        -- Una sola sesión física para todas las cohortes involucradas (contexto.md §6.5).
+        insert into horarios.sesion_cohortes (sesion_id, cohorte_id)
+        select (v_sesion->>'sesion_id')::uuid, cohorte::uuid
+        from jsonb_array_elements_text(coalesce(v_sesion->'cohortes', '[]'::jsonb)) as cohorte;
+    end loop;
+
+    insert into horarios.sesiones_no_asignadas
+        (horario_id, curso_id, cohorte_id, motivo_no_asignacion, sugerencia_resolucion)
+    select p_plan_id,
+           (value->>'curso_id')::uuid,
+           (value->>'cohorte_id')::uuid,
+           value->>'motivo',
+           value->>'sugerencia'
+    from jsonb_array_elements(coalesce(p_pendientes, '[]'::jsonb));
+
+    for v_conflicto in select value from jsonb_array_elements(coalesce(p_conflictos, '[]'::jsonb))
+    loop
+        insert into horarios.conflictos
+            (horario_id, tipo, descripcion, severidad, es_restriccion_dura)
+        values
+            (p_plan_id, v_conflicto->>'tipo', v_conflicto->>'descripcion', 'alta', true)
+        returning id into v_conflicto_id;
+
+        insert into horarios.conflicto_sesiones (conflicto_id, sesion_id)
+        select distinct v_conflicto_id, sesion::uuid
+        from jsonb_array_elements_text(coalesce(v_conflicto->'sesiones', '[]'::jsonb)) as sesion
+        where exists (select 1 from horarios.sesiones s where s.id = sesion::uuid);
+    end loop;
+
+    select count(*) into v_sesiones_guardadas
+    from horarios.sesiones where horario_id = p_plan_id;
+
+    select count(*) into v_violaciones_duras
+    from horarios.conflictos where horario_id = p_plan_id and es_restriccion_dura;
+
+    v_violaciones_duras := v_violaciones_duras +
+        (select count(*) from horarios.sesiones_no_asignadas where horario_id = p_plan_id);
+
+    update horarios.horarios
+    set cantidad_violaciones_duras = v_violaciones_duras,
+        costo_total_calculado = coalesce(p_costo_total, 0),
+        fecha_generacion = now()
+    where id = p_plan_id;
+
+    return v_sesiones_guardadas;
+end;
+$$;`,
+  },
+  {
+    id: 'fn-iniciar_generacion',
+    nombre: 'iniciar_generacion',
+    cat: 'funcion',
+    grupo: 'Motor de generación',
+    desc: 'Abre una corrida del motor en estado `generando`. La `clave_solicitud` impide que un doble clic lance dos corridas iguales.',
+    detalle: '',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2847,
+    claves: '("uuid", "text", "uuid", "uuid", "text", "text", "jsonb") rpc funcion p_periodo_id p_tipo_plan p_plan_id p_solicitada_por_id p_version_motor p_clave_solicitud p_instantanea_entrada',
+    params: [
+      { n: 'p_periodo_id', t: 'uuid', d: '' },
+      { n: 'p_tipo_plan', t: 'text', d: '' },
+      { n: 'p_plan_id', t: 'uuid', d: '' },
+      { n: 'p_solicitada_por_id', t: 'uuid', d: '' },
+      { n: 'p_version_motor', t: 'text', d: '' },
+      { n: 'p_clave_solicitud', t: 'text', d: '' },
+      { n: 'p_instantanea_entrada', t: 'jsonb', d: '' },
+    ],
+    pasos: [
+      'Inserta la corrida en estado `generando`, con la instantánea de entrada y la clave de solicitud.',
+      'Devuelve la corrida ya formateada, reutilizando `obtener_generacion`.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."iniciar_generacion"("p_periodo_id" "uuid", "p_tipo_plan" "text", "p_plan_id" "uuid", "p_solicitada_por_id" "uuid", "p_version_motor" "text", "p_clave_solicitud" "text", "p_instantanea_entrada" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_id uuid;
+begin
+    insert into horarios.generaciones
+        (periodo_id, tipo_plan, plan_id, solicitada_por_id, estado,
+         version_motor, clave_solicitud, instantanea_entrada)
+    values
+        (p_periodo_id, p_tipo_plan::horarios.tipo_plan_horario, p_plan_id,
+         p_solicitada_por_id, 'generando', p_version_motor,
+         p_clave_solicitud, p_instantanea_entrada)
+    returning id into v_id;
+    return horarios.obtener_generacion(v_id);
+end;
+$$;`,
+  },
+  {
+    id: 'fn-listar_generaciones_plan',
+    nombre: 'listar_generaciones_plan',
+    cat: 'funcion',
+    grupo: 'Motor de generación',
+    desc: 'Historial de corridas de un plan, de la más reciente a la más antigua.',
+    detalle: '',
+    nota: 'devuelve jsonb · sql · solo lee (STABLE)',
+    tabla: '',
+    linea: 2956,
+    claves: '("uuid") rpc funcion p_plan_id',
+    params: [
+      { n: 'p_plan_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Toma las corridas del plan.',
+      'Formatea cada una con `obtener_generacion` y las ordena de la más reciente a la más antigua.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."listar_generaciones_plan"("p_plan_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select coalesce(jsonb_agg(horarios.obtener_generacion(c.id)
+        order by c.iniciada_en desc), '[]'::jsonb)
+    from horarios.generaciones c where c.plan_id = p_plan_id;
+$$;`,
+  },
+  {
+    id: 'fn-obtener_generacion',
+    nombre: 'obtener_generacion',
+    cat: 'funcion',
+    grupo: 'Motor de generación',
+    desc: 'Estado y resultado de una corrida concreta.',
+    detalle: '',
+    nota: 'devuelve jsonb · sql · solo lee (STABLE)',
+    tabla: '',
+    linea: 3086,
+    claves: '("uuid") rpc funcion p_generacion_id',
+    params: [
+      { n: 'p_generacion_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Arma un objeto con estado, tiempos, violaciones y puntajes de la corrida.',
+      'Le anida sus mensajes ordenados por fecha.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."obtener_generacion"("p_generacion_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select jsonb_build_object(
+        'id', c.id,
+        'plan_id', c.plan_id,
+        'periodo_id', c.periodo_id,
+        'estado', c.estado::text,
+        'version_motor', c.version_motor,
+        'iniciada_en', c.iniciada_en,
+        'finalizada_en', c.finalizada_en,
+        'duracion_ms', c.duracion_ms,
+        'total_violaciones_duras', c.total_violaciones_duras,
+        'total_sesiones_pendientes', c.total_sesiones_pendientes,
+        'mensajes', coalesce((select jsonb_agg(jsonb_build_object(
+            'codigo', m.codigo,
+            'mensaje', m.mensaje,
+            'severidad', m.severidad::text,
+            'sesion_id', m.entidad_id) order by m.creado_en)
+            from horarios.mensajes_generacion m
+            where m.generacion_id = c.id), '[]'::jsonb),
+        'puntaje_inicial', (c.instantanea_entrada->>'puntaje_inicial')::numeric,
+        'puntaje_final', c.costo_final,
+        'puntaje_desglose', c.puntaje_desglose)
+    from horarios.generaciones c where c.id = p_generacion_id;
 $$;`,
   },
   {
@@ -3025,8 +4925,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · plpgsql · solo lee (STABLE)',
     tabla: '',
-    linea: 626,
-    claves: '(uuid) rpc funcion p_horario_derivado_id',
+    linea: 692,
+    claves: '("uuid") rpc funcion p_horario_derivado_id',
     params: [
       { n: 'p_horario_derivado_id', t: 'uuid', d: '' },
     ],
@@ -3036,9 +4936,9 @@ $$;`,
       'Compara docente, aula, jornada, día, bloque y duración de cada pareja, y se queda solo con lo que difiere.',
       'Añade los conflictos duros que quedaron en la versión derivada.',
     ],
-    sql: `CREATE FUNCTION horarios.comparar_version_horario(p_horario_derivado_id uuid) RETURNS jsonb
-    LANGUAGE plpgsql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."comparar_version_horario"("p_horario_derivado_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_origen_id uuid;
@@ -3125,10 +5025,10 @@ $$;`,
     grupo: 'Edición manual y versiones',
     desc: 'Clona un horario publicado para poder mover una sesión sin tocar el original. Toma un advisory lock para que dos ediciones simultáneas no se pisen.',
     detalle: 'Un horario publicado es un documento oficial: ya lo vieron estudiantes y docentes. No se edita, se deriva.',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 1670,
-    claves: '(uuid, uuid, uuid, uuid, uuid, text, integer, integer, integer, integer, text, text, uuid) rpc funcion p_horario_origen_id p_sesion_origen_id p_docente_id p_aula_id p_jornada_id p_dia p_indice_slot_inicio p_duracion_slots p_minuto_inicio p_minuto_fin p_motivo p_clave_solicitud p_usuario_id',
+    linea: 2022,
+    claves: '("uuid", "uuid", "uuid", "uuid", "uuid", "text", integer, integer, integer, integer, "text", "text", "uuid") rpc funcion p_horario_origen_id p_sesion_origen_id p_docente_id p_aula_id p_jornada_id p_dia p_indice_slot_inicio p_duracion_slots p_minuto_inicio p_minuto_fin p_motivo p_clave_solicitud p_usuario_id',
     params: [
       { n: 'p_horario_origen_id', t: 'uuid', d: '' },
       { n: 'p_sesion_origen_id', t: 'uuid', d: '' },
@@ -3152,9 +5052,9 @@ $$;`,
       'Aplica sobre la sesión elegida los cambios recibidos y la deja fijada.',
       'Registra el intento en `resultados_edicion` como pendiente de reparación; el horario original queda intacto.',
     ],
-    sql: `CREATE FUNCTION horarios.crear_version_derivada(p_horario_origen_id uuid, p_sesion_origen_id uuid, p_docente_id uuid DEFAULT NULL::uuid, p_aula_id uuid DEFAULT NULL::uuid, p_jornada_id uuid DEFAULT NULL::uuid, p_dia text DEFAULT NULL::text, p_indice_slot_inicio integer DEFAULT NULL::integer, p_duracion_slots integer DEFAULT NULL::integer, p_minuto_inicio integer DEFAULT NULL::integer, p_minuto_fin integer DEFAULT NULL::integer, p_motivo text DEFAULT NULL::text, p_clave_solicitud text DEFAULT NULL::text, p_usuario_id uuid DEFAULT NULL::uuid) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."crear_version_derivada"("p_horario_origen_id" "uuid", "p_sesion_origen_id" "uuid", "p_docente_id" "uuid" DEFAULT NULL::"uuid", "p_aula_id" "uuid" DEFAULT NULL::"uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid", "p_dia" "text" DEFAULT NULL::"text", "p_indice_slot_inicio" integer DEFAULT NULL::integer, "p_duracion_slots" integer DEFAULT NULL::integer, "p_minuto_inicio" integer DEFAULT NULL::integer, "p_minuto_fin" integer DEFAULT NULL::integer, "p_motivo" "text" DEFAULT NULL::"text", "p_clave_solicitud" "text" DEFAULT NULL::"text", "p_usuario_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_existente record;
@@ -3268,6 +5168,70 @@ end;
 $$;`,
   },
   {
+    id: 'fn-guardar_reparacion_version',
+    nombre: 'guardar_reparacion_version',
+    cat: 'funcion',
+    grupo: 'Edición manual y versiones',
+    desc: 'Aplica al horario derivado las reubicaciones que calculó el motor de reparación.',
+    detalle: '',
+    nota: 'devuelve void · plpgsql · VOLATILE',
+    tabla: '',
+    linea: 2704,
+    claves: '("uuid", boolean, "text", "jsonb", "jsonb", "uuid") rpc funcion p_horario_derivado_id p_fue_exitoso p_mensaje p_sesiones_movidas p_asignaciones p_usuario_id',
+    params: [
+      { n: 'p_horario_derivado_id', t: 'uuid', d: '' },
+      { n: 'p_fue_exitoso', t: 'boolean', d: '' },
+      { n: 'p_mensaje', t: 'text', d: '' },
+      { n: 'p_sesiones_movidas', t: 'jsonb', d: '' },
+      { n: 'p_asignaciones', t: 'jsonb', d: '' },
+      { n: 'p_usuario_id', t: 'uuid', d: '' },
+    ],
+    pasos: [
+      'Si la reparación fue exitosa, aplica cada reubicación a `sesiones` y refleja el cambio en `sesion_cohortes`.',
+      'Registra el resultado en `resultados_edicion`, haya salido bien o mal.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."guardar_reparacion_version"("p_horario_derivado_id" "uuid", "p_fue_exitoso" boolean, "p_mensaje" "text", "p_sesiones_movidas" "jsonb", "p_asignaciones" "jsonb", "p_usuario_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_asignacion jsonb;
+begin
+    if p_fue_exitoso then
+        for v_asignacion in select value from jsonb_array_elements(p_asignaciones)
+        loop
+            update horarios.sesiones
+            set docente_id = (v_asignacion->>'docente_id')::uuid,
+                aula_id = (v_asignacion->>'aula_id')::uuid,
+                jornada_id = (v_asignacion->>'jornada_id')::uuid,
+                dia = (v_asignacion->>'dia')::horarios.dia_semana,
+                indice_slot_inicio = (v_asignacion->>'indice_slot')::integer,
+                minuto_inicio_dia = (v_asignacion->>'minuto_inicio')::integer,
+                minuto_fin_dia = (v_asignacion->>'minuto_fin')::integer,
+                actualizado_en = now()
+            where id = (v_asignacion->>'sesion_id')::uuid
+              and horario_id = p_horario_derivado_id;
+            update horarios.sesion_cohortes
+            set dia = (v_asignacion->>'dia')::horarios.dia_semana,
+                indice_slot_inicio = (v_asignacion->>'indice_slot')::integer,
+                minuto_inicio_dia = (v_asignacion->>'minuto_inicio')::integer,
+                minuto_fin_dia = (v_asignacion->>'minuto_fin')::integer
+            where sesion_id = (v_asignacion->>'sesion_id')::uuid
+              and horario_id = p_horario_derivado_id;
+        end loop;
+    end if;
+
+    insert into horarios.resultados_edicion
+        (horario_id, fue_exitoso, mensaje_resultado, sesiones_movidas,
+         creado_por_id, solicitud_edicion, sesiones_vecindario)
+    values
+        (p_horario_derivado_id, p_fue_exitoso, p_mensaje,
+         coalesce(p_sesiones_movidas, '[]'::jsonb), p_usuario_id,
+         '{}'::jsonb, coalesce(p_sesiones_movidas, '[]'::jsonb));
+end;
+$$;`,
+  },
+  {
     id: 'fn-consultar_datos_reporte',
     nombre: 'consultar_datos_reporte',
     cat: 'funcion',
@@ -3276,8 +5240,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · plpgsql · solo lee (STABLE)',
     tabla: '',
-    linea: 1230,
-    claves: '(uuid, text, uuid, uuid, uuid, uuid, uuid, uuid, uuid, text) rpc funcion p_generacion_id p_vista p_filtro_id p_carrera_id p_jornada_id p_cohorte_id p_docente_id p_aula_id p_periodo_id p_tipo_plan',
+    linea: 1294,
+    claves: '("uuid", "text", "uuid", "uuid", "uuid", "uuid", "uuid", "uuid", "uuid", "text") rpc funcion p_generacion_id p_vista p_filtro_id p_carrera_id p_jornada_id p_cohorte_id p_docente_id p_aula_id p_periodo_id p_tipo_plan',
     params: [
       { n: 'p_generacion_id', t: 'uuid', d: '' },
       { n: 'p_vista', t: 'text', d: '' },
@@ -3296,9 +5260,9 @@ $$;`,
       'Si no, arma la tabla del horario —carrera, cohorte, curso, docente, aula, jornada, día, bloque y duración— aplicando los filtros.',
       'Devuelve encabezados y filas ya listos para exportar.',
     ],
-    sql: `CREATE FUNCTION horarios.consultar_datos_reporte(p_generacion_id uuid, p_vista text, p_filtro_id uuid DEFAULT NULL::uuid, p_carrera_id uuid DEFAULT NULL::uuid, p_jornada_id uuid DEFAULT NULL::uuid, p_cohorte_id uuid DEFAULT NULL::uuid, p_docente_id uuid DEFAULT NULL::uuid, p_aula_id uuid DEFAULT NULL::uuid, p_periodo_id uuid DEFAULT NULL::uuid, p_tipo_plan text DEFAULT NULL::text) RETURNS jsonb
-    LANGUAGE plpgsql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."consultar_datos_reporte"("p_generacion_id" "uuid", "p_vista" "text", "p_filtro_id" "uuid" DEFAULT NULL::"uuid", "p_carrera_id" "uuid" DEFAULT NULL::"uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid", "p_cohorte_id" "uuid" DEFAULT NULL::"uuid", "p_docente_id" "uuid" DEFAULT NULL::"uuid", "p_aula_id" "uuid" DEFAULT NULL::"uuid", "p_periodo_id" "uuid" DEFAULT NULL::"uuid", "p_tipo_plan" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_horario_id uuid;
@@ -3373,8 +5337,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE) · SECURITY DEFINER',
     tabla: '',
-    linea: 1303,
-    claves: '(uuid, uuid, uuid, uuid, integer, boolean, boolean, uuid, uuid[]) rpc funcion p_carrera_id p_jornada_id p_cohorte_id p_docente_id p_limite p_publico p_ver_todo p_docente_alcance_id p_facultad_ids',
+    linea: 1367,
+    claves: '("uuid", "uuid", "uuid", "uuid", integer, boolean, boolean, "uuid", "uuid"[]) rpc funcion p_carrera_id p_jornada_id p_cohorte_id p_docente_id p_limite p_publico p_ver_todo p_docente_alcance_id p_facultad_ids',
     params: [
       { n: 'p_carrera_id', t: 'uuid', d: 'NULL' },
       { n: 'p_jornada_id', t: 'uuid', d: 'NULL' },
@@ -3392,9 +5356,9 @@ $$;`,
       'Añade un aviso legible cuando la sesión tiene sustitución, ausencia o cancelación.',
       'Devuelve como mucho 1 000 filas.',
     ],
-    sql: `CREATE FUNCTION horarios.consultar_horario_publicado(p_carrera_id uuid DEFAULT NULL::uuid, p_jornada_id uuid DEFAULT NULL::uuid, p_cohorte_id uuid DEFAULT NULL::uuid, p_docente_id uuid DEFAULT NULL::uuid, p_limite integer DEFAULT 500, p_publico boolean DEFAULT true, p_ver_todo boolean DEFAULT false, p_docente_alcance_id uuid DEFAULT NULL::uuid, p_facultad_ids uuid[] DEFAULT '{}'::uuid[]) RETURNS jsonb
-    LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."consultar_horario_publicado"("p_carrera_id" "uuid" DEFAULT NULL::"uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid", "p_cohorte_id" "uuid" DEFAULT NULL::"uuid", "p_docente_id" "uuid" DEFAULT NULL::"uuid", "p_limite" integer DEFAULT 500, "p_publico" boolean DEFAULT true, "p_ver_todo" boolean DEFAULT false, "p_docente_alcance_id" "uuid" DEFAULT NULL::"uuid", "p_facultad_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce(jsonb_agg(to_jsonb(resultado) order by
         resultado.periodo_fecha_inicio desc, resultado.carrera, resultado.jornada,
@@ -3441,8 +5405,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE) · SECURITY DEFINER',
     tabla: '',
-    linea: 1348,
-    claves: '(uuid, uuid, uuid, uuid, uuid, integer, integer, boolean, boolean, uuid, uuid[]) rpc funcion p_carrera_id p_jornada_id p_cohorte_id p_docente_id p_aula_id p_pagina p_tamano_pagina p_publico p_ver_todo p_docente_alcance_id p_facultad_ids',
+    linea: 1412,
+    claves: '("uuid", "uuid", "uuid", "uuid", "uuid", integer, integer, boolean, boolean, "uuid", "uuid"[]) rpc funcion p_carrera_id p_jornada_id p_cohorte_id p_docente_id p_aula_id p_pagina p_tamano_pagina p_publico p_ver_todo p_docente_alcance_id p_facultad_ids',
     params: [
       { n: 'p_carrera_id', t: 'uuid', d: 'NULL' },
       { n: 'p_jornada_id', t: 'uuid', d: 'NULL' },
@@ -3462,9 +5426,9 @@ $$;`,
       'Ordena y pagina, con un tamaño de página de 200 como techo.',
       'Devuelve los elementos junto con página, tamaño y total.',
     ],
-    sql: `CREATE FUNCTION horarios.consultar_horarios(p_carrera_id uuid DEFAULT NULL::uuid, p_jornada_id uuid DEFAULT NULL::uuid, p_cohorte_id uuid DEFAULT NULL::uuid, p_docente_id uuid DEFAULT NULL::uuid, p_aula_id uuid DEFAULT NULL::uuid, p_pagina integer DEFAULT 1, p_tamano_pagina integer DEFAULT 50, p_publico boolean DEFAULT true, p_ver_todo boolean DEFAULT false, p_docente_alcance_id uuid DEFAULT NULL::uuid, p_facultad_ids uuid[] DEFAULT '{}'::uuid[]) RETURNS jsonb
-    LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."consultar_horarios"("p_carrera_id" "uuid" DEFAULT NULL::"uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid", "p_cohorte_id" "uuid" DEFAULT NULL::"uuid", "p_docente_id" "uuid" DEFAULT NULL::"uuid", "p_aula_id" "uuid" DEFAULT NULL::"uuid", "p_pagina" integer DEFAULT 1, "p_tamano_pagina" integer DEFAULT 50, "p_publico" boolean DEFAULT true, "p_ver_todo" boolean DEFAULT false, "p_docente_alcance_id" "uuid" DEFAULT NULL::"uuid", "p_facultad_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     with filtradas as (
         select horario_id, sesion_id, periodo_nombre as periodo,
@@ -3509,12 +5473,12 @@ $$;`,
     nombre: 'consultar_revision_horario',
     cat: 'funcion',
     grupo: 'Consultas de horario',
-    desc: 'La vista de revisión previa a aprobar, con los mismos filtros y paginación.',
-    detalle: '',
+    desc: 'Consulta paginada del horario para revisión, con conflictos y clases pendientes ubicadas por carrera, semestre, curso y cohorte.',
+    detalle: 'Devuelve slots, sesiones, conflictos y pendientes para construir la revisión por carrera y semestre.',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 1395,
-    claves: '(uuid, uuid, uuid, uuid, uuid, uuid, integer, integer, boolean, uuid, uuid[]) rpc funcion p_horario_id p_cohorte_id p_docente_filtro_id p_aula_id p_carrera_id p_jornada_id p_pagina p_tamano_pagina p_ver_todo p_docente_alcance_id p_facultad_ids',
+    linea: 1459,
+    claves: '("uuid", "uuid", "uuid", "uuid", "uuid", "uuid", integer, integer, boolean, "uuid", "uuid"[]) rpc funcion p_horario_id p_cohorte_id p_docente_filtro_id p_aula_id p_carrera_id p_jornada_id p_pagina p_tamano_pagina p_ver_todo p_docente_alcance_id p_facultad_ids',
     params: [
       { n: 'p_horario_id', t: 'uuid', d: '' },
       { n: 'p_cohorte_id', t: 'uuid', d: 'NULL' },
@@ -3534,13 +5498,16 @@ $$;`,
       'Pagina las sesiones y agrega, aparte, los conflictos y las sesiones pendientes.',
       'Devuelve todo en un solo objeto para la pantalla de revisión.',
     ],
-    sql: `CREATE FUNCTION horarios.consultar_revision_horario(p_horario_id uuid, p_cohorte_id uuid DEFAULT NULL::uuid, p_docente_filtro_id uuid DEFAULT NULL::uuid, p_aula_id uuid DEFAULT NULL::uuid, p_carrera_id uuid DEFAULT NULL::uuid, p_jornada_id uuid DEFAULT NULL::uuid, p_pagina integer DEFAULT 1, p_tamano_pagina integer DEFAULT 100, p_ver_todo boolean DEFAULT false, p_docente_alcance_id uuid DEFAULT NULL::uuid, p_facultad_ids uuid[] DEFAULT '{}'::uuid[]) RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "p_cohorte_id" "uuid" DEFAULT NULL::"uuid", "p_docente_filtro_id" "uuid" DEFAULT NULL::"uuid", "p_aula_id" "uuid" DEFAULT NULL::"uuid", "p_carrera_id" "uuid" DEFAULT NULL::"uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid", "p_pagina" integer DEFAULT 1, "p_tamano_pagina" integer DEFAULT 100, "p_ver_todo" boolean DEFAULT false, "p_docente_alcance_id" "uuid" DEFAULT NULL::"uuid", "p_facultad_ids" "uuid"[] DEFAULT '{}'::"uuid"[]) RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
-    with sesiones_filtradas as (
-        select s.id as sesion_id, cu.codigo || ' - ' || cu.nombre as curso,
+    with periodo as (
+        select h.periodo_id from horarios.horarios h where h.id = p_horario_id
+    ), sesiones_filtradas as (
+        select s.id as sesion_id, cu.nombre as curso,
                co.anio_ingreso::text || '-' || co.seccion as cohorte, co.id as cohorte_id,
+               coalesce(cp.semestre_asignado, 0) as semestre,
                d.nombre_completo as docente, d.id as docente_id,
                a.codigo as aula, a.id as aula_id, ca.nombre as carrera, ca.id as carrera_id,
                j.nombre as jornada, j.id as jornada_id, s.dia::text as dia,
@@ -3555,6 +5522,10 @@ $$;`,
         join horarios.sesion_cohortes sc on sc.sesion_id = s.id
         join horarios.cohortes co on co.id = sc.cohorte_id
         join horarios.carreras ca on ca.id = co.carrera_id
+        left join horarios.cohorte_periodos cp
+               on cp.cohorte_id = co.id
+              and cp.periodo_id = (select periodo_id from periodo)
+              and cp.eliminado_en is null
         where s.horario_id = p_horario_id
           and (p_cohorte_id is null or co.id = p_cohorte_id)
           and (p_docente_filtro_id is null or d.id = p_docente_filtro_id)
@@ -3564,10 +5535,40 @@ $$;`,
           and (p_ver_todo
                or (p_docente_alcance_id is not null and d.id = p_docente_alcance_id)
                or ca.facultad_id = any(p_facultad_ids))
+    ), jornadas_visibles as (
+        select j.*, (extract(epoch from j.hora_inicio) / 60)::integer as minuto_base
+        from horarios.jornadas j
+        where j.id in (select jornada_id from sesiones_filtradas)
+    ), slots as (
+        select j.id as jornada_id, dia::text as dia, slot as indice_slot,
+               j.minuto_base + (slot - 1) * j.duracion_bloque_minutos
+                 + case when j.receso_despues_bloque > 0 and slot > j.receso_despues_bloque
+                        then j.duracion_receso_minutos else 0 end as minuto_inicio,
+               j.minuto_base + slot * j.duracion_bloque_minutos
+                 + case when j.receso_despues_bloque > 0 and slot > j.receso_despues_bloque
+                        then j.duracion_receso_minutos else 0 end as minuto_fin,
+               exists (
+                   select 1 from horarios.jornada_descansos d
+                   where d.jornada_id = j.id and d.dia = dias.dia
+                     and slot >= d.indice_slot_inicio
+                     and slot < d.indice_slot_inicio + d.duracion_slots
+               ) as es_receso
+        from jornadas_visibles j
+        cross join lateral unnest(j.dias_activos) as dias(dia)
+        cross join lateral generate_series(1, j.bloques_por_dia) as numeros(slot)
+        union all
+        select j.id, dia::text, 0,
+               j.minuto_base + j.receso_despues_bloque * j.duracion_bloque_minutos,
+               j.minuto_base + j.receso_despues_bloque * j.duracion_bloque_minutos
+                 + j.duracion_receso_minutos,
+               true
+        from jornadas_visibles j
+        cross join lateral unnest(j.dias_activos) as dias(dia)
+        where j.receso_despues_bloque > 0 and j.duracion_receso_minutos > 0
     ), pagina as (
         select * from sesiones_filtradas
-        order by dia_orden, indice_slot_inicio, carrera, anio_ingreso, seccion
-        limit p_tamano_pagina offset ((p_pagina - 1) * p_tamano_pagina)
+        order by carrera, semestre, dia_orden, indice_slot_inicio, anio_ingreso, seccion
+        limit nullif(p_tamano_pagina, 0) offset ((p_pagina - 1) * p_tamano_pagina)
     ), conflictos as (
         select c.tipo as codigo, c.descripcion as mensaje, c.severidad::text as severidad,
                c.es_restriccion_dura,
@@ -3583,22 +5584,39 @@ $$;`,
                or ca.facultad_id = any(p_facultad_ids))
         group by c.id
     ), pendientes as (
-        select 'SESION_PENDIENTE'::text as codigo, p.motivo_no_asignacion as mensaje,
-               'alta'::text as severidad, true as es_restriccion_dura,
-               null::uuid as sesion_id, p.creado_en
+        -- Un pendiente sale ubicado en su carrera y su semestre, y con el curso y la cohorte
+        -- escritos igual que en las sesiones colocadas. Asi la pantalla puede enseñarlo dentro
+        -- del horario, en el grupo al que le falta, en vez de en una lista aparte donde hay que
+        -- buscar a mano de quien era cada hueco.
+        select cu.nombre            as curso,
+               co.anio_ingreso::text || '-' || co.seccion as cohorte,
+               ca.nombre                                  as carrera,
+               coalesce(cp.semestre_asignado, 0)          as semestre,
+               p.motivo_no_asignacion                     as motivo
         from horarios.sesiones_no_asignadas p
+        join horarios.cursos cu on cu.id = p.curso_id
         join horarios.cohortes co on co.id = p.cohorte_id
         join horarios.carreras ca on ca.id = co.carrera_id
+        left join horarios.cohorte_periodos cp
+               on cp.cohorte_id = co.id
+              and cp.periodo_id = (select periodo_id from periodo)
+              and cp.eliminado_en is null
         where p.horario_id = p_horario_id
+          -- Los mismos filtros que las sesiones, con los dos que aqui significan algo: una
+          -- clase sin colocar no tiene docente, ni aula, ni jornada por los que filtrar.
+          and (p_cohorte_id is null or co.id = p_cohorte_id)
+          and (p_carrera_id is null or ca.id = p_carrera_id)
           and (p_ver_todo or ca.facultad_id = any(p_facultad_ids))
     )
     select jsonb_build_object(
+        'slots', coalesce((select jsonb_agg(to_jsonb(slots)
+            order by jornada_id, minuto_inicio, dia) from slots), '[]'::jsonb),
         'sesiones', coalesce((select jsonb_agg(to_jsonb(pagina) - 'dia_orden' - 'anio_ingreso' - 'seccion'
-            order by dia_orden, indice_slot_inicio, carrera, anio_ingreso, seccion) from pagina), '[]'::jsonb),
+            order by carrera, semestre, dia_orden, indice_slot_inicio, anio_ingreso, seccion) from pagina), '[]'::jsonb),
         'conflictos', coalesce((select jsonb_agg(to_jsonb(conflictos) - 'creado_en'
             order by es_restriccion_dura desc, creado_en) from conflictos), '[]'::jsonb),
-        'pendientes', coalesce((select jsonb_agg(to_jsonb(pendientes) - 'creado_en'
-            order by creado_en) from pendientes), '[]'::jsonb),
+        'pendientes', coalesce((select jsonb_agg(to_jsonb(pendientes)
+            order by carrera, semestre, curso, cohorte) from pendientes), '[]'::jsonb),
         'total_sesiones', (select count(*)::integer from sesiones_filtradas),
         'pagina', p_pagina,
         'tamano_pagina', p_tamano_pagina);
@@ -3613,7 +5631,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE)',
     tabla: '',
-    linea: 2157,
+    linea: 2913,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -3621,9 +5639,9 @@ $$;`,
       'Arma para cada una la etiqueta «carrera · jornada · año-sección».',
       'Ordena por etiqueta y devuelve `[]` si no hay nada publicado.',
     ],
-    sql: `CREATE FUNCTION horarios.listar_cohortes_publicadas() RETURNS jsonb
-    LANGUAGE sql STABLE
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."listar_cohortes_publicadas"() RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce(jsonb_agg(to_jsonb(opcion) order by opcion.etiqueta), '[]'::jsonb)
     from (
@@ -3646,8 +5664,8 @@ $$;`,
     detalle: '',
     nota: 'devuelve jsonb · sql · solo lee (STABLE) · SECURITY DEFINER',
     tabla: '',
-    linea: 2230,
-    claves: '(uuid, date) rpc funcion p_horario_id p_fecha',
+    linea: 3008,
+    claves: '("uuid", "date") rpc funcion p_horario_id p_fecha',
     params: [
       { n: 'p_horario_id', t: 'uuid', d: '' },
       { n: 'p_fecha', t: 'date', d: '' },
@@ -3656,9 +5674,9 @@ $$;`,
       'Recorre las sustituciones activas de las sesiones de ese horario, exigiendo que el horario esté publicado.',
       'Deja solo las vigentes en la fecha pedida según su tipo: la temporal por rango de fechas, la permanente desde su fecha de cambio.',
     ],
-    sql: `CREATE FUNCTION horarios.listar_sustituciones_publicadas(p_horario_id uuid, p_fecha date) RETURNS jsonb
-    LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."listar_sustituciones_publicadas"("p_horario_id" "uuid", "p_fecha" "date") RETURNS "jsonb"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
     AS $$
     select coalesce(jsonb_agg(jsonb_build_object(
         'id', e.id,
@@ -3689,10 +5707,10 @@ $$;`,
     grupo: 'Importación y mantenimiento',
     desc: 'Aplica un archivo ya validado: registra la importación y vuelca las filas a los catálogos que correspondan.',
     detalle: '',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 991,
-    claves: '(text, text, text, text, text, integer, uuid, text, jsonb, jsonb) rpc funcion p_tipo_archivo p_nombre_archivo p_hash_archivo p_version_plantilla p_clave_solicitud p_total_filas p_solicitada_por_id p_codigo_plantilla p_filas p_resumen',
+    linea: 1055,
+    claves: '("text", "text", "text", "text", "text", integer, "uuid", "text", "jsonb", "jsonb") rpc funcion p_tipo_archivo p_nombre_archivo p_hash_archivo p_version_plantilla p_clave_solicitud p_total_filas p_solicitada_por_id p_codigo_plantilla p_filas p_resumen',
     params: [
       { n: 'p_tipo_archivo', t: 'text', d: '' },
       { n: 'p_nombre_archivo', t: 'text', d: '' },
@@ -3711,9 +5729,9 @@ $$;`,
       'Si una fila no llega a afectar ningún registro, aborta la carga entera: no queda a medias.',
       'Marca la importación como `aplicada` y devuelve el resumen.',
     ],
-    sql: `CREATE FUNCTION horarios.confirmar_importacion(p_tipo_archivo text, p_nombre_archivo text, p_hash_archivo text, p_version_plantilla text, p_clave_solicitud text, p_total_filas integer, p_solicitada_por_id uuid, p_codigo_plantilla text, p_filas jsonb, p_resumen jsonb) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."confirmar_importacion"("p_tipo_archivo" "text", "p_nombre_archivo" "text", "p_hash_archivo" "text", "p_version_plantilla" "text", "p_clave_solicitud" "text", "p_total_filas" integer, "p_solicitada_por_id" "uuid", "p_codigo_plantilla" "text", "p_filas" "jsonb", "p_resumen" "jsonb") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_id uuid;
@@ -3952,10 +5970,10 @@ $$;`,
     grupo: 'Importación y mantenimiento',
     desc: 'Deshace un borrado lógico poniendo `eliminado_en = NULL`. Solo sobre una lista blanca de tablas.',
     detalle: 'Existe porque nada se borra de verdad: el borrado marca fecha. Con DELETE real esto sería imposible.',
-    nota: 'devuelve jsonb · plpgsql · escribe',
+    nota: 'devuelve jsonb · plpgsql · VOLATILE',
     tabla: '',
-    linea: 2381,
-    claves: '(text, uuid, text, uuid) rpc funcion p_entidad p_entidad_id p_motivo p_usuario_id',
+    linea: 3239,
+    claves: '("text", "uuid", "text", "uuid") rpc funcion p_entidad p_entidad_id p_motivo p_usuario_id',
     params: [
       { n: 'p_entidad', t: 'text', d: '' },
       { n: 'p_entidad_id', t: 'uuid', d: '' },
@@ -3967,9 +5985,9 @@ $$;`,
       'Pone `eliminado_en` en nulo y sube `version_fila`; exige haber afectado exactamente una fila.',
       'Deja constancia en `auditoria` y avisa al usuario con una notificación.',
     ],
-    sql: `CREATE FUNCTION horarios.restaurar_entidad(p_entidad text, p_entidad_id uuid, p_motivo text, p_usuario_id uuid) RETURNS jsonb
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."restaurar_entidad"("p_entidad" "text", "p_entidad_id" "uuid", "p_motivo" "text", "p_usuario_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $_$
 declare
     v_permitidas constant text[] := array[
@@ -4023,14 +6041,14 @@ $_$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 390,
+    linea: 456,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
       'Pone `actualizado_en = now()` en la fila que se está guardando.',
     ],
-    sql: `CREATE FUNCTION horarios.actualizar_marca() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."actualizar_marca"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 begin
   new.actualizado_en = now();
@@ -4043,19 +6061,19 @@ $$;`,
     nombre: 'actualizar_marca_con_version',
     cat: 'funcion',
     grupo: 'Trigger · marca de tiempo y versión',
-    desc: 'Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
-    detalle: 'Está enganchada a 17 tablas. Nadie escribe esos dos campos a mano.',
+    desc: 'Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
+    detalle: 'Está enganchada a 18 tablas. Nadie escribe esos dos campos a mano.',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 404,
+    linea: 470,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
       'Pone `actualizado_en = now()`.',
       'Sube `version_fila` en uno respecto de la fila anterior.',
     ],
-    sql: `CREATE FUNCTION horarios.actualizar_marca_con_version() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."actualizar_marca_con_version"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 begin
   new.actualizado_en = now();
@@ -4073,7 +6091,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 2533,
+    linea: 3481,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4081,8 +6099,8 @@ $$;`,
       'Rechaza un semestre mayor que la duración de la carrera.',
       'Si se está activando, exige que el pensum tenga cursos para ese semestre.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_cohorte_periodo() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."validar_cohorte_periodo"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_duracion_en_semestres integer;
@@ -4129,7 +6147,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 2577,
+    linea: 3525,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4137,9 +6155,9 @@ $$;`,
       'Rechaza un día que no esté entre los activos de esa jornada.',
       'Rechaza un receso que se salga de los bloques del día.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_descanso_en_jornada() RETURNS trigger
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."validar_descanso_en_jornada"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
   jornada horarios.jornadas%rowtype;
@@ -4163,7 +6181,7 @@ end $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 2599,
+    linea: 3547,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4171,43 +6189,48 @@ end $$;`,
       'Rechaza días no activos y bloques fuera de rango.',
       'Rechaza un bloque que caiga sobre un receso de la jornada.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_disponibilidad_slot() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."validar_disponibilidad_slot"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
     AS $$
 declare
-  v_dias_activos dia_semana[];
-  v_bloques_por_dia integer;
+    v_dias_activos horarios.dia_semana[];
+    v_bloques_por_dia integer;
 begin
-  select dias_activos, bloques_por_dia
-  into v_dias_activos, v_bloques_por_dia
-  from jornadas
-  where id = new.jornada_id
-    and esta_activa
-    and eliminado_en is null;
+    select jornada.dias_activos, jornada.bloques_por_dia
+      into v_dias_activos, v_bloques_por_dia
+      from horarios.jornadas jornada
+     where jornada.id = new.jornada_id
+       and jornada.esta_activa
+       and jornada.eliminado_en is null;
 
-  if v_bloques_por_dia is null then
-    raise exception 'La jornada % no existe o no esta activa', new.jornada_id;
-  end if;
+    if v_bloques_por_dia is null then
+        raise exception 'La jornada % no existe o no esta activa', new.jornada_id;
+    end if;
 
-  if not new.dia = any(v_dias_activos) then
-    raise exception 'La disponibilidad usa un dia no activo en la jornada %', new.jornada_id;
-  end if;
+    if not new.dia = any(v_dias_activos) then
+        raise exception 'La disponibilidad usa un dia no activo en la jornada %',
+            new.jornada_id;
+    end if;
 
-  if new.indice_slot > v_bloques_por_dia then
-    raise exception 'La disponibilidad excede los bloques de la jornada %', new.jornada_id;
-  end if;
+    if new.indice_slot > v_bloques_por_dia then
+        raise exception 'La disponibilidad excede los bloques de la jornada %',
+            new.jornada_id;
+    end if;
 
-  if exists (
-    select 1
-    from jornada_descansos d
-    where d.jornada_id = new.jornada_id
-      and d.dia = new.dia
-      and d.rango_slots && int4range(new.indice_slot, new.indice_slot + 1, '[)')
-  ) then
-    raise exception 'La disponibilidad cae sobre un descanso de la jornada %', new.jornada_id;
-  end if;
+    if exists (
+        select 1
+          from horarios.jornada_descansos descanso
+         where descanso.jornada_id = new.jornada_id
+           and descanso.dia = new.dia
+           and descanso.rango_slots &&
+               int4range(new.indice_slot, new.indice_slot + 1, '[)')
+    ) then
+        raise exception 'La disponibilidad cae sobre un descanso de la jornada %',
+            new.jornada_id;
+    end if;
 
-  return new;
+    return new;
 end;
 $$;`,
   },
@@ -4220,7 +6243,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 2644,
+    linea: 3597,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4231,8 +6254,8 @@ $$;`,
       'En planes de clases exige además que se cubran los bloques semanales exactos del pensum.',
       'Exige aprobador y publicador con sus fechas, y admite solo las transiciones de estado permitidas.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_horario_publicable() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."validar_horario_publicable"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 begin
   if new.estado in ('pendiente_aprobacion', 'aprobado', 'publicado') then
@@ -4317,15 +6340,13 @@ begin
           select 1
           from asignaciones_docente_curso adc
           where adc.docente_id = s.docente_id
-            and adc.curso_id = sc.curso_visible_id
+            and adc.curso_id in (select ce.curso_id from horarios.cursos_equivalentes(sc.curso_visible_id) ce)
             and adc.esta_vigente
             and adc.eliminado_en is null
-            and (adc.carrera_id is null or adc.carrera_id = co.carrera_id)
-            and (adc.facultad_id is null or adc.facultad_id = ca.facultad_id)
             and (adc.jornada_id is null or adc.jornada_id = co.jornada_id)
         )
     ) then
-      raise exception 'El horario % tiene docentes no autorizados para su cohorte, carrera, facultad o jornada',
+      raise exception 'El horario % tiene docentes no autorizados para el curso de su cohorte o para su jornada',
         new.id;
     end if;
 
@@ -4645,7 +6666,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 3054,
+    linea: 4005,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4653,8 +6674,8 @@ $$;`,
       'Rellena la versión de plantilla si venía vacía, o falla si no coincide con la vigente.',
       'Sella `finalizada_en` cuando la importación llega a un estado final.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_importacion_plantilla() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."validar_importacion_plantilla"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_version varchar(50);
@@ -4699,7 +6720,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 3096,
+    linea: 4047,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4710,8 +6731,8 @@ $$;`,
       'Exige docente activo y autorizado, y aula activa, del tipo requerido y con los recursos que pide el curso.',
       'Comprueba que la matrícula no supere la capacidad del aula y que el docente esté disponible en todos los bloques.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_sesion_en_jornada() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."validar_sesion_en_jornada"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_dias_activos dia_semana[];
@@ -4901,15 +6922,25 @@ begin
       new.aula_id, new.curso_id;
   end if;
 
-  if not new.es_area_comun and not exists (
+  -- La autorizacion vale para el curso y para sus equivalentes: un curso_comun es la
+  -- misma clase con el nombre de cada carrera, y quien puede darla en una puede darla en
+  -- todas. Es la regla que completar_sesion_cohorte y validar_horario_publicable aplican
+  -- desde 202608280001; esta funcion se quedo fuera de aquel cambio.
+  --
+  -- Y se comprueba tambien cuando la sesion es de area comun: antes se saltaba entera,
+  -- asi que una sesion compartida podia salir con un docente sin autorizar. El curso de
+  -- la sesion es el principal de la agrupacion, cuyos equivalentes son justo los demas
+  -- nombres de esa clase, de modo que no hace falta ninguna excepcion.
+  if not exists (
     select 1
     from asignaciones_docente_curso adc
     where adc.docente_id = new.docente_id
-      and adc.curso_id = new.curso_id
+      and adc.curso_id in (
+        select ce.curso_id from horarios.cursos_equivalentes(new.curso_id) ce)
       and adc.esta_vigente
       and adc.eliminado_en is null
   ) then
-    raise exception 'El docente % no esta autorizado para impartir el curso %',
+    raise exception 'El docente % no esta autorizado para impartir el curso % ni ninguno de sus equivalentes',
       new.docente_id, new.curso_id;
   end if;
 
@@ -4964,7 +6995,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 3346,
+    linea: 4314,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -4973,8 +7004,8 @@ $$;`,
       'Exige que todas las fechas del evento caigan dentro del período académico.',
       'Si hay docente entrante: que esté activo, autorizado para todas las cohortes de la sesión, libre en ese bloque y disponible en él.',
     ],
-    sql: `CREATE FUNCTION horarios.validar_sustitucion_docente_original() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."validar_sustitucion_docente_original"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_horario_id uuid;
@@ -5134,7 +7165,7 @@ $$;
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;`,
+SET default_table_access_method = "heap";`,
   },
   {
     id: 'fn-aplicar_receso_a_sesion',
@@ -5142,10 +7173,10 @@ SET default_table_access_method = heap;`,
     cat: 'funcion',
     grupo: 'Trigger · completar y derivar',
     desc: 'Traduce bloques a minutos de reloj insertando el receso de la jornada. Si al correrse la sesión se sale del día, aborta.',
-    detalle: 'Los bloques no saben nada de recesos; este trigger es el que los convierte en horas reales.',
+    detalle: 'El motor razona en bloques y no sabe nada de recesos; este trigger es el que convierte esos bloques en horas reales.',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 419,
+    linea: 485,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -5153,9 +7184,9 @@ SET default_table_access_method = heap;`,
       'Si la sesión empieza después del receso, corre inicio y fin; si lo cruza, corre solo el fin.',
       'Si al correrse se pasa del fin de la jornada, aborta.',
     ],
-    sql: `CREATE FUNCTION horarios.aplicar_receso_a_sesion() RETURNS trigger
-    LANGUAGE plpgsql
-    SET search_path TO 'horarios', 'public'
+    sql: `CREATE FUNCTION "horarios"."aplicar_receso_a_sesion"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
     AS $$
 declare
     v_jornada horarios.jornadas%rowtype;
@@ -5186,7 +7217,7 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 713,
+    linea: 779,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
@@ -5196,8 +7227,8 @@ $$;`,
       'Exige docente autorizado, un solo docente por curso y cohorte, y aula compatible con recursos suficientes.',
       'Suma la matrícula de todas las cohortes de la sesión y rechaza si supera la capacidad del aula.',
     ],
-    sql: `CREATE FUNCTION horarios.completar_sesion_cohorte() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."completar_sesion_cohorte"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_jornada_sesion uuid;
@@ -5360,11 +7391,9 @@ begin
     select 1
     from asignaciones_docente_curso adc
     where adc.docente_id = v_docente_id
-      and adc.curso_id = v_curso_visible_id
+      and adc.curso_id in (select ce.curso_id from horarios.cursos_equivalentes(v_curso_visible_id) ce)
       and adc.esta_vigente
       and adc.eliminado_en is null
-      and (adc.carrera_id is null or adc.carrera_id = v_carrera_id)
-      and (adc.facultad_id is null or adc.facultad_id = v_facultad_id)
       and (adc.jornada_id is null or adc.jornada_id = v_jornada_cohorte)
   ) then
     raise exception 'El docente % no esta autorizado para el curso % en la cohorte %',
@@ -5470,6 +7499,32 @@ end;
 $$;`,
   },
   {
+    id: 'fn-limpiar_miembros_curso_comun',
+    nombre: 'limpiar_miembros_curso_comun',
+    cat: 'funcion',
+    grupo: 'Trigger · propagación',
+    desc: 'Retira la membresía de un curso común cuando se marca como eliminado.',
+    detalle: '',
+    nota: 'devuelve trigger · plpgsql',
+    tabla: '',
+    linea: 2871,
+    claves: '() rpc funcion ',
+    params: [],
+    pasos: [
+      'El trigger se activa al cambiar `eliminado_en` de NULL a una fecha.',
+      'Borra los vínculos del grupo en `curso_comun_cursos` y devuelve la fila nueva.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."limpiar_miembros_curso_comun"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+begin
+    delete from horarios.curso_comun_cursos where curso_comun_id = new.id;
+    return new;
+end;
+$$;`,
+  },
+  {
     id: 'fn-propagar_cambio_sesion_a_cohortes',
     nombre: 'propagar_cambio_sesion_a_cohortes',
     cat: 'funcion',
@@ -5478,14 +7533,14 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 2358,
+    linea: 3173,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
       'Copia a todas las filas de `sesion_cohortes` de esa sesión el horario, la fecha, el día, los bloques y los minutos nuevos.',
     ],
-    sql: `CREATE FUNCTION horarios.propagar_cambio_sesion_a_cohortes() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."propagar_cambio_sesion_a_cohortes"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 begin
   update sesion_cohortes
@@ -5511,15 +7566,15 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 2433,
+    linea: 3291,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
       'Reescribe las filas de `sesion_cohortes` de la sesión sin cambiarles el valor.',
       'Ese UPDATE en apariencia vacío vuelve a disparar las validaciones de `completar_sesion_cohorte`.',
     ],
-    sql: `CREATE FUNCTION horarios.revalidar_cohortes_de_sesion() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."revalidar_cohortes_de_sesion"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 begin
   update sesion_cohortes
@@ -5539,14 +7594,14 @@ $$;`,
     detalle: '',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 499,
+    linea: 565,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
       'Si el horario que se intenta borrar está aprobado, publicado o archivado, aborta.',
     ],
-    sql: `CREATE FUNCTION horarios.bloquear_eliminacion_horario_oficial() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."bloquear_eliminacion_horario_oficial"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 begin
   if old.estado in ('aprobado', 'publicado', 'archivado') then
@@ -5554,6 +7609,52 @@ begin
   end if;
 
   return old;
+end;
+$$;`,
+  },
+  {
+    id: 'fn-bloquear_generacion_publicada',
+    nombre: 'bloquear_generacion_publicada',
+    cat: 'funcion',
+    grupo: 'Trigger · bloqueo e inmutabilidad',
+    desc: 'Impide tocar la corrida del motor asociada a un horario ya publicado.',
+    detalle: '',
+    nota: 'devuelve trigger · plpgsql',
+    tabla: '',
+    linea: 582,
+    claves: '() rpc funcion ',
+    params: [],
+    pasos: [
+      'Mira el `plan_id` de la corrida.',
+      'Si el horario de ese plan está publicado o archivado, aborta.',
+    ],
+    sql: `CREATE FUNCTION "horarios"."bloquear_generacion_publicada"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+declare
+    v_horario_id uuid;
+begin
+    if tg_op = 'DELETE' then
+        v_horario_id = old.plan_id;
+    else
+        v_horario_id = new.plan_id;
+    end if;
+
+    if exists (
+        select 1
+        from horarios.horarios
+        where id = v_horario_id
+          and estado in ('publicado', 'archivado')
+          and eliminado_en is null
+    ) then
+        raise exception 'No se puede modificar directamente un horario publicado o archivado';
+    end if;
+
+    if tg_op = 'DELETE' then
+        return old;
+    end if;
+
+    return new;
 end;
 $$;`,
   },
@@ -5566,15 +7667,15 @@ $$;`,
     detalle: 'Para cambiar un horario publicado hay que crear una versión derivada. Esta es la barrera que lo obliga.',
     nota: 'devuelve trigger · plpgsql',
     tabla: '',
-    linea: 551,
+    linea: 617,
     claves: '() rpc funcion ',
     params: [],
     pasos: [
       'Toma el `horario_id` de la fila nueva o de la vieja, según sea alta, cambio o baja.',
       'Si ese horario está publicado o archivado, aborta con excepción.',
     ],
-    sql: `CREATE FUNCTION horarios.bloquear_horario_publicado() RETURNS trigger
-    LANGUAGE plpgsql
+    sql: `CREATE FUNCTION "horarios"."bloquear_horario_publicado"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
     AS $$
 declare
   v_horario_id uuid;
@@ -5608,120 +7709,150 @@ $$;`,
     nombre: 'agrupaciones_area_comun_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `agrupaciones_area_comun`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `agrupaciones_area_comun`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'agrupaciones_area_comun',
-    linea: 5754,
+    linea: 6908,
     claves: 'actualizar_marca_con_version agrupaciones_area_comun trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER agrupaciones_area_comun_actualizar_trg BEFORE UPDATE ON horarios.agrupaciones_area_comun FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "agrupaciones_area_comun_actualizar_trg" BEFORE UPDATE ON "horarios"."agrupaciones_area_comun" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-asignaciones_docente_curso_actualizar_trg',
     nombre: 'asignaciones_docente_curso_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `asignaciones_docente_curso`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `asignaciones_docente_curso`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'asignaciones_docente_curso',
-    linea: 5761,
+    linea: 6915,
     claves: 'actualizar_marca_con_version asignaciones_docente_curso trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER asignaciones_docente_curso_actualizar_trg BEFORE UPDATE ON horarios.asignaciones_docente_curso FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "asignaciones_docente_curso_actualizar_trg" BEFORE UPDATE ON "horarios"."asignaciones_docente_curso" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-aulas_actualizar_trg',
     nombre: 'aulas_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `aulas`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `aulas`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'aulas',
-    linea: 5768,
+    linea: 6922,
     claves: 'actualizar_marca_con_version aulas trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER aulas_actualizar_trg BEFORE UPDATE ON horarios.aulas FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "aulas_actualizar_trg" BEFORE UPDATE ON "horarios"."aulas" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-carreras_actualizar_trg',
     nombre: 'carreras_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `carreras`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `carreras`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'carreras',
-    linea: 5775,
+    linea: 6929,
     claves: 'actualizar_marca_con_version carreras trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER carreras_actualizar_trg BEFORE UPDATE ON horarios.carreras FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "carreras_actualizar_trg" BEFORE UPDATE ON "horarios"."carreras" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-cohorte_periodos_actualizar_trg',
     nombre: 'cohorte_periodos_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `cohorte_periodos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `cohorte_periodos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'cohorte_periodos',
-    linea: 5782,
+    linea: 6936,
     claves: 'actualizar_marca_con_version cohorte_periodos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER cohorte_periodos_actualizar_trg BEFORE UPDATE ON horarios.cohorte_periodos FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "cohorte_periodos_actualizar_trg" BEFORE UPDATE ON "horarios"."cohorte_periodos" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-cohortes_actualizar_trg',
     nombre: 'cohortes_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `cohortes`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `cohortes`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'cohortes',
-    linea: 5796,
+    linea: 6950,
     claves: 'actualizar_marca_con_version cohortes trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER cohortes_actualizar_trg BEFORE UPDATE ON horarios.cohortes FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "cohortes_actualizar_trg" BEFORE UPDATE ON "horarios"."cohortes" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
+  },
+  {
+    id: 'trg-configuraciones_motor_actualizar_trg',
+    nombre: 'configuraciones_motor_actualizar_trg',
+    cat: 'trigger',
+    grupo: 'Marca de tiempo y versión',
+    desc: 'Sobre `configuraciones_motor`. Antes de cada UPDATE pone `actualizado_en = now()`. Para las tablas que no llevan `version_fila`.',
+    detalle: '',
+    nota: 'BEFORE UPDATE · por fila · actualizar_marca()',
+    tabla: 'configuraciones_motor',
+    linea: 6957,
+    claves: 'actualizar_marca configuraciones_motor trigger',
+    params: [],
+    pasos: [],
+    sql: `CREATE TRIGGER "configuraciones_motor_actualizar_trg" BEFORE UPDATE ON "horarios"."configuraciones_motor" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();`,
+  },
+  {
+    id: 'trg-curso_comun_actualizar_trg',
+    nombre: 'curso_comun_actualizar_trg',
+    cat: 'trigger',
+    grupo: 'Marca de tiempo y versión',
+    desc: 'Sobre `curso_comun`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
+    detalle: '',
+    nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
+    tabla: 'curso_comun',
+    linea: 6964,
+    claves: 'actualizar_marca_con_version curso_comun trigger',
+    params: [],
+    pasos: [],
+    sql: `CREATE TRIGGER "curso_comun_actualizar_trg" BEFORE UPDATE ON "horarios"."curso_comun" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-cursos_actualizar_trg',
     nombre: 'cursos_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `cursos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `cursos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'cursos',
-    linea: 5810,
+    linea: 6978,
     claves: 'actualizar_marca_con_version cursos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER cursos_actualizar_trg BEFORE UPDATE ON horarios.cursos FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "cursos_actualizar_trg" BEFORE UPDATE ON "horarios"."cursos" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-cursos_en_pensum_actualizar_trg',
     nombre: 'cursos_en_pensum_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `cursos_en_pensum`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `cursos_en_pensum`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'cursos_en_pensum',
-    linea: 5817,
+    linea: 6985,
     claves: 'actualizar_marca_con_version cursos_en_pensum trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER cursos_en_pensum_actualizar_trg BEFORE UPDATE ON horarios.cursos_en_pensum FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "cursos_en_pensum_actualizar_trg" BEFORE UPDATE ON "horarios"."cursos_en_pensum" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-disponibilidades_docente_actualizar_trg',
@@ -5732,116 +7863,116 @@ $$;`,
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca()',
     tabla: 'disponibilidades_docente',
-    linea: 5831,
+    linea: 6999,
     claves: 'actualizar_marca disponibilidades_docente trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER disponibilidades_docente_actualizar_trg BEFORE UPDATE ON horarios.disponibilidades_docente FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca();`,
+    sql: `CREATE TRIGGER "disponibilidades_docente_actualizar_trg" BEFORE UPDATE ON "horarios"."disponibilidades_docente" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();`,
   },
   {
     id: 'trg-docentes_actualizar_trg',
     nombre: 'docentes_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `docentes`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `docentes`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'docentes',
-    linea: 5838,
+    linea: 7006,
     claves: 'actualizar_marca_con_version docentes trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER docentes_actualizar_trg BEFORE UPDATE ON horarios.docentes FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "docentes_actualizar_trg" BEFORE UPDATE ON "horarios"."docentes" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-eventos_sustitucion_actualizar_trg',
     nombre: 'eventos_sustitucion_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `eventos_sustitucion`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `eventos_sustitucion`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'eventos_sustitucion',
-    linea: 5845,
+    linea: 7013,
     claves: 'actualizar_marca_con_version eventos_sustitucion trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER eventos_sustitucion_actualizar_trg BEFORE UPDATE ON horarios.eventos_sustitucion FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "eventos_sustitucion_actualizar_trg" BEFORE UPDATE ON "horarios"."eventos_sustitucion" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-facultades_actualizar_trg',
     nombre: 'facultades_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `facultades`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `facultades`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'facultades',
-    linea: 5859,
+    linea: 7027,
     claves: 'actualizar_marca_con_version facultades trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER facultades_actualizar_trg BEFORE UPDATE ON horarios.facultades FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "facultades_actualizar_trg" BEFORE UPDATE ON "horarios"."facultades" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-horarios_actualizar_trg',
     nombre: 'horarios_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `horarios`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `horarios`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'horarios',
-    linea: 5866,
+    linea: 7034,
     claves: 'actualizar_marca_con_version horarios trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER horarios_actualizar_trg BEFORE UPDATE ON horarios.horarios FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "horarios_actualizar_trg" BEFORE UPDATE ON "horarios"."horarios" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-jornadas_actualizar_trg',
     nombre: 'jornadas_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `jornadas`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `jornadas`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'jornadas',
-    linea: 5901,
+    linea: 7069,
     claves: 'actualizar_marca_con_version jornadas trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER jornadas_actualizar_trg BEFORE UPDATE ON horarios.jornadas FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "jornadas_actualizar_trg" BEFORE UPDATE ON "horarios"."jornadas" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-pensums_actualizar_trg',
     nombre: 'pensums_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `pensums`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `pensums`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'pensums',
-    linea: 5908,
+    linea: 7076,
     claves: 'actualizar_marca_con_version pensums trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER pensums_actualizar_trg BEFORE UPDATE ON horarios.pensums FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "pensums_actualizar_trg" BEFORE UPDATE ON "horarios"."pensums" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-periodos_academicos_actualizar_trg',
     nombre: 'periodos_academicos_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `periodos_academicos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `periodos_academicos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'periodos_academicos',
-    linea: 5915,
+    linea: 7083,
     claves: 'actualizar_marca_con_version periodos_academicos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER periodos_academicos_actualizar_trg BEFORE UPDATE ON horarios.periodos_academicos FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "periodos_academicos_actualizar_trg" BEFORE UPDATE ON "horarios"."periodos_academicos" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-plantillas_importacion_actualizar_trg',
@@ -5852,11 +7983,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca()',
     tabla: 'plantillas_importacion',
-    linea: 5922,
+    linea: 7090,
     claves: 'actualizar_marca plantillas_importacion trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER plantillas_importacion_actualizar_trg BEFORE UPDATE ON horarios.plantillas_importacion FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca();`,
+    sql: `CREATE TRIGGER "plantillas_importacion_actualizar_trg" BEFORE UPDATE ON "horarios"."plantillas_importacion" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();`,
   },
   {
     id: 'trg-plantillas_notificacion_actualizar_trg',
@@ -5867,26 +7998,26 @@ $$;`,
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca()',
     tabla: 'plantillas_notificacion',
-    linea: 5929,
+    linea: 7097,
     claves: 'actualizar_marca plantillas_notificacion trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER plantillas_notificacion_actualizar_trg BEFORE UPDATE ON horarios.plantillas_notificacion FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca();`,
+    sql: `CREATE TRIGGER "plantillas_notificacion_actualizar_trg" BEFORE UPDATE ON "horarios"."plantillas_notificacion" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();`,
   },
   {
     id: 'trg-recursos_actualizar_trg',
     nombre: 'recursos_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `recursos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `recursos`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'recursos',
-    linea: 5936,
+    linea: 7104,
     claves: 'actualizar_marca_con_version recursos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER recursos_actualizar_trg BEFORE UPDATE ON horarios.recursos FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "recursos_actualizar_trg" BEFORE UPDATE ON "horarios"."recursos" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-roles_actualizar_trg',
@@ -5897,26 +8028,26 @@ $$;`,
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca()',
     tabla: 'roles',
-    linea: 5943,
+    linea: 7111,
     claves: 'actualizar_marca roles trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER roles_actualizar_trg BEFORE UPDATE ON horarios.roles FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca();`,
+    sql: `CREATE TRIGGER "roles_actualizar_trg" BEFORE UPDATE ON "horarios"."roles" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();`,
   },
   {
     id: 'trg-usuarios_actualizar_trg',
     nombre: 'usuarios_actualizar_trg',
     cat: 'trigger',
     grupo: 'Marca de tiempo y versión',
-    desc: 'Sobre `usuarios`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es la pieza que sostiene el bloqueo optimista.',
+    desc: 'Sobre `usuarios`. Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.',
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca_con_version()',
     tabla: 'usuarios',
-    linea: 5978,
+    linea: 7146,
     claves: 'actualizar_marca_con_version usuarios trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER usuarios_actualizar_trg BEFORE UPDATE ON horarios.usuarios FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca_con_version();`,
+    sql: `CREATE TRIGGER "usuarios_actualizar_trg" BEFORE UPDATE ON "horarios"."usuarios" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();`,
   },
   {
     id: 'trg-ventanas_disponibilidad_actualizar_trg',
@@ -5927,11 +8058,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE UPDATE · por fila · actualizar_marca()',
     tabla: 'ventanas_disponibilidad',
-    linea: 5985,
+    linea: 7153,
     claves: 'actualizar_marca ventanas_disponibilidad trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER ventanas_disponibilidad_actualizar_trg BEFORE UPDATE ON horarios.ventanas_disponibilidad FOR EACH ROW EXECUTE FUNCTION horarios.actualizar_marca();`,
+    sql: `CREATE TRIGGER "ventanas_disponibilidad_actualizar_trg" BEFORE UPDATE ON "horarios"."ventanas_disponibilidad" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();`,
   },
   {
     id: 'trg-cohorte_periodos_validar_trg',
@@ -5942,11 +8073,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de cohorte_id, semestre_asignado, esta_activa · por fila · validar_cohorte_periodo()',
     tabla: 'cohorte_periodos',
-    linea: 5789,
+    linea: 6943,
     claves: 'validar_cohorte_periodo cohorte_periodos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER cohorte_periodos_validar_trg BEFORE INSERT OR UPDATE OF cohorte_id, semestre_asignado, esta_activa ON horarios.cohorte_periodos FOR EACH ROW EXECUTE FUNCTION horarios.validar_cohorte_periodo();`,
+    sql: `CREATE TRIGGER "cohorte_periodos_validar_trg" BEFORE INSERT OR UPDATE OF "cohorte_id", "semestre_asignado", "esta_activa" ON "horarios"."cohorte_periodos" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_cohorte_periodo"();`,
   },
   {
     id: 'trg-disponibilidad_docente_slots_validar_trg',
@@ -5957,11 +8088,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de jornada_id, dia, indice_slot · por fila · validar_disponibilidad_slot()',
     tabla: 'disponibilidad_docente_slots',
-    linea: 5824,
+    linea: 6992,
     claves: 'validar_disponibilidad_slot disponibilidad_docente_slots trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER disponibilidad_docente_slots_validar_trg BEFORE INSERT OR UPDATE OF jornada_id, dia, indice_slot ON horarios.disponibilidad_docente_slots FOR EACH ROW EXECUTE FUNCTION horarios.validar_disponibilidad_slot();`,
+    sql: `CREATE TRIGGER "disponibilidad_docente_slots_validar_trg" BEFORE INSERT OR UPDATE OF "jornada_id", "dia", "indice_slot" ON "horarios"."disponibilidad_docente_slots" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_disponibilidad_slot"();`,
   },
   {
     id: 'trg-eventos_sustitucion_validar_docente_trg',
@@ -5972,11 +8103,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de tipo, sesion_afectada_id, docente_original_id, docente_entrante_id, fecha_inicio, fecha_fin, fecha_cambio, fecha_ausencia, fecha_recuperacion, fecha_cancelada · por fila · validar_sustitucion_docente_original()',
     tabla: 'eventos_sustitucion',
-    linea: 5852,
+    linea: 7020,
     claves: 'validar_sustitucion_docente_original eventos_sustitucion trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER eventos_sustitucion_validar_docente_trg BEFORE INSERT OR UPDATE OF tipo, sesion_afectada_id, docente_original_id, docente_entrante_id, fecha_inicio, fecha_fin, fecha_cambio, fecha_ausencia, fecha_recuperacion, fecha_cancelada ON horarios.eventos_sustitucion FOR EACH ROW EXECUTE FUNCTION horarios.validar_sustitucion_docente_original();`,
+    sql: `CREATE TRIGGER "eventos_sustitucion_validar_docente_trg" BEFORE INSERT OR UPDATE OF "tipo", "sesion_afectada_id", "docente_original_id", "docente_entrante_id", "fecha_inicio", "fecha_fin", "fecha_cambio", "fecha_ausencia", "fecha_recuperacion", "fecha_cancelada" ON "horarios"."eventos_sustitucion" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_sustitucion_docente_original"();`,
   },
   {
     id: 'trg-horarios_validar_publicacion_trg',
@@ -5987,11 +8118,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de periodo_id, tipo_plan, estado, cantidad_violaciones_duras, fecha_aprobacion, fecha_publicacion, aprobado_por_id, publicado_por_id, eliminado_en · por fila · validar_horario_publicable()',
     tabla: 'horarios',
-    linea: 5880,
+    linea: 7048,
     claves: 'validar_horario_publicable horarios trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER horarios_validar_publicacion_trg BEFORE INSERT OR UPDATE OF periodo_id, tipo_plan, estado, cantidad_violaciones_duras, fecha_aprobacion, fecha_publicacion, aprobado_por_id, publicado_por_id, eliminado_en ON horarios.horarios FOR EACH ROW EXECUTE FUNCTION horarios.validar_horario_publicable();`,
+    sql: `CREATE TRIGGER "horarios_validar_publicacion_trg" BEFORE INSERT OR UPDATE OF "periodo_id", "tipo_plan", "estado", "cantidad_violaciones_duras", "fecha_aprobacion", "fecha_publicacion", "aprobado_por_id", "publicado_por_id", "eliminado_en" ON "horarios"."horarios" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_horario_publicable"();`,
   },
   {
     id: 'trg-importaciones_validar_plantilla_trg',
@@ -6002,11 +8133,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de tipo_archivo, plantilla_id, plantilla_version, estado, finalizada_en · por fila · validar_importacion_plantilla()',
     tabla: 'importaciones',
-    linea: 5887,
+    linea: 7055,
     claves: 'validar_importacion_plantilla importaciones trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER importaciones_validar_plantilla_trg BEFORE INSERT OR UPDATE OF tipo_archivo, plantilla_id, plantilla_version, estado, finalizada_en ON horarios.importaciones FOR EACH ROW EXECUTE FUNCTION horarios.validar_importacion_plantilla();`,
+    sql: `CREATE TRIGGER "importaciones_validar_plantilla_trg" BEFORE INSERT OR UPDATE OF "tipo_archivo", "plantilla_id", "plantilla_version", "estado", "finalizada_en" ON "horarios"."importaciones" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_importacion_plantilla"();`,
   },
   {
     id: 'trg-jornada_descansos_validar_trg',
@@ -6017,11 +8148,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de jornada_id, dia, indice_slot_inicio, duracion_slots · por fila · validar_descanso_en_jornada()',
     tabla: 'jornada_descansos',
-    linea: 5894,
+    linea: 7062,
     claves: 'validar_descanso_en_jornada jornada_descansos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER jornada_descansos_validar_trg BEFORE INSERT OR UPDATE OF jornada_id, dia, indice_slot_inicio, duracion_slots ON horarios.jornada_descansos FOR EACH ROW EXECUTE FUNCTION horarios.validar_descanso_en_jornada();`,
+    sql: `CREATE TRIGGER "jornada_descansos_validar_trg" BEFORE INSERT OR UPDATE OF "jornada_id", "dia", "indice_slot_inicio", "duracion_slots" ON "horarios"."jornada_descansos" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_descanso_en_jornada"();`,
   },
   {
     id: 'trg-sesiones_validar_jornada_trg',
@@ -6032,11 +8163,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de horario_id, curso_id, docente_id, aula_id, jornada_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots, es_area_comun, agrupacion_area_comun_id · por fila · validar_sesion_en_jornada()',
     tabla: 'sesiones',
-    linea: 5971,
+    linea: 7139,
     claves: 'validar_sesion_en_jornada sesiones trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER sesiones_validar_jornada_trg BEFORE INSERT OR UPDATE OF horario_id, curso_id, docente_id, aula_id, jornada_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots, es_area_comun, agrupacion_area_comun_id ON horarios.sesiones FOR EACH ROW EXECUTE FUNCTION horarios.validar_sesion_en_jornada();`,
+    sql: `CREATE TRIGGER "sesiones_validar_jornada_trg" BEFORE INSERT OR UPDATE OF "horario_id", "curso_id", "docente_id", "aula_id", "jornada_id", "fecha_sesion", "dia", "indice_slot_inicio", "duracion_slots", "es_area_comun", "agrupacion_area_comun_id" ON "horarios"."sesiones" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_sesion_en_jornada"();`,
   },
   {
     id: 'trg-sesion_cohortes_completar_trg',
@@ -6047,11 +8178,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE INSERT, UPDATE de sesion_id, cohorte_id, horario_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots, minuto_inicio_dia, minuto_fin_dia · por fila · completar_sesion_cohorte()',
     tabla: 'sesion_cohortes',
-    linea: 5950,
+    linea: 7118,
     claves: 'completar_sesion_cohorte sesion_cohortes trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER sesion_cohortes_completar_trg BEFORE INSERT OR UPDATE OF sesion_id, cohorte_id, horario_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots, minuto_inicio_dia, minuto_fin_dia ON horarios.sesion_cohortes FOR EACH ROW EXECUTE FUNCTION horarios.completar_sesion_cohorte();`,
+    sql: `CREATE TRIGGER "sesion_cohortes_completar_trg" BEFORE INSERT OR UPDATE OF "sesion_id", "cohorte_id", "horario_id", "fecha_sesion", "dia", "indice_slot_inicio", "duracion_slots", "minuto_inicio_dia", "minuto_fin_dia" ON "horarios"."sesion_cohortes" FOR EACH ROW EXECUTE FUNCTION "horarios"."completar_sesion_cohorte"();`,
   },
   {
     id: 'trg-zz_sesiones_aplicar_receso_trg',
@@ -6062,11 +8193,26 @@ $$;`,
     detalle: 'El prefijo `zz` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
     nota: 'BEFORE INSERT, UPDATE de jornada_id, indice_slot_inicio, duracion_slots · por fila · aplicar_receso_a_sesion()',
     tabla: 'sesiones',
-    linea: 6041,
+    linea: 7209,
     claves: 'aplicar_receso_a_sesion sesiones trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER zz_sesiones_aplicar_receso_trg BEFORE INSERT OR UPDATE OF jornada_id, indice_slot_inicio, duracion_slots ON horarios.sesiones FOR EACH ROW EXECUTE FUNCTION horarios.aplicar_receso_a_sesion();`,
+    sql: `CREATE TRIGGER "zz_sesiones_aplicar_receso_trg" BEFORE INSERT OR UPDATE OF "jornada_id", "indice_slot_inicio", "duracion_slots" ON "horarios"."sesiones" FOR EACH ROW EXECUTE FUNCTION "horarios"."aplicar_receso_a_sesion"();`,
+  },
+  {
+    id: 'trg-curso_comun_limpiar_miembros_trg',
+    nombre: 'curso_comun_limpiar_miembros_trg',
+    cat: 'trigger',
+    grupo: 'Propagación',
+    desc: 'Sobre `curso_comun`. Retira la membresía de un curso común cuando se marca como eliminado.',
+    detalle: '',
+    nota: 'AFTER UPDATE · por fila · limpiar_miembros_curso_comun()',
+    tabla: 'curso_comun',
+    linea: 6971,
+    claves: 'limpiar_miembros_curso_comun curso_comun trigger',
+    params: [],
+    pasos: [],
+    sql: `CREATE TRIGGER "curso_comun_limpiar_miembros_trg" AFTER UPDATE ON "horarios"."curso_comun" FOR EACH ROW WHEN ((("old"."eliminado_en" IS NULL) AND ("new"."eliminado_en" IS NOT NULL))) EXECUTE FUNCTION "horarios"."limpiar_miembros_curso_comun"();`,
   },
   {
     id: 'trg-sesiones_propagar_cohortes_trg',
@@ -6077,11 +8223,11 @@ $$;`,
     detalle: '',
     nota: 'AFTER UPDATE de horario_id, jornada_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots · por fila · propagar_cambio_sesion_a_cohortes()',
     tabla: 'sesiones',
-    linea: 5957,
+    linea: 7125,
     claves: 'propagar_cambio_sesion_a_cohortes sesiones trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER sesiones_propagar_cohortes_trg AFTER UPDATE OF horario_id, jornada_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots ON horarios.sesiones FOR EACH ROW EXECUTE FUNCTION horarios.propagar_cambio_sesion_a_cohortes();`,
+    sql: `CREATE TRIGGER "sesiones_propagar_cohortes_trg" AFTER UPDATE OF "horario_id", "jornada_id", "fecha_sesion", "dia", "indice_slot_inicio", "duracion_slots" ON "horarios"."sesiones" FOR EACH ROW EXECUTE FUNCTION "horarios"."propagar_cambio_sesion_a_cohortes"();`,
   },
   {
     id: 'trg-sesiones_revalidar_cohortes_trg',
@@ -6092,11 +8238,11 @@ $$;`,
     detalle: '',
     nota: 'AFTER UPDATE de horario_id, curso_id, docente_id, aula_id, jornada_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots, es_area_comun, agrupacion_area_comun_id · por fila · revalidar_cohortes_de_sesion()',
     tabla: 'sesiones',
-    linea: 5964,
+    linea: 7132,
     claves: 'revalidar_cohortes_de_sesion sesiones trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER sesiones_revalidar_cohortes_trg AFTER UPDATE OF horario_id, curso_id, docente_id, aula_id, jornada_id, fecha_sesion, dia, indice_slot_inicio, duracion_slots, es_area_comun, agrupacion_area_comun_id ON horarios.sesiones FOR EACH ROW EXECUTE FUNCTION horarios.revalidar_cohortes_de_sesion();`,
+    sql: `CREATE TRIGGER "sesiones_revalidar_cohortes_trg" AFTER UPDATE OF "horario_id", "curso_id", "docente_id", "aula_id", "jornada_id", "fecha_sesion", "dia", "indice_slot_inicio", "duracion_slots", "es_area_comun", "agrupacion_area_comun_id" ON "horarios"."sesiones" FOR EACH ROW EXECUTE FUNCTION "horarios"."revalidar_cohortes_de_sesion"();`,
   },
   {
     id: 'trg-horarios_bloquear_delete_oficial_trg',
@@ -6107,11 +8253,11 @@ $$;`,
     detalle: '',
     nota: 'BEFORE DELETE · por fila · bloquear_eliminacion_horario_oficial()',
     tabla: 'horarios',
-    linea: 5873,
+    linea: 7041,
     claves: 'bloquear_eliminacion_horario_oficial horarios trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER horarios_bloquear_delete_oficial_trg BEFORE DELETE ON horarios.horarios FOR EACH ROW EXECUTE FUNCTION horarios.bloquear_eliminacion_horario_oficial();`,
+    sql: `CREATE TRIGGER "horarios_bloquear_delete_oficial_trg" BEFORE DELETE ON "horarios"."horarios" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_eliminacion_horario_oficial"();`,
   },
   {
     id: 'trg-z_bloquear_horario_publicado_conflictos_trg',
@@ -6122,11 +8268,26 @@ $$;`,
     detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
     nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_horario_publicado()',
     tabla: 'conflictos',
-    linea: 5992,
+    linea: 7160,
     claves: 'bloquear_horario_publicado conflictos trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER z_bloquear_horario_publicado_conflictos_trg BEFORE INSERT OR DELETE OR UPDATE ON horarios.conflictos FOR EACH ROW EXECUTE FUNCTION horarios.bloquear_horario_publicado();`,
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_conflictos_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."conflictos" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_horario_publicado"();`,
+  },
+  {
+    id: 'trg-z_bloquear_horario_publicado_generaciones_trg',
+    nombre: 'z_bloquear_horario_publicado_generaciones_trg',
+    cat: 'trigger',
+    grupo: 'Bloqueo e inmutabilidad',
+    desc: 'Sobre `generaciones`. Impide tocar la corrida del motor asociada a un horario ya publicado.',
+    detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
+    nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_generacion_publicada()',
+    tabla: 'generaciones',
+    linea: 7167,
+    claves: 'bloquear_generacion_publicada generaciones trigger',
+    params: [],
+    pasos: [],
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_generaciones_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."generaciones" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_generacion_publicada"();`,
   },
   {
     id: 'trg-z_bloquear_horario_publicado_resultados_edicion_trg',
@@ -6137,11 +8298,11 @@ $$;`,
     detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
     nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_horario_publicado()',
     tabla: 'resultados_edicion',
-    linea: 6006,
+    linea: 7174,
     claves: 'bloquear_horario_publicado resultados_edicion trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER z_bloquear_horario_publicado_resultados_edicion_trg BEFORE INSERT OR DELETE OR UPDATE ON horarios.resultados_edicion FOR EACH ROW EXECUTE FUNCTION horarios.bloquear_horario_publicado();`,
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_resultados_edicion_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."resultados_edicion" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_horario_publicado"();`,
   },
   {
     id: 'trg-z_bloquear_horario_publicado_sesion_cohortes_trg',
@@ -6152,11 +8313,26 @@ $$;`,
     detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
     nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_horario_publicado()',
     tabla: 'sesion_cohortes',
-    linea: 6013,
+    linea: 7181,
     claves: 'bloquear_horario_publicado sesion_cohortes trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER z_bloquear_horario_publicado_sesion_cohortes_trg BEFORE INSERT OR DELETE OR UPDATE ON horarios.sesion_cohortes FOR EACH ROW EXECUTE FUNCTION horarios.bloquear_horario_publicado();`,
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_sesion_cohortes_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."sesion_cohortes" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_horario_publicado"();`,
+  },
+  {
+    id: 'trg-z_bloquear_horario_publicado_sesiones_no_asignadas_trg',
+    nombre: 'z_bloquear_horario_publicado_sesiones_no_asignadas_trg',
+    cat: 'trigger',
+    grupo: 'Bloqueo e inmutabilidad',
+    desc: 'Sobre `sesiones_no_asignadas`. Rechaza cualquier INSERT, UPDATE o DELETE sobre las tablas de un horario ya publicado.',
+    detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
+    nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_horario_publicado()',
+    tabla: 'sesiones_no_asignadas',
+    linea: 7188,
+    claves: 'bloquear_horario_publicado sesiones_no_asignadas trigger',
+    params: [],
+    pasos: [],
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_sesiones_no_asignadas_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."sesiones_no_asignadas" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_horario_publicado"();`,
   },
   {
     id: 'trg-z_bloquear_horario_publicado_sesiones_trg',
@@ -6167,11 +8343,26 @@ $$;`,
     detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
     nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_horario_publicado()',
     tabla: 'sesiones',
-    linea: 6027,
+    linea: 7195,
     claves: 'bloquear_horario_publicado sesiones trigger',
     params: [],
     pasos: [],
-    sql: `CREATE TRIGGER z_bloquear_horario_publicado_sesiones_trg BEFORE INSERT OR DELETE OR UPDATE ON horarios.sesiones FOR EACH ROW EXECUTE FUNCTION horarios.bloquear_horario_publicado();`,
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_sesiones_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."sesiones" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_horario_publicado"();`,
+  },
+  {
+    id: 'trg-z_bloquear_horario_publicado_sugerencias_seccion_trg',
+    nombre: 'z_bloquear_horario_publicado_sugerencias_seccion_trg',
+    cat: 'trigger',
+    grupo: 'Bloqueo e inmutabilidad',
+    desc: 'Sobre `sugerencias_seccion`. Rechaza cualquier INSERT, UPDATE o DELETE sobre las tablas de un horario ya publicado.',
+    detalle: 'El prefijo `z` lo manda al final de la fila: Postgres dispara los triggers de una tabla en orden alfabético.',
+    nota: 'BEFORE INSERT, DELETE, UPDATE · por fila · bloquear_horario_publicado()',
+    tabla: 'sugerencias_seccion',
+    linea: 7202,
+    claves: 'bloquear_horario_publicado sugerencias_seccion trigger',
+    params: [],
+    pasos: [],
+    sql: `CREATE TRIGGER "z_bloquear_horario_publicado_sugerencias_seccion_trg" BEFORE INSERT OR DELETE OR UPDATE ON "horarios"."sugerencias_seccion" FOR EACH ROW EXECUTE FUNCTION "horarios"."bloquear_horario_publicado"();`,
   },
   {
     id: 'cons-agrupacion_area_comun_cohortes_pkey',
@@ -6182,12 +8373,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 4829,
+    linea: 5917,
     claves: 'agrupacion_area_comun_cohortes agrupacion_area_comun_cohortes_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupacion_area_comun_cohortes
-    ADD CONSTRAINT agrupacion_area_comun_cohortes_pkey PRIMARY KEY (agrupacion_id, cohorte_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupacion_area_comun_cohortes"
+    ADD CONSTRAINT "agrupacion_area_comun_cohortes_pkey" PRIMARY KEY ("agrupacion_id", "cohorte_id");`,
   },
   {
     id: 'cons-agrupacion_area_comun_cursos_pkey',
@@ -6198,12 +8389,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 4837,
+    linea: 5925,
     claves: 'agrupacion_area_comun_cursos agrupacion_area_comun_cursos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupacion_area_comun_cursos
-    ADD CONSTRAINT agrupacion_area_comun_cursos_pkey PRIMARY KEY (agrupacion_id, curso_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupacion_area_comun_cursos"
+    ADD CONSTRAINT "agrupacion_area_comun_cursos_pkey" PRIMARY KEY ("agrupacion_id", "curso_id");`,
   },
   {
     id: 'cons-agrupaciones_area_comun_pkey',
@@ -6214,12 +8405,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'agrupaciones_area_comun',
-    linea: 4845,
+    linea: 5933,
     claves: 'agrupaciones_area_comun agrupaciones_area_comun_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupaciones_area_comun
-    ADD CONSTRAINT agrupaciones_area_comun_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupaciones_area_comun"
+    ADD CONSTRAINT "agrupaciones_area_comun_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-asignaciones_docente_curso_pkey',
@@ -6230,12 +8421,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'asignaciones_docente_curso',
-    linea: 4853,
+    linea: 5941,
     claves: 'asignaciones_docente_curso asignaciones_docente_curso_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.asignaciones_docente_curso
-    ADD CONSTRAINT asignaciones_docente_curso_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."asignaciones_docente_curso"
+    ADD CONSTRAINT "asignaciones_docente_curso_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-auditoria_pkey',
@@ -6246,12 +8437,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'auditoria',
-    linea: 4861,
+    linea: 5949,
     claves: 'auditoria auditoria_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.auditoria
-    ADD CONSTRAINT auditoria_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."auditoria"
+    ADD CONSTRAINT "auditoria_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-aula_recursos_pkey',
@@ -6262,12 +8453,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'aula_recursos',
-    linea: 4869,
+    linea: 5957,
     claves: 'aula_recursos aula_recursos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.aula_recursos
-    ADD CONSTRAINT aula_recursos_pkey PRIMARY KEY (aula_id, recurso_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."aula_recursos"
+    ADD CONSTRAINT "aula_recursos_pkey" PRIMARY KEY ("aula_id", "recurso_id");`,
   },
   {
     id: 'cons-aulas_pkey',
@@ -6278,12 +8469,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'aulas',
-    linea: 4877,
+    linea: 5965,
     claves: 'aulas aulas_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.aulas
-    ADD CONSTRAINT aulas_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."aulas"
+    ADD CONSTRAINT "aulas_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-cambios_detectados_pkey',
@@ -6294,12 +8485,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'cambios_detectados',
-    linea: 4885,
+    linea: 5973,
     claves: 'cambios_detectados cambios_detectados_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cambios_detectados
-    ADD CONSTRAINT cambios_detectados_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cambios_detectados"
+    ADD CONSTRAINT "cambios_detectados_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-carrera_jornadas_pkey',
@@ -6310,12 +8501,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'carrera_jornadas',
-    linea: 4893,
+    linea: 5981,
     claves: 'carrera_jornadas carrera_jornadas_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.carrera_jornadas
-    ADD CONSTRAINT carrera_jornadas_pkey PRIMARY KEY (carrera_id, jornada_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."carrera_jornadas"
+    ADD CONSTRAINT "carrera_jornadas_pkey" PRIMARY KEY ("carrera_id", "jornada_id");`,
   },
   {
     id: 'cons-carreras_pkey',
@@ -6326,12 +8517,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'carreras',
-    linea: 4901,
+    linea: 5989,
     claves: 'carreras carreras_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.carreras
-    ADD CONSTRAINT carreras_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."carreras"
+    ADD CONSTRAINT "carreras_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-cohorte_periodos_pkey',
@@ -6342,12 +8533,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'cohorte_periodos',
-    linea: 4909,
+    linea: 5997,
     claves: 'cohorte_periodos cohorte_periodos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohorte_periodos
-    ADD CONSTRAINT cohorte_periodos_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cohorte_periodos"
+    ADD CONSTRAINT "cohorte_periodos_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-cohortes_pkey',
@@ -6358,12 +8549,44 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'cohortes',
-    linea: 4917,
+    linea: 6005,
     claves: 'cohortes cohortes_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohortes
-    ADD CONSTRAINT cohortes_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cohortes"
+    ADD CONSTRAINT "cohortes_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-configuracion_motor_restricciones_pkey',
+    nombre: 'configuracion_motor_restricciones_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `configuracion_motor_restricciones`: identifica cada fila por (configuracion_id, restriccion_id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 6013,
+    claves: 'configuracion_motor_restricciones configuracion_motor_restricciones_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."configuracion_motor_restricciones"
+    ADD CONSTRAINT "configuracion_motor_restricciones_pkey" PRIMARY KEY ("configuracion_id", "restriccion_id");`,
+  },
+  {
+    id: 'cons-configuraciones_motor_pkey',
+    nombre: 'configuraciones_motor_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `configuraciones_motor`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'configuraciones_motor',
+    linea: 6021,
+    claves: 'configuraciones_motor configuraciones_motor_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."configuraciones_motor"
+    ADD CONSTRAINT "configuraciones_motor_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-conflicto_sesiones_pkey',
@@ -6374,12 +8597,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'conflicto_sesiones',
-    linea: 4941,
+    linea: 6029,
     claves: 'conflicto_sesiones conflicto_sesiones_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.conflicto_sesiones
-    ADD CONSTRAINT conflicto_sesiones_pkey PRIMARY KEY (conflicto_id, sesion_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."conflicto_sesiones"
+    ADD CONSTRAINT "conflicto_sesiones_pkey" PRIMARY KEY ("conflicto_id", "sesion_id");`,
   },
   {
     id: 'cons-conflictos_pkey',
@@ -6390,28 +8613,44 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'conflictos',
-    linea: 4949,
+    linea: 6037,
     claves: 'conflictos conflictos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.conflictos
-    ADD CONSTRAINT conflictos_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."conflictos"
+    ADD CONSTRAINT "conflictos_pkey" PRIMARY KEY ("id");`,
   },
   {
-    id: 'cons-curso_carreras_compartidas_pkey',
-    nombre: 'curso_carreras_compartidas_pkey',
+    id: 'cons-curso_comun_cursos_pkey',
+    nombre: 'curso_comun_cursos_pkey',
     cat: 'restriccion',
     grupo: 'Claves primarias',
-    desc: 'Clave primaria de `curso_carreras_compartidas`: identifica cada fila por (curso_id, carrera_id).',
+    desc: 'Clave primaria de `curso_comun_cursos`: identifica cada fila por (curso_comun_id, curso_id).',
     detalle: '',
     nota: 'PRIMARY KEY',
-    tabla: 'curso_carreras_compartidas',
-    linea: 4957,
-    claves: 'curso_carreras_compartidas curso_carreras_compartidas_pkey',
+    tabla: 'curso_comun_cursos',
+    linea: 6045,
+    claves: 'curso_comun_cursos curso_comun_cursos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.curso_carreras_compartidas
-    ADD CONSTRAINT curso_carreras_compartidas_pkey PRIMARY KEY (curso_id, carrera_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."curso_comun_cursos"
+    ADD CONSTRAINT "curso_comun_cursos_pkey" PRIMARY KEY ("curso_comun_id", "curso_id");`,
+  },
+  {
+    id: 'cons-curso_comun_pkey',
+    nombre: 'curso_comun_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `curso_comun`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'curso_comun',
+    linea: 6053,
+    claves: 'curso_comun curso_comun_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."curso_comun"
+    ADD CONSTRAINT "curso_comun_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-curso_recursos_requeridos_pkey',
@@ -6422,12 +8661,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'curso_recursos_requeridos',
-    linea: 4965,
+    linea: 6061,
     claves: 'curso_recursos_requeridos curso_recursos_requeridos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.curso_recursos_requeridos
-    ADD CONSTRAINT curso_recursos_requeridos_pkey PRIMARY KEY (curso_id, recurso_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."curso_recursos_requeridos"
+    ADD CONSTRAINT "curso_recursos_requeridos_pkey" PRIMARY KEY ("curso_id", "recurso_id");`,
   },
   {
     id: 'cons-cursos_en_pensum_pkey',
@@ -6438,12 +8677,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'cursos_en_pensum',
-    linea: 4981,
+    linea: 6077,
     claves: 'cursos_en_pensum cursos_en_pensum_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cursos_en_pensum
-    ADD CONSTRAINT cursos_en_pensum_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cursos_en_pensum"
+    ADD CONSTRAINT "cursos_en_pensum_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-cursos_pkey',
@@ -6454,12 +8693,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'cursos',
-    linea: 4989,
+    linea: 6093,
     claves: 'cursos cursos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cursos
-    ADD CONSTRAINT cursos_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cursos"
+    ADD CONSTRAINT "cursos_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-disponibilidad_docente_slots_pkey',
@@ -6470,12 +8709,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'disponibilidad_docente_slots',
-    linea: 4997,
+    linea: 6101,
     claves: 'disponibilidad_docente_slots disponibilidad_docente_slots_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidad_docente_slots
-    ADD CONSTRAINT disponibilidad_docente_slots_pkey PRIMARY KEY (disponibilidad_id, jornada_id, dia, indice_slot);`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidad_docente_slots"
+    ADD CONSTRAINT "disponibilidad_docente_slots_pkey" PRIMARY KEY ("disponibilidad_id", "jornada_id", "dia", "indice_slot");`,
   },
   {
     id: 'cons-disponibilidades_docente_pkey',
@@ -6486,12 +8725,28 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'disponibilidades_docente',
-    linea: 5013,
+    linea: 6117,
     claves: 'disponibilidades_docente disponibilidades_docente_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidades_docente
-    ADD CONSTRAINT disponibilidades_docente_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidades_docente"
+    ADD CONSTRAINT "disponibilidades_docente_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-docente_facultades_pkey',
+    nombre: 'docente_facultades_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `docente_facultades`: identifica cada fila por (docente_id, facultad_id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'docente_facultades',
+    linea: 6125,
+    claves: 'docente_facultades docente_facultades_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."docente_facultades"
+    ADD CONSTRAINT "docente_facultades_pkey" PRIMARY KEY ("docente_id", "facultad_id");`,
   },
   {
     id: 'cons-docentes_pkey',
@@ -6502,12 +8757,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'docentes',
-    linea: 5021,
+    linea: 6133,
     claves: 'docentes docentes_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.docentes
-    ADD CONSTRAINT docentes_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."docentes"
+    ADD CONSTRAINT "docentes_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-eventos_sustitucion_pkey',
@@ -6518,12 +8773,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'eventos_sustitucion',
-    linea: 5029,
+    linea: 6141,
     claves: 'eventos_sustitucion eventos_sustitucion_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.eventos_sustitucion
-    ADD CONSTRAINT eventos_sustitucion_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."eventos_sustitucion"
+    ADD CONSTRAINT "eventos_sustitucion_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-facultades_pkey',
@@ -6534,12 +8789,28 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'facultades',
-    linea: 5037,
+    linea: 6149,
     claves: 'facultades facultades_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.facultades
-    ADD CONSTRAINT facultades_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."facultades"
+    ADD CONSTRAINT "facultades_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-generaciones_pkey',
+    nombre: 'generaciones_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `generaciones`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'generaciones',
+    linea: 6157,
+    claves: 'generaciones generaciones_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."generaciones"
+    ADD CONSTRAINT "generaciones_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-historial_estados_horario_pkey',
@@ -6550,12 +8821,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'historial_estados_horario',
-    linea: 5053,
+    linea: 6165,
     claves: 'historial_estados_horario historial_estados_horario_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.historial_estados_horario
-    ADD CONSTRAINT historial_estados_horario_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."historial_estados_horario"
+    ADD CONSTRAINT "historial_estados_horario_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-horarios_pkey',
@@ -6566,12 +8837,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'horarios',
-    linea: 5061,
+    linea: 6173,
     claves: 'horarios horarios_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.horarios
-    ADD CONSTRAINT horarios_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."horarios"
+    ADD CONSTRAINT "horarios_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-importacion_errores_pkey',
@@ -6582,12 +8853,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'importacion_errores',
-    linea: 5069,
+    linea: 6181,
     claves: 'importacion_errores importacion_errores_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.importacion_errores
-    ADD CONSTRAINT importacion_errores_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."importacion_errores"
+    ADD CONSTRAINT "importacion_errores_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-importaciones_pkey',
@@ -6598,12 +8869,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'importaciones',
-    linea: 5077,
+    linea: 6189,
     claves: 'importaciones importaciones_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.importaciones
-    ADD CONSTRAINT importaciones_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."importaciones"
+    ADD CONSTRAINT "importaciones_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-jornada_descansos_pkey',
@@ -6614,12 +8885,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'jornada_descansos',
-    linea: 5093,
+    linea: 6205,
     claves: 'jornada_descansos jornada_descansos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.jornada_descansos
-    ADD CONSTRAINT jornada_descansos_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."jornada_descansos"
+    ADD CONSTRAINT "jornada_descansos_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-jornadas_pkey',
@@ -6630,12 +8901,28 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'jornadas',
-    linea: 5101,
+    linea: 6213,
     claves: 'jornadas jornadas_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.jornadas
-    ADD CONSTRAINT jornadas_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."jornadas"
+    ADD CONSTRAINT "jornadas_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-mensajes_generacion_pkey',
+    nombre: 'mensajes_generacion_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `mensajes_generacion`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'mensajes_generacion',
+    linea: 6221,
+    claves: 'mensajes_generacion mensajes_generacion_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."mensajes_generacion"
+    ADD CONSTRAINT "mensajes_generacion_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-notificaciones_pkey',
@@ -6646,12 +8933,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'notificaciones',
-    linea: 5117,
+    linea: 6229,
     claves: 'notificaciones notificaciones_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.notificaciones
-    ADD CONSTRAINT notificaciones_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."notificaciones"
+    ADD CONSTRAINT "notificaciones_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-pensums_pkey',
@@ -6662,12 +8949,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'pensums',
-    linea: 5133,
+    linea: 6245,
     claves: 'pensums pensums_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.pensums
-    ADD CONSTRAINT pensums_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."pensums"
+    ADD CONSTRAINT "pensums_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-periodos_academicos_pkey',
@@ -6678,12 +8965,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'periodos_academicos',
-    linea: 5141,
+    linea: 6253,
     claves: 'periodos_academicos periodos_academicos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.periodos_academicos
-    ADD CONSTRAINT periodos_academicos_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."periodos_academicos"
+    ADD CONSTRAINT "periodos_academicos_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-permisos_acceso_pkey',
@@ -6694,12 +8981,44 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'permisos_acceso',
-    linea: 5149,
+    linea: 6261,
     claves: 'permisos_acceso permisos_acceso_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.permisos_acceso
-    ADD CONSTRAINT permisos_acceso_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."permisos_acceso"
+    ADD CONSTRAINT "permisos_acceso_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-plan_carreras_pkey',
+    nombre: 'plan_carreras_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `plan_carreras`: identifica cada fila por (plan_id, carrera_id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'plan_carreras',
+    linea: 6277,
+    claves: 'plan_carreras plan_carreras_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."plan_carreras"
+    ADD CONSTRAINT "plan_carreras_pkey" PRIMARY KEY ("plan_id", "carrera_id");`,
+  },
+  {
+    id: 'cons-plan_jornadas_pkey',
+    nombre: 'plan_jornadas_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `plan_jornadas`: identifica cada fila por (plan_id, jornada_id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'plan_jornadas',
+    linea: 6285,
+    claves: 'plan_jornadas plan_jornadas_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."plan_jornadas"
+    ADD CONSTRAINT "plan_jornadas_pkey" PRIMARY KEY ("plan_id", "jornada_id");`,
   },
   {
     id: 'cons-plantillas_importacion_pkey',
@@ -6710,12 +9029,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'plantillas_importacion',
-    linea: 5189,
+    linea: 6301,
     claves: 'plantillas_importacion plantillas_importacion_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.plantillas_importacion
-    ADD CONSTRAINT plantillas_importacion_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."plantillas_importacion"
+    ADD CONSTRAINT "plantillas_importacion_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-plantillas_notificacion_pkey',
@@ -6726,12 +9045,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'plantillas_notificacion',
-    linea: 5197,
+    linea: 6309,
     claves: 'plantillas_notificacion plantillas_notificacion_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.plantillas_notificacion
-    ADD CONSTRAINT plantillas_notificacion_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."plantillas_notificacion"
+    ADD CONSTRAINT "plantillas_notificacion_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-recursos_pkey',
@@ -6742,12 +9061,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'recursos',
-    linea: 5205,
+    linea: 6317,
     claves: 'recursos recursos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.recursos
-    ADD CONSTRAINT recursos_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."recursos"
+    ADD CONSTRAINT "recursos_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-reportes_pkey',
@@ -6758,12 +9077,28 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'reportes',
-    linea: 5213,
+    linea: 6325,
     claves: 'reportes reportes_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.reportes
-    ADD CONSTRAINT reportes_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."reportes"
+    ADD CONSTRAINT "reportes_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-restricciones_horario_pkey',
+    nombre: 'restricciones_horario_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `restricciones_horario`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'restricciones_horario',
+    linea: 6341,
+    claves: 'restricciones_horario restricciones_horario_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."restricciones_horario"
+    ADD CONSTRAINT "restricciones_horario_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-resultado_edicion_conflictos_pkey',
@@ -6774,12 +9109,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'resultado_edicion_conflictos',
-    linea: 5237,
+    linea: 6349,
     claves: 'resultado_edicion_conflictos resultado_edicion_conflictos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultado_edicion_conflictos
-    ADD CONSTRAINT resultado_edicion_conflictos_pkey PRIMARY KEY (resultado_edicion_id, conflicto_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."resultado_edicion_conflictos"
+    ADD CONSTRAINT "resultado_edicion_conflictos_pkey" PRIMARY KEY ("resultado_edicion_id", "conflicto_id");`,
   },
   {
     id: 'cons-resultados_edicion_pkey',
@@ -6790,12 +9125,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'resultados_edicion',
-    linea: 5245,
+    linea: 6357,
     claves: 'resultados_edicion resultados_edicion_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultados_edicion
-    ADD CONSTRAINT resultados_edicion_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."resultados_edicion"
+    ADD CONSTRAINT "resultados_edicion_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-rol_permisos_pkey',
@@ -6806,12 +9141,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'rol_permisos',
-    linea: 5253,
+    linea: 6365,
     claves: 'rol_permisos rol_permisos_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.rol_permisos
-    ADD CONSTRAINT rol_permisos_pkey PRIMARY KEY (rol_id, permiso_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."rol_permisos"
+    ADD CONSTRAINT "rol_permisos_pkey" PRIMARY KEY ("rol_id", "permiso_id");`,
   },
   {
     id: 'cons-roles_pkey',
@@ -6822,12 +9157,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'roles',
-    linea: 5261,
+    linea: 6373,
     claves: 'roles roles_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.roles
-    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."roles"
+    ADD CONSTRAINT "roles_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-sesion_cohortes_pkey',
@@ -6838,12 +9173,28 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'sesion_cohortes',
-    linea: 5277,
+    linea: 6389,
     claves: 'sesion_cohortes sesion_cohortes_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_pkey PRIMARY KEY (sesion_id, cohorte_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_pkey" PRIMARY KEY ("sesion_id", "cohorte_id");`,
+  },
+  {
+    id: 'cons-sesiones_no_asignadas_pkey',
+    nombre: 'sesiones_no_asignadas_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `sesiones_no_asignadas`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'sesiones_no_asignadas',
+    linea: 6421,
+    claves: 'sesiones_no_asignadas sesiones_no_asignadas_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sesiones_no_asignadas"
+    ADD CONSTRAINT "sesiones_no_asignadas_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-sesiones_pkey',
@@ -6854,12 +9205,28 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'sesiones',
-    linea: 5317,
+    linea: 6429,
     claves: 'sesiones sesiones_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_pkey" PRIMARY KEY ("id");`,
+  },
+  {
+    id: 'cons-sugerencias_seccion_pkey',
+    nombre: 'sugerencias_seccion_pkey',
+    cat: 'restriccion',
+    grupo: 'Claves primarias',
+    desc: 'Clave primaria de `sugerencias_seccion`: identifica cada fila por (id).',
+    detalle: '',
+    nota: 'PRIMARY KEY',
+    tabla: 'sugerencias_seccion',
+    linea: 6437,
+    claves: 'sugerencias_seccion sugerencias_seccion_pkey',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sugerencias_seccion"
+    ADD CONSTRAINT "sugerencias_seccion_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-usuario_facultades_pkey',
@@ -6870,12 +9237,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'usuario_facultades',
-    linea: 5333,
+    linea: 6445,
     claves: 'usuario_facultades usuario_facultades_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuario_facultades
-    ADD CONSTRAINT usuario_facultades_pkey PRIMARY KEY (usuario_id, facultad_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."usuario_facultades"
+    ADD CONSTRAINT "usuario_facultades_pkey" PRIMARY KEY ("usuario_id", "facultad_id");`,
   },
   {
     id: 'cons-usuario_roles_pkey',
@@ -6886,12 +9253,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'usuario_roles',
-    linea: 5341,
+    linea: 6453,
     claves: 'usuario_roles usuario_roles_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuario_roles
-    ADD CONSTRAINT usuario_roles_pkey PRIMARY KEY (usuario_id, rol_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."usuario_roles"
+    ADD CONSTRAINT "usuario_roles_pkey" PRIMARY KEY ("usuario_id", "rol_id");`,
   },
   {
     id: 'cons-usuarios_pkey',
@@ -6902,12 +9269,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'usuarios',
-    linea: 5357,
+    linea: 6469,
     claves: 'usuarios usuarios_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuarios
-    ADD CONSTRAINT usuarios_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."usuarios"
+    ADD CONSTRAINT "usuarios_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-ventanas_disponibilidad_pkey',
@@ -6918,12 +9285,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'ventanas_disponibilidad',
-    linea: 5373,
+    linea: 6485,
     claves: 'ventanas_disponibilidad ventanas_disponibilidad_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.ventanas_disponibilidad
-    ADD CONSTRAINT ventanas_disponibilidad_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."ventanas_disponibilidad"
+    ADD CONSTRAINT "ventanas_disponibilidad_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-versiones_horario_pkey',
@@ -6934,12 +9301,12 @@ $$;`,
     detalle: '',
     nota: 'PRIMARY KEY',
     tabla: 'versiones_horario',
-    linea: 5389,
+    linea: 6501,
     claves: 'versiones_horario versiones_horario_pkey',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.versiones_horario
-    ADD CONSTRAINT versiones_horario_pkey PRIMARY KEY (id);`,
+    sql: `ALTER TABLE ONLY "horarios"."versiones_horario"
+    ADD CONSTRAINT "versiones_horario_pkey" PRIMARY KEY ("id");`,
   },
   {
     id: 'cons-cursos_en_pensum_pensum_id_curso_id_key',
@@ -6950,12 +9317,28 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'cursos_en_pensum',
-    linea: 4973,
+    linea: 6069,
     claves: 'cursos_en_pensum cursos_en_pensum_pensum_id_curso_id_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cursos_en_pensum
-    ADD CONSTRAINT cursos_en_pensum_pensum_id_curso_id_key UNIQUE (pensum_id, curso_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cursos_en_pensum"
+    ADD CONSTRAINT "cursos_en_pensum_pensum_id_curso_id_key" UNIQUE ("pensum_id", "curso_id");`,
+  },
+  {
+    id: 'cons-cursos_id_pensum_id_key',
+    nombre: 'cursos_id_pensum_id_key',
+    cat: 'restriccion',
+    grupo: 'Claves únicas',
+    desc: 'No admite dos filas de `cursos` con el mismo valor de (id, pensum_id).',
+    detalle: '',
+    nota: 'UNIQUE',
+    tabla: 'cursos',
+    linea: 6085,
+    claves: 'cursos cursos_id_pensum_id_key',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."cursos"
+    ADD CONSTRAINT "cursos_id_pensum_id_key" UNIQUE ("id", "pensum_id");`,
   },
   {
     id: 'cons-disponibilidades_docente_docente_id_periodo_id_key',
@@ -6966,12 +9349,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'disponibilidades_docente',
-    linea: 5005,
+    linea: 6109,
     claves: 'disponibilidades_docente disponibilidades_docente_docente_id_periodo_id_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidades_docente
-    ADD CONSTRAINT disponibilidades_docente_docente_id_periodo_id_key UNIQUE (docente_id, periodo_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidades_docente"
+    ADD CONSTRAINT "disponibilidades_docente_docente_id_periodo_id_key" UNIQUE ("docente_id", "periodo_id");`,
   },
   {
     id: 'cons-pensums_id_carrera_uq',
@@ -6982,12 +9365,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'pensums',
-    linea: 5125,
+    linea: 6237,
     claves: 'pensums pensums_id_carrera_uq',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.pensums
-    ADD CONSTRAINT pensums_id_carrera_uq UNIQUE (id, carrera_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."pensums"
+    ADD CONSTRAINT "pensums_id_carrera_uq" UNIQUE ("id", "carrera_id");`,
   },
   {
     id: 'cons-permisos_acceso_recurso_accion_key',
@@ -6998,12 +9381,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'permisos_acceso',
-    linea: 5157,
+    linea: 6269,
     claves: 'permisos_acceso permisos_acceso_recurso_accion_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.permisos_acceso
-    ADD CONSTRAINT permisos_acceso_recurso_accion_key UNIQUE (recurso, accion);`,
+    sql: `ALTER TABLE ONLY "horarios"."permisos_acceso"
+    ADD CONSTRAINT "permisos_acceso_recurso_accion_key" UNIQUE ("recurso", "accion");`,
   },
   {
     id: 'cons-plantillas_importacion_codigo_version_key',
@@ -7014,12 +9397,28 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'plantillas_importacion',
-    linea: 5181,
+    linea: 6293,
     claves: 'plantillas_importacion plantillas_importacion_codigo_version_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.plantillas_importacion
-    ADD CONSTRAINT plantillas_importacion_codigo_version_key UNIQUE (codigo, version);`,
+    sql: `ALTER TABLE ONLY "horarios"."plantillas_importacion"
+    ADD CONSTRAINT "plantillas_importacion_codigo_version_key" UNIQUE ("codigo", "version");`,
+  },
+  {
+    id: 'cons-restricciones_horario_nombre_key',
+    nombre: 'restricciones_horario_nombre_key',
+    cat: 'restriccion',
+    grupo: 'Claves únicas',
+    desc: 'No admite dos filas de `restricciones_horario` con el mismo valor de (nombre).',
+    detalle: '',
+    nota: 'UNIQUE',
+    tabla: 'restricciones_horario',
+    linea: 6333,
+    claves: 'restricciones_horario restricciones_horario_nombre_key',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."restricciones_horario"
+    ADD CONSTRAINT "restricciones_horario_nombre_key" UNIQUE ("nombre");`,
   },
   {
     id: 'cons-sesiones_id_horario_id_key',
@@ -7030,12 +9429,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'sesiones',
-    linea: 5301,
+    linea: 6413,
     claves: 'sesiones sesiones_id_horario_id_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_id_horario_id_key UNIQUE (id, horario_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_id_horario_id_key" UNIQUE ("id", "horario_id");`,
   },
   {
     id: 'cons-usuarios_auth_user_id_key',
@@ -7046,12 +9445,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'usuarios',
-    linea: 5349,
+    linea: 6461,
     claves: 'usuarios usuarios_auth_user_id_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuarios
-    ADD CONSTRAINT usuarios_auth_user_id_key UNIQUE (auth_user_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."usuarios"
+    ADD CONSTRAINT "usuarios_auth_user_id_key" UNIQUE ("auth_user_id");`,
   },
   {
     id: 'cons-ventanas_disponibilidad_periodo_id_key',
@@ -7062,12 +9461,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'ventanas_disponibilidad',
-    linea: 5365,
+    linea: 6477,
     claves: 'ventanas_disponibilidad ventanas_disponibilidad_periodo_id_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.ventanas_disponibilidad
-    ADD CONSTRAINT ventanas_disponibilidad_periodo_id_key UNIQUE (periodo_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."ventanas_disponibilidad"
+    ADD CONSTRAINT "ventanas_disponibilidad_periodo_id_key" UNIQUE ("periodo_id");`,
   },
   {
     id: 'cons-versiones_horario_horario_id_numero_version_key',
@@ -7078,12 +9477,12 @@ $$;`,
     detalle: '',
     nota: 'UNIQUE',
     tabla: 'versiones_horario',
-    linea: 5381,
+    linea: 6493,
     claves: 'versiones_horario versiones_horario_horario_id_numero_version_key',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.versiones_horario
-    ADD CONSTRAINT versiones_horario_horario_id_numero_version_key UNIQUE (horario_id, numero_version);`,
+    sql: `ALTER TABLE ONLY "horarios"."versiones_horario"
+    ADD CONSTRAINT "versiones_horario_horario_id_numero_version_key" UNIQUE ("horario_id", "numero_version");`,
   },
   {
     id: 'cons-jornada_descansos_no_solapados',
@@ -7094,12 +9493,12 @@ $$;`,
     detalle: 'Se lee así: no pueden existir dos filas donde todas esas condiciones sean ciertas a la vez, siendo `&&` «los rangos se solapan». Es imposible de burlar incluso con dos usuarios escribiendo al mismo tiempo.',
     nota: 'EXCLUDE USING gist',
     tabla: 'jornada_descansos',
-    linea: 5085,
+    linea: 6197,
     claves: 'jornada_descansos jornada_descansos_no_solapados',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.jornada_descansos
-    ADD CONSTRAINT jornada_descansos_no_solapados EXCLUDE USING gist (jornada_id WITH =, dia WITH =, rango_slots WITH &&);`,
+    sql: `ALTER TABLE ONLY "horarios"."jornada_descansos"
+    ADD CONSTRAINT "jornada_descansos_no_solapados" EXCLUDE USING "gist" ("jornada_id" WITH =, "dia" WITH =, "rango_slots" WITH &&);`,
   },
   {
     id: 'cons-sesion_cohortes_no_solapadas',
@@ -7110,12 +9509,12 @@ $$;`,
     detalle: 'Se lee así: no pueden existir dos filas donde todas esas condiciones sean ciertas a la vez, siendo `&&` «los rangos se solapan». Es imposible de burlar incluso con dos usuarios escribiendo al mismo tiempo.',
     nota: 'EXCLUDE USING gist',
     tabla: 'sesion_cohortes',
-    linea: 5269,
+    linea: 6381,
     claves: 'sesion_cohortes sesion_cohortes_no_solapadas',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_no_solapadas EXCLUDE USING gist (horario_id WITH =, cohorte_id WITH =, COALESCE(fecha_sesion, '0001-01-01'::date) WITH =, dia WITH =, rango_minutos WITH &&);`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_no_solapadas" EXCLUDE USING "gist" ("horario_id" WITH =, "cohorte_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&);`,
   },
   {
     id: 'cons-sesiones_aula_no_solapada',
@@ -7126,12 +9525,12 @@ $$;`,
     detalle: 'Se lee así: no pueden existir dos filas donde todas esas condiciones sean ciertas a la vez, siendo `&&` «los rangos se solapan». Es imposible de burlar incluso con dos usuarios escribiendo al mismo tiempo.',
     nota: 'EXCLUDE USING gist',
     tabla: 'sesiones',
-    linea: 5285,
+    linea: 6397,
     claves: 'sesiones sesiones_aula_no_solapada',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_aula_no_solapada EXCLUDE USING gist (horario_id WITH =, aula_id WITH =, COALESCE(fecha_sesion, '0001-01-01'::date) WITH =, dia WITH =, rango_minutos WITH &&);`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_aula_no_solapada" EXCLUDE USING "gist" ("horario_id" WITH =, "aula_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&);`,
   },
   {
     id: 'cons-sesiones_docente_no_solapado',
@@ -7142,12 +9541,12 @@ $$;`,
     detalle: 'Se lee así: no pueden existir dos filas donde todas esas condiciones sean ciertas a la vez, siendo `&&` «los rangos se solapan». Es imposible de burlar incluso con dos usuarios escribiendo al mismo tiempo.',
     nota: 'EXCLUDE USING gist',
     tabla: 'sesiones',
-    linea: 5293,
+    linea: 6405,
     claves: 'sesiones sesiones_docente_no_solapado',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_docente_no_solapado EXCLUDE USING gist (horario_id WITH =, docente_id WITH =, COALESCE(fecha_sesion, '0001-01-01'::date) WITH =, dia WITH =, rango_minutos WITH &&);`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_docente_no_solapado" EXCLUDE USING "gist" ("horario_id" WITH =, "docente_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&);`,
   },
   {
     id: 'fk-agrupacion_area_comun_cohortes agrupacion_area_comun_cohortes_agrupacion_id_fkey',
@@ -7158,12 +9557,12 @@ $$;`,
     detalle: '',
     nota: 'agrupacion_area_comun_cohortes.agrupacion_id → agrupaciones_area_comun.id · ON DELETE CASCADE',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 6048,
+    linea: 7216,
     claves: 'agrupacion_area_comun_cohortes agrupaciones_area_comun agrupacion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupacion_area_comun_cohortes
-    ADD CONSTRAINT agrupacion_area_comun_cohortes_agrupacion_id_fkey FOREIGN KEY (agrupacion_id) REFERENCES horarios.agrupaciones_area_comun(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupacion_area_comun_cohortes"
+    ADD CONSTRAINT "agrupacion_area_comun_cohortes_agrupacion_id_fkey" FOREIGN KEY ("agrupacion_id") REFERENCES "horarios"."agrupaciones_area_comun"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-agrupacion_area_comun_cohortes agrupacion_area_comun_cohortes_cohorte_id_fkey',
@@ -7174,12 +9573,12 @@ $$;`,
     detalle: '',
     nota: 'agrupacion_area_comun_cohortes.cohorte_id → cohortes.id · ON DELETE RESTRICT',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 6056,
+    linea: 7224,
     claves: 'agrupacion_area_comun_cohortes cohortes cohorte_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupacion_area_comun_cohortes
-    ADD CONSTRAINT agrupacion_area_comun_cohortes_cohorte_id_fkey FOREIGN KEY (cohorte_id) REFERENCES horarios.cohortes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupacion_area_comun_cohortes"
+    ADD CONSTRAINT "agrupacion_area_comun_cohortes_cohorte_id_fkey" FOREIGN KEY ("cohorte_id") REFERENCES "horarios"."cohortes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-agrupacion_area_comun_cursos agrupacion_area_comun_cursos_agrupacion_id_fkey',
@@ -7190,12 +9589,12 @@ $$;`,
     detalle: '',
     nota: 'agrupacion_area_comun_cursos.agrupacion_id → agrupaciones_area_comun.id · ON DELETE CASCADE',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 6064,
+    linea: 7232,
     claves: 'agrupacion_area_comun_cursos agrupaciones_area_comun agrupacion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupacion_area_comun_cursos
-    ADD CONSTRAINT agrupacion_area_comun_cursos_agrupacion_id_fkey FOREIGN KEY (agrupacion_id) REFERENCES horarios.agrupaciones_area_comun(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupacion_area_comun_cursos"
+    ADD CONSTRAINT "agrupacion_area_comun_cursos_agrupacion_id_fkey" FOREIGN KEY ("agrupacion_id") REFERENCES "horarios"."agrupaciones_area_comun"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-agrupacion_area_comun_cursos agrupacion_area_comun_cursos_curso_id_fkey',
@@ -7206,12 +9605,12 @@ $$;`,
     detalle: '',
     nota: 'agrupacion_area_comun_cursos.curso_id → cursos.id · ON DELETE RESTRICT',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 6072,
+    linea: 7240,
     claves: 'agrupacion_area_comun_cursos cursos curso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupacion_area_comun_cursos
-    ADD CONSTRAINT agrupacion_area_comun_cursos_curso_id_fkey FOREIGN KEY (curso_id) REFERENCES horarios.cursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupacion_area_comun_cursos"
+    ADD CONSTRAINT "agrupacion_area_comun_cursos_curso_id_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-agrupaciones_area_comun agrupaciones_area_comun_creada_por_id_fkey',
@@ -7222,12 +9621,28 @@ $$;`,
     detalle: '',
     nota: 'agrupaciones_area_comun.creada_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'agrupaciones_area_comun',
-    linea: 6080,
+    linea: 7248,
     claves: 'agrupaciones_area_comun usuarios creada_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupaciones_area_comun
-    ADD CONSTRAINT agrupaciones_area_comun_creada_por_id_fkey FOREIGN KEY (creada_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupaciones_area_comun"
+    ADD CONSTRAINT "agrupaciones_area_comun_creada_por_id_fkey" FOREIGN KEY ("creada_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
+  },
+  {
+    id: 'fk-agrupaciones_area_comun agrupaciones_area_comun_curso_comun_id_fkey',
+    nombre: 'agrupaciones_area_comun agrupaciones_area_comun_curso_comun_id_fkey',
+    cat: 'fk',
+    grupo: 'Académico',
+    desc: 'Cada fila de `agrupaciones_area_comun` apunta a `curso_comun` por curso_comun_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'agrupaciones_area_comun.curso_comun_id → curso_comun.id · ON DELETE RESTRICT',
+    tabla: 'agrupaciones_area_comun',
+    linea: 7256,
+    claves: 'agrupaciones_area_comun curso_comun curso_comun_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."agrupaciones_area_comun"
+    ADD CONSTRAINT "agrupaciones_area_comun_curso_comun_id_fkey" FOREIGN KEY ("curso_comun_id") REFERENCES "horarios"."curso_comun"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-agrupaciones_area_comun agrupaciones_area_comun_curso_principal_id_fkey',
@@ -7238,12 +9653,28 @@ $$;`,
     detalle: '',
     nota: 'agrupaciones_area_comun.curso_principal_id → cursos.id · ON DELETE RESTRICT',
     tabla: 'agrupaciones_area_comun',
-    linea: 6088,
+    linea: 7264,
     claves: 'agrupaciones_area_comun cursos curso_principal_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupaciones_area_comun
-    ADD CONSTRAINT agrupaciones_area_comun_curso_principal_id_fkey FOREIGN KEY (curso_principal_id) REFERENCES horarios.cursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupaciones_area_comun"
+    ADD CONSTRAINT "agrupaciones_area_comun_curso_principal_id_fkey" FOREIGN KEY ("curso_principal_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-agrupaciones_area_comun agrupaciones_area_comun_jornada_id_fkey',
+    nombre: 'agrupaciones_area_comun agrupaciones_area_comun_jornada_id_fkey',
+    cat: 'fk',
+    grupo: 'Académico',
+    desc: 'Cada fila de `agrupaciones_area_comun` apunta a `jornadas` por jornada_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'agrupaciones_area_comun.jornada_id → jornadas.id · ON DELETE RESTRICT',
+    tabla: 'agrupaciones_area_comun',
+    linea: 7272,
+    claves: 'agrupaciones_area_comun jornadas jornada_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."agrupaciones_area_comun"
+    ADD CONSTRAINT "agrupaciones_area_comun_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-agrupaciones_area_comun agrupaciones_area_comun_periodo_id_fkey',
@@ -7254,12 +9685,12 @@ $$;`,
     detalle: '',
     nota: 'agrupaciones_area_comun.periodo_id → periodos_academicos.id · ON DELETE RESTRICT',
     tabla: 'agrupaciones_area_comun',
-    linea: 6096,
+    linea: 7280,
     claves: 'agrupaciones_area_comun periodos_academicos periodo_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.agrupaciones_area_comun
-    ADD CONSTRAINT agrupaciones_area_comun_periodo_id_fkey FOREIGN KEY (periodo_id) REFERENCES horarios.periodos_academicos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."agrupaciones_area_comun"
+    ADD CONSTRAINT "agrupaciones_area_comun_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-carrera_jornadas carrera_jornadas_carrera_id_fkey',
@@ -7270,12 +9701,12 @@ $$;`,
     detalle: '',
     nota: 'carrera_jornadas.carrera_id → carreras.id · ON DELETE CASCADE',
     tabla: 'carrera_jornadas',
-    linea: 6184,
+    linea: 7368,
     claves: 'carrera_jornadas carreras carrera_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.carrera_jornadas
-    ADD CONSTRAINT carrera_jornadas_carrera_id_fkey FOREIGN KEY (carrera_id) REFERENCES horarios.carreras(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."carrera_jornadas"
+    ADD CONSTRAINT "carrera_jornadas_carrera_id_fkey" FOREIGN KEY ("carrera_id") REFERENCES "horarios"."carreras"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-carrera_jornadas carrera_jornadas_jornada_id_fkey',
@@ -7286,12 +9717,12 @@ $$;`,
     detalle: '',
     nota: 'carrera_jornadas.jornada_id → jornadas.id · ON DELETE RESTRICT',
     tabla: 'carrera_jornadas',
-    linea: 6192,
+    linea: 7376,
     claves: 'carrera_jornadas jornadas jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.carrera_jornadas
-    ADD CONSTRAINT carrera_jornadas_jornada_id_fkey FOREIGN KEY (jornada_id) REFERENCES horarios.jornadas(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."carrera_jornadas"
+    ADD CONSTRAINT "carrera_jornadas_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-carreras carreras_facultad_id_fkey',
@@ -7302,12 +9733,12 @@ $$;`,
     detalle: '',
     nota: 'carreras.facultad_id → facultades.id · ON DELETE RESTRICT',
     tabla: 'carreras',
-    linea: 6200,
+    linea: 7384,
     claves: 'carreras facultades facultad_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.carreras
-    ADD CONSTRAINT carreras_facultad_id_fkey FOREIGN KEY (facultad_id) REFERENCES horarios.facultades(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."carreras"
+    ADD CONSTRAINT "carreras_facultad_id_fkey" FOREIGN KEY ("facultad_id") REFERENCES "horarios"."facultades"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-cohorte_periodos cohorte_periodos_cohorte_id_fkey',
@@ -7318,12 +9749,12 @@ $$;`,
     detalle: '',
     nota: 'cohorte_periodos.cohorte_id → cohortes.id · ON DELETE RESTRICT',
     tabla: 'cohorte_periodos',
-    linea: 6208,
+    linea: 7392,
     claves: 'cohorte_periodos cohortes cohorte_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohorte_periodos
-    ADD CONSTRAINT cohorte_periodos_cohorte_id_fkey FOREIGN KEY (cohorte_id) REFERENCES horarios.cohortes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."cohorte_periodos"
+    ADD CONSTRAINT "cohorte_periodos_cohorte_id_fkey" FOREIGN KEY ("cohorte_id") REFERENCES "horarios"."cohortes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-cohorte_periodos cohorte_periodos_periodo_id_fkey',
@@ -7334,12 +9765,12 @@ $$;`,
     detalle: '',
     nota: 'cohorte_periodos.periodo_id → periodos_academicos.id · ON DELETE RESTRICT',
     tabla: 'cohorte_periodos',
-    linea: 6216,
+    linea: 7400,
     claves: 'cohorte_periodos periodos_academicos periodo_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohorte_periodos
-    ADD CONSTRAINT cohorte_periodos_periodo_id_fkey FOREIGN KEY (periodo_id) REFERENCES horarios.periodos_academicos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."cohorte_periodos"
+    ADD CONSTRAINT "cohorte_periodos_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-cohortes cohortes_carrera_id_fkey',
@@ -7350,12 +9781,12 @@ $$;`,
     detalle: '',
     nota: 'cohortes.carrera_id → carreras.id · ON DELETE RESTRICT',
     tabla: 'cohortes',
-    linea: 6224,
+    linea: 7408,
     claves: 'cohortes carreras carrera_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohortes
-    ADD CONSTRAINT cohortes_carrera_id_fkey FOREIGN KEY (carrera_id) REFERENCES horarios.carreras(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."cohortes"
+    ADD CONSTRAINT "cohortes_carrera_id_fkey" FOREIGN KEY ("carrera_id") REFERENCES "horarios"."carreras"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-cohortes cohortes_carrera_id_jornada_id_fkey',
@@ -7366,12 +9797,12 @@ $$;`,
     detalle: '',
     nota: 'cohortes.carrera_id, jornada_id → carrera_jornadas.carrera_id, jornada_id · ON DELETE NO ACTION',
     tabla: 'cohortes',
-    linea: 6232,
+    linea: 7416,
     claves: 'cohortes carrera_jornadas carrera_id, jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohortes
-    ADD CONSTRAINT cohortes_carrera_id_jornada_id_fkey FOREIGN KEY (carrera_id, jornada_id) REFERENCES horarios.carrera_jornadas(carrera_id, jornada_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cohortes"
+    ADD CONSTRAINT "cohortes_carrera_id_jornada_id_fkey" FOREIGN KEY ("carrera_id", "jornada_id") REFERENCES "horarios"."carrera_jornadas"("carrera_id", "jornada_id");`,
   },
   {
     id: 'fk-cohortes cohortes_jornada_id_fkey',
@@ -7382,12 +9813,12 @@ $$;`,
     detalle: '',
     nota: 'cohortes.jornada_id → jornadas.id · ON DELETE RESTRICT',
     tabla: 'cohortes',
-    linea: 6240,
+    linea: 7424,
     claves: 'cohortes jornadas jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohortes
-    ADD CONSTRAINT cohortes_jornada_id_fkey FOREIGN KEY (jornada_id) REFERENCES horarios.jornadas(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."cohortes"
+    ADD CONSTRAINT "cohortes_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-cohortes cohortes_pensum_id_carrera_id_fkey',
@@ -7398,12 +9829,12 @@ $$;`,
     detalle: '',
     nota: 'cohortes.pensum_id, carrera_id → pensums.id, carrera_id · ON DELETE NO ACTION',
     tabla: 'cohortes',
-    linea: 6248,
+    linea: 7432,
     claves: 'cohortes pensums pensum_id, carrera_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohortes
-    ADD CONSTRAINT cohortes_pensum_id_carrera_id_fkey FOREIGN KEY (pensum_id, carrera_id) REFERENCES horarios.pensums(id, carrera_id);`,
+    sql: `ALTER TABLE ONLY "horarios"."cohortes"
+    ADD CONSTRAINT "cohortes_pensum_id_carrera_id_fkey" FOREIGN KEY ("pensum_id", "carrera_id") REFERENCES "horarios"."pensums"("id", "carrera_id");`,
   },
   {
     id: 'fk-cohortes cohortes_pensum_id_fkey',
@@ -7414,60 +9845,76 @@ $$;`,
     detalle: '',
     nota: 'cohortes.pensum_id → pensums.id · ON DELETE RESTRICT',
     tabla: 'cohortes',
-    linea: 6256,
+    linea: 7440,
     claves: 'cohortes pensums pensum_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cohortes
-    ADD CONSTRAINT cohortes_pensum_id_fkey FOREIGN KEY (pensum_id) REFERENCES horarios.pensums(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."cohortes"
+    ADD CONSTRAINT "cohortes_pensum_id_fkey" FOREIGN KEY ("pensum_id") REFERENCES "horarios"."pensums"("id") ON DELETE RESTRICT;`,
   },
   {
-    id: 'fk-curso_carreras_compartidas curso_carreras_compartidas_carrera_id_fkey',
-    nombre: 'curso_carreras_compartidas curso_carreras_compartidas_carrera_id_fkey',
+    id: 'fk-curso_comun_cursos curso_comun_cursos_curso_fkey',
+    nombre: 'curso_comun_cursos curso_comun_cursos_curso_fkey',
     cat: 'fk',
     grupo: 'Académico',
-    desc: 'Cada fila de `curso_carreras_compartidas` apunta a `carreras` por carrera_id: no deja borrar el padre mientras existan estas filas.',
+    desc: 'Cada fila de `curso_comun_cursos` apunta a `cursos` por curso_id: al borrar el padre se borran también estas filas.',
     detalle: '',
-    nota: 'curso_carreras_compartidas.carrera_id → carreras.id · ON DELETE RESTRICT',
-    tabla: 'curso_carreras_compartidas',
-    linea: 6304,
-    claves: 'curso_carreras_compartidas carreras carrera_id',
+    nota: 'curso_comun_cursos.curso_id → cursos.id · ON DELETE CASCADE',
+    tabla: 'curso_comun_cursos',
+    linea: 7488,
+    claves: 'curso_comun_cursos cursos curso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.curso_carreras_compartidas
-    ADD CONSTRAINT curso_carreras_compartidas_carrera_id_fkey FOREIGN KEY (carrera_id) REFERENCES horarios.carreras(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."curso_comun_cursos"
+    ADD CONSTRAINT "curso_comun_cursos_curso_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE CASCADE;`,
   },
   {
-    id: 'fk-curso_carreras_compartidas curso_carreras_compartidas_curso_id_fkey',
-    nombre: 'curso_carreras_compartidas curso_carreras_compartidas_curso_id_fkey',
+    id: 'fk-curso_comun_cursos curso_comun_cursos_grupo_fkey',
+    nombre: 'curso_comun_cursos curso_comun_cursos_grupo_fkey',
     cat: 'fk',
     grupo: 'Académico',
-    desc: 'Cada fila de `curso_carreras_compartidas` apunta a `cursos` por curso_id: al borrar el padre se borran también estas filas.',
+    desc: 'Cada fila de `curso_comun_cursos` apunta a `curso_comun` por curso_comun_id: al borrar el padre se borran también estas filas.',
     detalle: '',
-    nota: 'curso_carreras_compartidas.curso_id → cursos.id · ON DELETE CASCADE',
-    tabla: 'curso_carreras_compartidas',
-    linea: 6312,
-    claves: 'curso_carreras_compartidas cursos curso_id',
+    nota: 'curso_comun_cursos.curso_comun_id → curso_comun.id · ON DELETE CASCADE',
+    tabla: 'curso_comun_cursos',
+    linea: 7496,
+    claves: 'curso_comun_cursos curso_comun curso_comun_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.curso_carreras_compartidas
-    ADD CONSTRAINT curso_carreras_compartidas_curso_id_fkey FOREIGN KEY (curso_id) REFERENCES horarios.cursos(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."curso_comun_cursos"
+    ADD CONSTRAINT "curso_comun_cursos_grupo_fkey" FOREIGN KEY ("curso_comun_id") REFERENCES "horarios"."curso_comun"("id") ON DELETE CASCADE;`,
   },
   {
-    id: 'fk-cursos_en_pensum cursos_en_pensum_curso_id_fkey',
-    nombre: 'cursos_en_pensum cursos_en_pensum_curso_id_fkey',
+    id: 'fk-cursos cursos_pensum_id_fkey',
+    nombre: 'cursos cursos_pensum_id_fkey',
     cat: 'fk',
     grupo: 'Académico',
-    desc: 'Cada fila de `cursos_en_pensum` apunta a `cursos` por curso_id: no deja borrar el padre mientras existan estas filas.',
+    desc: 'Cada fila de `cursos` apunta a `pensums` por pensum_id: no deja borrar el padre mientras existan estas filas.',
     detalle: '',
-    nota: 'cursos_en_pensum.curso_id → cursos.id · ON DELETE RESTRICT',
+    nota: 'cursos.pensum_id → pensums.id · ON DELETE RESTRICT',
+    tabla: 'cursos',
+    linea: 7536,
+    claves: 'cursos pensums pensum_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."cursos"
+    ADD CONSTRAINT "cursos_pensum_id_fkey" FOREIGN KEY ("pensum_id") REFERENCES "horarios"."pensums"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-cursos_en_pensum cursos_en_pensum_curso_pensum_fkey',
+    nombre: 'cursos_en_pensum cursos_en_pensum_curso_pensum_fkey',
+    cat: 'fk',
+    grupo: 'Académico',
+    desc: 'Cada fila de `cursos_en_pensum` apunta a `cursos` por curso_id, pensum_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'cursos_en_pensum.curso_id, pensum_id → cursos.id, pensum_id · ON DELETE RESTRICT',
     tabla: 'cursos_en_pensum',
-    linea: 6336,
-    claves: 'cursos_en_pensum cursos curso_id',
+    linea: 7520,
+    claves: 'cursos_en_pensum cursos curso_id, pensum_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cursos_en_pensum
-    ADD CONSTRAINT cursos_en_pensum_curso_id_fkey FOREIGN KEY (curso_id) REFERENCES horarios.cursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."cursos_en_pensum"
+    ADD CONSTRAINT "cursos_en_pensum_curso_pensum_fkey" FOREIGN KEY ("curso_id", "pensum_id") REFERENCES "horarios"."cursos"("id", "pensum_id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-cursos_en_pensum cursos_en_pensum_pensum_id_fkey',
@@ -7478,12 +9925,12 @@ $$;`,
     detalle: '',
     nota: 'cursos_en_pensum.pensum_id → pensums.id · ON DELETE CASCADE',
     tabla: 'cursos_en_pensum',
-    linea: 6344,
+    linea: 7528,
     claves: 'cursos_en_pensum pensums pensum_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cursos_en_pensum
-    ADD CONSTRAINT cursos_en_pensum_pensum_id_fkey FOREIGN KEY (pensum_id) REFERENCES horarios.pensums(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."cursos_en_pensum"
+    ADD CONSTRAINT "cursos_en_pensum_pensum_id_fkey" FOREIGN KEY ("pensum_id") REFERENCES "horarios"."pensums"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-jornada_descansos jornada_descansos_jornada_id_fkey',
@@ -7494,12 +9941,12 @@ $$;`,
     detalle: '',
     nota: 'jornada_descansos.jornada_id → jornadas.id · ON DELETE CASCADE',
     tabla: 'jornada_descansos',
-    linea: 6536,
+    linea: 7736,
     claves: 'jornada_descansos jornadas jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.jornada_descansos
-    ADD CONSTRAINT jornada_descansos_jornada_id_fkey FOREIGN KEY (jornada_id) REFERENCES horarios.jornadas(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."jornada_descansos"
+    ADD CONSTRAINT "jornada_descansos_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-pensums pensums_carrera_id_fkey',
@@ -7510,12 +9957,12 @@ $$;`,
     detalle: '',
     nota: 'pensums.carrera_id → carreras.id · ON DELETE RESTRICT',
     tabla: 'pensums',
-    linea: 6568,
+    linea: 7768,
     claves: 'pensums carreras carrera_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.pensums
-    ADD CONSTRAINT pensums_carrera_id_fkey FOREIGN KEY (carrera_id) REFERENCES horarios.carreras(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."pensums"
+    ADD CONSTRAINT "pensums_carrera_id_fkey" FOREIGN KEY ("carrera_id") REFERENCES "horarios"."carreras"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-aula_recursos aula_recursos_aula_id_fkey',
@@ -7526,12 +9973,12 @@ $$;`,
     detalle: '',
     nota: 'aula_recursos.aula_id → aulas.id · ON DELETE CASCADE',
     tabla: 'aula_recursos',
-    linea: 6152,
+    linea: 7336,
     claves: 'aula_recursos aulas aula_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.aula_recursos
-    ADD CONSTRAINT aula_recursos_aula_id_fkey FOREIGN KEY (aula_id) REFERENCES horarios.aulas(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."aula_recursos"
+    ADD CONSTRAINT "aula_recursos_aula_id_fkey" FOREIGN KEY ("aula_id") REFERENCES "horarios"."aulas"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-aula_recursos aula_recursos_recurso_id_fkey',
@@ -7542,12 +9989,12 @@ $$;`,
     detalle: '',
     nota: 'aula_recursos.recurso_id → recursos.id · ON DELETE RESTRICT',
     tabla: 'aula_recursos',
-    linea: 6160,
+    linea: 7344,
     claves: 'aula_recursos recursos recurso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.aula_recursos
-    ADD CONSTRAINT aula_recursos_recurso_id_fkey FOREIGN KEY (recurso_id) REFERENCES horarios.recursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."aula_recursos"
+    ADD CONSTRAINT "aula_recursos_recurso_id_fkey" FOREIGN KEY ("recurso_id") REFERENCES "horarios"."recursos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-curso_recursos_requeridos curso_recursos_requeridos_curso_id_fkey',
@@ -7558,12 +10005,12 @@ $$;`,
     detalle: '',
     nota: 'curso_recursos_requeridos.curso_id → cursos.id · ON DELETE CASCADE',
     tabla: 'curso_recursos_requeridos',
-    linea: 6320,
+    linea: 7504,
     claves: 'curso_recursos_requeridos cursos curso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.curso_recursos_requeridos
-    ADD CONSTRAINT curso_recursos_requeridos_curso_id_fkey FOREIGN KEY (curso_id) REFERENCES horarios.cursos(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."curso_recursos_requeridos"
+    ADD CONSTRAINT "curso_recursos_requeridos_curso_id_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-curso_recursos_requeridos curso_recursos_requeridos_recurso_id_fkey',
@@ -7574,12 +10021,316 @@ $$;`,
     detalle: '',
     nota: 'curso_recursos_requeridos.recurso_id → recursos.id · ON DELETE RESTRICT',
     tabla: 'curso_recursos_requeridos',
-    linea: 6328,
+    linea: 7512,
     claves: 'curso_recursos_requeridos recursos recurso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.curso_recursos_requeridos
-    ADD CONSTRAINT curso_recursos_requeridos_recurso_id_fkey FOREIGN KEY (recurso_id) REFERENCES horarios.recursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."curso_recursos_requeridos"
+    ADD CONSTRAINT "curso_recursos_requeridos_recurso_id_fkey" FOREIGN KEY ("recurso_id") REFERENCES "horarios"."recursos"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-configuracion_motor_restricciones configuracion_motor_restricciones_configuracion_id_fkey',
+    nombre: 'configuracion_motor_restricciones configuracion_motor_restricciones_configuracion_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `configuracion_motor_restricciones` apunta a `configuraciones_motor` por configuracion_id: al borrar el padre se borran también estas filas.',
+    detalle: '',
+    nota: 'configuracion_motor_restricciones.configuracion_id → configuraciones_motor.id · ON DELETE CASCADE',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 7448,
+    claves: 'configuracion_motor_restricciones configuraciones_motor configuracion_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."configuracion_motor_restricciones"
+    ADD CONSTRAINT "configuracion_motor_restricciones_configuracion_id_fkey" FOREIGN KEY ("configuracion_id") REFERENCES "horarios"."configuraciones_motor"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-configuracion_motor_restricciones configuracion_motor_restricciones_restriccion_id_fkey',
+    nombre: 'configuracion_motor_restricciones configuracion_motor_restricciones_restriccion_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `configuracion_motor_restricciones` apunta a `restricciones_horario` por restriccion_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'configuracion_motor_restricciones.restriccion_id → restricciones_horario.id · ON DELETE RESTRICT',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 7456,
+    claves: 'configuracion_motor_restricciones restricciones_horario restriccion_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."configuracion_motor_restricciones"
+    ADD CONSTRAINT "configuracion_motor_restricciones_restriccion_id_fkey" FOREIGN KEY ("restriccion_id") REFERENCES "horarios"."restricciones_horario"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-generaciones generaciones_configuracion_id_fkey',
+    nombre: 'generaciones generaciones_configuracion_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `generaciones` apunta a `configuraciones_motor` por configuracion_id: al borrar el padre la columna queda en NULL.',
+    detalle: '',
+    nota: 'generaciones.configuracion_id → configuraciones_motor.id · ON DELETE SET NULL',
+    tabla: 'generaciones',
+    linea: 7624,
+    claves: 'generaciones configuraciones_motor configuracion_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."generaciones"
+    ADD CONSTRAINT "generaciones_configuracion_id_fkey" FOREIGN KEY ("configuracion_id") REFERENCES "horarios"."configuraciones_motor"("id") ON DELETE SET NULL;`,
+  },
+  {
+    id: 'fk-generaciones generaciones_periodo_id_fkey',
+    nombre: 'generaciones generaciones_periodo_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `generaciones` apunta a `periodos_academicos` por periodo_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'generaciones.periodo_id → periodos_academicos.id · ON DELETE RESTRICT',
+    tabla: 'generaciones',
+    linea: 7632,
+    claves: 'generaciones periodos_academicos periodo_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."generaciones"
+    ADD CONSTRAINT "generaciones_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-generaciones generaciones_plan_id_fkey',
+    nombre: 'generaciones generaciones_plan_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `generaciones` apunta a `horarios` por plan_id: al borrar el padre la columna queda en NULL.',
+    detalle: '',
+    nota: 'generaciones.plan_id → horarios.id · ON DELETE SET NULL',
+    tabla: 'generaciones',
+    linea: 7640,
+    claves: 'generaciones horarios plan_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."generaciones"
+    ADD CONSTRAINT "generaciones_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "horarios"."horarios"("id") ON DELETE SET NULL;`,
+  },
+  {
+    id: 'fk-generaciones generaciones_solicitada_por_id_fkey',
+    nombre: 'generaciones generaciones_solicitada_por_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `generaciones` apunta a `usuarios` por solicitada_por_id: al borrar el padre la columna queda en NULL.',
+    detalle: '',
+    nota: 'generaciones.solicitada_por_id → usuarios.id · ON DELETE SET NULL',
+    tabla: 'generaciones',
+    linea: 7648,
+    claves: 'generaciones usuarios solicitada_por_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."generaciones"
+    ADD CONSTRAINT "generaciones_solicitada_por_id_fkey" FOREIGN KEY ("solicitada_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
+  },
+  {
+    id: 'fk-mensajes_generacion mensajes_generacion_generacion_id_fkey',
+    nombre: 'mensajes_generacion mensajes_generacion_generacion_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `mensajes_generacion` apunta a `generaciones` por generacion_id: al borrar el padre se borran también estas filas.',
+    detalle: '',
+    nota: 'mensajes_generacion.generacion_id → generaciones.id · ON DELETE CASCADE',
+    tabla: 'mensajes_generacion',
+    linea: 7744,
+    claves: 'mensajes_generacion generaciones generacion_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."mensajes_generacion"
+    ADD CONSTRAINT "mensajes_generacion_generacion_id_fkey" FOREIGN KEY ("generacion_id") REFERENCES "horarios"."generaciones"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-plan_carreras plan_carreras_carrera_id_fkey',
+    nombre: 'plan_carreras plan_carreras_carrera_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `plan_carreras` apunta a `carreras` por carrera_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'plan_carreras.carrera_id → carreras.id · ON DELETE RESTRICT',
+    tabla: 'plan_carreras',
+    linea: 7776,
+    claves: 'plan_carreras carreras carrera_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."plan_carreras"
+    ADD CONSTRAINT "plan_carreras_carrera_id_fkey" FOREIGN KEY ("carrera_id") REFERENCES "horarios"."carreras"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-plan_carreras plan_carreras_plan_id_fkey',
+    nombre: 'plan_carreras plan_carreras_plan_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `plan_carreras` apunta a `horarios` por plan_id: al borrar el padre se borran también estas filas.',
+    detalle: '',
+    nota: 'plan_carreras.plan_id → horarios.id · ON DELETE CASCADE',
+    tabla: 'plan_carreras',
+    linea: 7784,
+    claves: 'plan_carreras horarios plan_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."plan_carreras"
+    ADD CONSTRAINT "plan_carreras_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-plan_jornadas plan_jornadas_jornada_id_fkey',
+    nombre: 'plan_jornadas plan_jornadas_jornada_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `plan_jornadas` apunta a `jornadas` por jornada_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'plan_jornadas.jornada_id → jornadas.id · ON DELETE RESTRICT',
+    tabla: 'plan_jornadas',
+    linea: 7792,
+    claves: 'plan_jornadas jornadas jornada_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."plan_jornadas"
+    ADD CONSTRAINT "plan_jornadas_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-plan_jornadas plan_jornadas_plan_id_fkey',
+    nombre: 'plan_jornadas plan_jornadas_plan_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `plan_jornadas` apunta a `horarios` por plan_id: al borrar el padre se borran también estas filas.',
+    detalle: '',
+    nota: 'plan_jornadas.plan_id → horarios.id · ON DELETE CASCADE',
+    tabla: 'plan_jornadas',
+    linea: 7800,
+    claves: 'plan_jornadas horarios plan_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."plan_jornadas"
+    ADD CONSTRAINT "plan_jornadas_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-sesiones_no_asignadas sesiones_no_asignadas_cohorte_id_fkey',
+    nombre: 'sesiones_no_asignadas sesiones_no_asignadas_cohorte_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sesiones_no_asignadas` apunta a `cohortes` por cohorte_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'sesiones_no_asignadas.cohorte_id → cohortes.id · ON DELETE RESTRICT',
+    tabla: 'sesiones_no_asignadas',
+    linea: 7992,
+    claves: 'sesiones_no_asignadas cohortes cohorte_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sesiones_no_asignadas"
+    ADD CONSTRAINT "sesiones_no_asignadas_cohorte_id_fkey" FOREIGN KEY ("cohorte_id") REFERENCES "horarios"."cohortes"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-sesiones_no_asignadas sesiones_no_asignadas_curso_id_fkey',
+    nombre: 'sesiones_no_asignadas sesiones_no_asignadas_curso_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sesiones_no_asignadas` apunta a `cursos` por curso_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'sesiones_no_asignadas.curso_id → cursos.id · ON DELETE RESTRICT',
+    tabla: 'sesiones_no_asignadas',
+    linea: 8000,
+    claves: 'sesiones_no_asignadas cursos curso_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sesiones_no_asignadas"
+    ADD CONSTRAINT "sesiones_no_asignadas_curso_id_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-sesiones_no_asignadas sesiones_no_asignadas_horario_id_fkey',
+    nombre: 'sesiones_no_asignadas sesiones_no_asignadas_horario_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sesiones_no_asignadas` apunta a `horarios` por horario_id: al borrar el padre se borran también estas filas.',
+    detalle: '',
+    nota: 'sesiones_no_asignadas.horario_id → horarios.id · ON DELETE CASCADE',
+    tabla: 'sesiones_no_asignadas',
+    linea: 8008,
+    claves: 'sesiones_no_asignadas horarios horario_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sesiones_no_asignadas"
+    ADD CONSTRAINT "sesiones_no_asignadas_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-sugerencias_seccion sugerencias_seccion_cohorte_id_fkey',
+    nombre: 'sugerencias_seccion sugerencias_seccion_cohorte_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sugerencias_seccion` apunta a `cohortes` por cohorte_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'sugerencias_seccion.cohorte_id → cohortes.id · ON DELETE RESTRICT',
+    tabla: 'sugerencias_seccion',
+    linea: 8016,
+    claves: 'sugerencias_seccion cohortes cohorte_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sugerencias_seccion"
+    ADD CONSTRAINT "sugerencias_seccion_cohorte_id_fkey" FOREIGN KEY ("cohorte_id") REFERENCES "horarios"."cohortes"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-sugerencias_seccion sugerencias_seccion_curso_id_fkey',
+    nombre: 'sugerencias_seccion sugerencias_seccion_curso_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sugerencias_seccion` apunta a `cursos` por curso_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'sugerencias_seccion.curso_id → cursos.id · ON DELETE RESTRICT',
+    tabla: 'sugerencias_seccion',
+    linea: 8024,
+    claves: 'sugerencias_seccion cursos curso_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sugerencias_seccion"
+    ADD CONSTRAINT "sugerencias_seccion_curso_id_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
+  },
+  {
+    id: 'fk-sugerencias_seccion sugerencias_seccion_horario_id_fkey',
+    nombre: 'sugerencias_seccion sugerencias_seccion_horario_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sugerencias_seccion` apunta a `horarios` por horario_id: al borrar el padre se borran también estas filas.',
+    detalle: '',
+    nota: 'sugerencias_seccion.horario_id → horarios.id · ON DELETE CASCADE',
+    tabla: 'sugerencias_seccion',
+    linea: 8032,
+    claves: 'sugerencias_seccion horarios horario_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sugerencias_seccion"
+    ADD CONSTRAINT "sugerencias_seccion_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-sugerencias_seccion sugerencias_seccion_resuelta_por_id_fkey',
+    nombre: 'sugerencias_seccion sugerencias_seccion_resuelta_por_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sugerencias_seccion` apunta a `usuarios` por resuelta_por_id: al borrar el padre la columna queda en NULL.',
+    detalle: '',
+    nota: 'sugerencias_seccion.resuelta_por_id → usuarios.id · ON DELETE SET NULL',
+    tabla: 'sugerencias_seccion',
+    linea: 8040,
+    claves: 'sugerencias_seccion usuarios resuelta_por_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sugerencias_seccion"
+    ADD CONSTRAINT "sugerencias_seccion_resuelta_por_id_fkey" FOREIGN KEY ("resuelta_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
+  },
+  {
+    id: 'fk-sugerencias_seccion sugerencias_seccion_solicitada_por_id_fkey',
+    nombre: 'sugerencias_seccion sugerencias_seccion_solicitada_por_id_fkey',
+    cat: 'fk',
+    grupo: 'Motor',
+    desc: 'Cada fila de `sugerencias_seccion` apunta a `usuarios` por solicitada_por_id: al borrar el padre la columna queda en NULL.',
+    detalle: '',
+    nota: 'sugerencias_seccion.solicitada_por_id → usuarios.id · ON DELETE SET NULL',
+    tabla: 'sugerencias_seccion',
+    linea: 8048,
+    claves: 'sugerencias_seccion usuarios solicitada_por_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."sugerencias_seccion"
+    ADD CONSTRAINT "sugerencias_seccion_solicitada_por_id_fkey" FOREIGN KEY ("solicitada_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-cambios_detectados cambios_detectados_sesion_id_fkey',
@@ -7590,12 +10341,12 @@ $$;`,
     detalle: '',
     nota: 'cambios_detectados.sesion_id → sesiones.id · ON DELETE CASCADE',
     tabla: 'cambios_detectados',
-    linea: 6168,
+    linea: 7352,
     claves: 'cambios_detectados sesiones sesion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cambios_detectados
-    ADD CONSTRAINT cambios_detectados_sesion_id_fkey FOREIGN KEY (sesion_id) REFERENCES horarios.sesiones(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."cambios_detectados"
+    ADD CONSTRAINT "cambios_detectados_sesion_id_fkey" FOREIGN KEY ("sesion_id") REFERENCES "horarios"."sesiones"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-cambios_detectados cambios_detectados_version_horario_id_fkey',
@@ -7606,12 +10357,12 @@ $$;`,
     detalle: '',
     nota: 'cambios_detectados.version_horario_id → versiones_horario.id · ON DELETE CASCADE',
     tabla: 'cambios_detectados',
-    linea: 6176,
+    linea: 7360,
     claves: 'cambios_detectados versiones_horario version_horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.cambios_detectados
-    ADD CONSTRAINT cambios_detectados_version_horario_id_fkey FOREIGN KEY (version_horario_id) REFERENCES horarios.versiones_horario(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."cambios_detectados"
+    ADD CONSTRAINT "cambios_detectados_version_horario_id_fkey" FOREIGN KEY ("version_horario_id") REFERENCES "horarios"."versiones_horario"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-conflicto_sesiones conflicto_sesiones_conflicto_id_fkey',
@@ -7622,12 +10373,12 @@ $$;`,
     detalle: '',
     nota: 'conflicto_sesiones.conflicto_id → conflictos.id · ON DELETE CASCADE',
     tabla: 'conflicto_sesiones',
-    linea: 6280,
+    linea: 7464,
     claves: 'conflicto_sesiones conflictos conflicto_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.conflicto_sesiones
-    ADD CONSTRAINT conflicto_sesiones_conflicto_id_fkey FOREIGN KEY (conflicto_id) REFERENCES horarios.conflictos(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."conflicto_sesiones"
+    ADD CONSTRAINT "conflicto_sesiones_conflicto_id_fkey" FOREIGN KEY ("conflicto_id") REFERENCES "horarios"."conflictos"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-conflicto_sesiones conflicto_sesiones_sesion_id_fkey',
@@ -7638,12 +10389,12 @@ $$;`,
     detalle: '',
     nota: 'conflicto_sesiones.sesion_id → sesiones.id · ON DELETE CASCADE',
     tabla: 'conflicto_sesiones',
-    linea: 6288,
+    linea: 7472,
     claves: 'conflicto_sesiones sesiones sesion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.conflicto_sesiones
-    ADD CONSTRAINT conflicto_sesiones_sesion_id_fkey FOREIGN KEY (sesion_id) REFERENCES horarios.sesiones(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."conflicto_sesiones"
+    ADD CONSTRAINT "conflicto_sesiones_sesion_id_fkey" FOREIGN KEY ("sesion_id") REFERENCES "horarios"."sesiones"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-conflictos conflictos_horario_id_fkey',
@@ -7654,12 +10405,12 @@ $$;`,
     detalle: '',
     nota: 'conflictos.horario_id → horarios.id · ON DELETE CASCADE',
     tabla: 'conflictos',
-    linea: 6296,
+    linea: 7480,
     claves: 'conflictos horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.conflictos
-    ADD CONSTRAINT conflictos_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."conflictos"
+    ADD CONSTRAINT "conflictos_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-historial_estados_horario historial_estados_horario_cambiado_por_id_fkey',
@@ -7670,12 +10421,12 @@ $$;`,
     detalle: '',
     nota: 'historial_estados_horario.cambiado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'historial_estados_horario',
-    linea: 6456,
+    linea: 7656,
     claves: 'historial_estados_horario usuarios cambiado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.historial_estados_horario
-    ADD CONSTRAINT historial_estados_horario_cambiado_por_id_fkey FOREIGN KEY (cambiado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."historial_estados_horario"
+    ADD CONSTRAINT "historial_estados_horario_cambiado_por_id_fkey" FOREIGN KEY ("cambiado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-historial_estados_horario historial_estados_horario_horario_id_fkey',
@@ -7686,12 +10437,12 @@ $$;`,
     detalle: '',
     nota: 'historial_estados_horario.horario_id → horarios.id · ON DELETE CASCADE',
     tabla: 'historial_estados_horario',
-    linea: 6464,
+    linea: 7664,
     claves: 'historial_estados_horario horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.historial_estados_horario
-    ADD CONSTRAINT historial_estados_horario_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."historial_estados_horario"
+    ADD CONSTRAINT "historial_estados_horario_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-horarios horarios_aprobado_por_id_fkey',
@@ -7702,12 +10453,12 @@ $$;`,
     detalle: '',
     nota: 'horarios.aprobado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'horarios',
-    linea: 6472,
+    linea: 7672,
     claves: 'horarios usuarios aprobado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.horarios
-    ADD CONSTRAINT horarios_aprobado_por_id_fkey FOREIGN KEY (aprobado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."horarios"
+    ADD CONSTRAINT "horarios_aprobado_por_id_fkey" FOREIGN KEY ("aprobado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-horarios horarios_generado_por_id_fkey',
@@ -7718,12 +10469,12 @@ $$;`,
     detalle: '',
     nota: 'horarios.generado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'horarios',
-    linea: 6480,
+    linea: 7680,
     claves: 'horarios usuarios generado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.horarios
-    ADD CONSTRAINT horarios_generado_por_id_fkey FOREIGN KEY (generado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."horarios"
+    ADD CONSTRAINT "horarios_generado_por_id_fkey" FOREIGN KEY ("generado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-horarios horarios_horario_origen_id_fkey',
@@ -7734,12 +10485,12 @@ $$;`,
     detalle: '',
     nota: 'horarios.horario_origen_id → horarios.id · ON DELETE RESTRICT',
     tabla: 'horarios',
-    linea: 6488,
+    linea: 7688,
     claves: 'horarios horarios horario_origen_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.horarios
-    ADD CONSTRAINT horarios_horario_origen_id_fkey FOREIGN KEY (horario_origen_id) REFERENCES horarios.horarios(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."horarios"
+    ADD CONSTRAINT "horarios_horario_origen_id_fkey" FOREIGN KEY ("horario_origen_id") REFERENCES "horarios"."horarios"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-horarios horarios_periodo_id_fkey',
@@ -7750,12 +10501,12 @@ $$;`,
     detalle: '',
     nota: 'horarios.periodo_id → periodos_academicos.id · ON DELETE RESTRICT',
     tabla: 'horarios',
-    linea: 6496,
+    linea: 7696,
     claves: 'horarios periodos_academicos periodo_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.horarios
-    ADD CONSTRAINT horarios_periodo_id_fkey FOREIGN KEY (periodo_id) REFERENCES horarios.periodos_academicos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."horarios"
+    ADD CONSTRAINT "horarios_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-horarios horarios_publicado_por_id_fkey',
@@ -7766,12 +10517,12 @@ $$;`,
     detalle: '',
     nota: 'horarios.publicado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'horarios',
-    linea: 6504,
+    linea: 7704,
     claves: 'horarios usuarios publicado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.horarios
-    ADD CONSTRAINT horarios_publicado_por_id_fkey FOREIGN KEY (publicado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."horarios"
+    ADD CONSTRAINT "horarios_publicado_por_id_fkey" FOREIGN KEY ("publicado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-resultado_edicion_conflictos resultado_edicion_conflictos_conflicto_id_fkey',
@@ -7782,12 +10533,12 @@ $$;`,
     detalle: '',
     nota: 'resultado_edicion_conflictos.conflicto_id → conflictos.id · ON DELETE CASCADE',
     tabla: 'resultado_edicion_conflictos',
-    linea: 6632,
+    linea: 7832,
     claves: 'resultado_edicion_conflictos conflictos conflicto_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultado_edicion_conflictos
-    ADD CONSTRAINT resultado_edicion_conflictos_conflicto_id_fkey FOREIGN KEY (conflicto_id) REFERENCES horarios.conflictos(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."resultado_edicion_conflictos"
+    ADD CONSTRAINT "resultado_edicion_conflictos_conflicto_id_fkey" FOREIGN KEY ("conflicto_id") REFERENCES "horarios"."conflictos"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-resultado_edicion_conflictos resultado_edicion_conflictos_resultado_edicion_id_fkey',
@@ -7798,12 +10549,12 @@ $$;`,
     detalle: '',
     nota: 'resultado_edicion_conflictos.resultado_edicion_id → resultados_edicion.id · ON DELETE CASCADE',
     tabla: 'resultado_edicion_conflictos',
-    linea: 6640,
+    linea: 7840,
     claves: 'resultado_edicion_conflictos resultados_edicion resultado_edicion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultado_edicion_conflictos
-    ADD CONSTRAINT resultado_edicion_conflictos_resultado_edicion_id_fkey FOREIGN KEY (resultado_edicion_id) REFERENCES horarios.resultados_edicion(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."resultado_edicion_conflictos"
+    ADD CONSTRAINT "resultado_edicion_conflictos_resultado_edicion_id_fkey" FOREIGN KEY ("resultado_edicion_id") REFERENCES "horarios"."resultados_edicion"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-resultados_edicion resultados_edicion_creado_por_id_fkey',
@@ -7814,12 +10565,12 @@ $$;`,
     detalle: '',
     nota: 'resultados_edicion.creado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'resultados_edicion',
-    linea: 6648,
+    linea: 7848,
     claves: 'resultados_edicion usuarios creado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultados_edicion
-    ADD CONSTRAINT resultados_edicion_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."resultados_edicion"
+    ADD CONSTRAINT "resultados_edicion_creado_por_id_fkey" FOREIGN KEY ("creado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-resultados_edicion resultados_edicion_horario_id_fkey',
@@ -7830,12 +10581,12 @@ $$;`,
     detalle: '',
     nota: 'resultados_edicion.horario_id → horarios.id · ON DELETE CASCADE',
     tabla: 'resultados_edicion',
-    linea: 6656,
+    linea: 7856,
     claves: 'resultados_edicion horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultados_edicion
-    ADD CONSTRAINT resultados_edicion_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."resultados_edicion"
+    ADD CONSTRAINT "resultados_edicion_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-resultados_edicion resultados_edicion_horario_origen_id_fkey',
@@ -7846,12 +10597,12 @@ $$;`,
     detalle: '',
     nota: 'resultados_edicion.horario_origen_id → horarios.id · ON DELETE RESTRICT',
     tabla: 'resultados_edicion',
-    linea: 6664,
+    linea: 7864,
     claves: 'resultados_edicion horarios horario_origen_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultados_edicion
-    ADD CONSTRAINT resultados_edicion_horario_origen_id_fkey FOREIGN KEY (horario_origen_id) REFERENCES horarios.horarios(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."resultados_edicion"
+    ADD CONSTRAINT "resultados_edicion_horario_origen_id_fkey" FOREIGN KEY ("horario_origen_id") REFERENCES "horarios"."horarios"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-resultados_edicion resultados_edicion_sesion_fijada_id_fkey',
@@ -7862,12 +10613,12 @@ $$;`,
     detalle: '',
     nota: 'resultados_edicion.sesion_fijada_id → sesiones.id · ON DELETE SET NULL',
     tabla: 'resultados_edicion',
-    linea: 6672,
+    linea: 7872,
     claves: 'resultados_edicion sesiones sesion_fijada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.resultados_edicion
-    ADD CONSTRAINT resultados_edicion_sesion_fijada_id_fkey FOREIGN KEY (sesion_fijada_id) REFERENCES horarios.sesiones(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."resultados_edicion"
+    ADD CONSTRAINT "resultados_edicion_sesion_fijada_id_fkey" FOREIGN KEY ("sesion_fijada_id") REFERENCES "horarios"."sesiones"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-sesion_cohortes sesion_cohortes_cohorte_id_fkey',
@@ -7878,12 +10629,12 @@ $$;`,
     detalle: '',
     nota: 'sesion_cohortes.cohorte_id → cohortes.id · ON DELETE RESTRICT',
     tabla: 'sesion_cohortes',
-    linea: 6696,
+    linea: 7896,
     claves: 'sesion_cohortes cohortes cohorte_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_cohorte_id_fkey FOREIGN KEY (cohorte_id) REFERENCES horarios.cohortes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_cohorte_id_fkey" FOREIGN KEY ("cohorte_id") REFERENCES "horarios"."cohortes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-sesion_cohortes sesion_cohortes_curso_en_pensum_id_fkey',
@@ -7894,12 +10645,12 @@ $$;`,
     detalle: '',
     nota: 'sesion_cohortes.curso_en_pensum_id → cursos_en_pensum.id · ON DELETE RESTRICT',
     tabla: 'sesion_cohortes',
-    linea: 6704,
+    linea: 7904,
     claves: 'sesion_cohortes cursos_en_pensum curso_en_pensum_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_curso_en_pensum_id_fkey FOREIGN KEY (curso_en_pensum_id) REFERENCES horarios.cursos_en_pensum(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_curso_en_pensum_id_fkey" FOREIGN KEY ("curso_en_pensum_id") REFERENCES "horarios"."cursos_en_pensum"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-sesion_cohortes sesion_cohortes_curso_visible_id_fkey',
@@ -7910,12 +10661,12 @@ $$;`,
     detalle: '',
     nota: 'sesion_cohortes.curso_visible_id → cursos.id · ON DELETE RESTRICT',
     tabla: 'sesion_cohortes',
-    linea: 6712,
+    linea: 7912,
     claves: 'sesion_cohortes cursos curso_visible_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_curso_visible_id_fkey FOREIGN KEY (curso_visible_id) REFERENCES horarios.cursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_curso_visible_id_fkey" FOREIGN KEY ("curso_visible_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-sesion_cohortes sesion_cohortes_horario_id_fkey',
@@ -7926,12 +10677,12 @@ $$;`,
     detalle: '',
     nota: 'sesion_cohortes.horario_id → horarios.id · ON DELETE CASCADE',
     tabla: 'sesion_cohortes',
-    linea: 6720,
+    linea: 7920,
     claves: 'sesion_cohortes horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-sesion_cohortes sesion_cohortes_sesion_id_fkey',
@@ -7942,12 +10693,12 @@ $$;`,
     detalle: '',
     nota: 'sesion_cohortes.sesion_id → sesiones.id · ON DELETE CASCADE',
     tabla: 'sesion_cohortes',
-    linea: 6728,
+    linea: 7928,
     claves: 'sesion_cohortes sesiones sesion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_sesion_id_fkey FOREIGN KEY (sesion_id) REFERENCES horarios.sesiones(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_sesion_id_fkey" FOREIGN KEY ("sesion_id") REFERENCES "horarios"."sesiones"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-sesion_cohortes sesion_cohortes_sesion_id_horario_id_fkey',
@@ -7958,12 +10709,12 @@ $$;`,
     detalle: '',
     nota: 'sesion_cohortes.sesion_id, horario_id → sesiones.id, horario_id · ON DELETE CASCADE',
     tabla: 'sesion_cohortes',
-    linea: 6736,
+    linea: 7936,
     claves: 'sesion_cohortes sesiones sesion_id, horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesion_cohortes
-    ADD CONSTRAINT sesion_cohortes_sesion_id_horario_id_fkey FOREIGN KEY (sesion_id, horario_id) REFERENCES horarios.sesiones(id, horario_id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesion_cohortes"
+    ADD CONSTRAINT "sesion_cohortes_sesion_id_horario_id_fkey" FOREIGN KEY ("sesion_id", "horario_id") REFERENCES "horarios"."sesiones"("id", "horario_id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-sesiones sesiones_agrupacion_area_comun_id_fkey',
@@ -7974,12 +10725,12 @@ $$;`,
     detalle: '',
     nota: 'sesiones.agrupacion_area_comun_id → agrupaciones_area_comun.id · ON DELETE SET NULL',
     tabla: 'sesiones',
-    linea: 6744,
+    linea: 7944,
     claves: 'sesiones agrupaciones_area_comun agrupacion_area_comun_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_agrupacion_area_comun_id_fkey FOREIGN KEY (agrupacion_area_comun_id) REFERENCES horarios.agrupaciones_area_comun(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_agrupacion_area_comun_id_fkey" FOREIGN KEY ("agrupacion_area_comun_id") REFERENCES "horarios"."agrupaciones_area_comun"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-sesiones sesiones_aula_id_fkey',
@@ -7990,12 +10741,12 @@ $$;`,
     detalle: '',
     nota: 'sesiones.aula_id → aulas.id · ON DELETE RESTRICT',
     tabla: 'sesiones',
-    linea: 6752,
+    linea: 7952,
     claves: 'sesiones aulas aula_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_aula_id_fkey FOREIGN KEY (aula_id) REFERENCES horarios.aulas(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_aula_id_fkey" FOREIGN KEY ("aula_id") REFERENCES "horarios"."aulas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-sesiones sesiones_curso_id_fkey',
@@ -8006,12 +10757,12 @@ $$;`,
     detalle: '',
     nota: 'sesiones.curso_id → cursos.id · ON DELETE RESTRICT',
     tabla: 'sesiones',
-    linea: 6760,
+    linea: 7960,
     claves: 'sesiones cursos curso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_curso_id_fkey FOREIGN KEY (curso_id) REFERENCES horarios.cursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_curso_id_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-sesiones sesiones_docente_id_fkey',
@@ -8022,12 +10773,12 @@ $$;`,
     detalle: '',
     nota: 'sesiones.docente_id → docentes.id · ON DELETE RESTRICT',
     tabla: 'sesiones',
-    linea: 6768,
+    linea: 7968,
     claves: 'sesiones docentes docente_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_docente_id_fkey FOREIGN KEY (docente_id) REFERENCES horarios.docentes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_docente_id_fkey" FOREIGN KEY ("docente_id") REFERENCES "horarios"."docentes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-sesiones sesiones_horario_id_fkey',
@@ -8038,12 +10789,12 @@ $$;`,
     detalle: '',
     nota: 'sesiones.horario_id → horarios.id · ON DELETE CASCADE',
     tabla: 'sesiones',
-    linea: 6776,
+    linea: 7976,
     claves: 'sesiones horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-sesiones sesiones_jornada_id_fkey',
@@ -8054,12 +10805,12 @@ $$;`,
     detalle: '',
     nota: 'sesiones.jornada_id → jornadas.id · ON DELETE RESTRICT',
     tabla: 'sesiones',
-    linea: 6784,
+    linea: 7984,
     claves: 'sesiones jornadas jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.sesiones
-    ADD CONSTRAINT sesiones_jornada_id_fkey FOREIGN KEY (jornada_id) REFERENCES horarios.jornadas(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."sesiones"
+    ADD CONSTRAINT "sesiones_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-versiones_horario versiones_horario_creado_por_id_fkey',
@@ -8070,12 +10821,12 @@ $$;`,
     detalle: '',
     nota: 'versiones_horario.creado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'versiones_horario',
-    linea: 6920,
+    linea: 8120,
     claves: 'versiones_horario usuarios creado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.versiones_horario
-    ADD CONSTRAINT versiones_horario_creado_por_id_fkey FOREIGN KEY (creado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."versiones_horario"
+    ADD CONSTRAINT "versiones_horario_creado_por_id_fkey" FOREIGN KEY ("creado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-versiones_horario versiones_horario_horario_id_fkey',
@@ -8086,12 +10837,12 @@ $$;`,
     detalle: '',
     nota: 'versiones_horario.horario_id → horarios.id · ON DELETE CASCADE',
     tabla: 'versiones_horario',
-    linea: 6928,
+    linea: 8128,
     claves: 'versiones_horario horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.versiones_horario
-    ADD CONSTRAINT versiones_horario_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."versiones_horario"
+    ADD CONSTRAINT "versiones_horario_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-importacion_errores importacion_errores_importacion_id_fkey',
@@ -8102,12 +10853,12 @@ $$;`,
     detalle: '',
     nota: 'importacion_errores.importacion_id → importaciones.id · ON DELETE CASCADE',
     tabla: 'importacion_errores',
-    linea: 6512,
+    linea: 7712,
     claves: 'importacion_errores importaciones importacion_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.importacion_errores
-    ADD CONSTRAINT importacion_errores_importacion_id_fkey FOREIGN KEY (importacion_id) REFERENCES horarios.importaciones(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."importacion_errores"
+    ADD CONSTRAINT "importacion_errores_importacion_id_fkey" FOREIGN KEY ("importacion_id") REFERENCES "horarios"."importaciones"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-importaciones importaciones_plantilla_id_fkey',
@@ -8118,12 +10869,12 @@ $$;`,
     detalle: '',
     nota: 'importaciones.plantilla_id → plantillas_importacion.id · ON DELETE RESTRICT',
     tabla: 'importaciones',
-    linea: 6520,
+    linea: 7720,
     claves: 'importaciones plantillas_importacion plantilla_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.importaciones
-    ADD CONSTRAINT importaciones_plantilla_id_fkey FOREIGN KEY (plantilla_id) REFERENCES horarios.plantillas_importacion(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."importaciones"
+    ADD CONSTRAINT "importaciones_plantilla_id_fkey" FOREIGN KEY ("plantilla_id") REFERENCES "horarios"."plantillas_importacion"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-importaciones importaciones_solicitada_por_id_fkey',
@@ -8134,12 +10885,12 @@ $$;`,
     detalle: '',
     nota: 'importaciones.solicitada_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'importaciones',
-    linea: 6528,
+    linea: 7728,
     claves: 'importaciones usuarios solicitada_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.importaciones
-    ADD CONSTRAINT importaciones_solicitada_por_id_fkey FOREIGN KEY (solicitada_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."importaciones"
+    ADD CONSTRAINT "importaciones_solicitada_por_id_fkey" FOREIGN KEY ("solicitada_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-rol_permisos rol_permisos_permiso_id_fkey',
@@ -8150,12 +10901,12 @@ $$;`,
     detalle: '',
     nota: 'rol_permisos.permiso_id → permisos_acceso.id · ON DELETE CASCADE',
     tabla: 'rol_permisos',
-    linea: 6680,
+    linea: 7880,
     claves: 'rol_permisos permisos_acceso permiso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.rol_permisos
-    ADD CONSTRAINT rol_permisos_permiso_id_fkey FOREIGN KEY (permiso_id) REFERENCES horarios.permisos_acceso(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."rol_permisos"
+    ADD CONSTRAINT "rol_permisos_permiso_id_fkey" FOREIGN KEY ("permiso_id") REFERENCES "horarios"."permisos_acceso"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-rol_permisos rol_permisos_rol_id_fkey',
@@ -8166,12 +10917,12 @@ $$;`,
     detalle: '',
     nota: 'rol_permisos.rol_id → roles.id · ON DELETE CASCADE',
     tabla: 'rol_permisos',
-    linea: 6688,
+    linea: 7888,
     claves: 'rol_permisos roles rol_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.rol_permisos
-    ADD CONSTRAINT rol_permisos_rol_id_fkey FOREIGN KEY (rol_id) REFERENCES horarios.roles(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."rol_permisos"
+    ADD CONSTRAINT "rol_permisos_rol_id_fkey" FOREIGN KEY ("rol_id") REFERENCES "horarios"."roles"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-usuario_facultades usuario_facultades_facultad_id_fkey',
@@ -8182,12 +10933,12 @@ $$;`,
     detalle: '',
     nota: 'usuario_facultades.facultad_id → facultades.id · ON DELETE RESTRICT',
     tabla: 'usuario_facultades',
-    linea: 6856,
+    linea: 8056,
     claves: 'usuario_facultades facultades facultad_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuario_facultades
-    ADD CONSTRAINT usuario_facultades_facultad_id_fkey FOREIGN KEY (facultad_id) REFERENCES horarios.facultades(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuario_facultades"
+    ADD CONSTRAINT "usuario_facultades_facultad_id_fkey" FOREIGN KEY ("facultad_id") REFERENCES "horarios"."facultades"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-usuario_facultades usuario_facultades_usuario_id_fkey',
@@ -8198,12 +10949,12 @@ $$;`,
     detalle: '',
     nota: 'usuario_facultades.usuario_id → usuarios.id · ON DELETE CASCADE',
     tabla: 'usuario_facultades',
-    linea: 6864,
+    linea: 8064,
     claves: 'usuario_facultades usuarios usuario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuario_facultades
-    ADD CONSTRAINT usuario_facultades_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES horarios.usuarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuario_facultades"
+    ADD CONSTRAINT "usuario_facultades_usuario_id_fkey" FOREIGN KEY ("usuario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-usuario_roles usuario_roles_rol_id_fkey',
@@ -8214,12 +10965,12 @@ $$;`,
     detalle: '',
     nota: 'usuario_roles.rol_id → roles.id · ON DELETE RESTRICT',
     tabla: 'usuario_roles',
-    linea: 6872,
+    linea: 8072,
     claves: 'usuario_roles roles rol_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuario_roles
-    ADD CONSTRAINT usuario_roles_rol_id_fkey FOREIGN KEY (rol_id) REFERENCES horarios.roles(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuario_roles"
+    ADD CONSTRAINT "usuario_roles_rol_id_fkey" FOREIGN KEY ("rol_id") REFERENCES "horarios"."roles"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-usuario_roles usuario_roles_usuario_id_fkey',
@@ -8230,12 +10981,12 @@ $$;`,
     detalle: '',
     nota: 'usuario_roles.usuario_id → usuarios.id · ON DELETE CASCADE',
     tabla: 'usuario_roles',
-    linea: 6880,
+    linea: 8080,
     claves: 'usuario_roles usuarios usuario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuario_roles
-    ADD CONSTRAINT usuario_roles_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES horarios.usuarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuario_roles"
+    ADD CONSTRAINT "usuario_roles_usuario_id_fkey" FOREIGN KEY ("usuario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-usuarios usuarios_auth_user_id_fkey',
@@ -8246,12 +10997,12 @@ $$;`,
     detalle: '',
     nota: 'usuarios.auth_user_id → auth.users.id · ON DELETE RESTRICT',
     tabla: 'usuarios',
-    linea: 6888,
+    linea: 8088,
     claves: 'usuarios auth.users auth_user_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuarios
-    ADD CONSTRAINT usuarios_auth_user_id_fkey FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuarios"
+    ADD CONSTRAINT "usuarios_auth_user_id_fkey" FOREIGN KEY ("auth_user_id") REFERENCES "auth"."users"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-usuarios usuarios_cohorte_fk',
@@ -8262,12 +11013,12 @@ $$;`,
     detalle: '',
     nota: 'usuarios.cohorte_id → cohortes.id · ON DELETE NO ACTION',
     tabla: 'usuarios',
-    linea: 6896,
+    linea: 8096,
     claves: 'usuarios cohortes cohorte_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuarios
-    ADD CONSTRAINT usuarios_cohorte_fk FOREIGN KEY (cohorte_id) REFERENCES horarios.cohortes(id) DEFERRABLE INITIALLY DEFERRED;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuarios"
+    ADD CONSTRAINT "usuarios_cohorte_fk" FOREIGN KEY ("cohorte_id") REFERENCES "horarios"."cohortes"("id") DEFERRABLE INITIALLY DEFERRED;`,
   },
   {
     id: 'fk-usuarios usuarios_docente_fk',
@@ -8278,12 +11029,12 @@ $$;`,
     detalle: '',
     nota: 'usuarios.docente_id → docentes.id · ON DELETE NO ACTION',
     tabla: 'usuarios',
-    linea: 6904,
+    linea: 8104,
     claves: 'usuarios docentes docente_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.usuarios
-    ADD CONSTRAINT usuarios_docente_fk FOREIGN KEY (docente_id) REFERENCES horarios.docentes(id) DEFERRABLE INITIALLY DEFERRED;`,
+    sql: `ALTER TABLE ONLY "horarios"."usuarios"
+    ADD CONSTRAINT "usuarios_docente_fk" FOREIGN KEY ("docente_id") REFERENCES "horarios"."docentes"("id") DEFERRABLE INITIALLY DEFERRED;`,
   },
   {
     id: 'fk-auditoria auditoria_usuario_id_fkey',
@@ -8294,12 +11045,12 @@ $$;`,
     detalle: '',
     nota: 'auditoria.usuario_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'auditoria',
-    linea: 6144,
+    linea: 7328,
     claves: 'auditoria usuarios usuario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.auditoria
-    ADD CONSTRAINT auditoria_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."auditoria"
+    ADD CONSTRAINT "auditoria_usuario_id_fkey" FOREIGN KEY ("usuario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-notificaciones notificaciones_destinatario_id_fkey',
@@ -8310,12 +11061,12 @@ $$;`,
     detalle: '',
     nota: 'notificaciones.destinatario_id → usuarios.id · ON DELETE CASCADE',
     tabla: 'notificaciones',
-    linea: 6552,
+    linea: 7752,
     claves: 'notificaciones usuarios destinatario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.notificaciones
-    ADD CONSTRAINT notificaciones_destinatario_id_fkey FOREIGN KEY (destinatario_id) REFERENCES horarios.usuarios(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."notificaciones"
+    ADD CONSTRAINT "notificaciones_destinatario_id_fkey" FOREIGN KEY ("destinatario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-notificaciones notificaciones_plantilla_id_fkey',
@@ -8326,12 +11077,28 @@ $$;`,
     detalle: '',
     nota: 'notificaciones.plantilla_id → plantillas_notificacion.id · ON DELETE SET NULL',
     tabla: 'notificaciones',
-    linea: 6560,
+    linea: 7760,
     claves: 'notificaciones plantillas_notificacion plantilla_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.notificaciones
-    ADD CONSTRAINT notificaciones_plantilla_id_fkey FOREIGN KEY (plantilla_id) REFERENCES horarios.plantillas_notificacion(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."notificaciones"
+    ADD CONSTRAINT "notificaciones_plantilla_id_fkey" FOREIGN KEY ("plantilla_id") REFERENCES "horarios"."plantillas_notificacion"("id") ON DELETE SET NULL;`,
+  },
+  {
+    id: 'fk-reportes reportes_generacion_id_fkey',
+    nombre: 'reportes reportes_generacion_id_fkey',
+    cat: 'fk',
+    grupo: 'Operación',
+    desc: 'Cada fila de `reportes` apunta a `generaciones` por generacion_id: al borrar el padre la columna queda en NULL.',
+    detalle: '',
+    nota: 'reportes.generacion_id → generaciones.id · ON DELETE SET NULL',
+    tabla: 'reportes',
+    linea: 7808,
+    claves: 'reportes generaciones generacion_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."reportes"
+    ADD CONSTRAINT "reportes_generacion_id_fkey" FOREIGN KEY ("generacion_id") REFERENCES "horarios"."generaciones"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-reportes reportes_generado_por_id_fkey',
@@ -8342,12 +11109,12 @@ $$;`,
     detalle: '',
     nota: 'reportes.generado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'reportes',
-    linea: 6616,
+    linea: 7816,
     claves: 'reportes usuarios generado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.reportes
-    ADD CONSTRAINT reportes_generado_por_id_fkey FOREIGN KEY (generado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."reportes"
+    ADD CONSTRAINT "reportes_generado_por_id_fkey" FOREIGN KEY ("generado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-reportes reportes_horario_id_fkey',
@@ -8358,12 +11125,12 @@ $$;`,
     detalle: '',
     nota: 'reportes.horario_id → horarios.id · ON DELETE SET NULL',
     tabla: 'reportes',
-    linea: 6624,
+    linea: 7824,
     claves: 'reportes horarios horario_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.reportes
-    ADD CONSTRAINT reportes_horario_id_fkey FOREIGN KEY (horario_id) REFERENCES horarios.horarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."reportes"
+    ADD CONSTRAINT "reportes_horario_id_fkey" FOREIGN KEY ("horario_id") REFERENCES "horarios"."horarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-asignaciones_docente_curso asignaciones_docente_curso_carrera_id_fkey',
@@ -8374,12 +11141,12 @@ $$;`,
     detalle: '',
     nota: 'asignaciones_docente_curso.carrera_id → carreras.id · ON DELETE RESTRICT',
     tabla: 'asignaciones_docente_curso',
-    linea: 6104,
+    linea: 7288,
     claves: 'asignaciones_docente_curso carreras carrera_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.asignaciones_docente_curso
-    ADD CONSTRAINT asignaciones_docente_curso_carrera_id_fkey FOREIGN KEY (carrera_id) REFERENCES horarios.carreras(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."asignaciones_docente_curso"
+    ADD CONSTRAINT "asignaciones_docente_curso_carrera_id_fkey" FOREIGN KEY ("carrera_id") REFERENCES "horarios"."carreras"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-asignaciones_docente_curso asignaciones_docente_curso_curso_id_fkey',
@@ -8390,12 +11157,12 @@ $$;`,
     detalle: '',
     nota: 'asignaciones_docente_curso.curso_id → cursos.id · ON DELETE RESTRICT',
     tabla: 'asignaciones_docente_curso',
-    linea: 6112,
+    linea: 7296,
     claves: 'asignaciones_docente_curso cursos curso_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.asignaciones_docente_curso
-    ADD CONSTRAINT asignaciones_docente_curso_curso_id_fkey FOREIGN KEY (curso_id) REFERENCES horarios.cursos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."asignaciones_docente_curso"
+    ADD CONSTRAINT "asignaciones_docente_curso_curso_id_fkey" FOREIGN KEY ("curso_id") REFERENCES "horarios"."cursos"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-asignaciones_docente_curso asignaciones_docente_curso_docente_id_fkey',
@@ -8406,12 +11173,12 @@ $$;`,
     detalle: '',
     nota: 'asignaciones_docente_curso.docente_id → docentes.id · ON DELETE RESTRICT',
     tabla: 'asignaciones_docente_curso',
-    linea: 6120,
+    linea: 7304,
     claves: 'asignaciones_docente_curso docentes docente_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.asignaciones_docente_curso
-    ADD CONSTRAINT asignaciones_docente_curso_docente_id_fkey FOREIGN KEY (docente_id) REFERENCES horarios.docentes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."asignaciones_docente_curso"
+    ADD CONSTRAINT "asignaciones_docente_curso_docente_id_fkey" FOREIGN KEY ("docente_id") REFERENCES "horarios"."docentes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-asignaciones_docente_curso asignaciones_docente_curso_facultad_id_fkey',
@@ -8422,12 +11189,12 @@ $$;`,
     detalle: '',
     nota: 'asignaciones_docente_curso.facultad_id → facultades.id · ON DELETE RESTRICT',
     tabla: 'asignaciones_docente_curso',
-    linea: 6128,
+    linea: 7312,
     claves: 'asignaciones_docente_curso facultades facultad_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.asignaciones_docente_curso
-    ADD CONSTRAINT asignaciones_docente_curso_facultad_id_fkey FOREIGN KEY (facultad_id) REFERENCES horarios.facultades(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."asignaciones_docente_curso"
+    ADD CONSTRAINT "asignaciones_docente_curso_facultad_id_fkey" FOREIGN KEY ("facultad_id") REFERENCES "horarios"."facultades"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-asignaciones_docente_curso asignaciones_docente_curso_jornada_id_fkey',
@@ -8438,12 +11205,12 @@ $$;`,
     detalle: '',
     nota: 'asignaciones_docente_curso.jornada_id → jornadas.id · ON DELETE RESTRICT',
     tabla: 'asignaciones_docente_curso',
-    linea: 6136,
+    linea: 7320,
     claves: 'asignaciones_docente_curso jornadas jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.asignaciones_docente_curso
-    ADD CONSTRAINT asignaciones_docente_curso_jornada_id_fkey FOREIGN KEY (jornada_id) REFERENCES horarios.jornadas(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."asignaciones_docente_curso"
+    ADD CONSTRAINT "asignaciones_docente_curso_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-disponibilidad_docente_slots disponibilidad_docente_slots_disponibilidad_id_fkey',
@@ -8454,12 +11221,12 @@ $$;`,
     detalle: '',
     nota: 'disponibilidad_docente_slots.disponibilidad_id → disponibilidades_docente.id · ON DELETE CASCADE',
     tabla: 'disponibilidad_docente_slots',
-    linea: 6352,
+    linea: 7544,
     claves: 'disponibilidad_docente_slots disponibilidades_docente disponibilidad_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidad_docente_slots
-    ADD CONSTRAINT disponibilidad_docente_slots_disponibilidad_id_fkey FOREIGN KEY (disponibilidad_id) REFERENCES horarios.disponibilidades_docente(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidad_docente_slots"
+    ADD CONSTRAINT "disponibilidad_docente_slots_disponibilidad_id_fkey" FOREIGN KEY ("disponibilidad_id") REFERENCES "horarios"."disponibilidades_docente"("id") ON DELETE CASCADE;`,
   },
   {
     id: 'fk-disponibilidad_docente_slots disponibilidad_docente_slots_jornada_id_fkey',
@@ -8470,12 +11237,12 @@ $$;`,
     detalle: '',
     nota: 'disponibilidad_docente_slots.jornada_id → jornadas.id · ON DELETE RESTRICT',
     tabla: 'disponibilidad_docente_slots',
-    linea: 6360,
+    linea: 7552,
     claves: 'disponibilidad_docente_slots jornadas jornada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidad_docente_slots
-    ADD CONSTRAINT disponibilidad_docente_slots_jornada_id_fkey FOREIGN KEY (jornada_id) REFERENCES horarios.jornadas(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidad_docente_slots"
+    ADD CONSTRAINT "disponibilidad_docente_slots_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-disponibilidades_docente disponibilidades_docente_docente_id_fkey',
@@ -8486,12 +11253,12 @@ $$;`,
     detalle: '',
     nota: 'disponibilidades_docente.docente_id → docentes.id · ON DELETE RESTRICT',
     tabla: 'disponibilidades_docente',
-    linea: 6368,
+    linea: 7560,
     claves: 'disponibilidades_docente docentes docente_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidades_docente
-    ADD CONSTRAINT disponibilidades_docente_docente_id_fkey FOREIGN KEY (docente_id) REFERENCES horarios.docentes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidades_docente"
+    ADD CONSTRAINT "disponibilidades_docente_docente_id_fkey" FOREIGN KEY ("docente_id") REFERENCES "horarios"."docentes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-disponibilidades_docente disponibilidades_docente_periodo_id_fkey',
@@ -8502,28 +11269,44 @@ $$;`,
     detalle: '',
     nota: 'disponibilidades_docente.periodo_id → periodos_academicos.id · ON DELETE RESTRICT',
     tabla: 'disponibilidades_docente',
-    linea: 6376,
+    linea: 7568,
     claves: 'disponibilidades_docente periodos_academicos periodo_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.disponibilidades_docente
-    ADD CONSTRAINT disponibilidades_docente_periodo_id_fkey FOREIGN KEY (periodo_id) REFERENCES horarios.periodos_academicos(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."disponibilidades_docente"
+    ADD CONSTRAINT "disponibilidades_docente_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE RESTRICT;`,
   },
   {
-    id: 'fk-docentes docentes_facultad_id_fkey',
-    nombre: 'docentes docentes_facultad_id_fkey',
+    id: 'fk-docente_facultades docente_facultades_docente_id_fkey',
+    nombre: 'docente_facultades docente_facultades_docente_id_fkey',
     cat: 'fk',
     grupo: 'Docentes',
-    desc: 'Cada fila de `docentes` apunta a `facultades` por facultad_id: no deja borrar el padre mientras existan estas filas.',
+    desc: 'Cada fila de `docente_facultades` apunta a `docentes` por docente_id: al borrar el padre se borran también estas filas.',
     detalle: '',
-    nota: 'docentes.facultad_id → facultades.id · ON DELETE RESTRICT',
-    tabla: 'docentes',
-    linea: 6384,
-    claves: 'docentes facultades facultad_id',
+    nota: 'docente_facultades.docente_id → docentes.id · ON DELETE CASCADE',
+    tabla: 'docente_facultades',
+    linea: 7576,
+    claves: 'docente_facultades docentes docente_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.docentes
-    ADD CONSTRAINT docentes_facultad_id_fkey FOREIGN KEY (facultad_id) REFERENCES horarios.facultades(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."docente_facultades"
+    ADD CONSTRAINT "docente_facultades_docente_id_fkey" FOREIGN KEY ("docente_id") REFERENCES "horarios"."docentes"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'fk-docente_facultades docente_facultades_facultad_id_fkey',
+    nombre: 'docente_facultades docente_facultades_facultad_id_fkey',
+    cat: 'fk',
+    grupo: 'Docentes',
+    desc: 'Cada fila de `docente_facultades` apunta a `facultades` por facultad_id: no deja borrar el padre mientras existan estas filas.',
+    detalle: '',
+    nota: 'docente_facultades.facultad_id → facultades.id · ON DELETE RESTRICT',
+    tabla: 'docente_facultades',
+    linea: 7584,
+    claves: 'docente_facultades facultades facultad_id',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE ONLY "horarios"."docente_facultades"
+    ADD CONSTRAINT "docente_facultades_facultad_id_fkey" FOREIGN KEY ("facultad_id") REFERENCES "horarios"."facultades"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-eventos_sustitucion eventos_sustitucion_docente_entrante_id_fkey',
@@ -8534,12 +11317,12 @@ $$;`,
     detalle: '',
     nota: 'eventos_sustitucion.docente_entrante_id → docentes.id · ON DELETE RESTRICT',
     tabla: 'eventos_sustitucion',
-    linea: 6392,
+    linea: 7592,
     claves: 'eventos_sustitucion docentes docente_entrante_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.eventos_sustitucion
-    ADD CONSTRAINT eventos_sustitucion_docente_entrante_id_fkey FOREIGN KEY (docente_entrante_id) REFERENCES horarios.docentes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."eventos_sustitucion"
+    ADD CONSTRAINT "eventos_sustitucion_docente_entrante_id_fkey" FOREIGN KEY ("docente_entrante_id") REFERENCES "horarios"."docentes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-eventos_sustitucion eventos_sustitucion_docente_original_id_fkey',
@@ -8550,12 +11333,12 @@ $$;`,
     detalle: '',
     nota: 'eventos_sustitucion.docente_original_id → docentes.id · ON DELETE RESTRICT',
     tabla: 'eventos_sustitucion',
-    linea: 6400,
+    linea: 7600,
     claves: 'eventos_sustitucion docentes docente_original_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.eventos_sustitucion
-    ADD CONSTRAINT eventos_sustitucion_docente_original_id_fkey FOREIGN KEY (docente_original_id) REFERENCES horarios.docentes(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."eventos_sustitucion"
+    ADD CONSTRAINT "eventos_sustitucion_docente_original_id_fkey" FOREIGN KEY ("docente_original_id") REFERENCES "horarios"."docentes"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-eventos_sustitucion eventos_sustitucion_registrado_por_id_fkey',
@@ -8566,12 +11349,12 @@ $$;`,
     detalle: '',
     nota: 'eventos_sustitucion.registrado_por_id → usuarios.id · ON DELETE SET NULL',
     tabla: 'eventos_sustitucion',
-    linea: 6408,
+    linea: 7608,
     claves: 'eventos_sustitucion usuarios registrado_por_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.eventos_sustitucion
-    ADD CONSTRAINT eventos_sustitucion_registrado_por_id_fkey FOREIGN KEY (registrado_por_id) REFERENCES horarios.usuarios(id) ON DELETE SET NULL;`,
+    sql: `ALTER TABLE ONLY "horarios"."eventos_sustitucion"
+    ADD CONSTRAINT "eventos_sustitucion_registrado_por_id_fkey" FOREIGN KEY ("registrado_por_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;`,
   },
   {
     id: 'fk-eventos_sustitucion eventos_sustitucion_sesion_afectada_id_fkey',
@@ -8582,12 +11365,12 @@ $$;`,
     detalle: '',
     nota: 'eventos_sustitucion.sesion_afectada_id → sesiones.id · ON DELETE RESTRICT',
     tabla: 'eventos_sustitucion',
-    linea: 6416,
+    linea: 7616,
     claves: 'eventos_sustitucion sesiones sesion_afectada_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.eventos_sustitucion
-    ADD CONSTRAINT eventos_sustitucion_sesion_afectada_id_fkey FOREIGN KEY (sesion_afectada_id) REFERENCES horarios.sesiones(id) ON DELETE RESTRICT;`,
+    sql: `ALTER TABLE ONLY "horarios"."eventos_sustitucion"
+    ADD CONSTRAINT "eventos_sustitucion_sesion_afectada_id_fkey" FOREIGN KEY ("sesion_afectada_id") REFERENCES "horarios"."sesiones"("id") ON DELETE RESTRICT;`,
   },
   {
     id: 'fk-ventanas_disponibilidad ventanas_disponibilidad_periodo_id_fkey',
@@ -8598,12 +11381,27 @@ $$;`,
     detalle: '',
     nota: 'ventanas_disponibilidad.periodo_id → periodos_academicos.id · ON DELETE CASCADE',
     tabla: 'ventanas_disponibilidad',
-    linea: 6912,
+    linea: 8112,
     claves: 'ventanas_disponibilidad periodos_academicos periodo_id',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE ONLY horarios.ventanas_disponibilidad
-    ADD CONSTRAINT ventanas_disponibilidad_periodo_id_fkey FOREIGN KEY (periodo_id) REFERENCES horarios.periodos_academicos(id) ON DELETE CASCADE;`,
+    sql: `ALTER TABLE ONLY "horarios"."ventanas_disponibilidad"
+    ADD CONSTRAINT "ventanas_disponibilidad_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE CASCADE;`,
+  },
+  {
+    id: 'idx-agrupaciones_area_comun_identidad_uq',
+    nombre: 'agrupaciones_area_comun_identidad_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'No permite dos filas de `agrupaciones_area_comun` con el mismo valor de (periodo_id, curso_comun_id, jornada_id). La regla vale solo entre las filas vivas: una fila borrada no bloquea su valor para siempre.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'agrupaciones_area_comun',
+    linea: 6509,
+    claves: 'periodo_id, curso_comun_id, jornada_id agrupaciones_area_comun',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "agrupaciones_area_comun_identidad_uq" ON "horarios"."agrupaciones_area_comun" USING "btree" ("periodo_id", "curso_comun_id", "jornada_id") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-agrupaciones_area_comun_nombre_uq',
@@ -8614,11 +11412,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'agrupaciones_area_comun',
-    linea: 5397,
+    linea: 6516,
     claves: 'periodo_id, lower((nombre)::text) agrupaciones_area_comun',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX agrupaciones_area_comun_nombre_uq ON horarios.agrupaciones_area_comun USING btree (periodo_id, lower((nombre)::text)) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "agrupaciones_area_comun_nombre_uq" ON "horarios"."agrupaciones_area_comun" USING "btree" ("periodo_id", "lower"(("nombre")::"text")) WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-asignaciones_docente_curso_vigente_uq',
@@ -8629,11 +11427,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'asignaciones_docente_curso',
-    linea: 5404,
+    linea: 6523,
     claves: 'docente_id, curso_id, COALESCE(carrera_id, \'00000000-0000-0000-0000-000000000000\'::uuid), COALESCE(facultad_id, \'00000000-0000-0000-0000-000000000000\'::uuid), COALESCE(jornada_id, \'00000000-0000-0000-0000-000000000000\'::uuid) asignaciones_docente_curso',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX asignaciones_docente_curso_vigente_uq ON horarios.asignaciones_docente_curso USING btree (docente_id, curso_id, COALESCE(carrera_id, '00000000-0000-0000-0000-000000000000'::uuid), COALESCE(facultad_id, '00000000-0000-0000-0000-000000000000'::uuid), COALESCE(jornada_id, '00000000-0000-0000-0000-000000000000'::uuid)) WHERE (esta_vigente AND (eliminado_en IS NULL));`,
+    sql: `CREATE UNIQUE INDEX "asignaciones_docente_curso_vigente_uq" ON "horarios"."asignaciones_docente_curso" USING "btree" ("docente_id", "curso_id", COALESCE("carrera_id", '00000000-0000-0000-0000-000000000000'::"uuid"), COALESCE("facultad_id", '00000000-0000-0000-0000-000000000000'::"uuid"), COALESCE("jornada_id", '00000000-0000-0000-0000-000000000000'::"uuid")) WHERE ("esta_vigente" AND ("eliminado_en" IS NULL));`,
   },
   {
     id: 'idx-aulas_codigo_uq',
@@ -8644,11 +11442,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'aulas',
-    linea: 5425,
+    linea: 6544,
     claves: 'codigo aulas',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX aulas_codigo_uq ON horarios.aulas USING btree (codigo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "aulas_codigo_uq" ON "horarios"."aulas" USING "btree" ("codigo") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-aulas_piso_numero_uq',
@@ -8659,11 +11457,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'aulas',
-    linea: 5432,
+    linea: 6551,
     claves: 'piso, numero_aula aulas',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX aulas_piso_numero_uq ON horarios.aulas USING btree (piso, numero_aula) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "aulas_piso_numero_uq" ON "horarios"."aulas" USING "btree" ("piso", "numero_aula") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-carreras_codigo_uq',
@@ -8674,11 +11472,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'carreras',
-    linea: 5439,
+    linea: 6558,
     claves: 'codigo carreras',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX carreras_codigo_uq ON horarios.carreras USING btree (codigo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "carreras_codigo_uq" ON "horarios"."carreras" USING "btree" ("codigo") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-cohorte_periodos_periodo_cohorte_uq',
@@ -8689,26 +11487,56 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'cohorte_periodos',
-    linea: 5467,
+    linea: 6586,
     claves: 'periodo_id, cohorte_id cohorte_periodos',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX cohorte_periodos_periodo_cohorte_uq ON horarios.cohorte_periodos USING btree (periodo_id, cohorte_id) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "cohorte_periodos_periodo_cohorte_uq" ON "horarios"."cohorte_periodos" USING "btree" ("periodo_id", "cohorte_id") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-cohortes_identidad_uq',
     nombre: 'cohortes_identidad_uq',
     cat: 'indice',
     grupo: 'Índices únicos',
-    desc: 'La identidad de una cohorte —carrera, pensum, jornada, año y sección— no se repite entre cohortes vivas.',
+    desc: 'La identidad de una cohorte —carrera, jornada, año y sección sin distinguir mayúsculas— no se repite entre cohortes vivas.',
     detalle: '',
     nota: 'único · parcial',
     tabla: 'cohortes',
-    linea: 5474,
+    linea: 6593,
     claves: 'carrera_id, jornada_id, anio_ingreso, lower((seccion)::text) cohortes',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX cohortes_identidad_uq ON horarios.cohortes USING btree (carrera_id, jornada_id, anio_ingreso, lower((seccion)::text)) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "cohortes_identidad_uq" ON "horarios"."cohortes" USING "btree" ("carrera_id", "jornada_id", "anio_ingreso", "lower"(("seccion")::"text")) WHERE ("eliminado_en" IS NULL);`,
+  },
+  {
+    id: 'idx-configuraciones_motor_nombre_uq',
+    nombre: 'configuraciones_motor_nombre_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'No permite dos filas de `configuraciones_motor` con el mismo valor de (lower((nombre)::text)).',
+    detalle: '',
+    nota: 'único',
+    tabla: 'configuraciones_motor',
+    linea: 6600,
+    claves: 'lower((nombre)::text) configuraciones_motor',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "configuraciones_motor_nombre_uq" ON "horarios"."configuraciones_motor" USING "btree" ("lower"(("nombre")::"text"));`,
+  },
+  {
+    id: 'idx-curso_comun_cursos_curso_uq',
+    nombre: 'curso_comun_cursos_curso_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'No permite dos filas de `curso_comun_cursos` con el mismo valor de (curso_id).',
+    detalle: '',
+    nota: 'único',
+    tabla: 'curso_comun_cursos',
+    linea: 6607,
+    claves: 'curso_id curso_comun_cursos',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "curso_comun_cursos_curso_uq" ON "horarios"."curso_comun_cursos" USING "btree" ("curso_id");`,
   },
   {
     id: 'idx-cursos_codigo_uq',
@@ -8719,11 +11547,26 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'cursos',
-    linea: 5488,
+    linea: 6621,
     claves: 'codigo cursos',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX cursos_codigo_uq ON horarios.cursos USING btree (codigo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "cursos_codigo_uq" ON "horarios"."cursos" USING "btree" ("codigo") WHERE ("eliminado_en" IS NULL);`,
+  },
+  {
+    id: 'idx-cursos_en_pensum_curso_uq',
+    nombre: 'cursos_en_pensum_curso_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'No permite dos filas de `cursos_en_pensum` con el mismo valor de (curso_id). La regla vale solo entre las filas vivas: una fila borrada no bloquea su valor para siempre.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'cursos_en_pensum',
+    linea: 6635,
+    claves: 'curso_id cursos_en_pensum',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "cursos_en_pensum_curso_uq" ON "horarios"."cursos_en_pensum" USING "btree" ("curso_id") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-docentes_codigo_uq',
@@ -8734,11 +11577,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'docentes',
-    linea: 5509,
+    linea: 6663,
     claves: 'codigo docentes',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX docentes_codigo_uq ON horarios.docentes USING btree (codigo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "docentes_codigo_uq" ON "horarios"."docentes" USING "btree" ("codigo") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-docentes_correo_uq',
@@ -8749,11 +11592,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'docentes',
-    linea: 5516,
+    linea: 6670,
     claves: 'correo docentes',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX docentes_correo_uq ON horarios.docentes USING btree (correo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "docentes_correo_uq" ON "horarios"."docentes" USING "btree" ("correo") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-facultades_codigo_uq',
@@ -8764,11 +11607,71 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'facultades',
-    linea: 5523,
+    linea: 6677,
     claves: 'codigo facultades',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX facultades_codigo_uq ON horarios.facultades USING btree (codigo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "facultades_codigo_uq" ON "horarios"."facultades" USING "btree" ("codigo") WHERE ("eliminado_en" IS NULL);`,
+  },
+  {
+    id: 'idx-generaciones_activas_periodo_tipo_uq',
+    nombre: 'generaciones_activas_periodo_tipo_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'Impide dos corridas vivas al mismo tiempo para el mismo período y tipo de plan.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'generaciones',
+    linea: 6684,
+    claves: 'periodo_id, tipo_plan generaciones',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "generaciones_activas_periodo_tipo_uq" ON "horarios"."generaciones" USING "btree" ("periodo_id", "tipo_plan") WHERE ("estado" = ANY (ARRAY['pendiente'::"horarios"."estado_generacion", 'generando'::"horarios"."estado_generacion"]));`,
+  },
+  {
+    id: 'idx-generaciones_clave_solicitud_periodo_tipo_uq',
+    nombre: 'generaciones_clave_solicitud_periodo_tipo_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'Idempotencia de la solicitud de generación por período y tipo de plan.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'generaciones',
+    linea: 6691,
+    claves: 'periodo_id, tipo_plan, clave_solicitud generaciones',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "generaciones_clave_solicitud_periodo_tipo_uq" ON "horarios"."generaciones" USING "btree" ("periodo_id", "tipo_plan", "clave_solicitud") WHERE ("clave_solicitud" IS NOT NULL);`,
+  },
+  {
+    id: 'idx-generaciones_clave_solicitud_plan_uq',
+    nombre: 'generaciones_clave_solicitud_plan_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'Idempotencia: la misma solicitud de generación no puede entrar dos veces para un plan.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'generaciones',
+    linea: 6698,
+    claves: 'plan_id, clave_solicitud generaciones',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "generaciones_clave_solicitud_plan_uq" ON "horarios"."generaciones" USING "btree" ("plan_id", "clave_solicitud") WHERE (("plan_id" IS NOT NULL) AND ("clave_solicitud" IS NOT NULL));`,
+  },
+  {
+    id: 'idx-generaciones_plan_activa_uq',
+    nombre: 'generaciones_plan_activa_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'Impide dos corridas del motor vivas al mismo tiempo sobre el mismo plan.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'generaciones',
+    linea: 6712,
+    claves: 'plan_id generaciones',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "generaciones_plan_activa_uq" ON "horarios"."generaciones" USING "btree" ("plan_id") WHERE (("plan_id" IS NOT NULL) AND ("estado" = ANY (ARRAY['pendiente'::"horarios"."estado_generacion", 'generando'::"horarios"."estado_generacion"])));`,
   },
   {
     id: 'idx-horarios_periodo_tipo_version_uq',
@@ -8779,11 +11682,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'horarios',
-    linea: 5579,
+    linea: 6733,
     claves: 'periodo_id, tipo_plan, numero_version horarios',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX horarios_periodo_tipo_version_uq ON horarios.horarios USING btree (periodo_id, tipo_plan, numero_version) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "horarios_periodo_tipo_version_uq" ON "horarios"."horarios" USING "btree" ("periodo_id", "tipo_plan", "numero_version") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-horarios_publicado_unico_idx',
@@ -8794,11 +11697,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'horarios',
-    linea: 5586,
+    linea: 6740,
     claves: 'periodo_id, tipo_plan horarios',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX horarios_publicado_unico_idx ON horarios.horarios USING btree (periodo_id, tipo_plan) WHERE ((estado = 'publicado'::horarios.estado_horario) AND (eliminado_en IS NULL));`,
+    sql: `CREATE UNIQUE INDEX "horarios_publicado_unico_idx" ON "horarios"."horarios" USING "btree" ("periodo_id", "tipo_plan") WHERE (("estado" = 'publicado'::"horarios"."estado_horario") AND ("eliminado_en" IS NULL));`,
   },
   {
     id: 'idx-importaciones_clave_solicitud_uq',
@@ -8809,11 +11712,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'importaciones',
-    linea: 5593,
+    linea: 6747,
     claves: 'clave_solicitud importaciones',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX importaciones_clave_solicitud_uq ON horarios.importaciones USING btree (clave_solicitud) WHERE (clave_solicitud IS NOT NULL);`,
+    sql: `CREATE UNIQUE INDEX "importaciones_clave_solicitud_uq" ON "horarios"."importaciones" USING "btree" ("clave_solicitud") WHERE ("clave_solicitud" IS NOT NULL);`,
   },
   {
     id: 'idx-jornadas_nombre_uq',
@@ -8824,11 +11727,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'jornadas',
-    linea: 5600,
+    linea: 6754,
     claves: 'lower((nombre)::text) jornadas',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX jornadas_nombre_uq ON horarios.jornadas USING btree (lower((nombre)::text)) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "jornadas_nombre_uq" ON "horarios"."jornadas" USING "btree" ("lower"(("nombre")::"text")) WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-notificaciones_clave_solicitud_uq',
@@ -8839,11 +11742,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'notificaciones',
-    linea: 5614,
+    linea: 6768,
     claves: 'destinatario_id, clave_solicitud notificaciones',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX notificaciones_clave_solicitud_uq ON horarios.notificaciones USING btree (destinatario_id, clave_solicitud) WHERE (clave_solicitud IS NOT NULL);`,
+    sql: `CREATE UNIQUE INDEX "notificaciones_clave_solicitud_uq" ON "horarios"."notificaciones" USING "btree" ("destinatario_id", "clave_solicitud") WHERE ("clave_solicitud" IS NOT NULL);`,
   },
   {
     id: 'idx-pensums_carrera_anio_uq',
@@ -8854,11 +11757,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'pensums',
-    linea: 5628,
+    linea: 6782,
     claves: 'carrera_id, anio_creacion pensums',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX pensums_carrera_anio_uq ON horarios.pensums USING btree (carrera_id, anio_creacion) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "pensums_carrera_anio_uq" ON "horarios"."pensums" USING "btree" ("carrera_id", "anio_creacion") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-periodos_nombre_uq',
@@ -8869,11 +11772,26 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'periodos_academicos',
-    linea: 5635,
+    linea: 6789,
     claves: 'lower((nombre)::text) periodos_academicos',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX periodos_nombre_uq ON horarios.periodos_academicos USING btree (lower((nombre)::text)) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "periodos_nombre_uq" ON "horarios"."periodos_academicos" USING "btree" ("lower"(("nombre")::"text")) WHERE ("eliminado_en" IS NULL);`,
+  },
+  {
+    id: 'idx-plantillas_importacion_vigente_uq',
+    nombre: 'plantillas_importacion_vigente_uq',
+    cat: 'indice',
+    grupo: 'Índices únicos',
+    desc: 'Solo una plantilla vigente por código de importación.',
+    detalle: '',
+    nota: 'único · parcial',
+    tabla: 'plantillas_importacion',
+    linea: 6810,
+    claves: 'codigo plantillas_importacion',
+    params: [],
+    pasos: [],
+    sql: `CREATE UNIQUE INDEX "plantillas_importacion_vigente_uq" ON "horarios"."plantillas_importacion" USING "btree" ("codigo") WHERE "esta_vigente";`,
   },
   {
     id: 'idx-plantillas_notificacion_codigo_uq',
@@ -8884,11 +11802,11 @@ $$;`,
     detalle: '',
     nota: 'único',
     tabla: 'plantillas_notificacion',
-    linea: 5663,
+    linea: 6817,
     claves: 'codigo_plantilla plantillas_notificacion',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX plantillas_notificacion_codigo_uq ON horarios.plantillas_notificacion USING btree (codigo_plantilla);`,
+    sql: `CREATE UNIQUE INDEX "plantillas_notificacion_codigo_uq" ON "horarios"."plantillas_notificacion" USING "btree" ("codigo_plantilla");`,
   },
   {
     id: 'idx-recursos_codigo_uq',
@@ -8899,11 +11817,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'recursos',
-    linea: 5670,
+    linea: 6824,
     claves: 'codigo recursos',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX recursos_codigo_uq ON horarios.recursos USING btree (codigo) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "recursos_codigo_uq" ON "horarios"."recursos" USING "btree" ("codigo") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-resultados_edicion_clave_solicitud_uq',
@@ -8914,11 +11832,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'resultados_edicion',
-    linea: 5684,
+    linea: 6838,
     claves: 'horario_id, clave_solicitud resultados_edicion',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX resultados_edicion_clave_solicitud_uq ON horarios.resultados_edicion USING btree (horario_id, clave_solicitud) WHERE (clave_solicitud IS NOT NULL);`,
+    sql: `CREATE UNIQUE INDEX "resultados_edicion_clave_solicitud_uq" ON "horarios"."resultados_edicion" USING "btree" ("horario_id", "clave_solicitud") WHERE ("clave_solicitud" IS NOT NULL);`,
   },
   {
     id: 'idx-roles_nombre_uq',
@@ -8929,11 +11847,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'roles',
-    linea: 5698,
+    linea: 6852,
     claves: 'lower((nombre)::text) roles',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX roles_nombre_uq ON horarios.roles USING btree (lower((nombre)::text)) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "roles_nombre_uq" ON "horarios"."roles" USING "btree" ("lower"(("nombre")::"text")) WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-usuarios_correo_institucional_uq',
@@ -8944,11 +11862,11 @@ $$;`,
     detalle: '',
     nota: 'único · parcial',
     tabla: 'usuarios',
-    linea: 5747,
+    linea: 6901,
     claves: 'correo_institucional usuarios',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX usuarios_correo_institucional_uq ON horarios.usuarios USING btree (correo_institucional) WHERE (eliminado_en IS NULL);`,
+    sql: `CREATE UNIQUE INDEX "usuarios_correo_institucional_uq" ON "horarios"."usuarios" USING "btree" ("correo_institucional") WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'idx-auditoria_entidad_idx',
@@ -8959,11 +11877,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'auditoria',
-    linea: 5411,
+    linea: 6530,
     claves: 'entidad, entidad_id, fecha DESC auditoria',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX auditoria_entidad_idx ON horarios.auditoria USING btree (entidad, entidad_id, fecha DESC);`,
+    sql: `CREATE INDEX "auditoria_entidad_idx" ON "horarios"."auditoria" USING "btree" ("entidad", "entidad_id", "fecha" DESC);`,
   },
   {
     id: 'idx-auditoria_usuario_idx',
@@ -8974,11 +11892,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'auditoria',
-    linea: 5418,
+    linea: 6537,
     claves: 'usuario_id, fecha DESC auditoria',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX auditoria_usuario_idx ON horarios.auditoria USING btree (usuario_id, fecha DESC);`,
+    sql: `CREATE INDEX "auditoria_usuario_idx" ON "horarios"."auditoria" USING "btree" ("usuario_id", "fecha" DESC);`,
   },
   {
     id: 'idx-carreras_facultad_idx',
@@ -8989,11 +11907,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'carreras',
-    linea: 5446,
+    linea: 6565,
     claves: 'facultad_id carreras',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX carreras_facultad_idx ON horarios.carreras USING btree (facultad_id);`,
+    sql: `CREATE INDEX "carreras_facultad_idx" ON "horarios"."carreras" USING "btree" ("facultad_id");`,
   },
   {
     id: 'idx-cohorte_periodos_cohorte_idx',
@@ -9004,11 +11922,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'cohorte_periodos',
-    linea: 5453,
+    linea: 6572,
     claves: 'cohorte_id, periodo_id cohorte_periodos',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX cohorte_periodos_cohorte_idx ON horarios.cohorte_periodos USING btree (cohorte_id, periodo_id);`,
+    sql: `CREATE INDEX "cohorte_periodos_cohorte_idx" ON "horarios"."cohorte_periodos" USING "btree" ("cohorte_id", "periodo_id");`,
   },
   {
     id: 'idx-cohorte_periodos_periodo_activo_idx',
@@ -9019,11 +11937,26 @@ $$;`,
     detalle: '',
     nota: 'búsqueda · parcial',
     tabla: 'cohorte_periodos',
-    linea: 5460,
+    linea: 6579,
     claves: 'periodo_id, semestre_asignado cohorte_periodos',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX cohorte_periodos_periodo_activo_idx ON horarios.cohorte_periodos USING btree (periodo_id, semestre_asignado) WHERE (esta_activa AND (eliminado_en IS NULL));`,
+    sql: `CREATE INDEX "cohorte_periodos_periodo_activo_idx" ON "horarios"."cohorte_periodos" USING "btree" ("periodo_id", "semestre_asignado") WHERE ("esta_activa" AND ("eliminado_en" IS NULL));`,
+  },
+  {
+    id: 'idx-curso_comun_cursos_grupo_idx',
+    nombre: 'curso_comun_cursos_grupo_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `curso_comun_cursos` (curso_comun_id): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'curso_comun_cursos',
+    linea: 6614,
+    claves: 'curso_comun_id curso_comun_cursos',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "curso_comun_cursos_grupo_idx" ON "horarios"."curso_comun_cursos" USING "btree" ("curso_comun_id");`,
   },
   {
     id: 'idx-cursos_en_pensum_curso_idx',
@@ -9034,11 +11967,26 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'cursos_en_pensum',
-    linea: 5495,
+    linea: 6628,
     claves: 'curso_id cursos_en_pensum',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX cursos_en_pensum_curso_idx ON horarios.cursos_en_pensum USING btree (curso_id);`,
+    sql: `CREATE INDEX "cursos_en_pensum_curso_idx" ON "horarios"."cursos_en_pensum" USING "btree" ("curso_id");`,
+  },
+  {
+    id: 'idx-cursos_pensum_idx',
+    nombre: 'cursos_pensum_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `cursos` (pensum_id): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'cursos',
+    linea: 6642,
+    claves: 'pensum_id cursos',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "cursos_pensum_idx" ON "horarios"."cursos" USING "btree" ("pensum_id");`,
   },
   {
     id: 'idx-disponibilidad_docente_slots_busqueda_idx',
@@ -9049,11 +11997,56 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'disponibilidad_docente_slots',
-    linea: 5502,
+    linea: 6649,
     claves: 'jornada_id, dia, indice_slot, esta_disponible disponibilidad_docente_slots',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX disponibilidad_docente_slots_busqueda_idx ON horarios.disponibilidad_docente_slots USING btree (jornada_id, dia, indice_slot, esta_disponible);`,
+    sql: `CREATE INDEX "disponibilidad_docente_slots_busqueda_idx" ON "horarios"."disponibilidad_docente_slots" USING "btree" ("jornada_id", "dia", "indice_slot", "esta_disponible");`,
+  },
+  {
+    id: 'idx-docente_facultades_facultad_idx',
+    nombre: 'docente_facultades_facultad_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `docente_facultades` (facultad_id): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'docente_facultades',
+    linea: 6656,
+    claves: 'facultad_id docente_facultades',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "docente_facultades_facultad_idx" ON "horarios"."docente_facultades" USING "btree" ("facultad_id");`,
+  },
+  {
+    id: 'idx-generaciones_estado_idx',
+    nombre: 'generaciones_estado_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `generaciones` (estado, iniciada_en DESC): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'generaciones',
+    linea: 6705,
+    claves: 'estado, iniciada_en DESC generaciones',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "generaciones_estado_idx" ON "horarios"."generaciones" USING "btree" ("estado", "iniciada_en" DESC);`,
+  },
+  {
+    id: 'idx-generaciones_plan_idx',
+    nombre: 'generaciones_plan_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `generaciones` (plan_id, iniciada_en DESC): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'generaciones',
+    linea: 6719,
+    claves: 'plan_id, iniciada_en DESC generaciones',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "generaciones_plan_idx" ON "horarios"."generaciones" USING "btree" ("plan_id", "iniciada_en" DESC);`,
   },
   {
     id: 'idx-historial_estados_horario_idx',
@@ -9064,11 +12057,26 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'historial_estados_horario',
-    linea: 5572,
+    linea: 6726,
     claves: 'horario_id, cambiado_en DESC historial_estados_horario',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX historial_estados_horario_idx ON horarios.historial_estados_horario USING btree (horario_id, cambiado_en DESC);`,
+    sql: `CREATE INDEX "historial_estados_horario_idx" ON "horarios"."historial_estados_horario" USING "btree" ("horario_id", "cambiado_en" DESC);`,
+  },
+  {
+    id: 'idx-mensajes_generacion_generacion_idx',
+    nombre: 'mensajes_generacion_generacion_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `mensajes_generacion` (generacion_id, severidad, creado_en): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'mensajes_generacion',
+    linea: 6761,
+    claves: 'generacion_id, severidad, creado_en mensajes_generacion',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "mensajes_generacion_generacion_idx" ON "horarios"."mensajes_generacion" USING "btree" ("generacion_id", "severidad", "creado_en");`,
   },
   {
     id: 'idx-notificaciones_destinatario_estado_idx',
@@ -9079,26 +12087,41 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'notificaciones',
-    linea: 5621,
+    linea: 6775,
     claves: 'destinatario_id, estado, fecha_creacion DESC notificaciones',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX notificaciones_destinatario_estado_idx ON horarios.notificaciones USING btree (destinatario_id, estado, fecha_creacion DESC);`,
+    sql: `CREATE INDEX "notificaciones_destinatario_estado_idx" ON "horarios"."notificaciones" USING "btree" ("destinatario_id", "estado", "fecha_creacion" DESC);`,
   },
   {
-    id: 'idx-plantillas_importacion_vigente_uq',
-    nombre: 'plantillas_importacion_vigente_uq',
+    id: 'idx-plan_carreras_carrera_idx',
+    nombre: 'plan_carreras_carrera_idx',
     cat: 'indice',
     grupo: 'Índices de búsqueda',
-    desc: 'Solo una plantilla vigente por código de importación.',
+    desc: 'Índice de búsqueda sobre `plan_carreras` (carrera_id): acelera las consultas que filtran por esas columnas.',
     detalle: '',
     nota: 'búsqueda',
-    tabla: '',
-    linea: 5656,
-    claves: ' ',
+    tabla: 'plan_carreras',
+    linea: 6796,
+    claves: 'carrera_id plan_carreras',
     params: [],
     pasos: [],
-    sql: `CREATE UNIQUE INDEX plantillas_importacion_vigente_uq ON horarios.plantillas_importacion USING btree (codigo) WHERE esta_vigente;`,
+    sql: `CREATE INDEX "plan_carreras_carrera_idx" ON "horarios"."plan_carreras" USING "btree" ("carrera_id");`,
+  },
+  {
+    id: 'idx-plan_jornadas_jornada_idx',
+    nombre: 'plan_jornadas_jornada_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `plan_jornadas` (jornada_id): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda',
+    tabla: 'plan_jornadas',
+    linea: 6803,
+    claves: 'jornada_id plan_jornadas',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "plan_jornadas_jornada_idx" ON "horarios"."plan_jornadas" USING "btree" ("jornada_id");`,
   },
   {
     id: 'idx-reportes_horario_idx',
@@ -9109,11 +12132,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'reportes',
-    linea: 5677,
+    linea: 6831,
     claves: 'horario_id, fecha_generacion DESC reportes',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX reportes_horario_idx ON horarios.reportes USING btree (horario_id, fecha_generacion DESC);`,
+    sql: `CREATE INDEX "reportes_horario_idx" ON "horarios"."reportes" USING "btree" ("horario_id", "fecha_generacion" DESC);`,
   },
   {
     id: 'idx-resultados_edicion_origen_idx',
@@ -9124,11 +12147,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'resultados_edicion',
-    linea: 5691,
+    linea: 6845,
     claves: 'horario_origen_id, creado_en DESC resultados_edicion',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX resultados_edicion_origen_idx ON horarios.resultados_edicion USING btree (horario_origen_id, creado_en DESC);`,
+    sql: `CREATE INDEX "resultados_edicion_origen_idx" ON "horarios"."resultados_edicion" USING "btree" ("horario_origen_id", "creado_en" DESC);`,
   },
   {
     id: 'idx-sesion_cohortes_cohorte_idx',
@@ -9139,11 +12162,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'sesion_cohortes',
-    linea: 5705,
+    linea: 6859,
     claves: 'cohorte_id, horario_id, fecha_sesion, dia, minuto_inicio_dia sesion_cohortes',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX sesion_cohortes_cohorte_idx ON horarios.sesion_cohortes USING btree (cohorte_id, horario_id, fecha_sesion, dia, minuto_inicio_dia);`,
+    sql: `CREATE INDEX "sesion_cohortes_cohorte_idx" ON "horarios"."sesion_cohortes" USING "btree" ("cohorte_id", "horario_id", "fecha_sesion", "dia", "minuto_inicio_dia");`,
   },
   {
     id: 'idx-sesion_cohortes_curso_visible_idx',
@@ -9154,11 +12177,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'sesion_cohortes',
-    linea: 5712,
+    linea: 6866,
     claves: 'curso_visible_id, horario_id sesion_cohortes',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX sesion_cohortes_curso_visible_idx ON horarios.sesion_cohortes USING btree (curso_visible_id, horario_id);`,
+    sql: `CREATE INDEX "sesion_cohortes_curso_visible_idx" ON "horarios"."sesion_cohortes" USING "btree" ("curso_visible_id", "horario_id");`,
   },
   {
     id: 'idx-sesiones_horario_aula_idx',
@@ -9169,11 +12192,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'sesiones',
-    linea: 5719,
+    linea: 6873,
     claves: 'horario_id, aula_id, fecha_sesion, dia, minuto_inicio_dia sesiones',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX sesiones_horario_aula_idx ON horarios.sesiones USING btree (horario_id, aula_id, fecha_sesion, dia, minuto_inicio_dia);`,
+    sql: `CREATE INDEX "sesiones_horario_aula_idx" ON "horarios"."sesiones" USING "btree" ("horario_id", "aula_id", "fecha_sesion", "dia", "minuto_inicio_dia");`,
   },
   {
     id: 'idx-sesiones_horario_docente_idx',
@@ -9184,11 +12207,11 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'sesiones',
-    linea: 5726,
+    linea: 6880,
     claves: 'horario_id, docente_id, fecha_sesion, dia, minuto_inicio_dia sesiones',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX sesiones_horario_docente_idx ON horarios.sesiones USING btree (horario_id, docente_id, fecha_sesion, dia, minuto_inicio_dia);`,
+    sql: `CREATE INDEX "sesiones_horario_docente_idx" ON "horarios"."sesiones" USING "btree" ("horario_id", "docente_id", "fecha_sesion", "dia", "minuto_inicio_dia");`,
   },
   {
     id: 'idx-sesiones_horario_jornada_idx',
@@ -9199,11 +12222,26 @@ $$;`,
     detalle: '',
     nota: 'búsqueda',
     tabla: 'sesiones',
-    linea: 5733,
+    linea: 6887,
     claves: 'horario_id, jornada_id, fecha_sesion, dia, minuto_inicio_dia sesiones',
     params: [],
     pasos: [],
-    sql: `CREATE INDEX sesiones_horario_jornada_idx ON horarios.sesiones USING btree (horario_id, jornada_id, fecha_sesion, dia, minuto_inicio_dia);`,
+    sql: `CREATE INDEX "sesiones_horario_jornada_idx" ON "horarios"."sesiones" USING "btree" ("horario_id", "jornada_id", "fecha_sesion", "dia", "minuto_inicio_dia");`,
+  },
+  {
+    id: 'idx-sugerencias_seccion_estado_idx',
+    nombre: 'sugerencias_seccion_estado_idx',
+    cat: 'indice',
+    grupo: 'Índices de búsqueda',
+    desc: 'Índice de búsqueda sobre `sugerencias_seccion` (estado, creado_en DESC): acelera las consultas que filtran por esas columnas.',
+    detalle: '',
+    nota: 'búsqueda · parcial',
+    tabla: 'sugerencias_seccion',
+    linea: 6894,
+    claves: 'estado, creado_en DESC sugerencias_seccion',
+    params: [],
+    pasos: [],
+    sql: `CREATE INDEX "sugerencias_seccion_estado_idx" ON "horarios"."sugerencias_seccion" USING "btree" ("estado", "creado_en" DESC) WHERE ("eliminado_en" IS NULL);`,
   },
   {
     id: 'rls-agrupacion_area_comun_cohortes',
@@ -9214,11 +12252,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 6936,
+    linea: 8136,
     claves: 'agrupacion_area_comun_cohortes rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.agrupacion_area_comun_cohortes ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."agrupacion_area_comun_cohortes" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-agrupacion_area_comun_cursos',
@@ -9229,11 +12267,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 6942,
+    linea: 8142,
     claves: 'agrupacion_area_comun_cursos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.agrupacion_area_comun_cursos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."agrupacion_area_comun_cursos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-agrupaciones_area_comun',
@@ -9244,11 +12282,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'agrupaciones_area_comun',
-    linea: 6948,
+    linea: 8148,
     claves: 'agrupaciones_area_comun rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.agrupaciones_area_comun ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."agrupaciones_area_comun" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-asignaciones_docente_curso',
@@ -9259,11 +12297,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'asignaciones_docente_curso',
-    linea: 8650,
+    linea: 9822,
     claves: 'asignaciones_docente_curso rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.asignaciones_docente_curso ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."asignaciones_docente_curso" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-auditoria',
@@ -9274,11 +12312,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'auditoria',
-    linea: 8656,
+    linea: 9828,
     claves: 'auditoria rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.auditoria ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."auditoria" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-aula_recursos',
@@ -9289,11 +12327,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'aula_recursos',
-    linea: 8662,
+    linea: 9834,
     claves: 'aula_recursos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.aula_recursos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."aula_recursos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-aulas',
@@ -9304,11 +12342,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'aulas',
-    linea: 8668,
+    linea: 9840,
     claves: 'aulas rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.aulas ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."aulas" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-cambios_detectados',
@@ -9319,11 +12357,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'cambios_detectados',
-    linea: 8674,
+    linea: 9846,
     claves: 'cambios_detectados rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.cambios_detectados ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."cambios_detectados" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-carrera_jornadas',
@@ -9334,11 +12372,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'carrera_jornadas',
-    linea: 8680,
+    linea: 9852,
     claves: 'carrera_jornadas rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.carrera_jornadas ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."carrera_jornadas" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-carreras',
@@ -9349,11 +12387,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'carreras',
-    linea: 8686,
+    linea: 9858,
     claves: 'carreras rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.carreras ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."carreras" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-cohorte_periodos',
@@ -9364,11 +12402,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'cohorte_periodos',
-    linea: 8692,
+    linea: 9864,
     claves: 'cohorte_periodos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.cohorte_periodos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."cohorte_periodos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-cohortes',
@@ -9379,11 +12417,41 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'cohortes',
-    linea: 8698,
+    linea: 9870,
     claves: 'cohortes rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.cohortes ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."cohortes" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-configuracion_motor_restricciones',
+    nombre: 'RLS activado en configuracion_motor_restricciones',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `configuracion_motor_restricciones`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 9876,
+    claves: 'configuracion_motor_restricciones rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."configuracion_motor_restricciones" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-configuraciones_motor',
+    nombre: 'RLS activado en configuraciones_motor',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `configuraciones_motor`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'configuraciones_motor',
+    linea: 9882,
+    claves: 'configuraciones_motor rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."configuraciones_motor" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-conflicto_sesiones',
@@ -9394,11 +12462,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'conflicto_sesiones',
-    linea: 8716,
+    linea: 9888,
     claves: 'conflicto_sesiones rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.conflicto_sesiones ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."conflicto_sesiones" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-conflictos',
@@ -9409,26 +12477,41 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'conflictos',
-    linea: 8722,
+    linea: 9894,
     claves: 'conflictos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.conflictos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."conflictos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
-    id: 'rls-curso_carreras_compartidas',
-    nombre: 'RLS activado en curso_carreras_compartidas',
+    id: 'rls-curso_comun',
+    nombre: 'RLS activado en curso_comun',
     cat: 'rls',
     grupo: 'Activación de RLS',
-    desc: 'Enciende la seguridad por fila en `curso_carreras_compartidas`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    desc: 'Enciende la seguridad por fila en `curso_comun`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
-    tabla: 'curso_carreras_compartidas',
-    linea: 8728,
-    claves: 'curso_carreras_compartidas rls seguridad fila',
+    tabla: 'curso_comun',
+    linea: 9900,
+    claves: 'curso_comun rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.curso_carreras_compartidas ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."curso_comun" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-curso_comun_cursos',
+    nombre: 'RLS activado en curso_comun_cursos',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `curso_comun_cursos`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'curso_comun_cursos',
+    linea: 9913,
+    claves: 'curso_comun_cursos rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."curso_comun_cursos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-curso_recursos_requeridos',
@@ -9439,11 +12522,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'curso_recursos_requeridos',
-    linea: 8734,
+    linea: 9961,
     claves: 'curso_recursos_requeridos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.curso_recursos_requeridos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."curso_recursos_requeridos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-cursos',
@@ -9454,11 +12537,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'cursos',
-    linea: 8740,
+    linea: 9967,
     claves: 'cursos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.cursos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."cursos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-cursos_en_pensum',
@@ -9469,11 +12552,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'cursos_en_pensum',
-    linea: 8746,
+    linea: 9973,
     claves: 'cursos_en_pensum rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.cursos_en_pensum ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."cursos_en_pensum" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-disponibilidad_docente_slots',
@@ -9484,11 +12567,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'disponibilidad_docente_slots',
-    linea: 8752,
+    linea: 9979,
     claves: 'disponibilidad_docente_slots rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.disponibilidad_docente_slots ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."disponibilidad_docente_slots" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-disponibilidades_docente',
@@ -9499,11 +12582,26 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'disponibilidades_docente',
-    linea: 8758,
+    linea: 9985,
     claves: 'disponibilidades_docente rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.disponibilidades_docente ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."disponibilidades_docente" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-docente_facultades',
+    nombre: 'RLS activado en docente_facultades',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `docente_facultades`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'docente_facultades',
+    linea: 10044,
+    claves: 'docente_facultades rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."docente_facultades" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-docentes',
@@ -9514,11 +12612,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'docentes',
-    linea: 8764,
+    linea: 10101,
     claves: 'docentes rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.docentes ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."docentes" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-eventos_sustitucion',
@@ -9529,11 +12627,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'eventos_sustitucion',
-    linea: 8770,
+    linea: 10107,
     claves: 'eventos_sustitucion rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.eventos_sustitucion ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."eventos_sustitucion" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-facultades',
@@ -9544,11 +12642,26 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'facultades',
-    linea: 8776,
+    linea: 10113,
     claves: 'facultades rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.facultades ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."facultades" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-generaciones',
+    nombre: 'RLS activado en generaciones',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `generaciones`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'generaciones',
+    linea: 10119,
+    claves: 'generaciones rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."generaciones" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-historial_estados_horario',
@@ -9559,11 +12672,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'historial_estados_horario',
-    linea: 8788,
+    linea: 10125,
     claves: 'historial_estados_horario rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.historial_estados_horario ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."historial_estados_horario" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-horarios',
@@ -9574,11 +12687,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'horarios',
-    linea: 8794,
+    linea: 10131,
     claves: 'horarios rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.horarios ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."horarios" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-importacion_errores',
@@ -9589,11 +12702,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'importacion_errores',
-    linea: 8800,
+    linea: 10137,
     claves: 'importacion_errores rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.importacion_errores ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."importacion_errores" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-importaciones',
@@ -9604,11 +12717,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'importaciones',
-    linea: 8806,
+    linea: 10143,
     claves: 'importaciones rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.importaciones ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."importaciones" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-jornada_descansos',
@@ -9619,11 +12732,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'jornada_descansos',
-    linea: 8812,
+    linea: 10149,
     claves: 'jornada_descansos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.jornada_descansos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."jornada_descansos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-jornadas',
@@ -9634,11 +12747,26 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'jornadas',
-    linea: 8818,
+    linea: 10155,
     claves: 'jornadas rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.jornadas ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."jornadas" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-mensajes_generacion',
+    nombre: 'RLS activado en mensajes_generacion',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `mensajes_generacion`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'mensajes_generacion',
+    linea: 10161,
+    claves: 'mensajes_generacion rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."mensajes_generacion" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-notificaciones',
@@ -9649,11 +12777,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'notificaciones',
-    linea: 8830,
+    linea: 10167,
     claves: 'notificaciones rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.notificaciones ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."notificaciones" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-pensums',
@@ -9664,11 +12792,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'pensums',
-    linea: 8836,
+    linea: 10173,
     claves: 'pensums rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.pensums ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."pensums" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-periodos_academicos',
@@ -9679,11 +12807,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'periodos_academicos',
-    linea: 8842,
+    linea: 10179,
     claves: 'periodos_academicos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.periodos_academicos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."periodos_academicos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-permisos_acceso',
@@ -9694,11 +12822,41 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'permisos_acceso',
-    linea: 8848,
+    linea: 10185,
     claves: 'permisos_acceso rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.permisos_acceso ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."permisos_acceso" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-plan_carreras',
+    nombre: 'RLS activado en plan_carreras',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `plan_carreras`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'plan_carreras',
+    linea: 10191,
+    claves: 'plan_carreras rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."plan_carreras" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-plan_jornadas',
+    nombre: 'RLS activado en plan_jornadas',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `plan_jornadas`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'plan_jornadas',
+    linea: 10197,
+    claves: 'plan_jornadas rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."plan_jornadas" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-plantillas_importacion',
@@ -9709,11 +12867,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'plantillas_importacion',
-    linea: 8866,
+    linea: 10203,
     claves: 'plantillas_importacion rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.plantillas_importacion ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."plantillas_importacion" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-plantillas_notificacion',
@@ -9724,11 +12882,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'plantillas_notificacion',
-    linea: 8872,
+    linea: 10209,
     claves: 'plantillas_notificacion rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.plantillas_notificacion ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."plantillas_notificacion" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-recursos',
@@ -9739,11 +12897,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'recursos',
-    linea: 8878,
+    linea: 10215,
     claves: 'recursos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.recursos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."recursos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-reportes',
@@ -9754,11 +12912,26 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'reportes',
-    linea: 8884,
+    linea: 10221,
     claves: 'reportes rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.reportes ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."reportes" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-restricciones_horario',
+    nombre: 'RLS activado en restricciones_horario',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `restricciones_horario`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'restricciones_horario',
+    linea: 10227,
+    claves: 'restricciones_horario rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."restricciones_horario" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-resultado_edicion_conflictos',
@@ -9769,11 +12942,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'resultado_edicion_conflictos',
-    linea: 8896,
+    linea: 10233,
     claves: 'resultado_edicion_conflictos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.resultado_edicion_conflictos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."resultado_edicion_conflictos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-resultados_edicion',
@@ -9784,11 +12957,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'resultados_edicion',
-    linea: 8902,
+    linea: 10239,
     claves: 'resultados_edicion rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.resultados_edicion ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."resultados_edicion" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-rol_permisos',
@@ -9799,11 +12972,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'rol_permisos',
-    linea: 8908,
+    linea: 10245,
     claves: 'rol_permisos rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.rol_permisos ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."rol_permisos" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-roles',
@@ -9814,11 +12987,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'roles',
-    linea: 8914,
+    linea: 10251,
     claves: 'roles rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.roles ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."roles" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-sesion_cohortes',
@@ -9829,11 +13002,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'sesion_cohortes',
-    linea: 8920,
+    linea: 10257,
     claves: 'sesion_cohortes rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.sesion_cohortes ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."sesion_cohortes" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-sesiones',
@@ -9844,11 +13017,41 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'sesiones',
-    linea: 8926,
+    linea: 10263,
     claves: 'sesiones rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.sesiones ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."sesiones" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-sesiones_no_asignadas',
+    nombre: 'RLS activado en sesiones_no_asignadas',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `sesiones_no_asignadas`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'sesiones_no_asignadas',
+    linea: 10269,
+    claves: 'sesiones_no_asignadas rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."sesiones_no_asignadas" ENABLE ROW LEVEL SECURITY;`,
+  },
+  {
+    id: 'rls-sugerencias_seccion',
+    nombre: 'RLS activado en sugerencias_seccion',
+    cat: 'rls',
+    grupo: 'Activación de RLS',
+    desc: 'Enciende la seguridad por fila en `sugerencias_seccion`. A partir de aquí, sin una política que lo permita expresamente, nadie lee ni escribe ninguna fila.',
+    detalle: '',
+    nota: 'ENABLE ROW LEVEL SECURITY',
+    tabla: 'sugerencias_seccion',
+    linea: 10275,
+    claves: 'sugerencias_seccion rls seguridad fila',
+    params: [],
+    pasos: [],
+    sql: `ALTER TABLE "horarios"."sugerencias_seccion" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-usuario_facultades',
@@ -9859,11 +13062,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'usuario_facultades',
-    linea: 8944,
+    linea: 10281,
     claves: 'usuario_facultades rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.usuario_facultades ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."usuario_facultades" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-usuario_roles',
@@ -9874,11 +13077,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'usuario_roles',
-    linea: 8950,
+    linea: 10287,
     claves: 'usuario_roles rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.usuario_roles ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."usuario_roles" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-usuarios',
@@ -9889,11 +13092,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'usuarios',
-    linea: 8956,
+    linea: 10293,
     claves: 'usuarios rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.usuarios ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."usuarios" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-ventanas_disponibilidad',
@@ -9904,11 +13107,11 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'ventanas_disponibilidad',
-    linea: 8962,
+    linea: 10299,
     claves: 'ventanas_disponibilidad rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.ventanas_disponibilidad ENABLE ROW LEVEL SECURITY;`,
+    sql: `ALTER TABLE "horarios"."ventanas_disponibilidad" ENABLE ROW LEVEL SECURITY;`,
   },
   {
     id: 'rls-versiones_horario',
@@ -9919,15 +13122,17 @@ $$;`,
     detalle: '',
     nota: 'ENABLE ROW LEVEL SECURITY',
     tabla: 'versiones_horario',
-    linea: 8968,
+    linea: 10305,
     claves: 'versiones_horario rls seguridad fila',
     params: [],
     pasos: [],
-    sql: `ALTER TABLE horarios.versiones_horario ENABLE ROW LEVEL SECURITY;
+    sql: `ALTER TABLE "horarios"."versiones_horario" ENABLE ROW LEVEL SECURITY;
 
 --
 -- PostgreSQL database dump complete
---`,
+--
+
+\\unrestrict VEd9KakYnvmURGDx8mAbQH0reA9KeXpbPYfETHPgS7Qvg8vXmTb2c9TUsJpPtZb`,
   },
   {
     id: 'pol-agrupacion_area_comun_cohortes-api_catalogo_actualizar',
@@ -9938,11 +13143,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 6968,
+    linea: 8168,
     claves: 'agrupacion_area_comun_cohortes api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.agrupacion_area_comun_cohortes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."agrupacion_area_comun_cohortes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cursos-api_catalogo_actualizar',
@@ -9953,11 +13158,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 6975,
+    linea: 8175,
     claves: 'agrupacion_area_comun_cursos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.agrupacion_area_comun_cursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."agrupacion_area_comun_cursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupaciones_area_comun-api_catalogo_actualizar',
@@ -9968,11 +13173,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'agrupaciones_area_comun',
-    linea: 6982,
+    linea: 8182,
     claves: 'agrupaciones_area_comun api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.agrupaciones_area_comun FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."agrupaciones_area_comun" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aula_recursos-api_catalogo_actualizar',
@@ -9983,11 +13188,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'aula_recursos',
-    linea: 6989,
+    linea: 8189,
     claves: 'aula_recursos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.aula_recursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."aula_recursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aulas-api_catalogo_actualizar',
@@ -9998,11 +13203,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'aulas',
-    linea: 6996,
+    linea: 8196,
     claves: 'aulas api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.aulas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."aulas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carrera_jornadas-api_catalogo_actualizar',
@@ -10013,11 +13218,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'carrera_jornadas',
-    linea: 7003,
+    linea: 8203,
     claves: 'carrera_jornadas api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.carrera_jornadas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."carrera_jornadas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carreras-api_catalogo_actualizar',
@@ -10028,11 +13233,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'carreras',
-    linea: 7010,
+    linea: 8210,
     claves: 'carreras api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.carreras FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."carreras" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohorte_periodos-api_catalogo_actualizar',
@@ -10043,11 +13248,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cohorte_periodos',
-    linea: 7017,
+    linea: 8217,
     claves: 'cohorte_periodos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.cohorte_periodos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."cohorte_periodos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohortes-api_catalogo_actualizar',
@@ -10058,26 +13263,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cohortes',
-    linea: 7024,
+    linea: 8224,
     claves: 'cohortes api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.cohortes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
-  },
-  {
-    id: 'pol-curso_carreras_compartidas-api_catalogo_actualizar',
-    nombre: 'api_catalogo_actualizar',
-    cat: 'rls',
-    grupo: 'Políticas · catálogo',
-    desc: 'Actualizar el catálogo: exige permiso (\'academia\',\'crear\') o ser administrador de auditoría. Aplicada a `curso_carreras_compartidas`.',
-    detalle: '',
-    nota: 'UPDATE · rol authenticated',
-    tabla: 'curso_carreras_compartidas',
-    linea: 7031,
-    claves: 'curso_carreras_compartidas api_catalogo_actualizar politica rls',
-    params: [],
-    pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.curso_carreras_compartidas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."cohortes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-curso_recursos_requeridos-api_catalogo_actualizar',
@@ -10088,11 +13278,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'curso_recursos_requeridos',
-    linea: 7038,
+    linea: 8231,
     claves: 'curso_recursos_requeridos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.curso_recursos_requeridos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."curso_recursos_requeridos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos-api_catalogo_actualizar',
@@ -10103,11 +13293,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cursos',
-    linea: 7045,
+    linea: 8238,
     claves: 'cursos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.cursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."cursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos_en_pensum-api_catalogo_actualizar',
@@ -10118,11 +13308,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cursos_en_pensum',
-    linea: 7052,
+    linea: 8245,
     claves: 'cursos_en_pensum api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.cursos_en_pensum FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."cursos_en_pensum" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-facultades-api_catalogo_actualizar',
@@ -10133,11 +13323,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'facultades',
-    linea: 7059,
+    linea: 8252,
     claves: 'facultades api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.facultades FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."facultades" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornada_descansos-api_catalogo_actualizar',
@@ -10148,11 +13338,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'jornada_descansos',
-    linea: 7066,
+    linea: 8259,
     claves: 'jornada_descansos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.jornada_descansos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."jornada_descansos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornadas-api_catalogo_actualizar',
@@ -10163,11 +13353,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'jornadas',
-    linea: 7073,
+    linea: 8266,
     claves: 'jornadas api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.jornadas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."jornadas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-pensums-api_catalogo_actualizar',
@@ -10178,11 +13368,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'pensums',
-    linea: 7080,
+    linea: 8273,
     claves: 'pensums api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.pensums FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."pensums" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-periodos_academicos-api_catalogo_actualizar',
@@ -10193,11 +13383,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'periodos_academicos',
-    linea: 7087,
+    linea: 8280,
     claves: 'periodos_academicos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.periodos_academicos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."periodos_academicos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-recursos-api_catalogo_actualizar',
@@ -10208,11 +13398,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'recursos',
-    linea: 7094,
+    linea: 8287,
     claves: 'recursos api_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_actualizar ON horarios.recursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_actualizar" ON "horarios"."recursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cohortes-api_catalogo_eliminar',
@@ -10223,11 +13413,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 7101,
+    linea: 8294,
     claves: 'agrupacion_area_comun_cohortes api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.agrupacion_area_comun_cohortes FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."agrupacion_area_comun_cohortes" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cursos-api_catalogo_eliminar',
@@ -10238,11 +13428,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 7108,
+    linea: 8301,
     claves: 'agrupacion_area_comun_cursos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.agrupacion_area_comun_cursos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."agrupacion_area_comun_cursos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupaciones_area_comun-api_catalogo_eliminar',
@@ -10253,11 +13443,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'agrupaciones_area_comun',
-    linea: 7115,
+    linea: 8308,
     claves: 'agrupaciones_area_comun api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.agrupaciones_area_comun FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."agrupaciones_area_comun" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aula_recursos-api_catalogo_eliminar',
@@ -10268,11 +13458,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'aula_recursos',
-    linea: 7122,
+    linea: 8315,
     claves: 'aula_recursos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.aula_recursos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."aula_recursos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aulas-api_catalogo_eliminar',
@@ -10283,11 +13473,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'aulas',
-    linea: 7129,
+    linea: 8322,
     claves: 'aulas api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.aulas FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."aulas" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carrera_jornadas-api_catalogo_eliminar',
@@ -10298,11 +13488,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'carrera_jornadas',
-    linea: 7136,
+    linea: 8329,
     claves: 'carrera_jornadas api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.carrera_jornadas FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."carrera_jornadas" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carreras-api_catalogo_eliminar',
@@ -10313,11 +13503,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'carreras',
-    linea: 7143,
+    linea: 8336,
     claves: 'carreras api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.carreras FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."carreras" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohorte_periodos-api_catalogo_eliminar',
@@ -10328,11 +13518,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'cohorte_periodos',
-    linea: 7150,
+    linea: 8343,
     claves: 'cohorte_periodos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.cohorte_periodos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."cohorte_periodos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohortes-api_catalogo_eliminar',
@@ -10343,26 +13533,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'cohortes',
-    linea: 7157,
+    linea: 8350,
     claves: 'cohortes api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.cohortes FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
-  },
-  {
-    id: 'pol-curso_carreras_compartidas-api_catalogo_eliminar',
-    nombre: 'api_catalogo_eliminar',
-    cat: 'rls',
-    grupo: 'Políticas · catálogo',
-    desc: 'Eliminar del catálogo: exige permiso (\'academia\',\'crear\') o ser administrador de auditoría. Aplicada a `curso_carreras_compartidas`.',
-    detalle: '',
-    nota: 'DELETE · rol authenticated',
-    tabla: 'curso_carreras_compartidas',
-    linea: 7164,
-    claves: 'curso_carreras_compartidas api_catalogo_eliminar politica rls',
-    params: [],
-    pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.curso_carreras_compartidas FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."cohortes" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-curso_recursos_requeridos-api_catalogo_eliminar',
@@ -10373,11 +13548,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'curso_recursos_requeridos',
-    linea: 7171,
+    linea: 8357,
     claves: 'curso_recursos_requeridos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.curso_recursos_requeridos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."curso_recursos_requeridos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos-api_catalogo_eliminar',
@@ -10388,11 +13563,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'cursos',
-    linea: 7178,
+    linea: 8364,
     claves: 'cursos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.cursos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."cursos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos_en_pensum-api_catalogo_eliminar',
@@ -10403,11 +13578,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'cursos_en_pensum',
-    linea: 7185,
+    linea: 8371,
     claves: 'cursos_en_pensum api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.cursos_en_pensum FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."cursos_en_pensum" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-facultades-api_catalogo_eliminar',
@@ -10418,11 +13593,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'facultades',
-    linea: 7192,
+    linea: 8378,
     claves: 'facultades api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.facultades FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."facultades" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornada_descansos-api_catalogo_eliminar',
@@ -10433,11 +13608,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'jornada_descansos',
-    linea: 7199,
+    linea: 8385,
     claves: 'jornada_descansos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.jornada_descansos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."jornada_descansos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornadas-api_catalogo_eliminar',
@@ -10448,11 +13623,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'jornadas',
-    linea: 7206,
+    linea: 8392,
     claves: 'jornadas api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.jornadas FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."jornadas" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-pensums-api_catalogo_eliminar',
@@ -10463,11 +13638,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'pensums',
-    linea: 7213,
+    linea: 8399,
     claves: 'pensums api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.pensums FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."pensums" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-periodos_academicos-api_catalogo_eliminar',
@@ -10478,11 +13653,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'periodos_academicos',
-    linea: 7220,
+    linea: 8406,
     claves: 'periodos_academicos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.periodos_academicos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."periodos_academicos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-recursos-api_catalogo_eliminar',
@@ -10493,11 +13668,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'recursos',
-    linea: 7227,
+    linea: 8413,
     claves: 'recursos api_catalogo_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_eliminar ON horarios.recursos FOR DELETE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_eliminar" ON "horarios"."recursos" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cohortes-api_catalogo_insertar',
@@ -10508,11 +13683,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 7234,
+    linea: 8420,
     claves: 'agrupacion_area_comun_cohortes api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.agrupacion_area_comun_cohortes FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."agrupacion_area_comun_cohortes" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cursos-api_catalogo_insertar',
@@ -10523,11 +13698,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 7241,
+    linea: 8427,
     claves: 'agrupacion_area_comun_cursos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.agrupacion_area_comun_cursos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."agrupacion_area_comun_cursos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupaciones_area_comun-api_catalogo_insertar',
@@ -10538,11 +13713,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'agrupaciones_area_comun',
-    linea: 7248,
+    linea: 8434,
     claves: 'agrupaciones_area_comun api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.agrupaciones_area_comun FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."agrupaciones_area_comun" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aula_recursos-api_catalogo_insertar',
@@ -10553,11 +13728,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'aula_recursos',
-    linea: 7255,
+    linea: 8441,
     claves: 'aula_recursos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.aula_recursos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."aula_recursos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aulas-api_catalogo_insertar',
@@ -10568,11 +13743,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'aulas',
-    linea: 7262,
+    linea: 8448,
     claves: 'aulas api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.aulas FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."aulas" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carrera_jornadas-api_catalogo_insertar',
@@ -10583,11 +13758,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'carrera_jornadas',
-    linea: 7269,
+    linea: 8455,
     claves: 'carrera_jornadas api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.carrera_jornadas FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."carrera_jornadas" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carreras-api_catalogo_insertar',
@@ -10598,11 +13773,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'carreras',
-    linea: 7276,
+    linea: 8462,
     claves: 'carreras api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.carreras FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."carreras" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohorte_periodos-api_catalogo_insertar',
@@ -10613,11 +13788,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cohorte_periodos',
-    linea: 7283,
+    linea: 8469,
     claves: 'cohorte_periodos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.cohorte_periodos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."cohorte_periodos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohortes-api_catalogo_insertar',
@@ -10628,26 +13803,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cohortes',
-    linea: 7290,
+    linea: 8476,
     claves: 'cohortes api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.cohortes FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
-  },
-  {
-    id: 'pol-curso_carreras_compartidas-api_catalogo_insertar',
-    nombre: 'api_catalogo_insertar',
-    cat: 'rls',
-    grupo: 'Políticas · catálogo',
-    desc: 'Insertar en el catálogo: exige permiso (\'academia\',\'crear\') o ser administrador de auditoría. Aplicada a `curso_carreras_compartidas`.',
-    detalle: '',
-    nota: 'INSERT · rol authenticated',
-    tabla: 'curso_carreras_compartidas',
-    linea: 7297,
-    claves: 'curso_carreras_compartidas api_catalogo_insertar politica rls',
-    params: [],
-    pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.curso_carreras_compartidas FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."cohortes" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-curso_recursos_requeridos-api_catalogo_insertar',
@@ -10658,11 +13818,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'curso_recursos_requeridos',
-    linea: 7304,
+    linea: 8483,
     claves: 'curso_recursos_requeridos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.curso_recursos_requeridos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."curso_recursos_requeridos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos-api_catalogo_insertar',
@@ -10673,11 +13833,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cursos',
-    linea: 7311,
+    linea: 8490,
     claves: 'cursos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.cursos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."cursos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos_en_pensum-api_catalogo_insertar',
@@ -10688,11 +13848,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cursos_en_pensum',
-    linea: 7318,
+    linea: 8497,
     claves: 'cursos_en_pensum api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.cursos_en_pensum FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."cursos_en_pensum" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-facultades-api_catalogo_insertar',
@@ -10703,11 +13863,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'facultades',
-    linea: 7325,
+    linea: 8504,
     claves: 'facultades api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.facultades FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."facultades" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornada_descansos-api_catalogo_insertar',
@@ -10718,11 +13878,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'jornada_descansos',
-    linea: 7332,
+    linea: 8511,
     claves: 'jornada_descansos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.jornada_descansos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."jornada_descansos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornadas-api_catalogo_insertar',
@@ -10733,11 +13893,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'jornadas',
-    linea: 7339,
+    linea: 8518,
     claves: 'jornadas api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.jornadas FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."jornadas" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-pensums-api_catalogo_insertar',
@@ -10748,11 +13908,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'pensums',
-    linea: 7346,
+    linea: 8525,
     claves: 'pensums api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.pensums FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."pensums" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-periodos_academicos-api_catalogo_insertar',
@@ -10763,11 +13923,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'periodos_academicos',
-    linea: 7353,
+    linea: 8532,
     claves: 'periodos_academicos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.periodos_academicos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('academia'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."periodos_academicos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-recursos-api_catalogo_insertar',
@@ -10778,11 +13938,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'recursos',
-    linea: 7360,
+    linea: 8539,
     claves: 'recursos api_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_insertar ON horarios.recursos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('aulas'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_catalogo_insertar" ON "horarios"."recursos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cohortes-api_catalogo_leer',
@@ -10793,11 +13953,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 7367,
+    linea: 8546,
     claves: 'agrupacion_area_comun_cohortes api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.agrupacion_area_comun_cohortes FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."agrupacion_area_comun_cohortes" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cursos-api_catalogo_leer',
@@ -10808,11 +13968,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 7374,
+    linea: 8553,
     claves: 'agrupacion_area_comun_cursos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.agrupacion_area_comun_cursos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."agrupacion_area_comun_cursos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-agrupaciones_area_comun-api_catalogo_leer',
@@ -10823,11 +13983,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'agrupaciones_area_comun',
-    linea: 7381,
+    linea: 8560,
     claves: 'agrupaciones_area_comun api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.agrupaciones_area_comun FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."agrupaciones_area_comun" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-aula_recursos-api_catalogo_leer',
@@ -10838,11 +13998,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'aula_recursos',
-    linea: 7388,
+    linea: 8567,
     claves: 'aula_recursos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.aula_recursos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."aula_recursos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-aulas-api_catalogo_leer',
@@ -10853,11 +14013,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'aulas',
-    linea: 7395,
+    linea: 8574,
     claves: 'aulas api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.aulas FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."aulas" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-carrera_jornadas-api_catalogo_leer',
@@ -10868,11 +14028,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'carrera_jornadas',
-    linea: 7402,
+    linea: 8581,
     claves: 'carrera_jornadas api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.carrera_jornadas FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."carrera_jornadas" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-carreras-api_catalogo_leer',
@@ -10883,11 +14043,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'carreras',
-    linea: 7409,
+    linea: 8588,
     claves: 'carreras api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.carreras FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."carreras" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-cohorte_periodos-api_catalogo_leer',
@@ -10898,11 +14058,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'cohorte_periodos',
-    linea: 7416,
+    linea: 8595,
     claves: 'cohorte_periodos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.cohorte_periodos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."cohorte_periodos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-cohortes-api_catalogo_leer',
@@ -10913,26 +14073,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'cohortes',
-    linea: 7423,
+    linea: 8602,
     claves: 'cohortes api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.cohortes FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
-  },
-  {
-    id: 'pol-curso_carreras_compartidas-api_catalogo_leer',
-    nombre: 'api_catalogo_leer',
-    cat: 'rls',
-    grupo: 'Políticas · catálogo',
-    desc: 'Leer el catálogo: basta con tener sesión activa en el sistema. Aplicada a `curso_carreras_compartidas`.',
-    detalle: '',
-    nota: 'SELECT · rol authenticated',
-    tabla: 'curso_carreras_compartidas',
-    linea: 7430,
-    claves: 'curso_carreras_compartidas api_catalogo_leer politica rls',
-    params: [],
-    pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.curso_carreras_compartidas FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."cohortes" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-curso_recursos_requeridos-api_catalogo_leer',
@@ -10943,11 +14088,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'curso_recursos_requeridos',
-    linea: 7437,
+    linea: 8609,
     claves: 'curso_recursos_requeridos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.curso_recursos_requeridos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."curso_recursos_requeridos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-cursos-api_catalogo_leer',
@@ -10958,11 +14103,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'cursos',
-    linea: 7444,
+    linea: 8616,
     claves: 'cursos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.cursos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."cursos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-cursos_en_pensum-api_catalogo_leer',
@@ -10973,11 +14118,26 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'cursos_en_pensum',
-    linea: 7451,
+    linea: 8623,
     claves: 'cursos_en_pensum api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.cursos_en_pensum FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."cursos_en_pensum" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
+  },
+  {
+    id: 'pol-docente_facultades-api_catalogo_leer',
+    nombre: 'api_catalogo_leer',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Leer el catálogo: basta con tener sesión activa en el sistema. Aplicada a `docente_facultades`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'docente_facultades',
+    linea: 8630,
+    claves: 'docente_facultades api_catalogo_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."docente_facultades" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-docentes-api_catalogo_leer',
@@ -10988,11 +14148,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'docentes',
-    linea: 7458,
+    linea: 8637,
     claves: 'docentes api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.docentes FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."docentes" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-facultades-api_catalogo_leer',
@@ -11003,11 +14163,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'facultades',
-    linea: 7465,
+    linea: 8644,
     claves: 'facultades api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.facultades FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."facultades" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-jornada_descansos-api_catalogo_leer',
@@ -11018,11 +14178,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'jornada_descansos',
-    linea: 7472,
+    linea: 8651,
     claves: 'jornada_descansos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.jornada_descansos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."jornada_descansos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-jornadas-api_catalogo_leer',
@@ -11033,11 +14193,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'jornadas',
-    linea: 7479,
+    linea: 8658,
     claves: 'jornadas api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.jornadas FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."jornadas" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-pensums-api_catalogo_leer',
@@ -11048,11 +14208,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'pensums',
-    linea: 7486,
+    linea: 8665,
     claves: 'pensums api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.pensums FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."pensums" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-periodos_academicos-api_catalogo_leer',
@@ -11063,11 +14223,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'periodos_academicos',
-    linea: 7493,
+    linea: 8672,
     claves: 'periodos_academicos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.periodos_academicos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."periodos_academicos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-recursos-api_catalogo_leer',
@@ -11078,11 +14238,26 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'recursos',
-    linea: 7500,
+    linea: 8679,
     claves: 'recursos api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.recursos FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."recursos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
+  },
+  {
+    id: 'pol-restricciones_horario-api_catalogo_leer',
+    nombre: 'api_catalogo_leer',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Leer el catálogo: basta con tener sesión activa en el sistema. Aplicada a `restricciones_horario`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'restricciones_horario',
+    linea: 8686,
+    claves: 'restricciones_horario api_catalogo_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."restricciones_horario" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-ventanas_disponibilidad-api_catalogo_leer',
@@ -11093,761 +14268,1331 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'ventanas_disponibilidad',
-    linea: 7514,
+    linea: 8693,
     claves: 'ventanas_disponibilidad api_catalogo_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_catalogo_leer ON horarios.ventanas_disponibilidad FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_catalogo_leer" ON "horarios"."ventanas_disponibilidad" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
+  },
+  {
+    id: 'pol-curso_comun-curso_comun_actualizar',
+    nombre: 'curso_comun_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Actualizar grupos de equivalencia exige permiso (\'academia\',\'crear\'). Aplicada a `curso_comun`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'curso_comun',
+    linea: 9906,
+    claves: 'curso_comun curso_comun_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_actualizar" ON "horarios"."curso_comun" FOR UPDATE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text"));`,
+  },
+  {
+    id: 'pol-curso_comun_cursos-curso_comun_cursos_eliminar',
+    nombre: 'curso_comun_cursos_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Retirar materias de un grupo exige permiso (\'academia\',\'crear\'). Aplicada a `curso_comun_cursos`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'curso_comun_cursos',
+    linea: 9919,
+    claves: 'curso_comun_cursos curso_comun_cursos_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_cursos_eliminar" ON "horarios"."curso_comun_cursos" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text"));`,
+  },
+  {
+    id: 'pol-curso_comun_cursos-curso_comun_cursos_insertar',
+    nombre: 'curso_comun_cursos_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Añadir materias a un grupo exige permiso (\'academia\',\'crear\'). Aplicada a `curso_comun_cursos`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'curso_comun_cursos',
+    linea: 9926,
+    claves: 'curso_comun_cursos curso_comun_cursos_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_cursos_insertar" ON "horarios"."curso_comun_cursos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text"));`,
+  },
+  {
+    id: 'pol-curso_comun_cursos-curso_comun_cursos_leer',
+    nombre: 'curso_comun_cursos_leer',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Consultar materias equivalentes exige permiso (\'academia\',\'leer\'). Aplicada a `curso_comun_cursos`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'curso_comun_cursos',
+    linea: 9933,
+    claves: 'curso_comun_cursos curso_comun_cursos_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_cursos_leer" ON "horarios"."curso_comun_cursos" FOR SELECT TO "authenticated" USING (( SELECT "horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso"));`,
+  },
+  {
+    id: 'pol-curso_comun-curso_comun_eliminar',
+    nombre: 'curso_comun_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Eliminar grupos de equivalencia exige permiso (\'academia\',\'crear\'). Aplicada a `curso_comun`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'curso_comun',
+    linea: 9940,
+    claves: 'curso_comun curso_comun_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_eliminar" ON "horarios"."curso_comun" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text"));`,
+  },
+  {
+    id: 'pol-curso_comun-curso_comun_insertar',
+    nombre: 'curso_comun_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Crear grupos de equivalencia exige permiso (\'academia\',\'crear\'). Aplicada a `curso_comun`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'curso_comun',
+    linea: 9947,
+    claves: 'curso_comun curso_comun_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_insertar" ON "horarios"."curso_comun" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text"));`,
+  },
+  {
+    id: 'pol-curso_comun-curso_comun_leer',
+    nombre: 'curso_comun_leer',
+    cat: 'rls',
+    grupo: 'Políticas · catálogo',
+    desc: 'Consultar grupos de equivalencia exige permiso (\'academia\',\'leer\'). Aplicada a `curso_comun`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'curso_comun',
+    linea: 9954,
+    claves: 'curso_comun curso_comun_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "curso_comun_leer" ON "horarios"."curso_comun" FOR SELECT TO "authenticated" USING (( SELECT "horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso"));`,
   },
   {
     id: 'pol-cambios_detectados-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `cambios_detectados`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `cambios_detectados`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cambios_detectados',
-    linea: 8006,
+    linea: 9178,
     claves: 'cambios_detectados api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.cambios_detectados FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."cambios_detectados" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-configuracion_motor_restricciones-api_planes_actualizar',
+    nombre: 'api_planes_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `configuracion_motor_restricciones`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 9185,
+    claves: 'configuracion_motor_restricciones api_planes_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."configuracion_motor_restricciones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-configuraciones_motor-api_planes_actualizar',
+    nombre: 'api_planes_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `configuraciones_motor`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'configuraciones_motor',
+    linea: 9192,
+    claves: 'configuraciones_motor api_planes_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."configuraciones_motor" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-conflicto_sesiones-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `conflicto_sesiones`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `conflicto_sesiones`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'conflicto_sesiones',
-    linea: 8027,
+    linea: 9199,
     claves: 'conflicto_sesiones api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.conflicto_sesiones FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."conflicto_sesiones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-conflictos-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `conflictos`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `conflictos`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'conflictos',
-    linea: 8034,
+    linea: 9206,
     claves: 'conflictos api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.conflictos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."conflictos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-generaciones-api_planes_actualizar',
+    nombre: 'api_planes_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `generaciones`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'generaciones',
+    linea: 9213,
+    claves: 'generaciones api_planes_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."generaciones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-historial_estados_horario-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `historial_estados_horario`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `historial_estados_horario`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'historial_estados_horario',
-    linea: 8048,
+    linea: 9220,
     claves: 'historial_estados_horario api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.historial_estados_horario FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."historial_estados_horario" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-horarios-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `horarios`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `horarios`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'horarios',
-    linea: 8055,
+    linea: 9227,
     claves: 'horarios api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.horarios FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."horarios" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-mensajes_generacion-api_planes_actualizar',
+    nombre: 'api_planes_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `mensajes_generacion`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'mensajes_generacion',
+    linea: 9234,
+    claves: 'mensajes_generacion api_planes_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."mensajes_generacion" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-resultado_edicion_conflictos-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `resultado_edicion_conflictos`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `resultado_edicion_conflictos`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'resultado_edicion_conflictos',
-    linea: 8069,
+    linea: 9241,
     claves: 'resultado_edicion_conflictos api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.resultado_edicion_conflictos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."resultado_edicion_conflictos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-resultados_edicion-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `resultados_edicion`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `resultados_edicion`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'resultados_edicion',
-    linea: 8076,
+    linea: 9248,
     claves: 'resultados_edicion api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.resultados_edicion FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."resultados_edicion" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-sesion_cohortes-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `sesion_cohortes`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `sesion_cohortes`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'sesion_cohortes',
-    linea: 8083,
+    linea: 9255,
     claves: 'sesion_cohortes api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.sesion_cohortes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."sesion_cohortes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-sesiones-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `sesiones`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `sesiones`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'sesiones',
-    linea: 8090,
+    linea: 9262,
     claves: 'sesiones api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.sesiones FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."sesiones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-sesiones_no_asignadas-api_planes_actualizar',
+    nombre: 'api_planes_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `sesiones_no_asignadas`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'sesiones_no_asignadas',
+    linea: 9269,
+    claves: 'sesiones_no_asignadas api_planes_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."sesiones_no_asignadas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-versiones_horario-api_planes_actualizar',
     nombre: 'api_planes_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes. Aplicada a `versiones_horario`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificar planes: exige actualizar, aprobar o publicar planes, o generar con el motor. Aplicada a `versiones_horario`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'versiones_horario',
-    linea: 8104,
+    linea: 9276,
     claves: 'versiones_horario api_planes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_actualizar ON horarios.versiones_horario FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_actualizar" ON "horarios"."versiones_horario" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-cambios_detectados-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `cambios_detectados`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'cambios_detectados',
-    linea: 8111,
+    linea: 9283,
     claves: 'cambios_detectados api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.cambios_detectados FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."cambios_detectados" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-configuracion_motor_restricciones-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `configuracion_motor_restricciones`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 9290,
+    claves: 'configuracion_motor_restricciones api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."configuracion_motor_restricciones" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-configuraciones_motor-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `configuraciones_motor`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'configuraciones_motor',
+    linea: 9297,
+    claves: 'configuraciones_motor api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."configuraciones_motor" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-conflicto_sesiones-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `conflicto_sesiones`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'conflicto_sesiones',
-    linea: 8132,
+    linea: 9304,
     claves: 'conflicto_sesiones api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.conflicto_sesiones FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."conflicto_sesiones" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-conflictos-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `conflictos`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'conflictos',
-    linea: 8139,
+    linea: 9311,
     claves: 'conflictos api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.conflictos FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."conflictos" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-generaciones-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `generaciones`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'generaciones',
+    linea: 9318,
+    claves: 'generaciones api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."generaciones" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-historial_estados_horario-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `historial_estados_horario`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'historial_estados_horario',
-    linea: 8153,
+    linea: 9325,
     claves: 'historial_estados_horario api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.historial_estados_horario FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."historial_estados_horario" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-horarios-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `horarios`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'horarios',
-    linea: 8160,
+    linea: 9332,
     claves: 'horarios api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.horarios FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."horarios" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-mensajes_generacion-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `mensajes_generacion`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'mensajes_generacion',
+    linea: 9339,
+    claves: 'mensajes_generacion api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."mensajes_generacion" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-plan_carreras-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `plan_carreras`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'plan_carreras',
+    linea: 9346,
+    claves: 'plan_carreras api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."plan_carreras" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text")));`,
+  },
+  {
+    id: 'pol-plan_jornadas-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `plan_jornadas`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'plan_jornadas',
+    linea: 9353,
+    claves: 'plan_jornadas api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."plan_jornadas" FOR DELETE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text")));`,
   },
   {
     id: 'pol-resultado_edicion_conflictos-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `resultado_edicion_conflictos`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'resultado_edicion_conflictos',
-    linea: 8188,
+    linea: 9360,
     claves: 'resultado_edicion_conflictos api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.resultado_edicion_conflictos FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."resultado_edicion_conflictos" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-resultados_edicion-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `resultados_edicion`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'resultados_edicion',
-    linea: 8195,
+    linea: 9367,
     claves: 'resultados_edicion api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.resultados_edicion FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."resultados_edicion" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-sesion_cohortes-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `sesion_cohortes`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'sesion_cohortes',
-    linea: 8202,
+    linea: 9374,
     claves: 'sesion_cohortes api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.sesion_cohortes FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."sesion_cohortes" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-sesiones-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `sesiones`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'sesiones',
-    linea: 8209,
+    linea: 9381,
     claves: 'sesiones api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.sesiones FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."sesiones" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-sesiones_no_asignadas-api_planes_eliminar',
+    nombre: 'api_planes_eliminar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `sesiones_no_asignadas`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'sesiones_no_asignadas',
+    linea: 9388,
+    claves: 'sesiones_no_asignadas api_planes_eliminar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."sesiones_no_asignadas" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-versiones_horario-api_planes_eliminar',
     nombre: 'api_planes_eliminar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Borrar filas de un plan: exige permiso (\'planes\',\'actualizar\'). Aplicada a `versiones_horario`.',
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'versiones_horario',
-    linea: 8223,
+    linea: 9395,
     claves: 'versiones_horario api_planes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_eliminar ON horarios.versiones_horario FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_planes_eliminar" ON "horarios"."versiones_horario" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-cambios_detectados-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `cambios_detectados`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `cambios_detectados`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cambios_detectados',
-    linea: 8230,
+    linea: 9402,
     claves: 'cambios_detectados api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.cambios_detectados FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."cambios_detectados" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-configuracion_motor_restricciones-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `configuracion_motor_restricciones`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 9409,
+    claves: 'configuracion_motor_restricciones api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."configuracion_motor_restricciones" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-configuraciones_motor-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `configuraciones_motor`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'configuraciones_motor',
+    linea: 9416,
+    claves: 'configuraciones_motor api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."configuraciones_motor" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-conflicto_sesiones-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `conflicto_sesiones`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `conflicto_sesiones`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'conflicto_sesiones',
-    linea: 8251,
+    linea: 9423,
     claves: 'conflicto_sesiones api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.conflicto_sesiones FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."conflicto_sesiones" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-conflictos-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `conflictos`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `conflictos`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'conflictos',
-    linea: 8258,
+    linea: 9430,
     claves: 'conflictos api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.conflictos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."conflictos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-generaciones-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `generaciones`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'generaciones',
+    linea: 9437,
+    claves: 'generaciones api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."generaciones" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-historial_estados_horario-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `historial_estados_horario`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `historial_estados_horario`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'historial_estados_horario',
-    linea: 8272,
+    linea: 9444,
     claves: 'historial_estados_horario api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.historial_estados_horario FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."historial_estados_horario" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-horarios-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `horarios`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `horarios`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'horarios',
-    linea: 8279,
+    linea: 9451,
     claves: 'horarios api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.horarios FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."horarios" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-mensajes_generacion-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `mensajes_generacion`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'mensajes_generacion',
+    linea: 9458,
+    claves: 'mensajes_generacion api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."mensajes_generacion" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-plan_carreras-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `plan_carreras`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'plan_carreras',
+    linea: 9465,
+    claves: 'plan_carreras api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."plan_carreras" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text")));`,
+  },
+  {
+    id: 'pol-plan_jornadas-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `plan_jornadas`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'plan_jornadas',
+    linea: 9472,
+    claves: 'plan_jornadas api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."plan_jornadas" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text")));`,
   },
   {
     id: 'pol-resultado_edicion_conflictos-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `resultado_edicion_conflictos`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `resultado_edicion_conflictos`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'resultado_edicion_conflictos',
-    linea: 8307,
+    linea: 9479,
     claves: 'resultado_edicion_conflictos api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.resultado_edicion_conflictos FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."resultado_edicion_conflictos" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-resultados_edicion-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `resultados_edicion`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `resultados_edicion`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'resultados_edicion',
-    linea: 8314,
+    linea: 9486,
     claves: 'resultados_edicion api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.resultados_edicion FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."resultados_edicion" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-sesion_cohortes-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `sesion_cohortes`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `sesion_cohortes`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'sesion_cohortes',
-    linea: 8321,
+    linea: 9493,
     claves: 'sesion_cohortes api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.sesion_cohortes FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."sesion_cohortes" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-sesiones-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `sesiones`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `sesiones`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'sesiones',
-    linea: 8328,
+    linea: 9500,
     claves: 'sesiones api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.sesiones FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."sesiones" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
+  },
+  {
+    id: 'pol-sesiones_no_asignadas-api_planes_insertar',
+    nombre: 'api_planes_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `sesiones_no_asignadas`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'sesiones_no_asignadas',
+    linea: 9507,
+    claves: 'sesiones_no_asignadas api_planes_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."sesiones_no_asignadas" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-versiones_horario-api_planes_insertar',
     nombre: 'api_planes_insertar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Escribir planes: exige crear o actualizar planes. Aplicada a `versiones_horario`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Escribir planes: exige crear o actualizar planes, o generar con el motor. Aplicada a `versiones_horario`.',
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'versiones_horario',
-    linea: 8342,
+    linea: 9514,
     claves: 'versiones_horario api_planes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_insertar ON horarios.versiones_horario FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'crear'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'actualizar'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_planes_insertar" ON "horarios"."versiones_horario" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'crear'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'actualizar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text")));`,
   },
   {
     id: 'pol-cambios_detectados-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `cambios_detectados`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `cambios_detectados`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'cambios_detectados',
-    linea: 8349,
+    linea: 9521,
     claves: 'cambios_detectados api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.cambios_detectados FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."cambios_detectados" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
+  },
+  {
+    id: 'pol-configuracion_motor_restricciones-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `configuracion_motor_restricciones`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 9528,
+    claves: 'configuracion_motor_restricciones api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."configuracion_motor_restricciones" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
+  },
+  {
+    id: 'pol-configuraciones_motor-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `configuraciones_motor`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'configuraciones_motor',
+    linea: 9535,
+    claves: 'configuraciones_motor api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."configuraciones_motor" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
   },
   {
     id: 'pol-conflicto_sesiones-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `conflicto_sesiones`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `conflicto_sesiones`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'conflicto_sesiones',
-    linea: 8370,
+    linea: 9542,
     claves: 'conflicto_sesiones api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.conflicto_sesiones FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."conflicto_sesiones" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-conflictos-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `conflictos`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `conflictos`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'conflictos',
-    linea: 8377,
+    linea: 9549,
     claves: 'conflictos api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.conflictos FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."conflictos" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
+  },
+  {
+    id: 'pol-generaciones-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `generaciones`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'generaciones',
+    linea: 9556,
+    claves: 'generaciones api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."generaciones" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-historial_estados_horario-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `historial_estados_horario`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `historial_estados_horario`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'historial_estados_horario',
-    linea: 8391,
+    linea: 9563,
     claves: 'historial_estados_horario api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.historial_estados_horario FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."historial_estados_horario" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
   },
   {
     id: 'pol-horarios-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `horarios`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `horarios`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'horarios',
-    linea: 8398,
+    linea: 9570,
     claves: 'horarios api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.horarios FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."horarios" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
+  },
+  {
+    id: 'pol-mensajes_generacion-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `mensajes_generacion`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'mensajes_generacion',
+    linea: 9577,
+    claves: 'mensajes_generacion api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."mensajes_generacion" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
+  },
+  {
+    id: 'pol-plan_carreras-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `plan_carreras`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'plan_carreras',
+    linea: 9584,
+    claves: 'plan_carreras api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."plan_carreras" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
+  },
+  {
+    id: 'pol-plan_jornadas-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `plan_jornadas`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'plan_jornadas',
+    linea: 9591,
+    claves: 'plan_jornadas api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."plan_jornadas" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
   },
   {
     id: 'pol-resultado_edicion_conflictos-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `resultado_edicion_conflictos`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `resultado_edicion_conflictos`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'resultado_edicion_conflictos',
-    linea: 8426,
+    linea: 9598,
     claves: 'resultado_edicion_conflictos api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.resultado_edicion_conflictos FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."resultado_edicion_conflictos" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
   },
   {
     id: 'pol-resultados_edicion-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `resultados_edicion`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `resultados_edicion`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'resultados_edicion',
-    linea: 8433,
+    linea: 9605,
     claves: 'resultados_edicion api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.resultados_edicion FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."resultados_edicion" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
   },
   {
     id: 'pol-sesion_cohortes-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `sesion_cohortes`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `sesion_cohortes`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'sesion_cohortes',
-    linea: 8440,
+    linea: 9612,
     claves: 'sesion_cohortes api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.sesion_cohortes FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."sesion_cohortes" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-sesiones-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `sesiones`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `sesiones`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'sesiones',
-    linea: 8447,
+    linea: 9619,
     claves: 'sesiones api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.sesiones FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."sesiones" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
+  },
+  {
+    id: 'pol-sesiones_no_asignadas-api_planes_leer',
+    nombre: 'api_planes_leer',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `sesiones_no_asignadas`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'sesiones_no_asignadas',
+    linea: 9626,
+    claves: 'sesiones_no_asignadas api_planes_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."sesiones_no_asignadas" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-versiones_horario-api_planes_leer',
     nombre: 'api_planes_leer',
     cat: 'rls',
-    grupo: 'Políticas · planes',
-    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas o reportes. Aplicada a `versiones_horario`.',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Leer planes y su resultado: sirve permiso sobre planes, consultas, motor o reportes. Aplicada a `versiones_horario`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'versiones_horario',
-    linea: 8461,
+    linea: 9633,
     claves: 'versiones_horario api_planes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_leer ON horarios.versiones_horario FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('consultas'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text) OR horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text)));`,
+    sql: `CREATE POLICY "api_planes_leer" ON "horarios"."versiones_horario" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('consultas'::"text", 'leer'::"text") OR "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text")));`,
   },
   {
     id: 'pol-cambios_detectados-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `cambios_detectados`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cambios_detectados',
-    linea: 8468,
+    linea: 9640,
     claves: 'cambios_detectados api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.cambios_detectados FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."cambios_detectados" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
+  },
+  {
+    id: 'pol-configuracion_motor_restricciones-api_planes_transversal_actualizar',
+    nombre: 'api_planes_transversal_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `configuracion_motor_restricciones`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'configuracion_motor_restricciones',
+    linea: 9647,
+    claves: 'configuracion_motor_restricciones api_planes_transversal_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."configuracion_motor_restricciones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
+  },
+  {
+    id: 'pol-configuraciones_motor-api_planes_transversal_actualizar',
+    nombre: 'api_planes_transversal_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `configuraciones_motor`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'configuraciones_motor',
+    linea: 9654,
+    claves: 'configuraciones_motor api_planes_transversal_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."configuraciones_motor" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-conflicto_sesiones-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `conflicto_sesiones`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'conflicto_sesiones',
-    linea: 8489,
+    linea: 9661,
     claves: 'conflicto_sesiones api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.conflicto_sesiones FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."conflicto_sesiones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-conflictos-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `conflictos`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'conflictos',
-    linea: 8496,
+    linea: 9668,
     claves: 'conflictos api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.conflictos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."conflictos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
+  },
+  {
+    id: 'pol-generaciones-api_planes_transversal_actualizar',
+    nombre: 'api_planes_transversal_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `generaciones`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'generaciones',
+    linea: 9675,
+    claves: 'generaciones api_planes_transversal_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."generaciones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-historial_estados_horario-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `historial_estados_horario`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'historial_estados_horario',
-    linea: 8510,
+    linea: 9682,
     claves: 'historial_estados_horario api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.historial_estados_horario FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."historial_estados_horario" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-horarios-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `horarios`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'horarios',
-    linea: 8517,
+    linea: 9689,
     claves: 'horarios api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.horarios FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."horarios" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
+  },
+  {
+    id: 'pol-mensajes_generacion-api_planes_transversal_actualizar',
+    nombre: 'api_planes_transversal_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `mensajes_generacion`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'mensajes_generacion',
+    linea: 9696,
+    claves: 'mensajes_generacion api_planes_transversal_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."mensajes_generacion" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-resultado_edicion_conflictos-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `resultado_edicion_conflictos`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'resultado_edicion_conflictos',
-    linea: 8531,
+    linea: 9703,
     claves: 'resultado_edicion_conflictos api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.resultado_edicion_conflictos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."resultado_edicion_conflictos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-resultados_edicion-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `resultados_edicion`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'resultados_edicion',
-    linea: 8538,
+    linea: 9710,
     claves: 'resultados_edicion api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.resultados_edicion FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."resultados_edicion" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-sesion_cohortes-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `sesion_cohortes`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'sesion_cohortes',
-    linea: 8545,
+    linea: 9717,
     claves: 'sesion_cohortes api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.sesion_cohortes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."sesion_cohortes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-sesiones-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `sesiones`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'sesiones',
-    linea: 8552,
+    linea: 9724,
     claves: 'sesiones api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.sesiones FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."sesiones" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
+  },
+  {
+    id: 'pol-sesiones_no_asignadas-api_planes_transversal_actualizar',
+    nombre: 'api_planes_transversal_actualizar',
+    cat: 'rls',
+    grupo: 'Políticas · planes y motor',
+    desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `sesiones_no_asignadas`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'sesiones_no_asignadas',
+    linea: 9731,
+    claves: 'sesiones_no_asignadas api_planes_transversal_actualizar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."sesiones_no_asignadas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-versiones_horario-api_planes_transversal_actualizar',
     nombre: 'api_planes_transversal_actualizar',
     cat: 'rls',
-    grupo: 'Políticas · planes',
+    grupo: 'Políticas · planes y motor',
     desc: 'Modificación transversal reservada a quien aprueba o publica planes, o administra auditoría. Aplicada a `versiones_horario`.',
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'versiones_horario',
-    linea: 8566,
+    linea: 9738,
     claves: 'versiones_horario api_planes_transversal_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_planes_transversal_actualizar ON horarios.versiones_horario FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_planes_transversal_actualizar" ON "horarios"."versiones_horario" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-asignaciones_docente_curso-api_docentes_actualizar',
@@ -11858,11 +15603,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'asignaciones_docente_curso',
-    linea: 7521,
+    linea: 8700,
     claves: 'asignaciones_docente_curso api_docentes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_actualizar ON horarios.asignaciones_docente_curso FOR UPDATE TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_actualizar" ON "horarios"."asignaciones_docente_curso" FOR UPDATE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-disponibilidad_docente_slots-api_docentes_actualizar',
@@ -11873,11 +15618,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'disponibilidad_docente_slots',
-    linea: 7528,
+    linea: 8707,
     claves: 'disponibilidad_docente_slots api_docentes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_actualizar ON horarios.disponibilidad_docente_slots FOR UPDATE TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_actualizar" ON "horarios"."disponibilidad_docente_slots" FOR UPDATE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-disponibilidades_docente-api_docentes_actualizar',
@@ -11888,11 +15633,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'disponibilidades_docente',
-    linea: 7535,
+    linea: 8714,
     claves: 'disponibilidades_docente api_docentes_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_actualizar ON horarios.disponibilidades_docente FOR UPDATE TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_actualizar" ON "horarios"."disponibilidades_docente" FOR UPDATE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-asignaciones_docente_curso-api_docentes_eliminar',
@@ -11903,11 +15648,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'asignaciones_docente_curso',
-    linea: 7542,
+    linea: 8721,
     claves: 'asignaciones_docente_curso api_docentes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_eliminar ON horarios.asignaciones_docente_curso FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_eliminar" ON "horarios"."asignaciones_docente_curso" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-disponibilidad_docente_slots-api_docentes_eliminar',
@@ -11918,11 +15663,11 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'disponibilidad_docente_slots',
-    linea: 7549,
+    linea: 8728,
     claves: 'disponibilidad_docente_slots api_docentes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_eliminar ON horarios.disponibilidad_docente_slots FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_eliminar" ON "horarios"."disponibilidad_docente_slots" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-disponibilidades_docente-api_docentes_eliminar',
@@ -11933,11 +15678,26 @@ $$;`,
     detalle: '',
     nota: 'DELETE · rol authenticated',
     tabla: 'disponibilidades_docente',
-    linea: 7556,
+    linea: 8735,
     claves: 'disponibilidades_docente api_docentes_eliminar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_eliminar ON horarios.disponibilidades_docente FOR DELETE TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_eliminar" ON "horarios"."disponibilidades_docente" FOR DELETE TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
+  },
+  {
+    id: 'pol-docente_facultades-api_docentes_escribir',
+    nombre: 'api_docentes_escribir',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'Escritura sobre la ficha del docente en cualquier operación: exige permiso (\'docentes\',\'actualizar\'). Aplicada a `docente_facultades`.',
+    detalle: '',
+    nota: 'TODAS las operaciones · rol authenticated',
+    tabla: 'docente_facultades',
+    linea: 8742,
+    claves: 'docente_facultades api_docentes_escribir politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_docentes_escribir" ON "horarios"."docente_facultades" TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-docentes-api_docentes_escribir',
@@ -11948,11 +15708,11 @@ $$;`,
     detalle: '',
     nota: 'TODAS las operaciones · rol authenticated',
     tabla: 'docentes',
-    linea: 7563,
+    linea: 8749,
     claves: 'docentes api_docentes_escribir politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_escribir ON horarios.docentes TO authenticated USING (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_escribir" ON "horarios"."docentes" TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-asignaciones_docente_curso-api_docentes_insertar',
@@ -11963,11 +15723,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'asignaciones_docente_curso',
-    linea: 7570,
+    linea: 8756,
     claves: 'asignaciones_docente_curso api_docentes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_insertar ON horarios.asignaciones_docente_curso FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_insertar" ON "horarios"."asignaciones_docente_curso" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-disponibilidad_docente_slots-api_docentes_insertar',
@@ -11978,11 +15738,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'disponibilidad_docente_slots',
-    linea: 7577,
+    linea: 8763,
     claves: 'disponibilidad_docente_slots api_docentes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_insertar ON horarios.disponibilidad_docente_slots FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_insertar" ON "horarios"."disponibilidad_docente_slots" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-disponibilidades_docente-api_docentes_insertar',
@@ -11993,56 +15753,56 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'disponibilidades_docente',
-    linea: 7584,
+    linea: 8770,
     claves: 'disponibilidades_docente api_docentes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_insertar ON horarios.disponibilidades_docente FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('docentes'::text, 'actualizar'::text));`,
+    sql: `CREATE POLICY "api_docentes_insertar" ON "horarios"."disponibilidades_docente" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'actualizar'::"text"));`,
   },
   {
     id: 'pol-asignaciones_docente_curso-api_docentes_leer',
     nombre: 'api_docentes_leer',
     cat: 'rls',
     grupo: 'Políticas · docentes',
-    desc: 'Leer datos de docentes: sirve permiso sobre docentes o planes. Aplicada a `asignaciones_docente_curso`.',
+    desc: 'Leer datos de docentes: sirve permiso sobre docentes, planes o motor. Aplicada a `asignaciones_docente_curso`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'asignaciones_docente_curso',
-    linea: 7591,
+    linea: 8777,
     claves: 'asignaciones_docente_curso api_docentes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_leer ON horarios.asignaciones_docente_curso FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('docentes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_docentes_leer" ON "horarios"."asignaciones_docente_curso" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-disponibilidad_docente_slots-api_docentes_leer',
     nombre: 'api_docentes_leer',
     cat: 'rls',
     grupo: 'Políticas · docentes',
-    desc: 'Leer datos de docentes: sirve permiso sobre docentes o planes. Aplicada a `disponibilidad_docente_slots`.',
+    desc: 'Leer datos de docentes: sirve permiso sobre docentes, planes o motor. Aplicada a `disponibilidad_docente_slots`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'disponibilidad_docente_slots',
-    linea: 7598,
+    linea: 8784,
     claves: 'disponibilidad_docente_slots api_docentes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_leer ON horarios.disponibilidad_docente_slots FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('docentes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_docentes_leer" ON "horarios"."disponibilidad_docente_slots" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-disponibilidades_docente-api_docentes_leer',
     nombre: 'api_docentes_leer',
     cat: 'rls',
     grupo: 'Políticas · docentes',
-    desc: 'Leer datos de docentes: sirve permiso sobre docentes o planes. Aplicada a `disponibilidades_docente`.',
+    desc: 'Leer datos de docentes: sirve permiso sobre docentes, planes o motor. Aplicada a `disponibilidades_docente`.',
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'disponibilidades_docente',
-    linea: 7605,
+    linea: 8791,
     claves: 'disponibilidades_docente api_docentes_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_docentes_leer ON horarios.disponibilidades_docente FOR SELECT TO authenticated USING ((horarios.usuario_actual_tiene_permiso('docentes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text) OR horarios.usuario_actual_tiene_permiso('motor'::text, 'generar'::text)));`,
+    sql: `CREATE POLICY "api_docentes_leer" ON "horarios"."disponibilidades_docente" FOR SELECT TO "authenticated" USING ((( SELECT "horarios"."usuario_actual_tiene_permiso"('docentes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso") OR ( SELECT "horarios"."usuario_actual_tiene_permiso"('motor'::"text", 'generar'::"text") AS "usuario_actual_tiene_permiso")));`,
   },
   {
     id: 'pol-eventos_sustitucion-api_sustituciones_escribir',
@@ -12053,11 +15813,11 @@ $$;`,
     detalle: '',
     nota: 'TODAS las operaciones · rol authenticated',
     tabla: 'eventos_sustitucion',
-    linea: 8622,
+    linea: 9794,
     claves: 'eventos_sustitucion api_sustituciones_escribir politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_sustituciones_escribir ON horarios.eventos_sustitucion TO authenticated USING (horarios.usuario_actual_tiene_permiso('sustituciones'::text, 'crear'::text)) WITH CHECK ((horarios.usuario_actual_tiene_permiso('sustituciones'::text, 'crear'::text) AND (registrado_por_id = horarios.usuario_actual_id())));`,
+    sql: `CREATE POLICY "api_sustituciones_escribir" ON "horarios"."eventos_sustitucion" TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('sustituciones'::"text", 'crear'::"text")) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('sustituciones'::"text", 'crear'::"text") AND ("registrado_por_id" = "horarios"."usuario_actual_id"())));`,
   },
   {
     id: 'pol-eventos_sustitucion-api_sustituciones_leer',
@@ -12068,11 +15828,187 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'eventos_sustitucion',
-    linea: 8629,
+    linea: 9801,
     claves: 'eventos_sustitucion api_sustituciones_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_sustituciones_leer ON horarios.eventos_sustitucion FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_sustituciones_leer" ON "horarios"."eventos_sustitucion" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
+  },
+  {
+    id: 'pol-disponibilidades_docente-docente_actualiza_su_disponibilidad',
+    nombre: 'docente_actualiza_su_disponibilidad',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo modifica su propia cabecera de disponibilidad. Aplicada a `disponibilidades_docente`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'disponibilidades_docente',
+    linea: 9991,
+    claves: 'disponibilidades_docente docente_actualiza_su_disponibilidad politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_actualiza_su_disponibilidad" ON "horarios"."disponibilidades_docente" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."docente_id" = "disponibilidades_docente"."docente_id") AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."docente_id" = "disponibilidades_docente"."docente_id") AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidad_docente_slots-docente_actualiza_sus_bloques_disponibles',
+    nombre: 'docente_actualiza_sus_bloques_disponibles',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo modifica bloques de su propia disponibilidad. Aplicada a `disponibilidad_docente_slots`.',
+    detalle: '',
+    nota: 'UPDATE · rol authenticated',
+    tabla: 'disponibilidad_docente_slots',
+    linea: 10002,
+    claves: 'disponibilidad_docente_slots docente_actualiza_sus_bloques_disponibles politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_actualiza_sus_bloques_disponibles" ON "horarios"."disponibilidad_docente_slots" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidades_docente-docente_consulta_su_disponibilidad',
+    nombre: 'docente_consulta_su_disponibilidad',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo consulta su propia cabecera de disponibilidad. Aplicada a `disponibilidades_docente`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'disponibilidades_docente',
+    linea: 10015,
+    claves: 'disponibilidades_docente docente_consulta_su_disponibilidad politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_consulta_su_disponibilidad" ON "horarios"."disponibilidades_docente" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."docente_id" = "disponibilidades_docente"."docente_id") AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidad_docente_slots-docente_consulta_sus_bloques_disponibles',
+    nombre: 'docente_consulta_sus_bloques_disponibles',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo consulta los bloques vinculados a su disponibilidad. Aplicada a `disponibilidad_docente_slots`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'disponibilidad_docente_slots',
+    linea: 10024,
+    claves: 'disponibilidad_docente_slots docente_consulta_sus_bloques_disponibles politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_consulta_sus_bloques_disponibles" ON "horarios"."disponibilidad_docente_slots" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidad_docente_slots-docente_elimina_sus_bloques_disponibles',
+    nombre: 'docente_elimina_sus_bloques_disponibles',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo elimina bloques de su propia disponibilidad. Aplicada a `disponibilidad_docente_slots`.',
+    detalle: '',
+    nota: 'DELETE · rol authenticated',
+    tabla: 'disponibilidad_docente_slots',
+    linea: 10034,
+    claves: 'disponibilidad_docente_slots docente_elimina_sus_bloques_disponibles politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_elimina_sus_bloques_disponibles" ON "horarios"."disponibilidad_docente_slots" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidades_docente-docente_inserta_su_disponibilidad',
+    nombre: 'docente_inserta_su_disponibilidad',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo crea una cabecera de disponibilidad a su nombre. Aplicada a `disponibilidades_docente`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'disponibilidades_docente',
+    linea: 10050,
+    claves: 'disponibilidades_docente docente_inserta_su_disponibilidad politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_inserta_su_disponibilidad" ON "horarios"."disponibilidades_docente" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."docente_id" = "disponibilidades_docente"."docente_id") AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidad_docente_slots-docente_inserta_sus_bloques_disponibles',
+    nombre: 'docente_inserta_sus_bloques_disponibles',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'El usuario docente activo añade bloques a su propia disponibilidad. Aplicada a `disponibilidad_docente_slots`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'disponibilidad_docente_slots',
+    linea: 10059,
+    claves: 'disponibilidad_docente_slots docente_inserta_sus_bloques_disponibles politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_inserta_sus_bloques_disponibles" ON "horarios"."disponibilidad_docente_slots" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))));`,
+  },
+  {
+    id: 'pol-disponibilidad_docente_slots-docente_restringe_bloques_propios',
+    nombre: 'docente_restringe_bloques_propios',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'Política restrictiva: si el usuario es docente, limita el acceso a bloques de su disponibilidad aunque otra política conceda un permiso más amplio. Aplicada a `disponibilidad_docente_slots`.',
+    detalle: '',
+    nota: 'TODAS las operaciones · rol authenticated · restrictiva',
+    tabla: 'disponibilidad_docente_slots',
+    linea: 10069,
+    claves: 'disponibilidad_docente_slots docente_restringe_bloques_propios politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_restringe_bloques_propios" ON "horarios"."disponibilidad_docente_slots" AS RESTRICTIVE TO "authenticated" USING (((NOT (EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))) OR (EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))))) WITH CHECK (((NOT (EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))) OR (EXISTS ( SELECT 1
+   FROM ("horarios"."disponibilidades_docente" "disponibilidad"
+     JOIN "horarios"."usuarios" "usuario" ON (("usuario"."docente_id" = "disponibilidad"."docente_id")))
+  WHERE (("disponibilidad"."id" = "disponibilidad_docente_slots"."disponibilidad_id") AND ("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))));`,
+  },
+  {
+    id: 'pol-disponibilidades_docente-docente_restringe_disponibilidad_propia',
+    nombre: 'docente_restringe_disponibilidad_propia',
+    cat: 'rls',
+    grupo: 'Políticas · docentes',
+    desc: 'Política restrictiva: si el usuario es docente, limita el acceso a su disponibilidad aunque otra política conceda un permiso más amplio. Aplicada a `disponibilidades_docente`.',
+    detalle: '',
+    nota: 'TODAS las operaciones · rol authenticated · restrictiva',
+    tabla: 'disponibilidades_docente',
+    linea: 10086,
+    claves: 'disponibilidades_docente docente_restringe_disponibilidad_propia politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "docente_restringe_disponibilidad_propia" ON "horarios"."disponibilidades_docente" AS RESTRICTIVE TO "authenticated" USING (((NOT (EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))) OR ("docente_id" = ( SELECT "usuario"."docente_id"
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL)))))) WITH CHECK (((NOT (EXISTS ( SELECT 1
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))) OR ("docente_id" = ( SELECT "usuario"."docente_id"
+   FROM "horarios"."usuarios" "usuario"
+  WHERE (("usuario"."auth_user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("usuario"."tipo" = 'docente'::"horarios"."tipo_usuario") AND ("usuario"."estado" = 'activo'::"horarios"."estado_usuario") AND ("usuario"."eliminado_en" IS NULL))))));`,
   },
   {
     id: 'pol-usuario_facultades-api_facultades_propias',
@@ -12083,11 +16019,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'usuario_facultades',
-    linea: 7612,
+    linea: 8798,
     claves: 'usuario_facultades api_facultades_propias politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_facultades_propias ON horarios.usuario_facultades FOR SELECT TO authenticated USING ((usuario_id = horarios.usuario_actual_id()));`,
+    sql: `CREATE POLICY "api_facultades_propias" ON "horarios"."usuario_facultades" FOR SELECT TO "authenticated" USING (("usuario_id" = "horarios"."usuario_actual_id"()));`,
   },
   {
     id: 'pol-notificaciones-api_notificaciones_insertar',
@@ -12098,11 +16034,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'notificaciones',
-    linea: 7976,
+    linea: 9148,
     claves: 'notificaciones api_notificaciones_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_notificaciones_insertar ON horarios.notificaciones FOR INSERT TO authenticated WITH CHECK ((destinatario_id = horarios.usuario_actual_id()));`,
+    sql: `CREATE POLICY "api_notificaciones_insertar" ON "horarios"."notificaciones" FOR INSERT TO "authenticated" WITH CHECK (("destinatario_id" = "horarios"."usuario_actual_id"()));`,
   },
   {
     id: 'pol-notificaciones-api_notificaciones_propias',
@@ -12113,11 +16049,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'notificaciones',
-    linea: 7983,
+    linea: 9155,
     claves: 'notificaciones api_notificaciones_propias politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_notificaciones_propias ON horarios.notificaciones FOR SELECT TO authenticated USING ((destinatario_id = horarios.usuario_actual_id()));`,
+    sql: `CREATE POLICY "api_notificaciones_propias" ON "horarios"."notificaciones" FOR SELECT TO "authenticated" USING (("destinatario_id" = "horarios"."usuario_actual_id"()));`,
   },
   {
     id: 'pol-permisos_acceso-api_permisos_catalogo',
@@ -12128,11 +16064,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'permisos_acceso',
-    linea: 7990,
+    linea: 9162,
     claves: 'permisos_acceso api_permisos_catalogo politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_permisos_catalogo ON horarios.permisos_acceso FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_permisos_catalogo" ON "horarios"."permisos_acceso" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-rol_permisos-api_permisos_roles_propios',
@@ -12143,13 +16079,13 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'rol_permisos',
-    linea: 7997,
+    linea: 9169,
     claves: 'rol_permisos api_permisos_roles_propios politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_permisos_roles_propios ON horarios.rol_permisos FOR SELECT TO authenticated USING ((EXISTS ( SELECT 1
-   FROM horarios.usuario_roles ur
-  WHERE ((ur.usuario_id = horarios.usuario_actual_id()) AND (ur.rol_id = rol_permisos.rol_id)))));`,
+    sql: `CREATE POLICY "api_permisos_roles_propios" ON "horarios"."rol_permisos" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "horarios"."usuario_roles" "ur"
+  WHERE (("ur"."usuario_id" = "horarios"."usuario_actual_id"()) AND ("ur"."rol_id" = "rol_permisos"."rol_id")))));`,
   },
   {
     id: 'pol-plantillas_notificacion-api_plantillas_notificacion_leer',
@@ -12160,11 +16096,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'plantillas_notificacion',
-    linea: 8573,
+    linea: 9745,
     claves: 'plantillas_notificacion api_plantillas_notificacion_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_plantillas_notificacion_leer ON horarios.plantillas_notificacion FOR SELECT TO authenticated USING ((horarios.usuario_actual_id() IS NOT NULL));`,
+    sql: `CREATE POLICY "api_plantillas_notificacion_leer" ON "horarios"."plantillas_notificacion" FOR SELECT TO "authenticated" USING (("horarios"."usuario_actual_id"() IS NOT NULL));`,
   },
   {
     id: 'pol-reportes-api_reportes_insertar',
@@ -12175,11 +16111,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'reportes',
-    linea: 8580,
+    linea: 9752,
     claves: 'reportes api_reportes_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_reportes_insertar ON horarios.reportes FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('reportes'::text, 'exportar'::text) AND (generado_por_id = horarios.usuario_actual_id())));`,
+    sql: `CREATE POLICY "api_reportes_insertar" ON "horarios"."reportes" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('reportes'::"text", 'exportar'::"text") AND ("generado_por_id" = "horarios"."usuario_actual_id"())));`,
   },
   {
     id: 'pol-reportes-api_reportes_propios',
@@ -12190,11 +16126,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'reportes',
-    linea: 8587,
+    linea: 9759,
     claves: 'reportes api_reportes_propios politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_reportes_propios ON horarios.reportes FOR SELECT TO authenticated USING ((generado_por_id = horarios.usuario_actual_id()));`,
+    sql: `CREATE POLICY "api_reportes_propios" ON "horarios"."reportes" FOR SELECT TO "authenticated" USING (("generado_por_id" = "horarios"."usuario_actual_id"()));`,
   },
   {
     id: 'pol-roles-api_roles_catalogo',
@@ -12205,11 +16141,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'roles',
-    linea: 8594,
+    linea: 9766,
     claves: 'roles api_roles_catalogo politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_roles_catalogo ON horarios.roles FOR SELECT TO authenticated USING (((horarios.usuario_actual_id() IS NOT NULL) AND (eliminado_en IS NULL)));`,
+    sql: `CREATE POLICY "api_roles_catalogo" ON "horarios"."roles" FOR SELECT TO "authenticated" USING ((("horarios"."usuario_actual_id"() IS NOT NULL) AND ("eliminado_en" IS NULL)));`,
   },
   {
     id: 'pol-usuario_roles-api_roles_propios',
@@ -12220,11 +16156,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'usuario_roles',
-    linea: 8601,
+    linea: 9773,
     claves: 'usuario_roles api_roles_propios politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_roles_propios ON horarios.usuario_roles FOR SELECT TO authenticated USING ((usuario_id = horarios.usuario_actual_id()));`,
+    sql: `CREATE POLICY "api_roles_propios" ON "horarios"."usuario_roles" FOR SELECT TO "authenticated" USING (("usuario_id" = "horarios"."usuario_actual_id"()));`,
   },
   {
     id: 'pol-usuarios-api_usuario_propio',
@@ -12235,11 +16171,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'usuarios',
-    linea: 8636,
+    linea: 9808,
     claves: 'usuarios api_usuario_propio politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_usuario_propio ON horarios.usuarios FOR SELECT TO authenticated USING (((auth_user_id = auth.uid()) AND (eliminado_en IS NULL)));`,
+    sql: `CREATE POLICY "api_usuario_propio" ON "horarios"."usuarios" FOR SELECT TO "authenticated" USING ((("auth_user_id" = "auth"."uid"()) AND ("eliminado_en" IS NULL)));`,
   },
   {
     id: 'pol-importacion_errores-api_importaciones',
@@ -12250,11 +16186,11 @@ $$;`,
     detalle: '',
     nota: 'TODAS las operaciones · rol authenticated',
     tabla: 'importacion_errores',
-    linea: 7626,
+    linea: 8812,
     claves: 'importacion_errores api_importaciones politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importaciones ON horarios.importacion_errores TO authenticated USING (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importaciones" ON "horarios"."importacion_errores" TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-importaciones-api_importaciones',
@@ -12265,11 +16201,11 @@ $$;`,
     detalle: '',
     nota: 'TODAS las operaciones · rol authenticated',
     tabla: 'importaciones',
-    linea: 7633,
+    linea: 8819,
     claves: 'importaciones api_importaciones politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importaciones ON horarios.importaciones TO authenticated USING (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importaciones" ON "horarios"."importaciones" TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-plantillas_importacion-api_importaciones',
@@ -12280,11 +16216,11 @@ $$;`,
     detalle: '',
     nota: 'TODAS las operaciones · rol authenticated',
     tabla: 'plantillas_importacion',
-    linea: 7640,
+    linea: 8826,
     claves: 'plantillas_importacion api_importaciones politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importaciones ON horarios.plantillas_importacion TO authenticated USING (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text)) WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importaciones" ON "horarios"."plantillas_importacion" TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text")) WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-importaciones-api_importaciones_diagnostico',
@@ -12295,11 +16231,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'importaciones',
-    linea: 7647,
+    linea: 8833,
     claves: 'importaciones api_importaciones_diagnostico politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importaciones_diagnostico ON horarios.importaciones FOR SELECT TO authenticated USING (horarios.usuario_actual_tiene_permiso('planes'::text, 'leer'::text));`,
+    sql: `CREATE POLICY "api_importaciones_diagnostico" ON "horarios"."importaciones" FOR SELECT TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'leer'::"text"));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cohortes-api_importar_catalogo_actualizar',
@@ -12310,11 +16246,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 7654,
+    linea: 8840,
     claves: 'agrupacion_area_comun_cohortes api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.agrupacion_area_comun_cohortes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."agrupacion_area_comun_cohortes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cursos-api_importar_catalogo_actualizar',
@@ -12325,11 +16261,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 7661,
+    linea: 8847,
     claves: 'agrupacion_area_comun_cursos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.agrupacion_area_comun_cursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."agrupacion_area_comun_cursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupaciones_area_comun-api_importar_catalogo_actualizar',
@@ -12340,11 +16276,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'agrupaciones_area_comun',
-    linea: 7668,
+    linea: 8854,
     claves: 'agrupaciones_area_comun api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.agrupaciones_area_comun FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."agrupaciones_area_comun" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-asignaciones_docente_curso-api_importar_catalogo_actualizar',
@@ -12355,11 +16291,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'asignaciones_docente_curso',
-    linea: 7675,
+    linea: 8861,
     claves: 'asignaciones_docente_curso api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.asignaciones_docente_curso FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."asignaciones_docente_curso" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aula_recursos-api_importar_catalogo_actualizar',
@@ -12370,11 +16306,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'aula_recursos',
-    linea: 7682,
+    linea: 8868,
     claves: 'aula_recursos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.aula_recursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."aula_recursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-aulas-api_importar_catalogo_actualizar',
@@ -12385,11 +16321,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'aulas',
-    linea: 7689,
+    linea: 8875,
     claves: 'aulas api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.aulas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."aulas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carrera_jornadas-api_importar_catalogo_actualizar',
@@ -12400,11 +16336,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'carrera_jornadas',
-    linea: 7696,
+    linea: 8882,
     claves: 'carrera_jornadas api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.carrera_jornadas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."carrera_jornadas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-carreras-api_importar_catalogo_actualizar',
@@ -12415,11 +16351,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'carreras',
-    linea: 7703,
+    linea: 8889,
     claves: 'carreras api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.carreras FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."carreras" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohorte_periodos-api_importar_catalogo_actualizar',
@@ -12430,11 +16366,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cohorte_periodos',
-    linea: 7710,
+    linea: 8896,
     claves: 'cohorte_periodos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.cohorte_periodos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."cohorte_periodos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cohortes-api_importar_catalogo_actualizar',
@@ -12445,26 +16381,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cohortes',
-    linea: 7717,
+    linea: 8903,
     claves: 'cohortes api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.cohortes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
-  },
-  {
-    id: 'pol-curso_carreras_compartidas-api_importar_catalogo_actualizar',
-    nombre: 'api_importar_catalogo_actualizar',
-    cat: 'rls',
-    grupo: 'Políticas · importación',
-    desc: 'La importación puede actualizar catálogos: exige importar o administrar auditoría. Aplicada a `curso_carreras_compartidas`.',
-    detalle: '',
-    nota: 'UPDATE · rol authenticated',
-    tabla: 'curso_carreras_compartidas',
-    linea: 7724,
-    claves: 'curso_carreras_compartidas api_importar_catalogo_actualizar politica rls',
-    params: [],
-    pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.curso_carreras_compartidas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."cohortes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-curso_recursos_requeridos-api_importar_catalogo_actualizar',
@@ -12475,11 +16396,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'curso_recursos_requeridos',
-    linea: 7731,
+    linea: 8910,
     claves: 'curso_recursos_requeridos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.curso_recursos_requeridos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."curso_recursos_requeridos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos-api_importar_catalogo_actualizar',
@@ -12490,11 +16411,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cursos',
-    linea: 7738,
+    linea: 8917,
     claves: 'cursos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.cursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."cursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-cursos_en_pensum-api_importar_catalogo_actualizar',
@@ -12505,11 +16426,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'cursos_en_pensum',
-    linea: 7745,
+    linea: 8924,
     claves: 'cursos_en_pensum api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.cursos_en_pensum FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."cursos_en_pensum" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-disponibilidad_docente_slots-api_importar_catalogo_actualizar',
@@ -12520,11 +16441,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'disponibilidad_docente_slots',
-    linea: 7752,
+    linea: 8931,
     claves: 'disponibilidad_docente_slots api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.disponibilidad_docente_slots FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."disponibilidad_docente_slots" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-disponibilidades_docente-api_importar_catalogo_actualizar',
@@ -12535,11 +16456,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'disponibilidades_docente',
-    linea: 7759,
+    linea: 8938,
     claves: 'disponibilidades_docente api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.disponibilidades_docente FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."disponibilidades_docente" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-docentes-api_importar_catalogo_actualizar',
@@ -12550,11 +16471,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'docentes',
-    linea: 7766,
+    linea: 8945,
     claves: 'docentes api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.docentes FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."docentes" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-facultades-api_importar_catalogo_actualizar',
@@ -12565,11 +16486,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'facultades',
-    linea: 7773,
+    linea: 8952,
     claves: 'facultades api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.facultades FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."facultades" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornada_descansos-api_importar_catalogo_actualizar',
@@ -12580,11 +16501,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'jornada_descansos',
-    linea: 7780,
+    linea: 8959,
     claves: 'jornada_descansos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.jornada_descansos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."jornada_descansos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-jornadas-api_importar_catalogo_actualizar',
@@ -12595,11 +16516,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'jornadas',
-    linea: 7787,
+    linea: 8966,
     claves: 'jornadas api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.jornadas FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."jornadas" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-pensums-api_importar_catalogo_actualizar',
@@ -12610,11 +16531,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'pensums',
-    linea: 7794,
+    linea: 8973,
     claves: 'pensums api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.pensums FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."pensums" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-periodos_academicos-api_importar_catalogo_actualizar',
@@ -12625,11 +16546,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'periodos_academicos',
-    linea: 7801,
+    linea: 8980,
     claves: 'periodos_academicos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.periodos_academicos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."periodos_academicos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-recursos-api_importar_catalogo_actualizar',
@@ -12640,11 +16561,11 @@ $$;`,
     detalle: '',
     nota: 'UPDATE · rol authenticated',
     tabla: 'recursos',
-    linea: 7808,
+    linea: 8987,
     claves: 'recursos api_importar_catalogo_actualizar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_actualizar ON horarios.recursos FOR UPDATE TO authenticated USING ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text))) WITH CHECK ((horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text) OR horarios.usuario_actual_tiene_permiso('auditoria'::text, 'administrar'::text)));`,
+    sql: `CREATE POLICY "api_importar_catalogo_actualizar" ON "horarios"."recursos" FOR UPDATE TO "authenticated" USING (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text"))) WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'administrar'::"text")));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cohortes-api_importar_catalogo_insertar',
@@ -12655,11 +16576,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'agrupacion_area_comun_cohortes',
-    linea: 7815,
+    linea: 8994,
     claves: 'agrupacion_area_comun_cohortes api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.agrupacion_area_comun_cohortes FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."agrupacion_area_comun_cohortes" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-agrupacion_area_comun_cursos-api_importar_catalogo_insertar',
@@ -12670,11 +16591,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'agrupacion_area_comun_cursos',
-    linea: 7822,
+    linea: 9001,
     claves: 'agrupacion_area_comun_cursos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.agrupacion_area_comun_cursos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."agrupacion_area_comun_cursos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-agrupaciones_area_comun-api_importar_catalogo_insertar',
@@ -12685,11 +16606,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'agrupaciones_area_comun',
-    linea: 7829,
+    linea: 9008,
     claves: 'agrupaciones_area_comun api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.agrupaciones_area_comun FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."agrupaciones_area_comun" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-asignaciones_docente_curso-api_importar_catalogo_insertar',
@@ -12700,11 +16621,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'asignaciones_docente_curso',
-    linea: 7836,
+    linea: 9015,
     claves: 'asignaciones_docente_curso api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.asignaciones_docente_curso FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."asignaciones_docente_curso" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-aula_recursos-api_importar_catalogo_insertar',
@@ -12715,11 +16636,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'aula_recursos',
-    linea: 7843,
+    linea: 9022,
     claves: 'aula_recursos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.aula_recursos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."aula_recursos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-aulas-api_importar_catalogo_insertar',
@@ -12730,11 +16651,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'aulas',
-    linea: 7850,
+    linea: 9029,
     claves: 'aulas api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.aulas FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."aulas" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-carrera_jornadas-api_importar_catalogo_insertar',
@@ -12745,11 +16666,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'carrera_jornadas',
-    linea: 7857,
+    linea: 9036,
     claves: 'carrera_jornadas api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.carrera_jornadas FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."carrera_jornadas" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-carreras-api_importar_catalogo_insertar',
@@ -12760,11 +16681,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'carreras',
-    linea: 7864,
+    linea: 9043,
     claves: 'carreras api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.carreras FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."carreras" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-cohorte_periodos-api_importar_catalogo_insertar',
@@ -12775,11 +16696,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cohorte_periodos',
-    linea: 7871,
+    linea: 9050,
     claves: 'cohorte_periodos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.cohorte_periodos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."cohorte_periodos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-cohortes-api_importar_catalogo_insertar',
@@ -12790,26 +16711,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cohortes',
-    linea: 7878,
+    linea: 9057,
     claves: 'cohortes api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.cohortes FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
-  },
-  {
-    id: 'pol-curso_carreras_compartidas-api_importar_catalogo_insertar',
-    nombre: 'api_importar_catalogo_insertar',
-    cat: 'rls',
-    grupo: 'Políticas · importación',
-    desc: 'La importación puede insertar en los catálogos: exige permiso (\'importaciones\',\'importar\'). Aplicada a `curso_carreras_compartidas`.',
-    detalle: '',
-    nota: 'INSERT · rol authenticated',
-    tabla: 'curso_carreras_compartidas',
-    linea: 7885,
-    claves: 'curso_carreras_compartidas api_importar_catalogo_insertar politica rls',
-    params: [],
-    pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.curso_carreras_compartidas FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."cohortes" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-curso_recursos_requeridos-api_importar_catalogo_insertar',
@@ -12820,11 +16726,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'curso_recursos_requeridos',
-    linea: 7892,
+    linea: 9064,
     claves: 'curso_recursos_requeridos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.curso_recursos_requeridos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."curso_recursos_requeridos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-cursos-api_importar_catalogo_insertar',
@@ -12835,11 +16741,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cursos',
-    linea: 7899,
+    linea: 9071,
     claves: 'cursos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.cursos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."cursos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-cursos_en_pensum-api_importar_catalogo_insertar',
@@ -12850,11 +16756,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'cursos_en_pensum',
-    linea: 7906,
+    linea: 9078,
     claves: 'cursos_en_pensum api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.cursos_en_pensum FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."cursos_en_pensum" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-disponibilidad_docente_slots-api_importar_catalogo_insertar',
@@ -12865,11 +16771,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'disponibilidad_docente_slots',
-    linea: 7913,
+    linea: 9085,
     claves: 'disponibilidad_docente_slots api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.disponibilidad_docente_slots FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."disponibilidad_docente_slots" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-disponibilidades_docente-api_importar_catalogo_insertar',
@@ -12880,11 +16786,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'disponibilidades_docente',
-    linea: 7920,
+    linea: 9092,
     claves: 'disponibilidades_docente api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.disponibilidades_docente FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."disponibilidades_docente" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-docentes-api_importar_catalogo_insertar',
@@ -12895,11 +16801,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'docentes',
-    linea: 7927,
+    linea: 9099,
     claves: 'docentes api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.docentes FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."docentes" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-facultades-api_importar_catalogo_insertar',
@@ -12910,11 +16816,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'facultades',
-    linea: 7934,
+    linea: 9106,
     claves: 'facultades api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.facultades FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."facultades" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-jornada_descansos-api_importar_catalogo_insertar',
@@ -12925,11 +16831,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'jornada_descansos',
-    linea: 7941,
+    linea: 9113,
     claves: 'jornada_descansos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.jornada_descansos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."jornada_descansos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-jornadas-api_importar_catalogo_insertar',
@@ -12940,11 +16846,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'jornadas',
-    linea: 7948,
+    linea: 9120,
     claves: 'jornadas api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.jornadas FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."jornadas" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-pensums-api_importar_catalogo_insertar',
@@ -12955,11 +16861,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'pensums',
-    linea: 7955,
+    linea: 9127,
     claves: 'pensums api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.pensums FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."pensums" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-periodos_academicos-api_importar_catalogo_insertar',
@@ -12970,11 +16876,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'periodos_academicos',
-    linea: 7962,
+    linea: 9134,
     claves: 'periodos_academicos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.periodos_academicos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."periodos_academicos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-recursos-api_importar_catalogo_insertar',
@@ -12985,11 +16891,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'recursos',
-    linea: 7969,
+    linea: 9141,
     claves: 'recursos api_importar_catalogo_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_importar_catalogo_insertar ON horarios.recursos FOR INSERT TO authenticated WITH CHECK (horarios.usuario_actual_tiene_permiso('importaciones'::text, 'importar'::text));`,
+    sql: `CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."recursos" FOR INSERT TO "authenticated" WITH CHECK ("horarios"."usuario_actual_tiene_permiso"('importaciones'::"text", 'importar'::"text"));`,
   },
   {
     id: 'pol-auditoria-api_auditoria_insertar',
@@ -13000,11 +16906,11 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'auditoria',
-    linea: 6954,
+    linea: 8154,
     claves: 'auditoria api_auditoria_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_auditoria_insertar ON horarios.auditoria FOR INSERT TO authenticated WITH CHECK ((usuario_id = horarios.usuario_actual_id()));`,
+    sql: `CREATE POLICY "api_auditoria_insertar" ON "horarios"."auditoria" FOR INSERT TO "authenticated" WITH CHECK (("usuario_id" = "horarios"."usuario_actual_id"()));`,
   },
   {
     id: 'pol-auditoria-api_auditoria_leer',
@@ -13015,11 +16921,11 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'auditoria',
-    linea: 6961,
+    linea: 8161,
     claves: 'auditoria api_auditoria_leer politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_auditoria_leer ON horarios.auditoria FOR SELECT TO authenticated USING (horarios.usuario_actual_tiene_permiso('auditoria'::text, 'leer'::text));`,
+    sql: `CREATE POLICY "api_auditoria_leer" ON "horarios"."auditoria" FOR SELECT TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'leer'::"text"));`,
   },
   {
     id: 'pol-historial_estados_horario-api_historial_aprobacion_insertar',
@@ -13030,11 +16936,41 @@ $$;`,
     detalle: '',
     nota: 'INSERT · rol authenticated',
     tabla: 'historial_estados_horario',
-    linea: 7619,
+    linea: 8805,
     claves: 'historial_estados_horario api_historial_aprobacion_insertar politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_historial_aprobacion_insertar ON horarios.historial_estados_horario FOR INSERT TO authenticated WITH CHECK ((horarios.usuario_actual_tiene_permiso('planes'::text, 'aprobar'::text) OR horarios.usuario_actual_tiene_permiso('planes'::text, 'publicar'::text)));`,
+    sql: `CREATE POLICY "api_historial_aprobacion_insertar" ON "horarios"."historial_estados_horario" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'aprobar'::"text") OR "horarios"."usuario_actual_tiene_permiso"('planes'::"text", 'publicar'::"text")));`,
+  },
+  {
+    id: 'pol-sugerencias_seccion-api_sugerencias_insertar',
+    nombre: 'api_sugerencias_insertar',
+    cat: 'rls',
+    grupo: 'Políticas · bitácora y operación',
+    desc: 'Pedir una sección nueva exige permiso (\'academia\',\'crear\') y quedar registrado como solicitante. Aplicada a `sugerencias_seccion`.',
+    detalle: '',
+    nota: 'INSERT · rol authenticated',
+    tabla: 'sugerencias_seccion',
+    linea: 9780,
+    claves: 'sugerencias_seccion api_sugerencias_insertar politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_sugerencias_insertar" ON "horarios"."sugerencias_seccion" FOR INSERT TO "authenticated" WITH CHECK (("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'crear'::"text") AND ("solicitada_por_id" = "horarios"."usuario_actual_id"())));`,
+  },
+  {
+    id: 'pol-sugerencias_seccion-api_sugerencias_leer',
+    nombre: 'api_sugerencias_leer',
+    cat: 'rls',
+    grupo: 'Políticas · bitácora y operación',
+    desc: 'Ver sugerencias de sección exige permiso (\'academia\',\'leer\'). Aplicada a `sugerencias_seccion`.',
+    detalle: '',
+    nota: 'SELECT · rol authenticated',
+    tabla: 'sugerencias_seccion',
+    linea: 9787,
+    claves: 'sugerencias_seccion api_sugerencias_leer politica rls',
+    params: [],
+    pasos: [],
+    sql: `CREATE POLICY "api_sugerencias_leer" ON "horarios"."sugerencias_seccion" FOR SELECT TO "authenticated" USING ("horarios"."usuario_actual_tiene_permiso"('academia'::"text", 'leer'::"text"));`,
   },
   {
     id: 'pol-usuarios-api_usuarios_para_auditoria',
@@ -13045,105 +16981,275 @@ $$;`,
     detalle: '',
     nota: 'SELECT · rol authenticated',
     tabla: 'usuarios',
-    linea: 8643,
+    linea: 9815,
     claves: 'usuarios api_usuarios_para_auditoria politica rls',
     params: [],
     pasos: [],
-    sql: `CREATE POLICY api_usuarios_para_auditoria ON horarios.usuarios FOR SELECT TO authenticated USING (horarios.usuario_actual_tiene_permiso('auditoria'::text, 'leer'::text));`,
+    sql: `CREATE POLICY "api_usuarios_para_auditoria" ON "horarios"."usuarios" FOR SELECT TO "authenticated" USING (( SELECT "horarios"."usuario_actual_tiene_permiso"('auditoria'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso"));`,
   },
   {
-    id: 'comment-2',
-    nombre: 'COMMENT · SCHEMA public',
+    id: 'comment-104',
+    nombre: 'COMMENT · COLUMN "agrupaciones_area_comun"."curso_comun_id"',
     cat: 'base',
     grupo: 'Preámbulo',
     desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
     detalle: '',
     nota: '',
     tabla: '',
-    linea: 57,
+    linea: 4521,
     claves: '',
     params: [],
     pasos: [],
-    sql: `COMMENT ON SCHEMA public IS 'standard public schema';`,
+    sql: `COMMENT ON COLUMN "horarios"."agrupaciones_area_comun"."curso_comun_id" IS 'La clase compartida de la que sale la agrupacion. Con la jornada y el periodo, es su identidad: de aqui se derivan sus cursos y sus cohortes.';`,
   },
   {
-    id: 'comment-93',
-    nombre: 'COMMENT · VIEW api_cursos_periodo',
+    id: 'comment-105',
+    nombre: 'COMMENT · COLUMN "agrupaciones_area_comun"."jornada_id"',
     cat: 'base',
     grupo: 'Preámbulo',
     desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
     detalle: '',
     nota: '',
     tabla: '',
-    linea: 3784,
+    linea: 4528,
     claves: '',
     params: [],
     pasos: [],
-    sql: `COMMENT ON VIEW horarios.api_cursos_periodo IS 'Cursos derivados de las cohortes activas de un período. Misma regla que el motor: pensum de la cohorte × semestre en que la cohorte está ese período.';`,
+    sql: `COMMENT ON COLUMN "horarios"."agrupaciones_area_comun"."jornada_id" IS 'La jornada de la agrupacion. Una sesion tiene una sola jornada, asi que solo entran cohortes de esta.';`,
+  },
+  {
+    id: 'comment-125',
+    nombre: 'COMMENT · COLUMN "asignaciones_docente_curso"."carrera_id"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 4893,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON COLUMN "horarios"."asignaciones_docente_curso"."carrera_id" IS 'Sin uso: la carrera se deduce del pensum del curso. La restricción la obliga a ser nula.';`,
+  },
+  {
+    id: 'comment-126',
+    nombre: 'COMMENT · COLUMN "asignaciones_docente_curso"."facultad_id"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 4900,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON COLUMN "horarios"."asignaciones_docente_curso"."facultad_id" IS 'Sin uso: la facultad se deduce de la carrera del pensum. La restricción la obliga a ser nula.';`,
+  },
+  {
+    id: 'comment-120',
+    nombre: 'COMMENT · COLUMN "recursos"."tipo"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 4808,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON COLUMN "horarios"."recursos"."tipo" IS 'fijo: instalado en el aula, restringe qué aulas sirven. opcional: el docente lo solicita, no restringe el aula.';`,
+  },
+  {
+    id: 'comment-43',
+    nombre: 'COMMENT · FUNCTION "consultar_revision_horario"("p_horario_id" "uuid", "p_cohorte_id" "uuid", "p_docente_filtro_id" "uuid", "p_aula_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pagina" integer, "p_tamano_pagina" integer, "p_ver_todo" boolean, "p_docente_alcance_id" "uuid", "p_facultad_ids" "uuid"[])',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 1588,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "p_cohorte_id" "uuid", "p_docente_filtro_id" "uuid", "p_aula_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pagina" integer, "p_tamano_pagina" integer, "p_ver_todo" boolean, "p_docente_alcance_id" "uuid", "p_facultad_ids" "uuid"[]) IS 'El horario generado por paginas, con sus conflictos y sus huecos. Cada clase sin colocar viene ubicada en su carrera, semestre, curso y cohorte, para que la revision la enseñe dentro del horario y no en una lista aparte.';`,
+  },
+  {
+    id: 'comment-55',
+    nombre: 'COMMENT · FUNCTION "cursos_equivalentes"("p_curso_id" "uuid")',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 2162,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON FUNCTION "horarios"."cursos_equivalentes"("p_curso_id" "uuid") IS 'El curso y los demás miembros de su curso común. Un curso sin grupo se devuelve solo.';`,
+  },
+  {
+    id: 'comment-65',
+    nombre: 'COMMENT · FUNCTION "guardar_rejilla_cohortes"("p_periodo_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pensum_id" "uuid", "p_seccion" "text", "p_semestres" integer[], "p_matricula" integer)',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 2697,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON FUNCTION "horarios"."guardar_rejilla_cohortes"("p_periodo_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pensum_id" "uuid", "p_seccion" "text", "p_semestres" integer[], "p_matricula" integer) IS 'Guarda una fila de la rejilla carrera x semestre en una transaccion: busca-o-crea la cohorte de cada semestre marcado con anio_ingreso = año del periodo - floor((semestre-1)/2), la activa en el periodo, desactiva las que se desmarcaron dentro de esa misma carrera, jornada y seccion, y recalcula las areas comunes.';`,
+  },
+  {
+    id: 'comment-84',
+    nombre: 'COMMENT · FUNCTION "recalcular_areas_comunes_periodo"("p_periodo_id" "uuid")',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 3232,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON FUNCTION "horarios"."recalcular_areas_comunes_periodo"("p_periodo_id" "uuid") IS 'Rehace la membresia de todas las areas comunes de un periodo a partir de las vistas derivadas y valida cada una. Es la unica forma de escribir agrupacion_area_comun_cursos y agrupacion_area_comun_cohortes desde la derivacion.';`,
+  },
+  {
+    id: 'comment-92',
+    nombre: 'COMMENT · FUNCTION "validar_agrupacion_area_comun"("p_id" "uuid")',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 3474,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON FUNCTION "horarios"."validar_agrupacion_area_comun"("p_id" "uuid") IS 'Valida una agrupacion de area comun: al menos dos cursos, ninguno repetido de pensum, todos marcados como area comun, y una sola jornada entre sus cohortes. Que las cohortes cursen la clase este periodo ya lo garantiza vista_area_comun_cohortes_derivadas.';`,
+  },
+  {
+    id: 'comment-99',
+    nombre: 'COMMENT · FUNCTION "validar_sesion_en_jornada"()',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 4307,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON FUNCTION "horarios"."validar_sesion_en_jornada"() IS 'Valida una sesion contra su jornada, aula, docente y disponibilidad. La autorizacion docente-curso se resuelve por cursos_equivalentes, igual que en completar_sesion_cohorte y validar_horario_publicable, y se comprueba tambien en las sesiones de area comun.';`,
+  },
+  {
+    id: 'comment-135',
+    nombre: 'COMMENT · TABLE "curso_comun"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 5027,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON TABLE "horarios"."curso_comun" IS 'Grupo de cursos de distintos pensums que son el mismo curso. De aquí salen las agrupaciones de área común de cada período.';`,
+  },
+  {
+    id: 'comment-141',
+    nombre: 'COMMENT · TABLE "docente_facultades"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 5095,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON TABLE "horarios"."docente_facultades" IS 'Facultades a las que pertenece un docente. Cero filas = sin facultad específica.';`,
+  },
+  {
+    id: 'comment-117',
+    nombre: 'COMMENT · VIEW "api_cursos_periodo"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 4769,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON VIEW "horarios"."api_cursos_periodo" IS 'Cursos derivados de las cohortes activas de un período. Misma regla que el motor: pensum de la cohorte × semestre en que la cohorte está ese período.';`,
+  },
+  {
+    id: 'comment-176',
+    nombre: 'COMMENT · VIEW "vista_area_comun_cohortes_derivadas"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 5752,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON VIEW "horarios"."vista_area_comun_cohortes_derivadas" IS 'Las cohortes de cada agrupacion: las activas del periodo, en su jornada, que cursan alguno de sus cursos en el semestre que tienen asignado.';`,
+  },
+  {
+    id: 'comment-174',
+    nombre: 'COMMENT · VIEW "vista_area_comun_cursos_derivados"',
+    cat: 'base',
+    grupo: 'Preámbulo',
+    desc: 'Comentario guardado dentro de la propia base, visible desde cualquier cliente SQL.',
+    detalle: '',
+    nota: '',
+    tabla: '',
+    linea: 5729,
+    claves: '',
+    params: [],
+    pasos: [],
+    sql: `COMMENT ON VIEW "horarios"."vista_area_comun_cursos_derivados" IS 'Los cursos de cada agrupacion, derivados de su curso_comun. Es la definicion de la membresia de cursos; agrupacion_area_comun_cursos es su materializacion.';`,
   },
   {
     id: 'pre-cabecera',
-    nombre: 'Cabecera del archivo',
+    nombre: 'Origen y parámetros del volcado',
     cat: 'base',
     grupo: 'Preámbulo',
-    desc: 'Explica qué es este archivo: una foto de la base viva, no la fuente de verdad. La fuente son las migraciones de `supabase/migrations/`; aquí abajo está el comando exacto para volver a generarlo.',
+    desc: 'Instantánea de la estructura del esquema `horarios` de la base local del proyecto de referencia. Incluye el origen y los parámetros de pg_dump; las migraciones viven en `supabase/migrations/`.',
     detalle: '',
     nota: '',
     tabla: '',
     linea: 1,
-    claves: 'regenerar pg_dump migraciones fuente de verdad',
+    claves: 'regenerar pg_dump migraciones fuente set search_path client_encoding',
     params: [],
     pasos: [],
-    sql: `-- Esquema completo del sistema de horarios: instantánea de la base viva.
--- Documento de referencia, NO ejecutable como migración: la fuente de verdad
--- del esquema es supabase/migrations/. Este archivo existe para leer y comparar
--- (ver guiaR3.md), y debe regenerarse cada vez que se agregue una migración.
+    sql: `-- Instantánea de la presentación: 2026-09-09
+-- Fuente: base local de HORARIOS/Horarios-develop, contenedor supabase_db_horarios.
+-- Solo estructura del esquema horarios; no contiene filas, propietarios ni permisos GRANT.
+-- Regenerar: docker exec supabase_db_horarios pg_dump --schema-only --no-owner --no-privileges --quote-all-identifiers -n horarios -U postgres postgres
+-- Las migraciones se mantienen en supabase/migrations/ del proyecto de referencia.
 --
--- Live Supabase schema snapshot: 2026-08-04
--- Migraciones incluidas: 202608010001 … 202608060002_retirar_compatibilidad_corridas
---
--- Regenerar con la base local ya migrada:
---   docker exec supabase_db_horarios pg_dump --schema-only --no-owner \\
---     --no-privileges -n public -n horarios -U postgres postgres
--- y volver a anteponer esta cabecera y las extensiones (pg_dump las omite al
--- filtrar por esquema). Se quitan las meta-órdenes \\restrict/\\unrestrict, que
--- solo entiende psql.
-
--- Extensiones requeridas por defaults y restricciones de exclusion.`,
-  },
-  {
-    id: 'pre-extensiones',
-    nombre: 'Extensiones (pgcrypto, btree_gist)',
-    cat: 'base',
-    grupo: 'Preámbulo',
-    desc: 'Las dos extensiones que el esquema necesita: `pgcrypto` para generar los UUID de cada fila y `btree_gist` para que los índices de exclusión sepan comparar uuid y enum, que es lo que hace posible prohibir los solapes de horario.',
-    detalle: '',
-    nota: '',
-    tabla: '',
-    linea: 17,
-    claves: 'uuid gen_random_uuid exclusion gist solapes',
-    params: [],
-    pasos: [],
-    sql: `CREATE EXTENSION IF NOT EXISTS pgcrypto;
-CREATE EXTENSION IF NOT EXISTS btree_gist;`,
-  },
-  {
-    id: 'pre-ajustes',
-    nombre: 'Parámetros del volcado',
-    cat: 'base',
-    grupo: 'Preámbulo',
-    desc: 'Los `SET` que pg_dump escribe siempre al principio: tiempos de espera, codificación y desactivación temporal de comprobaciones mientras se restaura. No forman parte del diseño del sistema.',
-    detalle: '',
-    nota: '',
-    tabla: '',
-    linea: 20,
-    claves: 'set search_path client_encoding pg_dump',
-    params: [],
-    pasos: [],
-    sql: `--
 -- PostgreSQL database dump
 --
 
+\\restrict VEd9KakYnvmURGDx8mAbQH0reA9KeXpbPYfETHPgS7Qvg8vXmTb2c9TUsJpPtZb
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -13169,34 +17275,19 @@ SET row_security = off;`,
     detalle: '',
     nota: '',
     tabla: '',
-    linea: 43,
+    linea: 30,
     claves: 'esquema schema separacion',
     params: [],
     pasos: [],
-    sql: `CREATE SCHEMA horarios;`,
-  },
-  {
-    id: 'schema-public',
-    nombre: 'SCHEMA public',
-    cat: 'base',
-    grupo: 'Preámbulo',
-    desc: 'El esquema `public` viene de fábrica con PostgreSQL. Se deja vacío a propósito: así ninguna extensión instalada choca con nuestras tablas.',
-    detalle: '',
-    nota: '',
-    tabla: '',
-    linea: 50,
-    claves: 'esquema schema separacion',
-    params: [],
-    pasos: [],
-    sql: `CREATE SCHEMA public;`,
+    sql: `CREATE SCHEMA "horarios";`,
   },
 ];
 
 export const META = {
   archivo: 'docs/database.sql',
-  lineas: 8974,
-  lineasTexto: '8 974',
-  objetos: 722,
+  lineas: 10313,
+  lineasTexto: '10 313',
+  objetos: 784,
   cobertura: 100.0,
-  instantanea: '2026-08-04',
+  instantanea: '2026-09-09',
 };

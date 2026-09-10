@@ -122,8 +122,13 @@
                 }
               </dl>
             } @else {
-              <p class="ninguno">Ninguno: la dispara la base y recibe la fila en
-                <code>new</code> y <code>old</code>.</p>
+              <p class="ninguno">
+                @if (o.nota.includes('devuelve trigger')) {
+                  Ninguno: la dispara la base y recibe la fila en <code>new</code> y <code>old</code>.
+                } @else {
+                  No recibe parámetros.
+                }
+              </p>
             }
           </div>
 

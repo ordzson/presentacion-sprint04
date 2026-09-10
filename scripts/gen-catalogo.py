@@ -9,9 +9,9 @@ y no un resumen.
 import re
 from pathlib import Path
 
-ROOT = Path("/home/ordson/Documentos/Universidad/HORARIOS/Horarios-develop")
+ROOT = Path(__file__).resolve().parent.parent
 SQL = ROOT / "docs" / "database.sql"
-OUT = ROOT / "presentacion-sprint04" / "src" / "app" / "data" / "catalogo-data.ts"
+OUT = ROOT / "src" / "app" / "data" / "catalogo-data.ts"
 
 # ---------------------------------------------------------------- dominios
 # Mismo reparto que la slide del esquema (scripts/gen-erd.py): así el
@@ -20,14 +20,14 @@ OUT = ROOT / "presentacion-sprint04" / "src" / "app" / "data" / "catalogo-data.t
 DOMINIOS = {
     "academico": [
         "facultades", "carreras", "pensums", "cursos", "cursos_en_pensum",
-        "curso_carreras_compartidas", "cohortes", "cohorte_periodos",
+        "curso_comun", "curso_comun_cursos", "cohortes", "cohorte_periodos",
         "periodos_academicos", "jornadas", "jornada_descansos", "carrera_jornadas",
         "agrupaciones_area_comun", "agrupacion_area_comun_cursos",
         "agrupacion_area_comun_cohortes",
     ],
     "infraestructura": ["aulas", "recursos", "aula_recursos", "curso_recursos_requeridos"],
     "docentes": [
-        "docentes", "asignaciones_docente_curso", "disponibilidades_docente",
+        "docentes", "docente_facultades", "asignaciones_docente_curso", "disponibilidades_docente",
         "disponibilidad_docente_slots", "ventanas_disponibilidad", "eventos_sustitucion",
     ],
     "motor": [
@@ -71,12 +71,16 @@ TABLAS_DESC = {
         "Planes de estudio de una carrera, uno por año de creación, con su estado "
         "(borrador, vigente, en retiro, archivado)."),
     "cursos": (
-        "Catálogo de materias: código, nombre, si exige laboratorio y si es de área común."),
+        "Materias propias de cada pensum: código, nombre, requisitos de laboratorio y marca de área común."),
     "cursos_en_pensum": (
         "La malla curricular: qué curso va en qué semestre de qué pensum, cuántos bloques "
         "semanales exige y si los prefiere consecutivos."),
-    "curso_carreras_compartidas": (
-        "Puente N:M. Carreras que comparten un mismo curso; es la base para agrupar el área común."),
+    "curso_comun": (
+        "Grupos de cursos equivalentes de distintos pensums: una misma clase compartida con varios nombres en las mallas."),
+    "curso_comun_cursos": (
+        "Cursos de cada grupo de equivalencia. Un curso solo pertenece a un curso común y no se repite el pensum dentro del grupo."),
+    "docente_facultades": (
+        "Puente N:M. Facultades a las que pertenece cada docente; sustituye la pertenencia a una sola facultad."),
     "cohortes": (
         "Grupos de estudiantes: carrera + pensum + jornada + año de ingreso + sección, "
         "con su matrícula estimada y su estado."),
@@ -93,8 +97,7 @@ TABLAS_DESC = {
         "restricción de exclusión impide que dos se pisen."),
     "carrera_jornadas": "Puente N:M. En qué jornadas se imparte cada carrera.",
     "agrupaciones_area_comun": (
-        "Cabecera de un área común: el curso principal que varias cohortes toman juntas "
-        "en un período."),
+        "Clase compartida identificada por período, curso común y jornada. Sus cursos y cohortes se derivan del catálogo y de las cohortes activas."),
     "agrupacion_area_comun_cursos": "Puente N:M. Cursos que integran una agrupación de área común.",
     "agrupacion_area_comun_cohortes": (
         "Puente N:M. Cohortes que asisten juntas a una agrupación de área común."),
@@ -208,6 +211,7 @@ TABLAS_DESC = {
 # ---------------------------------------------------------------- tipos ENUM
 
 TIPOS_DESC = {
+    "tipo_recurso": "Clasifica los recursos físicos que pueden tener las aulas y requerir los cursos.",
     "accion_permiso": "Las acciones que puede conceder un permiso: leer, crear, actualizar, eliminar, generar, aprobar, publicar, archivar, importar, exportar y administrar.",
     "canal_notificacion": "Por dónde sale un aviso. Hoy solo `interno`: la base no envía correo.",
     "dia_semana": "Los siete días. Impide que un día llegue como texto libre («Lunes», «lun», «LUNES»).",
@@ -234,6 +238,10 @@ TIPOS_DESC = {
 # ---------------------------------------------------------------- vistas
 
 VISTAS = {
+    "vista_area_comun_cursos_derivados": ("Vistas vista_* · lectura pesada",
+        "Cursos de cada agrupación derivados de su curso común, excluyendo cursos y agrupaciones borrados. Respeta RLS."),
+    "vista_area_comun_cohortes_derivadas": ("Vistas vista_* · lectura pesada",
+        "Cohortes activas del período y la jornada que cursan alguna materia de la agrupación en su semestre asignado. Respeta RLS."),
     "api_auditoria": ("Vistas api_* · atajos del cliente",
         "La bitácora de auditoría con el nombre del usuario ya resuelto, para listarla sin joins."),
     "api_cohortes_activas": ("Vistas api_* · atajos del cliente",
@@ -275,7 +283,7 @@ FUNCIONES = {
         "Es el puente entre Supabase Auth y el sistema. Al filtrar por `estado = 'activo'`, dar de baja a alguien lo deja fuera aunque su token siga siendo válido."),
     "usuario_actual_tiene_permiso": (G_SEG,
         "¿El usuario de la sesión puede hacer (recurso, acción)? Es la función que evalúan casi todas las políticas RLS.",
-        "Una sola función sostiene las 242 políticas: se cambia aquí y cambia el control de acceso de todo el esquema."),
+        "Centraliza la comprobación de permisos por recurso y acción; las políticas añaden condiciones de alcance y pertenencia."),
     "usuario_tiene_permiso": (G_SEG,
         "Lo mismo, pero para un usuario indicado a mano. No es SECURITY DEFINER, así que respeta RLS.", ""),
     "crear_usuario_inicial": (G_SEG,
@@ -304,8 +312,8 @@ FUNCIONES = {
     "revocar_curso_docente": (G_DOC,
         "Retira la autorización marcando `esta_vigente = false`. No borra el historial.", ""),
     "guardar_disponibilidad_docente": (G_DOC,
-        "Guarda las franjas que declara el docente y las expande a bloques concretos en `disponibilidad_docente_slots`.",
-        "Al motor no le sirven franjas: necesita bloques. La expansión ocurre aquí, una sola vez, y no en cada corrida."),
+        "Guarda la cabecera de disponibilidad y reemplaza sus bloques en `disponibilidad_docente_slots`.",
+        "Los bloques llegan en JSON; `ventanas_disponibilidad` define fechas de captura, no franjas horarias del docente."),
     "obtener_disponibilidad_docente": (G_DOC,
         "Devuelve la disponibilidad guardada de un docente en un período, lista para pintar la grilla.", ""),
     # --- planes
@@ -346,7 +354,8 @@ FUNCIONES = {
     "consultar_horario_publicado": (G_CON,
         "Igual que la anterior pero solo sobre lo publicado. Es la que alimenta la vista pública.", ""),
     "consultar_revision_horario": (G_CON,
-        "La vista de revisión previa a aprobar, con los mismos filtros y paginación.", ""),
+        "Consulta paginada del horario para revisión, con conflictos y clases pendientes ubicadas por carrera, semestre, curso y cohorte.",
+        "Devuelve slots, sesiones, conflictos y pendientes para construir la revisión por carrera y semestre."),
     "consultar_datos_reporte": (G_CON,
         "Arma encabezados y filas para exportar a PDF o XLSX. Exige que la generación esté `completada`.", ""),
     "listar_cohortes_publicadas": (G_CON,
@@ -364,7 +373,7 @@ FUNCIONES = {
         "Antes de cada UPDATE pone `actualizado_en = now()`. Para las tablas que no llevan `version_fila`.", ""),
     "actualizar_marca_con_version": (T_MARCA,
         "Antes de cada UPDATE pone `actualizado_en = now()` y sube `version_fila` en uno. Es el motor del bloqueo optimista.",
-        "Está enganchada a 17 tablas. Nadie escribe esos dos campos a mano."),
+        "Está enganchada a 18 tablas. Nadie escribe esos dos campos a mano."),
     "validar_cohorte_periodo": (T_VALID,
         "Rechaza activar una cohorte que no existe o no está activa, o con un semestre que excede la carrera o el pensum.", ""),
     "validar_descanso_en_jornada": (T_VALID,
@@ -694,6 +703,90 @@ PASOS = {
     ],
 }
 
+# Funciones incorporadas al catálogo de cursos, áreas comunes y autoservicio.
+# Cada entrada incluye descripción y pasos contrastados con la instantánea SQL.
+NUEVAS_FUNCIONES = {
+    "crear_curso_en_pensum": (G_ACA, "Crea una materia propia de un pensum y su entrada en la malla curricular.", [
+        "Inserta el curso con su pensum, código, nombre y requisitos de laboratorio y área común.",
+        "Inserta la malla con semestre, bloques, consecutividad y máximo diario; devuelve curso y malla juntos.",
+    ]),
+    "actualizar_curso_en_pensum": (G_ACA, "Actualiza juntos los datos de una materia y su carga dentro del pensum.", [
+        "Actualiza el curso vivo; si deja de ser área común, retira su pertenencia al grupo de equivalencia.",
+        "Actualiza su malla y devuelve ambas filas; falla si falta el curso o la malla.",
+    ]),
+    "eliminar_curso_en_pensum": (G_ACA, "Da de baja lógica un curso y su malla, y retira su equivalencia compartida.", [
+        "Marca el curso y sus filas de malla con `eliminado_en`.",
+        "Borra su vínculo en `curso_comun_cursos`; devuelve false si el curso ya no estaba vivo.",
+    ]),
+    "crear_curso_comun": (G_ACA, "Crea un grupo de equivalencia entre materias de distintos pensums.", [
+        "Inserta el grupo con su nombre.",
+        "Delega la validación y la membresía en `fijar_cursos_comunes`; devuelve el grupo y sus cursos.",
+    ]),
+    "actualizar_curso_comun": (G_ACA, "Renombra un curso común y reemplaza sus materias equivalentes.", [
+        "Actualiza el grupo vivo; falla si no existe.",
+        "Reemplaza los miembros mediante `fijar_cursos_comunes` y devuelve el resultado.",
+    ]),
+    "fijar_cursos_comunes": (G_ACA, "Reemplaza los cursos equivalentes exigiendo al menos dos materias de pensums distintos.", [
+        "Exige al menos dos cursos marcados como área común y sin repetir pensum.",
+        "Retira los miembros anteriores y rechaza cursos que ya pertenezcan a otro grupo.",
+        "Inserta la membresía nueva en la misma transacción.",
+    ]),
+    "listar_cursos_comunes": (G_ACA, "Lista los grupos de equivalencia vivos con sus identificadores de curso.", [
+        "Lee los grupos sin borrado lógico y anida los ids de sus materias.",
+        "Devuelve JSON ordenado por nombre, o un arreglo vacío si no hay grupos.",
+    ]),
+    "cursos_equivalentes": (G_ACA, "Devuelve el curso consultado y los demás miembros de su curso común vigente.", [
+        "Incluye siempre el identificador recibido.",
+        "Une los cursos del mismo grupo no eliminado y elimina duplicados con UNION.",
+    ]),
+    "crear_agrupacion_desde_curso_comun": (G_ACA, "Crea una clase compartida para un período y jornada a partir de un grupo de equivalencia.", [
+        "Comprueba que el curso común exista y crea la agrupación con su período y jornada.",
+        "Recalcula las membresías del período desde las vistas derivadas.",
+        "Fija como principal el curso incluido de menor código y devuelve la agrupación.",
+    ]),
+    "recalcular_areas_comunes_periodo": (G_ACA, "Sincroniza las tablas puente de áreas comunes con los cursos y cohortes derivados del período.", [
+        "Recorre las agrupaciones vivas del período.",
+        "Reemplaza cursos y cohortes con el resultado de las dos vistas derivadas.",
+        "Valida cada agrupación y devuelve cuántas recalculó.",
+    ]),
+    "validar_agrupacion_area_comun": (G_ACA, "Comprueba los cursos equivalentes y la jornada de una agrupación; admite una sola cohorte.", [
+        "Exige una agrupación viva con al menos dos cursos y sin repetir pensum.",
+        "Rechaza cursos eliminados o no marcados como área común.",
+        "Impide mezclar cohortes de distintas jornadas; no exige un mínimo de dos cohortes.",
+    ]),
+    "guardar_rejilla_cohortes": (G_ACA, "Activa o desactiva semestres de una fila de la rejilla de cohortes y recalcula sus áreas comunes.", [
+        "Valida período, pensum, carrera, sección y matrícula; garantiza el vínculo carrera-jornada.",
+        "Reutiliza cohortes existentes o crea las necesarias para los semestres seleccionados, conservando matrículas previas.",
+        "Desactiva los semestres desmarcados solo dentro de esa carrera, jornada y sección.",
+        "Recalcula las áreas comunes del período y devuelve los conteos de la operación.",
+    ]),
+    "fijar_facultades_docente": (G_DOC, "Reemplaza el conjunto de facultades de un docente existente.", [
+        "Comprueba que el docente exista y no esté eliminado.",
+        "Retira sus vínculos anteriores e inserta las facultades recibidas sin duplicados.",
+    ]),
+    "crear_usuario_docente": (G_SEG, "Vincula una cuenta de Supabase Auth con un docente y le asigna el rol docente.", [
+        "Serializa el alta con un advisory lock y exige un docente activo.",
+        "Reutiliza el vínculo si coincide; rechaza cuentas, docentes o correos ya asociados de forma incompatible.",
+        "Inserta el usuario y su rol docente y devuelve el perfil creado.",
+    ]),
+    "guardar_mi_disponibilidad_docente": (G_DOC, "Guarda la disponibilidad del docente identificado por la sesión autenticada.", [
+        "Resuelve el docente desde `auth.uid()` y exige un usuario docente activo, período válido y lista de bloques.",
+        "Impide confirmar una disponibilidad vacía.",
+        "Crea o actualiza la cabecera, reemplaza los bloques y devuelve la disponibilidad con sus slots.",
+    ]),
+    "obtener_mi_disponibilidad_docente": (G_DOC, "Consulta la disponibilidad del docente de la sesión para un período.", [
+        "Resuelve el docente desde el usuario activo asociado a `auth.uid()`.",
+        "Lee su cabecera y devuelve los slots ordenados por jornada, día e índice.",
+    ]),
+    "limpiar_miembros_curso_comun": (T_PROP, "Retira la membresía de un curso común cuando se marca como eliminado.", [
+        "El trigger se activa al cambiar `eliminado_en` de NULL a una fecha.",
+        "Borra los vínculos del grupo en `curso_comun_cursos` y devuelve la fila nueva.",
+    ]),
+}
+for nombre, (grupo, descripcion, pasos) in NUEVAS_FUNCIONES.items():
+    FUNCIONES[nombre] = (grupo, descripcion, "")
+    PASOS[nombre] = pasos
+
 # ---------------------------------------------------------------- políticas RLS
 
 P_CAT = "Políticas · catálogo"
@@ -704,6 +797,22 @@ P_IMP = "Políticas · importación"
 P_BIT = "Políticas · bitácora y operación"
 
 POLITICAS = {
+    "curso_comun_leer": (P_CAT, "Consultar grupos de equivalencia exige permiso ('academia','leer')."),
+    "curso_comun_insertar": (P_CAT, "Crear grupos de equivalencia exige permiso ('academia','crear')."),
+    "curso_comun_actualizar": (P_CAT, "Actualizar grupos de equivalencia exige permiso ('academia','crear')."),
+    "curso_comun_eliminar": (P_CAT, "Eliminar grupos de equivalencia exige permiso ('academia','crear')."),
+    "curso_comun_cursos_leer": (P_CAT, "Consultar materias equivalentes exige permiso ('academia','leer')."),
+    "curso_comun_cursos_insertar": (P_CAT, "Añadir materias a un grupo exige permiso ('academia','crear')."),
+    "curso_comun_cursos_eliminar": (P_CAT, "Retirar materias de un grupo exige permiso ('academia','crear')."),
+    "docente_consulta_su_disponibilidad": (P_DOC, "El usuario docente activo consulta su propia cabecera de disponibilidad."),
+    "docente_inserta_su_disponibilidad": (P_DOC, "El usuario docente activo crea una cabecera de disponibilidad a su nombre."),
+    "docente_actualiza_su_disponibilidad": (P_DOC, "El usuario docente activo modifica su propia cabecera de disponibilidad."),
+    "docente_consulta_sus_bloques_disponibles": (P_DOC, "El usuario docente activo consulta los bloques vinculados a su disponibilidad."),
+    "docente_inserta_sus_bloques_disponibles": (P_DOC, "El usuario docente activo añade bloques a su propia disponibilidad."),
+    "docente_actualiza_sus_bloques_disponibles": (P_DOC, "El usuario docente activo modifica bloques de su propia disponibilidad."),
+    "docente_elimina_sus_bloques_disponibles": (P_DOC, "El usuario docente activo elimina bloques de su propia disponibilidad."),
+    "docente_restringe_disponibilidad_propia": (P_DOC, "Política restrictiva: si el usuario es docente, limita el acceso a su disponibilidad aunque otra política conceda un permiso más amplio."),
+    "docente_restringe_bloques_propios": (P_DOC, "Política restrictiva: si el usuario es docente, limita el acceso a bloques de su disponibilidad aunque otra política conceda un permiso más amplio."),
     "api_catalogo_leer": (P_CAT, "Leer el catálogo: basta con tener sesión activa en el sistema."),
     "api_catalogo_insertar": (P_CAT, "Insertar en el catálogo: exige permiso ('academia','crear') o ser administrador de auditoría."),
     "api_catalogo_actualizar": (P_CAT, "Actualizar el catálogo: exige permiso ('academia','crear') o ser administrador de auditoría."),
@@ -754,7 +863,7 @@ INDICES_DESC = {
     "importaciones_clave_solicitud_uq": "Idempotencia: reintentar la misma importación no la duplica.",
     "notificaciones_clave_solicitud_uq": "Idempotencia: el mismo aviso no se manda dos veces.",
     "resultados_edicion_clave_solicitud_uq": "Idempotencia: mover la misma sesión dos veces por un doble clic no genera dos resultados.",
-    "cohortes_identidad_uq": "La identidad de una cohorte —carrera, pensum, jornada, año y sección— no se repite entre cohortes vivas.",
+    "cohortes_identidad_uq": "La identidad de una cohorte —carrera, jornada, año y sección sin distinguir mayúsculas— no se repite entre cohortes vivas.",
     "cohorte_periodos_periodo_cohorte_uq": "Una cohorte aparece una sola vez por período.",
     "asignaciones_docente_curso_vigente_uq": "No se duplica la autorización vigente de un docente sobre el mismo curso y alcance.",
     "plantillas_importacion_vigente_uq": "Solo una plantilla vigente por código de importación.",
@@ -821,7 +930,7 @@ def partir_argumentos(texto: str) -> list[str]:
 
 def parametros(sql: str) -> list[dict]:
     salida = []
-    for arg in partir_argumentos(firma(sql)):
+    for arg in partir_argumentos(firma(sin_comillas(sql))):
         arg = " ".join(arg.split())
         if not arg:
             continue
@@ -841,11 +950,19 @@ def parametros(sql: str) -> list[dict]:
 
 # ---------------------------------------------------------------- parseo
 
+def sin_comillas(sql: str) -> str:
+    """Normaliza identificadores para leer metadatos; conserva el SQL original en la ficha."""
+    return re.sub(r'"(\w+)"', r'\1', sql)
+
+
 texto = SQL.read_text(encoding="utf-8")
+fecha = re.search(r"^-- Instantánea de la presentación: (\d{4}-\d{2}-\d{2})$", texto, re.M)
+if not fecha:
+    raise SystemExit("Falta la fecha de la instantánea en docs/database.sql")
 lineas_totales = texto.count("\n") + 1
 
 HDR = re.compile(
-    r"^--\n-- Name: (?P<name>.*?); Type: (?P<type>[A-Z ]+); Schema: (?P<schema>[^;]*); Owner: -\n--\n",
+    r"^--\n-- Name: (?P<name>.*?); Type: (?P<type>[A-Z ]+); Schema: (?P<schema>[^;]*); Owner: [^\n]+\n--\n",
     re.M,
 )
 
@@ -876,26 +993,10 @@ def agregar(id_, nombre, cat, grupo, desc, sql, linea, tabla="", nota="", detall
 
 preambulo = texto[: marcas[0].start()]
 cubierto += len(preambulo)
-corte = preambulo.index("CREATE EXTENSION")
-cabecera, resto = preambulo[:corte], preambulo[corte:]
-corte2 = resto.index("--\n-- PostgreSQL database dump")
-extensiones, ajustes = resto[:corte2], resto[corte2:]
-
-agregar("pre-cabecera", "Cabecera del archivo", "base", "Preámbulo",
-        "Explica qué es este archivo: una foto de la base viva, no la fuente de verdad. "
-        "La fuente son las migraciones de `supabase/migrations/`; aquí abajo está el comando "
-        "exacto para volver a generarlo.",
-        cabecera, 1, claves="regenerar pg_dump migraciones fuente de verdad")
-agregar("pre-extensiones", "Extensiones (pgcrypto, btree_gist)", "base", "Preámbulo",
-        "Las dos extensiones que el esquema necesita: `pgcrypto` para generar los UUID de "
-        "cada fila y `btree_gist` para que los índices de exclusión sepan comparar uuid y "
-        "enum, que es lo que hace posible prohibir los solapes de horario.",
-        extensiones, linea_de(corte), claves="uuid gen_random_uuid exclusion gist solapes")
-agregar("pre-ajustes", "Parámetros del volcado", "base", "Preámbulo",
-        "Los `SET` que pg_dump escribe siempre al principio: tiempos de espera, codificación "
-        "y desactivación temporal de comprobaciones mientras se restaura. No forman parte del "
-        "diseño del sistema.",
-        ajustes, linea_de(corte + corte2), claves="set search_path client_encoding pg_dump")
+agregar("pre-cabecera", "Origen y parámetros del volcado", "base", "Preámbulo",
+        "Instantánea de la estructura del esquema `horarios` de la base local del proyecto de referencia. "
+        "Incluye el origen y los parámetros de pg_dump; las migraciones viven en `supabase/migrations/`.",
+        preambulo, 1, claves="regenerar pg_dump migraciones fuente set search_path client_encoding")
 
 # --- un bloque por objeto --------------------------------------------------
 
@@ -907,6 +1008,7 @@ for i, m in enumerate(marcas):
     tipo = m.group("type").strip()
     linea = linea_de(m.end())
     sql = cuerpo
+    lectura = sin_comillas(sql)
 
     # -- esquemas y comentarios
     if tipo == "SCHEMA":
@@ -941,7 +1043,7 @@ for i, m in enumerate(marcas):
 
     # -- tablas
     if tipo == "TABLE":
-        cols = re.findall(r"^\s{4}(\w+) ", sql, re.M)
+        cols = re.findall(r"^    (?!CONSTRAINT\b|CHECK\b)(\w+) ", lectura, re.M)
         marcas_tabla = []
         if "eliminado_en" in cols:
             marcas_tabla.append("borrado lógico")
@@ -951,7 +1053,9 @@ for i, m in enumerate(marcas):
             marcas_tabla.append("idempotencia")
         if "GENERATED ALWAYS" in sql:
             marcas_tabla.append("columnas generadas")
-        dom = DOM_DE.get(nombre, "operacion")
+        if nombre not in DOM_DE or nombre not in TABLAS_DESC:
+            raise SystemExit(f"Falta clasificar o describir la tabla {nombre}")
+        dom = DOM_DE[nombre]
         agregar(f"tabla-{nombre}", nombre, "tabla", DOM_LABEL[dom],
                 TABLAS_DESC.get(nombre, "Tabla del esquema."),
                 sql, linea, tabla=nombre,
@@ -974,8 +1078,8 @@ for i, m in enumerate(marcas):
         base = nombre.split("(")[0]
         tipos_firma = nombre[len(base):]
         grupo, desc, detalle = FUNCIONES.get(base, ("Otras funciones", "Función del esquema.", ""))
-        devuelve = re.search(r"RETURNS ([\w\[\] ]+)", sql)
-        lenguaje = re.search(r"LANGUAGE (\w+)", sql)
+        devuelve = re.search(r"RETURNS ([^\n]+)", lectura)
+        lenguaje = re.search(r"LANGUAGE (\w+)", lectura)
         partes = []
         if devuelve:
             partes.append(f"devuelve {devuelve.group(1).strip()}")
@@ -986,7 +1090,7 @@ for i, m in enumerate(marcas):
         elif re.search(r"\bIMMUTABLE\b", sql):
             partes.append("IMMUTABLE")
         elif devuelve and devuelve.group(1).strip() != "trigger":
-            partes.append("escribe")
+            partes.append("VOLATILE")
         if "SECURITY DEFINER" in sql:
             partes.append("SECURITY DEFINER")
         args = parametros(sql)
@@ -1006,7 +1110,9 @@ for i, m in enumerate(marcas):
         mm = re.search(
             r"CREATE TRIGGER \w+ (BEFORE|AFTER|INSTEAD OF) (.*?) ON horarios\.\w+"
             r"(?: REFERENCING.*?)? FOR EACH (ROW|STATEMENT).*?EXECUTE FUNCTION horarios\.(\w+)\(",
-            sql, re.S)
+            lectura, re.S)
+        if not mm:
+            raise SystemExit(f"No se pudo leer el trigger {nombre}")
         momento, eventos, alcance, fn = mm.groups() if mm else ("", "", "ROW", "")
         eventos_txt = eventos.replace(" OR ", ", ").replace(" OF ", " de ")
         grupo, fdesc, _ = FUNCIONES.get(fn, ("Otros triggers", "", ""))
@@ -1029,7 +1135,9 @@ for i, m in enumerate(marcas):
     # -- índices
     if tipo == "INDEX":
         mm = re.search(r"CREATE (UNIQUE )?INDEX \w+ ON horarios\.(\w+) USING (\w+) \((.*?)\)"
-                       r"(?: WHERE \((.*)\))?;", sql, re.S)
+                       r"(?: WHERE (.*?))?;", lectura, re.S)
+        if not mm:
+            raise SystemExit(f"No se pudo leer el índice {nombre}")
         unico = bool(mm.group(1)) if mm else False
         tabla = mm.group(2) if mm else ""
         cols = re.sub(r"\s+", " ", mm.group(4)) if mm else ""
@@ -1052,7 +1160,9 @@ for i, m in enumerate(marcas):
     # -- llaves foráneas
     if tipo == "FK CONSTRAINT":
         mm = re.search(r"ALTER TABLE ONLY horarios\.(\w+)\s*\n\s*ADD CONSTRAINT \w+ FOREIGN KEY "
-                       r"\(([^)]+)\) REFERENCES ([\w.]+)\(([^)]+)\)([^;]*);", sql, re.S)
+                       r"\(([^)]+)\) REFERENCES ([\w.]+)\(([^)]+)\)([^;]*);", lectura, re.S)
+        if not mm:
+            raise SystemExit(f"No se pudo leer la clave foránea {nombre}")
         if mm:
             hija, cols, padre, pcols, cola = mm.groups()
             onde = re.search(r"ON DELETE (CASCADE|RESTRICT|SET NULL|SET DEFAULT|NO ACTION)", cola)
@@ -1071,7 +1181,7 @@ for i, m in enumerate(marcas):
         tabla = nombre.split()[0]
         cname = nombre.split()[1]
         if "PRIMARY KEY" in sql:
-            cols = re.search(r"PRIMARY KEY \(([^)]+)\)", sql).group(1)
+            cols = re.search(r"PRIMARY KEY \(([^)]+)\)", lectura).group(1)
             grupo = "Claves primarias"
             desc = f"Clave primaria de `{tabla}`: identifica cada fila por ({cols})."
             nota = "PRIMARY KEY"
@@ -1080,7 +1190,7 @@ for i, m in enumerate(marcas):
             desc = CONSTRAINTS_DESC.get(cname, f"Restricción de exclusión sobre `{tabla}`.")
             nota = "EXCLUDE USING gist"
         else:
-            cols = re.search(r"UNIQUE \(([^)]+)\)", sql)
+            cols = re.search(r"UNIQUE \(([^)]+)\)", lectura)
             cols = cols.group(1) if cols else ""
             grupo = "Claves únicas"
             desc = f"No admite dos filas de `{tabla}` con el mismo valor de ({cols})."
@@ -1112,7 +1222,7 @@ for i, m in enumerate(marcas):
         cmd = cmd.group(1) if cmd else "TODAS las operaciones"
         agregar(f"pol-{tabla}-{pol}", pol, "rls", grupo, f"{desc} Aplicada a `{tabla}`.",
                 sql, linea, tabla=tabla,
-                nota=f"{cmd} · rol authenticated",
+                nota=f"{cmd} · rol authenticated" + (" · restrictiva" if "AS RESTRICTIVE" in sql else ""),
                 claves=f"{tabla} {pol} politica rls")
         continue
 
@@ -1123,6 +1233,8 @@ for i, m in enumerate(marcas):
 cobertura = round(cubierto / len(texto) * 100, 2)
 if cobertura < 99.99:
     raise SystemExit(f"cobertura incompleta: {cobertura}%")
+if len({o['id'] for o in objetos}) != len(objetos):
+    raise SystemExit("El catálogo contiene identificadores duplicados")
 
 CATEGORIAS = [
     ("tabla", "Tablas", "#3f6fd6"),
@@ -1273,7 +1385,7 @@ out.append(f"  lineas: {lineas_totales},")
 out.append("  lineasTexto: '" + f"{lineas_totales:,}".replace(",", " ") + "',")
 out.append(f"  objetos: {len(objetos)},")
 out.append(f"  cobertura: {cobertura},")
-out.append("  instantanea: '2026-08-04',")
+out.append(f"  instantanea: '{fecha.group(1)}',")
 out.append("};")
 
 OUT.write_text("\n".join(out) + "\n", encoding="utf-8")

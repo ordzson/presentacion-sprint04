@@ -2,6 +2,38 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
 
+## Información de base de datos
+
+El diagrama y el catálogo usan la misma instantánea: `docs/database.sql`, exportada el
+2026-09-09 desde `supabase_db_horarios`, la base local de `HORARIOS/Horarios-develop`.
+Contiene únicamente la estructura del esquema `horarios`, sin filas, propietarios ni
+permisos GRANT. Refleja la base local consultada; no acredita el estado del servidor remoto.
+
+Para actualizarla, exportar primero a un archivo temporal y reemplazar la instantánea
+solo si el comando termina correctamente:
+
+```bash
+docker exec supabase_db_horarios pg_dump --schema-only --no-owner --no-privileges --quote-all-identifiers -n horarios -U postgres postgres > /tmp/horarios-esquema.sql
+```
+
+Conservar en `docs/database.sql` la cabecera de procedencia y actualizar su fecha al
+incorporar el nuevo volcado. Después regenerar los datos de las diapositivas:
+
+```bash
+python3 scripts/gen-erd.py
+python3 scripts/gen-catalogo.py
+```
+
+Revisar también las cifras y explicaciones de `docs/preguntas-respuestas.md`, y ejecutar:
+
+```bash
+python3 scripts/gen-preguntas.py
+pnpm build
+```
+
+Los generadores escriben en este proyecto y se detienen si encuentran tablas sin
+clasificar o funciones sin explicar. Las migraciones se mantienen en el proyecto de referencia.
+
 ## Development server
 
 To start a local development server, run:

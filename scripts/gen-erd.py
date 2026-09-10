@@ -11,8 +11,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-FUENTE = Path("/home/ordson/Documentos/Universidad/HORARIOS/Horarios-develop")
-SQL = FUENTE / "docs" / "database.sql"
+SQL = Path(__file__).resolve().parent.parent / "docs" / "database.sql"
 OUT = Path(__file__).resolve().parent.parent / "src" / "app" / "data" / "erd-data.ts"
 
 DOMINIOS = {
@@ -107,6 +106,8 @@ for m in re.finditer(
 ):
     externas.append({"de": m.group(1), "col": desentrecomilla(m.group(2))[0],
                      "esquema": m.group(3), "tabla": m.group(4)})
+    if m.group(1) in tablas:
+        tablas[m.group(1)]["fks"].extend(desentrecomilla(m.group(2)))
 
 aristas = []
 for m in re.finditer(

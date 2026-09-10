@@ -8,7 +8,9 @@
 >
 > **Fuente de todo lo que se afirma acá:** el repositorio `HORARIOS/Horarios-develop`
 > (código en `src/`, base de datos en `supabase/`, documentación en `docs/`). Cuando una respuesta
-> cita un archivo, ese archivo existe y dice eso.
+> cita un archivo, ese archivo existe y dice eso. La información de base de datos se actualizó
+> el **2026-09-09** desde la base local del proyecto de referencia; su estructura se conserva
+> en `docs/database.sql` de esta presentación.
 >
 > **Si un término no te suena** —endpoint, esquema, entidad, RLS, DTO—, saltá al
 > [Glosario](#6-glosario) al final. Está escrito para quien aprendió programando y nunca
@@ -222,26 +224,31 @@ qué esquema busco?". Está en `ClienteDatosSupabase.cs`, constante `Esquema`.
 
 ### P8. ¿Qué tamaño tiene la base de datos?
 
-**Qué.** Instantánea documentada en `docs/guia-base-datos-para-nuevos.md`:
+**Qué.** Instantánea del esquema `horarios` de la base local de `Horarios-develop`,
+exportada el **2026-09-09** y conservada en `docs/database.sql` de esta presentación:
 
 | Objeto | Cantidad |
 |---|---|
 | Esquemas propios | 1 (`horarios`) |
-| Tablas | 48 |
-| Tipos ENUM | 20 |
-| Vistas | 8 (5 `api_*` + 3 `vista_*`) |
-| Funciones | 46 (31 llamables + 15 de trigger) |
-| Triggers | 38, sobre 29 tablas |
-| Políticas RLS | 208, con **35 nombres distintos** |
-| Extensiones | 2 (`pgcrypto`, `btree_gist`) |
+| Tablas | 59 |
+| Columnas | 504 |
+| Claves foráneas | 115 (114 internas y 1 a `auth.users`) |
+| Tipos ENUM | 22 |
+| Vistas | 10 (5 `api_*` + 5 `vista_*`) |
+| Funciones | 72 (55 funciones ordinarias + 17 de trigger) |
+| Triggers | 44, sobre 34 tablas |
+| Políticas RLS | 254, con **53 nombres distintos** |
+| Tablas con RLS activado | 59 |
+| Índices explícitos | 57, además de los asociados a restricciones |
 
-**Cómo.** Las 208 políticas no son 208 reglas: son 35 reglas repetidas tabla por tabla,
-porque PostgreSQL no permite aplicar una política a varias tablas de una sola vez. La misma
-política `api_catalogo_leer` aparece unas 30 veces, idéntica salvo el nombre de la tabla.
+**Cómo.** El diagrama y el catálogo se generan desde la misma instantánea SQL. Las políticas
+se aplican tabla por tabla; varios nombres se repiten, aunque las condiciones concretas
+pueden cambiar según la tabla. El catálogo agrupa las 254 políticas y las 59 activaciones
+de RLS en **313 objetos de seguridad por fila**.
 
-**Por qué.** El número asusta hasta que se entiende la repetición. Vale la pena tener el
-dato a mano porque es la pregunta natural de quien abre Studio por primera vez, y responder
-"208, pero son 35" demuestra que alguien miró de verdad en vez de repetir un número.
+**Por qué.** Las cifras describen la estructura local exportada, no los datos de alumnos,
+usuarios o sesiones. La fecha y el origen permiten comprobar qué versión se está exponiendo
+y evitan confundir el volcado anterior del repositorio con la base actual.
 
 ### P9. ¿Por qué las llaves primarias son UUID y no enteros autoincrementales?
 
@@ -291,7 +298,7 @@ version_fila   bigint DEFAULT 0 NOT NULL             -- bloqueo optimista
 ```
 
 `actualizado_en` y `version_fila` no los escribe nadie a mano: los mantiene el trigger
-`horarios.actualizar_marca_con_version()`, enganchado a 17 tablas.
+`horarios.actualizar_marca_con_version()`, enganchado a 18 tablas.
 
 **Por qué.** Cada una tiene su justificación y conviene separarlas:
 
@@ -415,24 +422,24 @@ problema porque se apoya en un índice: la exclusión se evalúa dentro del meca
 bloqueo del índice, no en código de usuario. **Cinco renglones que son imposibles de
 burlar, contra cuarenta líneas de trigger que igual fallan.**
 
-### P14. ¿Por qué hay 38 triggers? ¿No es lógica escondida?
+### P14. ¿Por qué hay 44 triggers? ¿No es lógica escondida?
 
 **Qué.** Sí es lógica que no se ve leyendo el `INSERT`, y esa es una crítica legítima. La
-respuesta es que están agrupados en cinco clases muy reconocibles y solo dos de ellas
-contienen lógica real.
+respuesta es que están agrupados en cinco clases reconocibles, desde mantenimiento
+mecánico hasta validaciones y protección de horarios oficiales.
 
 **Cómo.**
 
 | Clase | Cuántos | Qué hacen |
 |---|---|---|
-| Marca de tiempo y versión | 23 | `actualizado_en` y `version_fila`. Todos idénticos |
+| Marca de tiempo y versión | 24 | `actualizado_en` y `version_fila`. Todos idénticos |
 | Validación | 7 | `BEFORE INSERT OR UPDATE`, terminan en `raise exception` |
 | Completar / derivar | 2 | Modifican `new` para llenar campos calculados |
-| Propagación | 2 | `AFTER UPDATE`, escriben en otras tablas |
+| Propagación | 3 | Replican cambios de sesiones y retiran miembros de cursos comunes eliminados |
 | Bloqueo / inmutabilidad | 8 | Impiden tocar lo que ya está publicado |
 
-De los 42, **23 son la misma función repetida**. Los que importan de verdad son los 7 de
-validación y los 8 de bloqueo.
+De los 44, **24 llaman a dos funciones de mantenimiento**: 18 actualizan marca y versión,
+y 6 solo la marca. Además hay 7 de validación, 2 de derivación, 3 de propagación y 8 de bloqueo.
 
 **Por qué.** Dos razones, y la segunda es la fuerte:
 
@@ -453,8 +460,8 @@ nombre de un trigger nuevo no es cosmético: **es su posición en la fila.**
 
 ### P15. ¿Por qué hay tanta lógica en funciones de PostgreSQL y no en C#?
 
-**Qué.** 31 funciones llamables desde la aplicación. Las de escritura hacen varias
-operaciones y devuelven `jsonb`.
+**Qué.** 55 funciones ordinarias, además de las 17 funciones de trigger. Incluyen consultas,
+operaciones de escritura y auxiliares internos; varias devuelven `jsonb` para el cliente.
 
 **Cómo.** Se llaman por RPC: `POST /rest/v1/rpc/crear_cohorte` con los parámetros en el
 cuerpo. Del lado .NET es `ClienteDatosSupabase.RpcAsync<T>(...)`. La convención del proyecto
@@ -507,7 +514,8 @@ recurso, no en el camino hacia el recurso.
 
 ### P17. ¿Qué hacen `usuario_actual_id()` y `usuario_actual_tiene_permiso()`?
 
-**Qué.** Son las dos funciones sobre las que descansan las 208 políticas. Entendiendo estas
+**Qué.** Son dos funciones centrales para las 254 políticas, junto con las comprobaciones de
+identidad y pertenencia del autoservicio docente. Entendiendo estas
 dos se entiende toda la seguridad del sistema.
 
 **Cómo.**
@@ -532,11 +540,13 @@ dado de baja **sigue teniendo un JWT válido** hasta que caduque, pero para el e
 `horarios` deja de existir de inmediato. Sin ese filtro, dar de baja a alguien no tendría
 efecto hasta la expiración del token.
 
-**Sobre `SECURITY DEFINER`:** significa que la función corre con los permisos de quien la
-creó, no de quien la llama, y por lo tanto **se salta RLS**. Solo 6 funciones lo usan y todas
-por la misma razón: para decidir si podés leer hay que leer `horarios.usuarios`, y si esa
-lectura estuviera sujeta a RLS el razonamiento se mordería la cola. El `SET search_path`
-obligatorio que las acompaña no es adorno: sin él, alguien podría crear un esquema propio con
+**Sobre `SECURITY DEFINER`:** significa que la función corre con los permisos de su
+propietario, que pueden permitir omitir RLS. Hay **7 funciones** con esta opción: las dos
+de contexto `usuario_actual_*`, las dos de alta `crear_usuario_inicial` y
+`crear_usuario_docente`, y tres de consulta pública de horarios y sustituciones.
+Las de contexto evitan la recursión al consultar `horarios.usuarios` desde sus propias
+políticas; las demás implementan sus controles dentro de la función. El `SET search_path`
+que las acompaña no es adorno: sin una ruta segura, alguien podría crear un esquema con
 una tabla `usuarios` falsa, ponerlo primero en su `search_path` y hacer que la función lea de
 la tabla equivocada. La documentación oficial de PostgreSQL trae una sección específica,
 *Writing SECURITY DEFINER Functions Safely*, que exige exactamente esto.
@@ -544,8 +554,8 @@ la tabla equivocada. La documentación oficial de PostgreSQL trae una sección e
 ### P18. ¿Qué es una vista y por qué algunas llevan `security_invoker`?
 
 **Qué.** Una vista es una consulta guardada con nombre, que se usa como si fuera una tabla.
-Hay 8: cinco `api_*` (atajos para el cliente) y tres `vista_*` (lecturas pesadas con muchos
-joins que sirven de base a las funciones de consulta).
+Hay 10: cinco `api_*` (atajos para el cliente) y cinco `vista_*`. Estas últimas incluyen
+las dos vistas que derivan los cursos y las cohortes de cada agrupación de área común.
 
 **Cómo.**
 
@@ -736,7 +746,7 @@ preciso al defenderlo para no prometer de más:
 
 - **Lo que sí queda protegido:** las reglas de negocio, el dominio y las pantallas
   no se tocan.
-- **Lo que no:** las 31 funciones SQL, los 38 triggers y las 208 políticas RLS son
+- **Lo que no:** las 72 funciones SQL, los 44 triggers y las 254 políticas RLS son
   PostgreSQL. Migrar a otro PostgreSQL (RDS, Cloud SQL, un servidor propio) es viable —eso
   es SQL estándar más extensiones comunes—. Migrar a un gestor que no sea PostgreSQL sería
   reescribir esa mitad del sistema.
@@ -948,19 +958,21 @@ solo registro por grupo y un registro por período en que avanza.
 **Qué.** Un curso que varias carreras cursan juntas (matemática básica, por ejemplo). Se
 dicta **una sola vez** para todas las cohortes involucradas, no una vez por carrera.
 
-**Cómo.** El curso se marca con `EsAreaComun`, pero eso no basta: hay una entidad explícita,
-`agrupaciones_area_comun`, con sus tablas puente `agrupacion_area_comun_cursos` y
-`agrupacion_area_comun_cohortes`. `ExpansorSesiones` consolida cada agrupación en una sola
-sesión compartida, sumando los alumnos de todas las cohortes y uniendo los recursos
-requeridos, y exige que todos los cursos de una agrupación coincidan en cantidad y duración
-de sesiones (si no, lanza excepción).
+**Cómo.** Cada materia pertenece a un pensum. `curso_comun` y `curso_comun_cursos`
+declaran qué materias son equivalentes: al menos dos cursos marcados como área común,
+sin repetir pensum y sin que un curso pertenezca a dos grupos.
 
-**Por qué explícita y no inferida.** Porque adivinar qué cursos son "el mismo" a partir del
-nombre o del código es frágil: dos carreras pueden llamar distinto al mismo curso o igual a
-cursos distintos. Una agrupación explícita convierte una decisión académica —que la toma
-una persona— en un dato, en vez de en una heurística de comparación de cadenas. Además, la
-tabla `sesiones` refleja esto con un `CHECK` de coherencia: *o es área común y tiene
-agrupación, o no lo es y no la tiene*, nunca a medias.
+`agrupaciones_area_comun` identifica una clase compartida por **período + curso común +
+jornada**. Las vistas `vista_area_comun_cursos_derivados` y
+`vista_area_comun_cohortes_derivadas` calculan sus miembros a partir del catálogo y de las
+cohortes activas en su semestre. `recalcular_areas_comunes_periodo` guarda ese resultado
+en las dos tablas puente y valida cada agrupación. Puede participar una sola cohorte en
+un período, aunque el catálogo de equivalencia siga teniendo al menos dos cursos.
+
+**Por qué.** La equivalencia es una decisión académica explícita; no se adivina comparando
+nombres. Una vez declarada, las cohortes participantes se derivan de la matrícula del período.
+`guardar_rejilla_cohortes` activa o desactiva los semestres elegidos, conserva las matrículas
+existentes y recalcula las áreas comunes para mantener esa membresía al día.
 
 ### 4.2 Aulas y jornadas
 
@@ -1095,18 +1107,18 @@ duro: fuera de ahí no se le coloca nada.
 | Tabla | Qué guarda |
 |---|---|
 | `disponibilidades_docente` | Cabecera: un docente, un período, si está confirmada |
-| `ventanas_disponibilidad` | Las franjas tal como las declaró la persona |
-| `disponibilidad_docente_slots` | Lo mismo expandido a bloques concretos |
+| `disponibilidad_docente_slots` | Bloques concretos por jornada, día e índice |
+| `ventanas_disponibilidad` | Fechas de apertura y cierre de la captura por período y su estado |
 
-`guardar_disponibilidad_docente(...)` guarda las franjas **y** las expande. El caso de uso
-`GestionarDisponibilidadDocente` rechaza casillas repetidas antes de escribir: *"dos filas
-para la misma casilla se contradirían y no habría forma de saber cuál vale"*.
+`guardar_disponibilidad_docente(...)` recibe los bloques en JSON y reemplaza los anteriores.
+`guardar_mi_disponibilidad_docente(...)` resuelve al docente desde la sesión autenticada,
+valida el período y no permite confirmar una lista vacía. Las políticas RLS de autoservicio,
+incluidas dos restrictivas, limitan al usuario docente a su cabecera y sus bloques.
 
-**Por qué guardar las dos formas.** Porque sirven a dos lectores distintos. La ventana es lo
-que la persona quiso decir ("los martes de 7 a 11") y es lo que hay que mostrarle de vuelta
-para que lo edite; los slots son lo que se consulta, y tenerlos ya expandidos evita repetir
-la expansión en cada consulta. Es un caso de **desnormalización por rendimiento con una fuente de verdad clara**: la
-ventana manda, el slot se deriva, y una sola función escribe las dos.
+**Por qué separarlas.** La cabecera guarda el estado de confirmación, los slots son la
+entrada concreta del motor y la ventana administra el plazo de captura. Una ventana no es
+una franja semanal del docente ni se expande a slots. El trigger `validar_disponibilidad_slot`
+comprueba que cada bloque corresponda a una jornada y un día válidos.
 
 Nota importante: `RevisarDatosPlan` exige disponibilidad **confirmada** para dejar generar.
 Declarada pero sin confirmar no cuenta.
@@ -1398,7 +1410,7 @@ fórmula distinto.
 
 Sería sobreingeniería si el sistema fuera un CRUD. No lo es: hay un ciclo de vida de 10
 estados, autorización por permiso y por alcance de facultad, versionado de horarios
-publicados y un esquema de 48 tablas. **La
+publicados y un esquema de 59 tablas. **La
 complejidad ya está en el problema**; las capas la ordenan, no la crean.
 
 La prueba concreta de que la separación paga es que la suite de aplicación corre sin base de
@@ -1589,19 +1601,19 @@ pone en sus dos ejes.
 | **Restricción (constraint)** | Regla que la base de datos hace cumplir siempre: `NOT NULL`, `CHECK`, `UNIQUE`, `FOREIGN KEY`, `EXCLUDE` | `CHECK (minuto_fin_dia > minuto_inicio_dia)` |
 | **Restricción EXCLUDE** | Prohíbe que existan dos filas que cumplan a la vez una condición dada. Sirve para impedir solapes | `sesiones_docente_no_solapado` |
 | **Columna generada** | Columna que la base de datos calcula sola a partir de otras. No se escribe | `rango_minutos`, `rango_slots` |
-| **ENUM** | Tipo con lista cerrada de valores. La base de datos rechaza cualquier otro | `dia_semana`, los 21 `estado_*` y `tipo_*` |
+| **ENUM** | Tipo con lista cerrada de valores. La base de datos rechaza cualquier otro | 22 tipos: días, estados, permisos y clasificaciones como `tipo_recurso` |
 | **Vista** | Consulta guardada con nombre, que se usa como si fuera una tabla | `api_cohortes_activas`, `vista_horarios_publicados` |
 | **`security_invoker`** | Opción de una vista para que corra con los permisos de quien consulta y no de quien la creó. Sin ella, una vista evade RLS | Las cinco vistas `api_*` la llevan |
-| **Función almacenada** | Código que vive en la base de datos y se ejecuta ahí. Puede hacer varias operaciones en una transacción | Las 31 funciones llamables |
-| **Trigger** | Función que la base de datos dispara sola ante `INSERT`/`UPDATE`/`DELETE`. Nunca se llama a mano | Los 38 triggers; el orden es alfabético por nombre |
+| **Función almacenada** | Código que vive en la base de datos y se ejecuta ahí. Puede hacer varias operaciones en una transacción | 55 funciones ordinarias y 17 funciones de trigger |
+| **Trigger** | Disparador que ejecuta una función ante `INSERT`/`UPDATE`/`DELETE` | Los 44 triggers; el orden es alfabético por nombre |
 | **`BEFORE` / `AFTER`** | Antes de escribir la fila (sirve para modificarla o rechazarla) / después (sirve para reaccionar y tocar otras tablas) | `BEFORE` valida; `AFTER` propaga |
 | **`new` / `old`** | Dentro de un trigger, la fila como va a quedar / como estaba | `new.actualizado_en = now()` |
 | **Transacción** | Conjunto de operaciones que ocurren todas o ninguna | Cada función SQL corre en una |
 | **ACID** | Atomicidad, Consistencia, Aislamiento, Durabilidad: las garantías de una transacción | Es el motivo de meter escrituras múltiples en funciones |
 | **UPSERT** | `INSERT ... ON CONFLICT ... DO UPDATE`: insertar si no existe, actualizar si ya está, atómicamente | `activar_cohorte_periodo(...)` |
-| **RLS** | *Row Level Security*: filtros por fila que PostgreSQL aplica solo, según quién consulta | Las 208 políticas |
+| **RLS** | *Row Level Security*: filtros por fila que PostgreSQL aplica solo, según quién consulta | Las 254 políticas y 59 tablas con RLS activado |
 | **`USING` / `WITH CHECK`** | En una política: filtro para leer / filtro para escribir | `USING` mira lo que está; `WITH CHECK`, lo que vas a dejar |
-| **`SECURITY DEFINER`** | Función que corre con los permisos de quien la creó, saltándose RLS. Puerta trasera legítima pero peligrosa | Solo 6 funciones, todas de contexto de seguridad |
+| **`SECURITY DEFINER`** | Función que corre con los permisos de su propietario y puede omitir RLS según esos permisos | 7 funciones de contexto, alta de usuarios y consultas públicas |
 | **`search_path`** | Orden en que Postgres busca nombres sin esquema. Fijarlo es obligatorio en funciones `SECURITY DEFINER` | `SET search_path TO 'horarios', 'public'` |
 | **Migración** | Archivo SQL versionado que lleva la base de datos de un estado al siguiente | `supabase/migrations/AAAAMMDDNNNN_*.sql` |
 | **Seed** | Datos de ejemplo para desarrollo, nunca para producción | `supabase/seeds/` |

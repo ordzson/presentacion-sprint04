@@ -1,11 +1,12 @@
 // GENERADO — no editar a mano.
 // Fuente: Horarios-develop/src/**/*.cs · script: scripts/gen-clases.py
-// 247 tipos · 436 relaciones
+// 313 tipos · 645 relaciones
 
 export type CapaId =
   | 'dominio'
   | 'contratos'
   | 'aplicacion'
+  | 'motor'
   | 'infraestructura'
   | 'blazor';
 
@@ -77,50 +78,61 @@ export interface Modulo {
 }
 
 export const CAPAS: Capa[] = [
-  { id: 'dominio', label: 'Dominio', descripcion: 'Entidades y enums del negocio: sin dependencias hacia fuera.', color: '#3f6fd6', clases: 32, x: 36.0, y: 392.6, w: 1169.5, h: 1844.4 },
-  { id: 'contratos', label: 'Contratos', descripcion: 'DTOs, puertos e interfaces que atraviesan las capas.', color: '#0f8a94', clases: 70, x: 1267.5, y: 36.0, w: 2061.9, h: 2557.5 },
-  { id: 'aplicacion', label: 'Aplicación', descripcion: 'Casos de uso: orquestan repositorios, validan y aplican reglas.', color: '#2a9468', clases: 80, x: 3391.4, y: 128.3, w: 1822.7, h: 2372.9 },
-  { id: 'infraestructura', label: 'Infraestructura', descripcion: 'Adaptadores a Supabase/PostgREST que implementan los puertos.', color: '#b5791b', clases: 48, x: 5276.1, y: 209.1, w: 1738.0, h: 2211.3 },
-  { id: 'blazor', label: 'Blazor', descripcion: 'Interfaz web: componentes, estado de sesión y arranque de la app.', color: '#c2504b', clases: 17, x: 3100.2, y: 2655.5, w: 849.6, h: 1064.0 },
+  { id: 'dominio', label: 'Dominio', descripcion: 'Entidades y enums del negocio: sin dependencias hacia fuera.', color: '#3f6fd6', clases: 32, x: 36.0, y: 690.7, w: 1270.7, h: 1588.8 },
+  { id: 'contratos', label: 'Contratos', descripcion: 'DTOs, puertos e interfaces que atraviesan las capas.', color: '#0f8a94', clases: 98, x: 1368.7, y: 127.1, w: 2322.5, h: 2715.9 },
+  { id: 'aplicacion', label: 'Aplicación', descripcion: 'Casos de uso: orquestan repositorios, validan y aplican reglas.', color: '#2a9468', clases: 94, x: 3753.2, y: 228.8, w: 2103.3, h: 2512.4 },
+  { id: 'motor', label: 'Motor', descripcion: 'El generador de horarios: rejilla, precálculo, colocación y verificación.', color: '#7a4fbf', clases: 20, x: 5918.5, y: 630.9, w: 835.5, h: 1708.2 },
+  { id: 'infraestructura', label: 'Infraestructura', descripcion: 'Adaptadores a Supabase/PostgREST que implementan los puertos.', color: '#b5791b', clases: 52, x: 6816.0, y: 36.0, w: 1841.7, h: 2898.1 },
+  { id: 'blazor', label: 'Blazor', descripcion: 'Interfaz web: componentes, estado de sesión y arranque de la app.', color: '#c2504b', clases: 17, x: 3908.1, y: 2996.1, w: 877.5, h: 1028.5 },
 ];
 
 export const MODULOS: Modulo[] = [
-  { id: 'dominio:Academia', capa: 'dominio', label: 'Academia', clases: 14, x: 215.5, y: 411.6, w: 810.5, h: 803.9 },
-  { id: 'dominio:Aulas', capa: 'dominio', label: 'Aulas', clases: 8, x: 55.0, y: 1261.5, w: 525.8, h: 559.3 },
-  { id: 'dominio:Docentes', capa: 'dominio', label: 'Docentes', clases: 4, x: 626.8, y: 1385.6, w: 559.6, h: 311.1 },
-  { id: 'dominio:Acceso', capa: 'dominio', label: 'Acceso', clases: 3, x: 262.8, y: 1887.6, w: 339.5, h: 309.5 },
-  { id: 'dominio:Planes', capa: 'dominio', label: 'Planes', clases: 3, x: 648.4, y: 1866.9, w: 330.3, h: 351.1 },
-  { id: 'contratos:Academia', capa: 'contratos', label: 'Academia', clases: 21, x: 1286.5, y: 55.0, w: 1044.5, h: 1152.7 },
-  { id: 'contratos:Planes', capa: 'contratos', label: 'Planes', clases: 13, x: 2377.0, y: 295.7, w: 933.4, h: 671.4 },
-  { id: 'contratos:Aulas', capa: 'contratos', label: 'Aulas', clases: 12, x: 1376.4, y: 1276.5, w: 1014.1, h: 639.9 },
-  { id: 'contratos:Importaciones', capa: 'contratos', label: 'Importaciones', clases: 11, x: 2436.4, y: 1253.7, w: 784.1, h: 685.4 },
-  { id: 'contratos:Docentes', capa: 'contratos', label: 'Docentes', clases: 8, x: 1515.1, y: 1985.1, w: 755.0, h: 589.4 },
-  { id: 'contratos:Consultas', capa: 'contratos', label: 'Consultas', clases: 3, x: 2316.0, y: 2162.7, w: 437.0, h: 234.3 },
-  { id: 'contratos:Acceso', capa: 'contratos', label: 'Acceso', clases: 2, x: 2799.0, y: 2151.9, w: 282.8, h: 255.9 },
-  { id: 'aplicacion:Docentes', capa: 'aplicacion', label: 'Docentes', clases: 18, x: 3410.4, y: 147.3, w: 813.3, h: 968.4 },
-  { id: 'aplicacion:Academia', capa: 'aplicacion', label: 'Academia', clases: 15, x: 4269.8, y: 233.8, w: 925.3, h: 795.5 },
-  { id: 'aplicacion:Aulas', capa: 'aplicacion', label: 'Aulas', clases: 15, x: 3472.2, y: 1165.5, w: 861.2, h: 644.8 },
-  { id: 'aplicacion:Acceso', capa: 'aplicacion', label: 'Acceso', clases: 13, x: 4379.4, y: 1161.7, w: 753.9, h: 652.3 },
-  { id: 'aplicacion:Planes', capa: 'aplicacion', label: 'Planes', clases: 9, x: 3535.7, y: 1860.0, w: 501.8, h: 622.2 },
-  { id: 'aplicacion:Importaciones', capa: 'aplicacion', label: 'Importaciones', clases: 8, x: 4083.5, y: 1890.5, w: 736.0, h: 561.2 },
-  { id: 'aplicacion:Consultas', capa: 'aplicacion', label: 'Consultas', clases: 2, x: 4865.5, y: 2066.2, w: 204.2, h: 209.8 },
-  { id: 'infraestructura:Planes', capa: 'infraestructura', label: 'Planes', clases: 11, x: 5295.1, y: 228.1, w: 833.2, h: 684.5 },
-  { id: 'infraestructura:Docentes', capa: 'infraestructura', label: 'Docentes', clases: 10, x: 6174.2, y: 231.6, w: 820.8, h: 677.6 },
-  { id: 'infraestructura:Academia', capa: 'infraestructura', label: 'Academia', clases: 9, x: 5457.4, y: 958.6, w: 701.2, h: 715.3 },
-  { id: 'infraestructura:Acceso', capa: 'infraestructura', label: 'Acceso', clases: 7, x: 6204.7, y: 1122.3, w: 628.0, h: 387.9 },
-  { id: 'infraestructura:Aulas', capa: 'infraestructura', label: 'Aulas', clases: 6, x: 5376.1, y: 1719.9, w: 822.8, h: 553.5 },
-  { id: 'infraestructura:Supabase', capa: 'infraestructura', label: 'Supabase', clases: 4, x: 6244.9, y: 1834.7, w: 669.1, h: 323.8 },
-  { id: 'infraestructura:Consultas', capa: 'infraestructura', label: 'Consultas', clases: 1, x: 6026.5, y: 2319.4, w: 237.2, h: 82.0 },
-  { id: 'blazor:Acceso', capa: 'blazor', label: 'Acceso', clases: 8, x: 3138.9, y: 2674.5, w: 772.2, h: 393.1 },
-  { id: 'blazor:Núcleo', capa: 'blazor', label: 'Núcleo', clases: 8, x: 3119.2, y: 3113.7, w: 811.6, h: 442.9 },
-  { id: 'blazor:Components', capa: 'blazor', label: 'Components', clases: 1, x: 3429.2, y: 3602.6, w: 191.6, h: 98.0 },
+  { id: 'dominio:Academia', capa: 'dominio', label: 'Academia', clases: 14, x: 55.0, y: 709.7, w: 743.0, h: 789.6 },
+  { id: 'dominio:Aulas', capa: 'dominio', label: 'Aulas', clases: 8, x: 844.0, y: 780.6, w: 443.7, h: 647.7 },
+  { id: 'dominio:Docentes', capa: 'dominio', label: 'Docentes', clases: 4, x: 196.8, y: 1545.2, w: 530.1, h: 302.6 },
+  { id: 'dominio:Acceso', capa: 'dominio', label: 'Acceso', clases: 3, x: 772.9, y: 1550.1, w: 373.1, h: 292.9 },
+  { id: 'dominio:Planes', capa: 'dominio', label: 'Planes', clases: 3, x: 446.1, y: 1893.8, w: 450.4, h: 366.6 },
+  { id: 'contratos:Motor', capa: 'contratos', label: 'Motor', clases: 28, x: 1412.9, y: 146.1, w: 1009.5, h: 1141.0 },
+  { id: 'contratos:Academia', capa: 'contratos', label: 'Academia', clases: 21, x: 2468.3, y: 306.8, w: 1178.7, h: 819.6 },
+  { id: 'contratos:Planes', capa: 'contratos', label: 'Planes', clases: 13, x: 1577.4, y: 1379.5, w: 1012.8, h: 627.9 },
+  { id: 'contratos:Aulas', capa: 'contratos', label: 'Aulas', clases: 12, x: 2636.1, y: 1333.1, w: 846.4, h: 720.6 },
+  { id: 'contratos:Importaciones', capa: 'contratos', label: 'Importaciones', clases: 11, x: 1387.7, y: 2160.4, w: 864.3, h: 602.9 },
+  { id: 'contratos:Docentes', capa: 'contratos', label: 'Docentes', clases: 8, x: 2297.9, y: 2099.7, w: 645.9, h: 724.3 },
+  { id: 'contratos:Consultas', capa: 'contratos', label: 'Consultas', clases: 3, x: 2989.9, y: 2319.3, w: 353.5, h: 285.2 },
+  { id: 'contratos:Acceso', capa: 'contratos', label: 'Acceso', clases: 2, x: 3389.4, y: 2332.3, w: 282.8, h: 259.2 },
+  { id: 'aplicacion:Docentes', capa: 'aplicacion', label: 'Docentes', clases: 18, x: 3772.2, y: 326.8, w: 1032.1, h: 654.1 },
+  { id: 'aplicacion:Academia', capa: 'aplicacion', label: 'Academia', clases: 15, x: 4850.3, y: 247.8, w: 987.2, h: 812.0 },
+  { id: 'aplicacion:Aulas', capa: 'aplicacion', label: 'Aulas', clases: 15, x: 3851.4, y: 1132.3, w: 922.7, h: 684.4 },
+  { id: 'aplicacion:Motor', capa: 'aplicacion', label: 'Motor', clases: 14, x: 4820.1, y: 1105.8, w: 938.1, h: 737.3 },
+  { id: 'aplicacion:Acceso', capa: 'aplicacion', label: 'Acceso', clases: 13, x: 3782.3, y: 1889.2, w: 752.2, h: 595.2 },
+  { id: 'aplicacion:Planes', capa: 'aplicacion', label: 'Planes', clases: 9, x: 4580.5, y: 1920.8, w: 587.7, h: 532.0 },
+  { id: 'aplicacion:Importaciones', capa: 'aplicacion', label: 'Importaciones', clases: 8, x: 5214.2, y: 1889.4, w: 613.1, h: 594.7 },
+  { id: 'aplicacion:Consultas', capa: 'aplicacion', label: 'Consultas', clases: 2, x: 4663.7, y: 2530.4, w: 282.3, h: 191.9 },
+  { id: 'motor:Construccion', capa: 'motor', label: 'Construccion', clases: 7, x: 6011.1, y: 649.9, w: 650.2, h: 675.8 },
+  { id: 'motor:Ocupacion', capa: 'motor', label: 'Ocupacion', clases: 3, x: 5937.5, y: 1371.7, w: 364.8, h: 303.5 },
+  { id: 'motor:Reglas', capa: 'motor', label: 'Reglas', clases: 3, x: 6348.3, y: 1389.5, w: 386.7, h: 267.9 },
+  { id: 'motor:Expansion', capa: 'motor', label: 'Expansion', clases: 2, x: 5981.3, y: 1758.3, w: 366.1, h: 175.0 },
+  { id: 'motor:Núcleo', capa: 'motor', label: 'Núcleo', clases: 2, x: 6393.4, y: 1721.2, w: 297.8, h: 249.1 },
+  { id: 'motor:Verificacion', capa: 'motor', label: 'Verificacion', clases: 2, x: 6013.4, y: 2016.3, w: 419.8, h: 303.9 },
+  { id: 'motor:Tiempo', capa: 'motor', label: 'Tiempo', clases: 1, x: 6479.1, y: 2121.2, w: 180.0, h: 94.0 },
+  { id: 'infraestructura:Planes', capa: 'infraestructura', label: 'Planes', clases: 11, x: 7223.1, y: 55.0, w: 1027.5, h: 603.7 },
+  { id: 'infraestructura:Docentes', capa: 'infraestructura', label: 'Docentes', clases: 10, x: 7296.0, y: 704.7, w: 881.7, h: 593.4 },
+  { id: 'infraestructura:Academia', capa: 'infraestructura', label: 'Academia', clases: 9, x: 6835.0, y: 1344.1, w: 1034.9, h: 638.7 },
+  { id: 'infraestructura:Acceso', capa: 'infraestructura', label: 'Acceso', clases: 7, x: 7915.9, y: 1452.0, w: 722.8, h: 423.0 },
+  { id: 'infraestructura:Aulas', capa: 'infraestructura', label: 'Aulas', clases: 6, x: 6845.4, y: 2028.8, w: 886.6, h: 518.3 },
+  { id: 'infraestructura:Motor', capa: 'infraestructura', label: 'Motor', clases: 4, x: 7778.0, y: 2080.6, w: 850.3, h: 414.8 },
+  { id: 'infraestructura:Supabase', capa: 'infraestructura', label: 'Supabase', clases: 4, x: 7244.2, y: 2593.1, w: 702.1, h: 322.0 },
+  { id: 'infraestructura:Consultas', capa: 'infraestructura', label: 'Consultas', clases: 1, x: 7992.3, y: 2713.1, w: 237.2, h: 82.0 },
+  { id: 'blazor:Acceso', capa: 'blazor', label: 'Acceso', clases: 8, x: 3943.9, y: 3015.1, w: 805.9, h: 399.2 },
+  { id: 'blazor:Núcleo', capa: 'blazor', label: 'Núcleo', clases: 8, x: 3927.1, y: 3460.3, w: 839.5, h: 401.3 },
+  { id: 'blazor:Components', capa: 'blazor', label: 'Components', clases: 1, x: 4251.0, y: 3907.6, w: 191.6, h: 98.0 },
 ];
 
 export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.AgrupacionAreaComun', nombre: 'AgrupacionAreaComun', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 918.8, y: 712.3, w: 184.4, h: 72.0, grado: 3,
+    x: 605.2, y: 761.7, w: 184.4, h: 72.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -133,7 +145,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.Carrera', nombre: 'Carrera', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/Carrera.cs',
-    x: 662.8, y: 1162.5, w: 150.0, h: 76.0, grado: 7,
+    x: 551.0, y: 1446.2, w: 150.0, h: 76.0, grado: 7,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'FacultadId', t: 'Guid', k: 'prop', est: false },
@@ -151,7 +163,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.Cohorte', nombre: 'Cohorte', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 553.3, y: 792.3, w: 150.0, h: 76.0, grado: 3,
+    x: 708.0, y: 888.4, w: 150.0, h: 76.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'CarreraId', t: 'Guid', k: 'prop', est: false },
@@ -165,7 +177,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.CohorteActivaPeriodo', nombre: 'CohorteActivaPeriodo', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 456.8, y: 1048.9, w: 192.0, h: 68.0, grado: 3,
+    x: 328.5, y: 1356.6, w: 192.0, h: 68.0, grado: 3,
     miembros: [
       { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -177,7 +189,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.CursoAcademico', nombre: 'CursoAcademico', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 709.8, y: 686.1, w: 150.0, h: 76.0, grado: 4,
+    x: 550.7, y: 985.4, w: 150.0, h: 76.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
@@ -191,7 +203,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.CursoComun', nombre: 'CursoComun', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 356.7, y: 893.0, w: 150.0, h: 60.0, grado: 3,
+    x: 208.3, y: 1223.9, w: 150.0, h: 60.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -201,7 +213,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.CursoCubiertoPeriodo', nombre: 'CursoCubiertoPeriodo', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 326.5, y: 746.5, w: 192.0, h: 76.0, grado: 3,
+    x: 175.1, y: 1087.5, w: 192.0, h: 76.0, grado: 3,
     miembros: [
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
       { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
@@ -226,7 +238,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.CursoDePensum', nombre: 'CursoDePensum', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 413.9, y: 636.5, w: 150.0, h: 56.0, grado: 5,
+    x: 343.2, y: 978.0, w: 150.0, h: 56.0, grado: 5,
     miembros: [
       { n: 'Curso', t: 'CursoAcademico', k: 'prop', est: false },
       { n: 'EnPensum', t: 'CursoEnPensum', k: 'prop', est: false },
@@ -235,7 +247,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.CursoEnPensum', nombre: 'CursoEnPensum', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 602.5, y: 548.9, w: 150.0, h: 76.0, grado: 4,
+    x: 359.4, y: 762.7, w: 150.0, h: 76.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
@@ -249,7 +261,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.EstadoPensum', nombre: 'EstadoPensum', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 426.2, y: 508.5, w: 150.0, h: 64.0, grado: 2,
+    x: 145.0, y: 948.8, w: 150.0, h: 64.0, grado: 2,
     miembros: [
       { n: 'Borrador', t: '', k: 'valor', est: false },
       { n: 'Vigente', t: '', k: 'valor', est: false },
@@ -260,7 +272,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.EstadoPeriodo', nombre: 'EstadoPeriodo', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 704.9, y: 458.6, w: 150.0, h: 64.0, grado: 2,
+    x: 229.4, y: 863.6, w: 150.0, h: 64.0, grado: 2,
     miembros: [
       { n: 'Borrador', t: '', k: 'valor', est: false },
       { n: 'Vigente', t: '', k: 'valor', est: false },
@@ -271,7 +283,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.Facultad', nombre: 'Facultad', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/Facultad.cs',
-    x: 842.9, y: 1034.9, w: 150.0, h: 76.0, grado: 6,
+    x: 649.7, y: 1346.5, w: 150.0, h: 76.0, grado: 6,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -287,7 +299,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.Pensum', nombre: 'Pensum', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 837.4, y: 588.5, w: 150.0, h: 64.0, grado: 5,
+    x: 471.7, y: 853.7, w: 150.0, h: 64.0, grado: 5,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'CarreraId', t: 'Guid', k: 'prop', est: false },
@@ -298,7 +310,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Academia.PeriodoAcademico', nombre: 'PeriodoAcademico', ns: 'Horarios.Dominio.Academia',
     capa: 'dominio', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Academia/ModelosAcademia.cs',
-    x: 660.6, y: 988.3, w: 161.6, h: 68.0, grado: 6,
+    x: 464.7, y: 1219.2, w: 161.6, h: 68.0, grado: 6,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -310,7 +322,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Acceso.EstadoUsuario', nombre: 'EstadoUsuario', ns: 'Horarios.Dominio.Acceso',
     capa: 'dominio', modulo: 'Acceso', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Acceso/EstadoUsuario.cs',
-    x: 352.8, y: 1932.6, w: 150.0, h: 60.0, grado: 1,
+    x: 945.2, y: 1690.0, w: 150.0, h: 60.0, grado: 1,
     miembros: [
       { n: 'Activo', t: '', k: 'valor', est: false },
       { n: 'Inactivo', t: '', k: 'valor', est: false },
@@ -320,7 +332,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Acceso.TipoUsuario', nombre: 'TipoUsuario', ns: 'Horarios.Dominio.Acceso',
     capa: 'dominio', modulo: 'Acceso', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Acceso/TipoUsuario.cs',
-    x: 380.9, y: 2051.1, w: 150.0, h: 68.0, grado: 2,
+    x: 862.9, y: 1599.1, w: 150.0, h: 68.0, grado: 2,
     miembros: [
       { n: 'Superadministrador', t: '', k: 'valor', est: false },
       { n: 'CoordinadorAcademico', t: '', k: 'valor', est: false },
@@ -332,7 +344,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Acceso.Usuario', nombre: 'Usuario', ns: 'Horarios.Dominio.Acceso',
     capa: 'dominio', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Acceso/Usuario.cs',
-    x: 512.4, y: 2144.1, w: 150.0, h: 76.0, grado: 7,
+    x: 1055.9, y: 1790.0, w: 150.0, h: 76.0, grado: 7,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'AuthUserId', t: 'Guid?', k: 'prop', est: false },
@@ -349,7 +361,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.Aula', nombre: 'Aula', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Aulas/Aula.cs',
-    x: 480.2, y: 1671.7, w: 150.0, h: 76.0, grado: 7,
+    x: 1111.0, y: 833.6, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -368,7 +380,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.BloqueHorario', nombre: 'BloqueHorario', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Aulas/BloqueHorario.cs',
-    x: 490.8, y: 1456.0, w: 150.0, h: 72.0, grado: 3,
+    x: 1197.7, y: 1030.5, w: 150.0, h: 72.0, grado: 3,
     miembros: [
       { n: 'Dia', t: 'DiaSemana', k: 'prop', est: false },
       { n: 'Indice', t: 'int', k: 'prop', est: false },
@@ -381,7 +393,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.DescansoJornada', nombre: 'DescansoJornada', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Aulas/DescansoJornada.cs',
-    x: 416.3, y: 1767.9, w: 154.0, h: 76.0, grado: 8,
+    x: 999.4, y: 1375.3, w: 154.0, h: 76.0, grado: 8,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
@@ -395,7 +407,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.DiaSemana', nombre: 'DiaSemana', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Aulas/DiaSemana.cs',
-    x: 145.0, y: 1667.1, w: 150.0, h: 76.0, grado: 5,
+    x: 1068.4, y: 935.5, w: 150.0, h: 76.0, grado: 4,
     miembros: [
       { n: 'Lunes', t: '', k: 'valor', est: false },
       { n: 'Martes', t: '', k: 'valor', est: false },
@@ -409,7 +421,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.Jornada', nombre: 'Jornada', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Aulas/Jornada.cs',
-    x: 237.3, y: 1763.3, w: 150.0, h: 76.0, grado: 9,
+    x: 997.5, y: 1123.7, w: 150.0, h: 76.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -430,7 +442,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.RecursoAsignadoAula', nombre: 'RecursoAsignadoAula', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Aulas/RecursoAula.cs',
-    x: 419.9, y: 1569.8, w: 184.4, h: 68.0, grado: 3,
+    x: 1106.9, y: 1282.3, w: 184.4, h: 68.0, grado: 3,
     miembros: [
       { n: 'AulaId', t: 'Guid', k: 'prop', est: false },
       { n: 'RecursoId', t: 'Guid', k: 'prop', est: false },
@@ -442,7 +454,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.RecursoAula', nombre: 'RecursoAula', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Aulas/RecursoAula.cs',
-    x: 313.8, y: 1308.5, w: 150.0, h: 64.0, grado: 3,
+    x: 1180.6, y: 1175.6, w: 150.0, h: 64.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -453,7 +465,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Aulas.TipoAula', nombre: 'TipoAula', ns: 'Horarios.Dominio.Aulas',
     capa: 'dominio', modulo: 'Aulas', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Aulas/TipoAula.cs',
-    x: 490.8, y: 1323.2, w: 150.0, h: 64.0, grado: 2,
+    x: 934.0, y: 839.4, w: 150.0, h: 64.0, grado: 1,
     miembros: [
       { n: 'Teorica', t: '', k: 'valor', est: false },
       { n: 'Laboratorio', t: '', k: 'valor', est: false },
@@ -464,7 +476,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Docentes.AsignacionDocenteCurso', nombre: 'AsignacionDocenteCurso', ns: 'Horarios.Dominio.Docentes',
     capa: 'dominio', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Docentes/AsignacionDocenteCurso.cs',
-    x: 1067.9, y: 1531.8, w: 207.2, h: 76.0, grado: 4,
+    x: 608.3, y: 1713.3, w: 207.2, h: 76.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
@@ -481,7 +493,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Docentes.BloqueDeDisponibilidad', nombre: 'BloqueDeDisponibilidad', ns: 'Horarios.Dominio.Docentes',
     capa: 'dominio', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Dominio/Docentes/BloqueDeDisponibilidad.cs',
-    x: 833.7, y: 1542.0, w: 207.2, h: 60.0, grado: 2,
+    x: 469.5, y: 1802.8, w: 207.2, h: 60.0, grado: 2,
     miembros: [
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
       { n: 'Dia', t: 'DiaSemana', k: 'prop', est: false },
@@ -491,7 +503,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Docentes.DisponibilidadDeDocente', nombre: 'DisponibilidadDeDocente', ns: 'Horarios.Dominio.Docentes',
     capa: 'dominio', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Dominio/Docentes/DisponibilidadDeDocente.cs',
-    x: 749.2, y: 1436.6, w: 214.8, h: 72.0, grado: 5,
+    x: 338.5, y: 1716.3, w: 214.8, h: 72.0, grado: 5,
     miembros: [
       { n: 'Bloques', t: 'IReadOnlyCollection<BloqueDeDisponibilidad>', k: 'prop', est: false },
       { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
@@ -504,7 +516,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Docentes.Docente', nombre: 'Docente', ns: 'Horarios.Dominio.Docentes',
     capa: 'dominio', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Docentes/Docente.cs',
-    x: 962.7, y: 1643.7, w: 150.0, h: 76.0, grado: 10,
+    x: 286.8, y: 1598.2, w: 150.0, h: 76.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -527,7 +539,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Planes.EstadoHorario', nombre: 'EstadoHorario', ns: 'Horarios.Dominio.Planes',
     capa: 'dominio', modulo: 'Planes', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Planes/EstadoHorario.cs',
-    x: 738.4, y: 2044.6, w: 150.0, h: 76.0, grado: 4,
+    x: 590.3, y: 2076.7, w: 150.0, h: 76.0, grado: 5,
     miembros: [
       { n: 'Borrador', t: '', k: 'valor', est: false },
       { n: 'Generando', t: '', k: 'valor', est: false },
@@ -544,7 +556,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Planes.PlanHorario', nombre: 'PlanHorario', ns: 'Horarios.Dominio.Planes',
     capa: 'dominio', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Dominio/Planes/PlanHorario.cs',
-    x: 888.6, y: 2164.9, w: 150.0, h: 76.0, grado: 11,
+    x: 806.5, y: 2207.5, w: 150.0, h: 76.0, grado: 16,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -566,7 +578,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Dominio.Planes.TipoPlanHorario', nombre: 'TipoPlanHorario', ns: 'Horarios.Dominio.Planes',
     capa: 'dominio', modulo: 'Planes', kind: 'enum', abst: false, archivo: 'Horarios.Dominio/Planes/TipoPlanHorario.cs',
-    x: 740.7, y: 1909.9, w: 154.0, h: 56.0, grado: 3,
+    x: 538.1, y: 1936.8, w: 154.0, h: 56.0, grado: 3,
     miembros: [
       { n: 'Clases', t: '', k: 'valor', est: false },
       { n: 'Examenes', t: '', k: 'valor', est: false },
@@ -575,7 +587,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActivarCohortePeriodoSolicitud', nombre: 'ActivarCohortePeriodoSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 2007.4, y: 282.3, w: 268.0, h: 64.0, grado: 3,
+    x: 3498.0, y: 909.8, w: 268.0, h: 64.0, grado: 3,
     miembros: [
       { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -586,7 +598,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarAgrupacionAreaComunSolicitud', nombre: 'ActualizarAgrupacionAreaComunSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1932.6, y: 545.8, w: 328.8, h: 68.0, grado: 3,
+    x: 3312.9, y: 632.3, w: 328.8, h: 68.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -598,7 +610,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarCarreraSolicitud', nombre: 'ActualizarCarreraSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1839.5, y: 798.3, w: 237.6, h: 76.0, grado: 3,
+    x: 3408.9, y: 1003.3, w: 237.6, h: 76.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'FacultadId', t: 'Guid', k: 'prop', est: false },
@@ -612,7 +624,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarCohorteSolicitud', nombre: 'ActualizarCohorteSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1668.0, y: 707.8, w: 237.6, h: 64.0, grado: 3,
+    x: 3362.2, y: 813.6, w: 237.6, h: 64.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
@@ -623,7 +635,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarCursoComunSolicitud', nombre: 'ActualizarCursoComunSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1724.1, y: 978.4, w: 260.4, h: 60.0, grado: 3,
+    x: 3207.5, y: 895.8, w: 260.4, h: 60.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -633,7 +645,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarCursoEnPensumSolicitud', nombre: 'ActualizarCursoEnPensumSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1732.3, y: 1154.7, w: 283.2, h: 76.0, grado: 3,
+    x: 3020.5, y: 804.8, w: 283.2, h: 76.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -650,7 +662,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarFacultadSolicitud', nombre: 'ActualizarFacultadSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1562.0, y: 1062.6, w: 245.2, h: 68.0, grado: 3,
+    x: 3016.3, y: 985.4, w: 245.2, h: 68.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -662,7 +674,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarPensumSolicitud', nombre: 'ActualizarPensumSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1798.5, y: 365.3, w: 230.0, h: 60.0, grado: 4,
+    x: 3180.8, y: 716.5, w: 230.0, h: 60.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'AnioCreacion', t: 'int', k: 'prop', est: false },
@@ -672,7 +684,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.ActualizarPeriodoSolicitud', nombre: 'ActualizarPeriodoSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 1520.2, y: 894.2, w: 237.6, h: 68.0, grado: 4,
+    x: 2815.2, y: 1077.5, w: 237.6, h: 68.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -684,7 +696,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearAgrupacionAreaComunSolicitud', nombre: 'CrearAgrupacionAreaComunSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 1446.9, y: 804.1, w: 290.8, h: 72.0, grado: 3,
+    x: 2628.7, y: 987.2, w: 290.8, h: 72.0, grado: 3,
     miembros: [
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -697,7 +709,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearCarreraSolicitud', nombre: 'CrearCarreraSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/CrearCarreraSolicitud.cs',
-    x: 1524.1, y: 621.7, w: 199.6, h: 68.0, grado: 3,
+    x: 2844.9, y: 897.0, w: 199.6, h: 68.0, grado: 3,
     miembros: [
       { n: 'FacultadId', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -709,7 +721,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearCohorteSolicitud', nombre: 'CrearCohorteSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 1406.1, y: 711.9, w: 199.6, h: 72.0, grado: 3,
+    x: 2723.7, y: 797.9, w: 199.6, h: 72.0, grado: 3,
     miembros: [
       { n: 'CarreraId', t: 'Guid', k: 'prop', est: false },
       { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
@@ -722,7 +734,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearCursoComunSolicitud', nombre: 'CrearCursoComunSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 1473.1, y: 539.5, w: 222.4, h: 56.0, grado: 3,
+    x: 2949.0, y: 633.4, w: 222.4, h: 56.0, grado: 3,
     miembros: [
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
       { n: 'CursoIds', t: 'IReadOnlyList<Guid>', k: 'prop', est: false },
@@ -731,7 +743,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearCursoEnPensumSolicitud', nombre: 'CrearCursoEnPensumSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 1618.2, y: 453.4, w: 245.2, h: 76.0, grado: 3,
+    x: 3085.3, y: 540.1, w: 245.2, h: 76.0, grado: 3,
     miembros: [
       { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -748,7 +760,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearFacultadSolicitud', nombre: 'CrearFacultadSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/CrearFacultadSolicitud.cs',
-    x: 1553.8, y: 364.3, w: 207.2, h: 60.0, grado: 3,
+    x: 2829.5, y: 711.7, w: 207.2, h: 60.0, grado: 3,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -758,7 +770,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearPensumSolicitud', nombre: 'CrearPensumSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 1654.9, y: 286.1, w: 192.0, h: 56.0, grado: 3,
+    x: 3167.7, y: 357.8, w: 192.0, h: 56.0, grado: 3,
     miembros: [
       { n: 'CarreraId', t: 'Guid', k: 'prop', est: false },
       { n: 'AnioCreacion', t: 'int', k: 'prop', est: false },
@@ -767,7 +779,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.CrearPeriodoSolicitud', nombre: 'CrearPeriodoSolicitud', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesAcademia.cs',
-    x: 1773.2, y: 104.0, w: 199.6, h: 60.0, grado: 3,
+    x: 2945.8, y: 451.8, w: 199.6, h: 60.0, grado: 3,
     miembros: [
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
       { n: 'FechaInicio', t: 'DateOnly', k: 'prop', est: false },
@@ -777,7 +789,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.EstadoPensumDto', nombre: 'EstadoPensumDto', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 2054.0, y: 102.0, w: 154.0, h: 64.0, grado: 1,
+    x: 3367.0, y: 353.8, w: 154.0, h: 64.0, grado: 1,
     miembros: [
       { n: 'Borrador', t: '', k: 'valor', est: false },
       { n: 'Vigente', t: '', k: 'valor', est: false },
@@ -788,7 +800,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.EstadoPeriodoDto', nombre: 'EstadoPeriodoDto', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Academia/SolicitudesEdicionAcademia.cs',
-    x: 2163.6, y: 198.1, w: 161.6, h: 64.0, grado: 1,
+    x: 3441.8, y: 545.8, w: 161.6, h: 64.0, grado: 1,
     miembros: [
       { n: 'Borrador', t: '', k: 'valor', est: false },
       { n: 'Vigente', t: '', k: 'valor', est: false },
@@ -799,7 +811,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.SolicitudSugerenciaSeccionDto', nombre: 'SolicitudSugerenciaSeccionDto', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SugerenciaSeccionDtos.cs',
-    x: 1907.2, y: 192.1, w: 260.4, h: 76.0, grado: 3,
+    x: 3230.8, y: 444.0, w: 260.4, h: 76.0, grado: 3,
     miembros: [
       { n: 'HorarioId', t: 'Guid', k: 'prop', est: false },
       { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
@@ -813,7 +825,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Academia.SugerenciaSeccionDto', nombre: 'SugerenciaSeccionDto', ns: 'Horarios.Contratos.Academia',
     capa: 'contratos', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Academia/SugerenciaSeccionDtos.cs',
-    x: 2220.0, y: 478.4, w: 192.0, h: 72.0, grado: 3,
+    x: 3484.2, y: 725.3, w: 192.0, h: 72.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'MatriculaDetectada', t: 'int', k: 'prop', est: false },
@@ -826,7 +838,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Acceso.CrearUsuarioInicialSolicitud', nombre: 'CrearUsuarioInicialSolicitud', ns: 'Horarios.Contratos.Acceso',
     capa: 'contratos', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Acceso/CrearUsuarioInicialSolicitud.cs',
-    x: 2940.4, y: 2358.8, w: 252.8, h: 68.0, grado: 4,
+    x: 3530.8, y: 2542.4, w: 252.8, h: 68.0, grado: 4,
     miembros: [
       { n: 'AuthUserId', t: 'Guid?', k: 'prop', est: false },
       { n: 'Tipo', t: 'TipoUsuarioDto', k: 'prop', est: false },
@@ -838,7 +850,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Acceso.TipoUsuarioDto', nombre: 'TipoUsuarioDto', ns: 'Horarios.Contratos.Acceso',
     capa: 'contratos', modulo: 'Acceso', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Acceso/CrearUsuarioInicialSolicitud.cs',
-    x: 2949.1, y: 2196.9, w: 150.0, h: 60.0, grado: 1,
+    x: 3535.6, y: 2377.3, w: 150.0, h: 60.0, grado: 1,
     miembros: [
       { n: 'Superadministrador', t: '', k: 'valor', est: false },
       { n: 'CoordinadorAcademico', t: '', k: 'valor', est: false },
@@ -848,7 +860,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.ActualizarAulaSolicitud', nombre: 'ActualizarAulaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/SolicitudesEdicionAulas.cs',
-    x: 2138.2, y: 1509.8, w: 214.8, h: 76.0, grado: 4,
+    x: 3360.1, y: 1915.7, w: 214.8, h: 76.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -863,7 +875,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.ActualizarDescansoJornadaSolicitud', nombre: 'ActualizarDescansoJornadaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/SolicitudesEdicionAulas.cs',
-    x: 2226.2, y: 1607.8, w: 298.4, h: 64.0, grado: 4,
+    x: 3250.2, y: 2006.7, w: 298.4, h: 64.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Dia', t: 'DiaSemanaDto', k: 'prop', est: false },
@@ -874,7 +886,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.ActualizarJornadaSolicitud', nombre: 'ActualizarJornadaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/SolicitudesEdicionAulas.cs',
-    x: 2130.3, y: 1782.4, w: 237.6, h: 76.0, grado: 4,
+    x: 3248.3, y: 1819.4, w: 237.6, h: 76.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -891,7 +903,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', nombre: 'ActualizarRecursoAulaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/SolicitudesEdicionAulas.cs',
-    x: 2095.8, y: 1692.2, w: 268.0, h: 64.0, grado: 3,
+    x: 3190.5, y: 1642.5, w: 268.0, h: 64.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -902,7 +914,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.AsignarRecursoAulaSolicitud', nombre: 'AsignarRecursoAulaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/RecursosAulaSolicitudes.cs',
-    x: 1983.6, y: 1871.4, w: 245.2, h: 60.0, grado: 3,
+    x: 3076.7, y: 1731.2, w: 245.2, h: 60.0, grado: 3,
     miembros: [
       { n: 'AulaId', t: 'Guid', k: 'prop', est: false },
       { n: 'RecursoId', t: 'Guid', k: 'prop', est: false },
@@ -912,7 +924,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.CrearAulaSolicitud', nombre: 'CrearAulaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/CrearAulaSolicitud.cs',
-    x: 1962.4, y: 1604.0, w: 176.8, h: 72.0, grado: 4,
+    x: 2942.0, y: 1644.9, w: 176.8, h: 72.0, grado: 4,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'CapacidadMaxima', t: 'int', k: 'prop', est: false },
@@ -925,7 +937,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', nombre: 'CrearDescansoJornadaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/CrearDescansoJornadaSolicitud.cs',
-    x: 1899.6, y: 1416.1, w: 260.4, h: 64.0, grado: 4,
+    x: 2974.0, y: 1380.1, w: 260.4, h: 64.0, grado: 4,
     miembros: [
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
       { n: 'Dia', t: 'DiaSemanaDto', k: 'prop', est: false },
@@ -936,7 +948,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.CrearJornadaSolicitud', nombre: 'CrearJornadaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/CrearJornadaSolicitud.cs',
-    x: 1747.6, y: 1596.6, w: 199.6, h: 76.0, grado: 4,
+    x: 2750.9, y: 1550.7, w: 199.6, h: 76.0, grado: 4,
     miembros: [
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
       { n: 'DiasActivos', t: 'IReadOnlyList<DiaSemanaDto>', k: 'prop', est: false },
@@ -951,7 +963,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.CrearRecursoAulaSolicitud', nombre: 'CrearRecursoAulaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/RecursosAulaSolicitudes.cs',
-    x: 1506.4, y: 1579.7, w: 230.0, h: 60.0, grado: 3,
+    x: 2846.3, y: 1462.4, w: 230.0, h: 60.0, grado: 3,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -961,7 +973,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.DesasignarRecursoAulaSolicitud', nombre: 'DesasignarRecursoAulaSolicitud', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Aulas/SolicitudesEdicionAulas.cs',
-    x: 1609.0, y: 1417.5, w: 268.0, h: 56.0, grado: 3,
+    x: 3063.7, y: 1560.7, w: 268.0, h: 56.0, grado: 3,
     miembros: [
       { n: 'AulaId', t: 'Guid', k: 'prop', est: false },
       { n: 'RecursoId', t: 'Guid', k: 'prop', est: false },
@@ -970,7 +982,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.DiaSemanaDto', nombre: 'DiaSemanaDto', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Aulas/CrearJornadaSolicitud.cs',
-    x: 2131.5, y: 1329.5, w: 150.0, h: 76.0, grado: 6,
+    x: 3179.5, y: 1474.4, w: 150.0, h: 76.0, grado: 6,
     miembros: [
       { n: 'Lunes', t: '', k: 'valor', est: false },
       { n: 'Martes', t: '', k: 'valor', est: false },
@@ -984,7 +996,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Aulas.TipoAulaDto', nombre: 'TipoAulaDto', ns: 'Horarios.Contratos.Aulas',
     capa: 'contratos', modulo: 'Aulas', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Aulas/CrearAulaSolicitud.cs',
-    x: 2239.9, y: 1419.7, w: 150.0, h: 64.0, grado: 2,
+    x: 3333.7, y: 1726.8, w: 150.0, h: 64.0, grado: 2,
     miembros: [
       { n: 'Teorica', t: '', k: 'valor', est: false },
       { n: 'Laboratorio', t: '', k: 'valor', est: false },
@@ -995,7 +1007,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Consultas.ConsultarReporteSolicitud', nombre: 'ConsultarReporteSolicitud', ns: 'Horarios.Contratos.Consultas',
     capa: 'contratos', modulo: 'Consultas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Consultas/ConsultarReporteSolicitud.cs',
-    x: 2446.0, y: 2222.0, w: 230.0, h: 76.0, grado: 3,
+    x: 3119.9, y: 2445.3, w: 230.0, h: 76.0, grado: 3,
     miembros: [
       { n: 'GeneracionId', t: 'Guid', k: 'prop', est: false },
       { n: 'Vista', t: 'string', k: 'prop', est: false },
@@ -1012,7 +1024,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Consultas.ReporteFilaDto', nombre: 'ReporteFilaDto', ns: 'Horarios.Contratos.Consultas',
     capa: 'contratos', modulo: 'Consultas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Consultas/ReporteDtos.cs',
-    x: 2663.0, y: 2203.7, w: 150.0, h: 52.0, grado: 1,
+    x: 3253.4, y: 2360.3, w: 150.0, h: 52.0, grado: 1,
     miembros: [
       { n: 'Celdas', t: 'IReadOnlyList<string?>', k: 'prop', est: false },
     ],
@@ -1020,7 +1032,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Consultas.ReportePreliminarDto', nombre: 'ReportePreliminarDto', ns: 'Horarios.Contratos.Consultas',
     capa: 'contratos', modulo: 'Consultas', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Consultas/ReporteDtos.cs',
-    x: 2427.5, y: 2348.0, w: 192.0, h: 68.0, grado: 4,
+    x: 3122.0, y: 2555.5, w: 192.0, h: 68.0, grado: 4,
     miembros: [
       { n: 'HorarioId', t: 'Guid', k: 'prop', est: false },
       { n: 'GeneracionId', t: 'Guid', k: 'prop', est: false },
@@ -1032,7 +1044,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', nombre: 'ActualizarDocenteSolicitud', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/ActualizarDocenteSolicitud.cs',
-    x: 2136.2, y: 2358.4, w: 237.6, h: 76.0, grado: 3,
+    x: 2469.0, y: 2413.4, w: 237.6, h: 76.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'FacultadIds', t: 'IReadOnlyList<Guid>?', k: 'prop', est: false },
@@ -1049,7 +1061,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', nombre: 'AutorizarCursoDocenteSolicitud', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/AutorizarCursoDocenteSolicitud.cs',
-    x: 2078.7, y: 2525.5, w: 268.0, h: 68.0, grado: 3,
+    x: 2546.6, y: 2590.6, w: 268.0, h: 68.0, grado: 3,
     miembros: [
       { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
       { n: 'CursoId', t: 'Guid', k: 'prop', est: false },
@@ -1061,7 +1073,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.CrearDocenteSolicitud', nombre: 'CrearDocenteSolicitud', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/CrearDocenteSolicitud.cs',
-    x: 1729.0, y: 2088.5, w: 199.6, h: 76.0, grado: 3,
+    x: 2499.1, y: 2771.0, w: 199.6, h: 76.0, grado: 3,
     miembros: [
       { n: 'FacultadIds', t: 'IReadOnlyList<Guid>?', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -1076,7 +1088,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.DisponibilidadDocenteDto', nombre: 'DisponibilidadDocenteDto', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/DisponibilidadDocenteDtos.cs',
-    x: 1641.3, y: 2181.0, w: 222.4, h: 68.0, grado: 8,
+    x: 2424.1, y: 2678.8, w: 222.4, h: 68.0, grado: 8,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
@@ -1088,7 +1100,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.DocenteResumenDto', nombre: 'DocenteResumenDto', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/DocenteResumenDto.cs',
-    x: 1939.6, y: 2038.1, w: 169.2, h: 76.0, grado: 2,
+    x: 2586.1, y: 2317.1, w: 169.2, h: 76.0, grado: 2,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'FacultadIds', t: 'IReadOnlyList<Guid>', k: 'prop', est: false },
@@ -1105,7 +1117,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.GuardarDisponibilidadDeDocenteSolicitud', nombre: 'GuardarDisponibilidadDeDocenteSolicitud', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/GuardarDisponibilidadDeDocenteSolicitud.cs',
-    x: 2050.3, y: 2126.2, w: 336.4, h: 60.0, grado: 2,
+    x: 2705.0, y: 2228.9, w: 336.4, h: 60.0, grado: 2,
     miembros: [
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
       { n: 'Bloques', t: 'IReadOnlyList<SlotDisponibilidadDto>', k: 'prop', est: false },
@@ -1115,7 +1127,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', nombre: 'GuardarDisponibilidadDocenteSolicitud', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/DisponibilidadDocenteDtos.cs',
-    x: 1868.8, y: 2268.0, w: 321.2, h: 64.0, grado: 4,
+    x: 2595.4, y: 2504.4, w: 321.2, h: 64.0, grado: 4,
     miembros: [
       { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -1126,7 +1138,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Docentes.SlotDisponibilidadDto', nombre: 'SlotDisponibilidadDto', ns: 'Horarios.Contratos.Docentes',
     capa: 'contratos', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Docentes/DisponibilidadDocenteDtos.cs',
-    x: 2155.2, y: 2209.2, w: 199.6, h: 64.0, grado: 4,
+    x: 2829.1, y: 2146.7, w: 199.6, h: 64.0, grado: 4,
     miembros: [
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
       { n: 'Dia', t: 'DiaSemanaDto', k: 'prop', est: false },
@@ -1137,7 +1149,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.ArchivoImportacionDto', nombre: 'ArchivoImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/ArchivoImportacionDto.cs',
-    x: 2924.6, y: 1709.7, w: 199.6, h: 68.0, grado: 4,
+    x: 2001.2, y: 2362.8, w: 199.6, h: 68.0, grado: 4,
     miembros: [
       { n: 'NombreArchivo', t: 'string', k: 'prop', est: false },
       { n: 'TipoArchivo', t: 'TipoArchivoImportacion', k: 'prop', est: false },
@@ -1149,7 +1161,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.ErrorImportacionDto', nombre: 'ErrorImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/ErrorImportacionDto.cs',
-    x: 2679.5, y: 1886.1, w: 184.4, h: 76.0, grado: 6,
+    x: 1674.6, y: 2626.1, w: 184.4, h: 76.0, grado: 6,
     miembros: [
       { n: 'Archivo', t: 'string', k: 'prop', est: false },
       { n: 'Hoja', t: 'string?', k: 'prop', est: false },
@@ -1163,7 +1175,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.FilaVistaPreviaImportacionDto', nombre: 'FilaVistaPreviaImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/VistaPreviaCsvDtos.cs',
-    x: 3075.3, y: 1469.3, w: 260.4, h: 60.0, grado: 1,
+    x: 1780.0, y: 2537.9, w: 260.4, h: 60.0, grado: 1,
     miembros: [
       { n: 'NumeroFila', t: 'int', k: 'prop', est: false },
       { n: 'Valores', t: 'IReadOnlyDictionary<string,string>', k: 'prop', est: false },
@@ -1173,7 +1185,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.PlantillaImportacionDto', nombre: 'PlantillaImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/PlantillaImportacionDto.cs',
-    x: 3053.3, y: 1627.5, w: 214.8, h: 56.0, grado: 0,
+    x: 1983.0, y: 2616.8, w: 214.8, h: 56.0, grado: 0,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Version', t: 'string', k: 'prop', est: false },
@@ -1182,7 +1194,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.PlantillaImportacionVersionadaDto', nombre: 'PlantillaImportacionVersionadaDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/PlantillaImportacionVersionadaDto.cs',
-    x: 2596.8, y: 1707.8, w: 290.8, h: 64.0, grado: 3,
+    x: 1548.1, y: 2716.3, w: 290.8, h: 64.0, grado: 3,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Version', t: 'string', k: 'prop', est: false },
@@ -1193,7 +1205,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.ResultadoValidacionImportacionDto', nombre: 'ResultadoValidacionImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/ResultadoValidacionImportacionDto.cs',
-    x: 2943.3, y: 1882.1, w: 290.8, h: 68.0, grado: 3,
+    x: 1670.7, y: 2365.7, w: 290.8, h: 68.0, grado: 3,
     miembros: [
       { n: 'CodigoPlantilla', t: 'string', k: 'prop', est: false },
       { n: 'VersionPlantilla', t: 'string', k: 'prop', est: false },
@@ -1205,7 +1217,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.ResultadoVistaPreviaImportacionDto', nombre: 'ResultadoVistaPreviaImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/VistaPreviaCsvDtos.cs',
-    x: 2807.1, y: 1795.9, w: 298.4, h: 64.0, grado: 4,
+    x: 1575.6, y: 2453.7, w: 298.4, h: 64.0, grado: 4,
     miembros: [
       { n: 'EsValido', t: 'bool', k: 'prop', est: false },
       { n: 'Columnas', t: 'IReadOnlyList<string>', k: 'prop', est: false },
@@ -1216,7 +1228,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.TipoArchivoImportacion', nombre: 'TipoArchivoImportacion', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Importaciones/TipoArchivoImportacion.cs',
-    x: 2773.9, y: 1627.6, w: 207.2, h: 56.0, grado: 5,
+    x: 1771.7, y: 2283.6, w: 207.2, h: 56.0, grado: 5,
     miembros: [
       { n: 'Csv', t: '', k: 'valor', est: false },
       { n: 'Xlsx', t: '', k: 'valor', est: false },
@@ -1225,7 +1237,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.VistaPlantillaImportacionDto', nombre: 'VistaPlantillaImportacionDto', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/VistaPlantillaImportacionDto.cs',
-    x: 2785.8, y: 1302.7, w: 252.8, h: 68.0, grado: 2,
+    x: 1883.9, y: 2453.8, w: 252.8, h: 68.0, grado: 2,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Version', t: 'string', k: 'prop', est: false },
@@ -1237,7 +1249,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.VistaPreviaCsvSolicitud', nombre: 'VistaPreviaCsvSolicitud', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/VistaPreviaCsvDtos.cs',
-    x: 2973.3, y: 1389.1, w: 214.8, h: 60.0, grado: 2,
+    x: 1882.5, y: 2205.4, w: 214.8, h: 60.0, grado: 2,
     miembros: [
       { n: 'Archivo', t: 'ArchivoImportacionDto', k: 'prop', est: false },
       { n: 'Contenido', t: 'string', k: 'prop', est: false },
@@ -1247,7 +1259,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Importaciones.VistaPreviaImportacionSolicitud', nombre: 'VistaPreviaImportacionSolicitud', ns: 'Horarios.Contratos.Importaciones',
     capa: 'contratos', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Importaciones/VistaPreviaImportacionSolicitud.cs',
-    x: 2957.8, y: 1549.4, w: 275.6, h: 60.0, grado: 2,
+    x: 2099.1, y: 2537.8, w: 275.6, h: 60.0, grado: 2,
     miembros: [
       { n: 'Archivo', t: 'ArchivoImportacionDto', k: 'prop', est: false },
       { n: 'Contenido', t: 'byte', k: 'prop', est: false },
@@ -1255,9 +1267,341 @@ export const CLASES: Clase[] = [
     ],
   },
   {
+    id: 'Horarios.Contratos.Motor.AlcancePlan', nombre: 'AlcancePlan', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 2217.0, y: 333.9, w: 150.0, h: 60.0, grado: 1,
+    miembros: [
+      { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Carreras', t: 'ImmutableArray<Guid>', k: 'prop', est: false },
+      { n: 'Jornadas', t: 'ImmutableArray<Guid>', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.AsignacionPendiente', nombre: 'AsignacionPendiente', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1906.6, y: 355.7, w: 184.4, h: 60.0, grado: 3,
+    miembros: [
+      { n: 'Asignacion', t: 'ClaveAsignacion', k: 'prop', est: false },
+      { n: 'SesionIds', t: 'ImmutableArray<Guid>', k: 'prop', est: false },
+      { n: 'Motivo', t: 'string', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Aula', nombre: 'Aula', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1733.5, y: 1238.1, w: 150.0, h: 68.0, grado: 17,
+    miembros: [
+      { n: 'Id', t: 'Guid', k: 'prop', est: false },
+      { n: 'Capacidad', t: 'int', k: 'prop', est: false },
+      { n: 'Tipo', t: 'TipoAula', k: 'prop', est: false },
+      { n: 'TipoLaboratorioDisponible', t: 'string?', k: 'prop', est: false },
+      { n: 'Recursos', t: 'ImmutableArray<RecursoDisponible>', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.AutorizacionDocente', nombre: 'AutorizacionDocente', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 2315.1, y: 434.0, w: 184.4, h: 56.0, grado: 1,
+    miembros: [
+      { n: 'CursoId', t: 'Guid', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.CatalogoNombres', nombre: 'CatalogoNombres', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1516.7, y: 781.5, w: 154.0, h: 60.0, grado: 6,
+    miembros: [
+      { n: 'Valores', t: 'ImmutableDictionary<Guid,string>', k: 'prop', est: false },
+      { n: 'Vacio', t: 'CatalogoNombres', k: 'prop', est: true },
+      { n: 'De(Guid)', t: 'string', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.ClaveAsignacion', nombre: 'ClaveAsignacion', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1870.0, y: 1035.5, w: 154.0, h: 60.0, grado: 8,
+    miembros: [
+      { n: 'Valor', t: 'string', k: 'prop', est: false },
+      { n: 'DeArea(Guid)', t: 'ClaveAsignacion', k: 'metodo', est: true },
+      { n: 'DeCurso(Guid, Guid)', t: 'ClaveAsignacion', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Colocacion', nombre: 'Colocacion', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1909.5, y: 1193.4, w: 150.0, h: 56.0, grado: 12,
+    miembros: [
+      { n: 'Dia', t: 'DiaSemana', k: 'prop', est: false },
+      { n: 'SlotInicio', t: 'int', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Descanso', nombre: 'Descanso', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 2013.0, y: 275.4, w: 150.0, h: 60.0, grado: 2,
+    miembros: [
+      { n: 'Dia', t: 'DiaSemana', k: 'prop', est: false },
+      { n: 'SlotDesde', t: 'int', k: 'prop', est: false },
+      { n: 'SlotHasta', t: 'int', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.DiaSemana', nombre: 'DiaSemana', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1591.0, y: 953.6, w: 150.0, h: 76.0, grado: 7,
+    miembros: [
+      { n: 'Lunes', t: '', k: 'valor', est: false },
+      { n: 'Martes', t: '', k: 'valor', est: false },
+      { n: 'Miercoles', t: '', k: 'valor', est: false },
+      { n: 'Jueves', t: '', k: 'valor', est: false },
+      { n: 'Viernes', t: '', k: 'valor', est: false },
+      { n: 'Sabado', t: '', k: 'valor', est: false },
+      { n: 'Domingo', t: '', k: 'valor', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Diagnostico', nombre: 'Diagnostico', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1767.6, y: 882.9, w: 150.0, h: 56.0, grado: 6,
+    miembros: [
+      { n: 'Codigo', t: 'string', k: 'prop', est: false },
+      { n: 'Mensaje', t: 'string', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Docente', nombre: 'Docente', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1557.5, y: 1238.1, w: 150.0, h: 68.0, grado: 20,
+    miembros: [
+      { n: 'Id', t: 'Guid', k: 'prop', est: false },
+      { n: 'CargaMaximaCursos', t: 'int', k: 'prop', est: false },
+      { n: 'NivelPrioridad', t: 'int', k: 'prop', est: false },
+      { n: 'Autorizaciones', t: 'ImmutableArray<AutorizacionDocente>', k: 'prop', est: false },
+      { n: 'Disponibles', t: 'ImmutableHashSet<(GuidJornada,DiaSemanaDia,intSlot)>', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.IMotorHorarios', nombre: 'IMotorHorarios', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1825.0, y: 681.6, w: 150.0, h: 52.0, grado: 4,
+    miembros: [
+      { n: 'Ejecutar(Instantanea, CancellationToken)', t: 'Resultado', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.IVerificadorHorario', nombre: 'IVerificadorHorario', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1814.5, y: 432.7, w: 184.4, h: 52.0, grado: 5,
+    miembros: [
+      { n: 'Verificar(Instantanea, Resultado)', t: 'ResultadoVerificacion', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.IdentificadorDeterminista', nombre: 'IdentificadorDeterminista', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 2114.1, y: 199.1, w: 230.0, h: 52.0, grado: 0,
+    miembros: [
+      { n: 'Crear(string)', t: 'Guid', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Instantanea', nombre: 'Instantanea', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1691.2, y: 1145.9, w: 150.0, h: 76.0, grado: 21,
+    miembros: [
+      { n: 'PlanId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Alcance', t: 'AlcancePlan', k: 'prop', est: false },
+      { n: 'Jornadas', t: 'ImmutableArray<Jornada>', k: 'prop', est: false },
+      { n: 'Docentes', t: 'ImmutableArray<Docente>', k: 'prop', est: false },
+      { n: 'Aulas', t: 'ImmutableArray<Aula>', k: 'prop', est: false },
+      { n: 'Sesiones', t: 'ImmutableArray<SesionRequerida>', k: 'prop', est: false },
+      { n: 'Fijadas', t: 'ImmutableArray<SesionFijada>', k: 'prop', est: false },
+      { n: 'CohortesValidas', t: 'ImmutableHashSet<Guid>', k: 'prop', est: false },
+      { n: 'Equivalencias', t: 'ImmutableDictionary<Guid,ImmutableHashSet<Guid>>', k: 'prop', est: false },
+      { n: 'DiagnosticosDeCarga', t: 'ImmutableArray<Diagnostico>', k: 'prop', est: false },
+      { n: 'Nombres', t: 'CatalogoNombres?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Jornada', nombre: 'Jornada', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1613.4, y: 1049.7, w: 150.0, h: 76.0, grado: 13,
+    miembros: [
+      { n: 'Id', t: 'Guid', k: 'prop', est: false },
+      { n: 'DiasActivos', t: 'ImmutableArray<DiaSemana>', k: 'prop', est: false },
+      { n: 'MinutoInicio', t: 'int', k: 'prop', est: false },
+      { n: 'MinutoFin', t: 'int', k: 'prop', est: false },
+      { n: 'DuracionBloqueMinutos', t: 'int', k: 'prop', est: false },
+      { n: 'BloquesPorDia', t: 'int', k: 'prop', est: false },
+      { n: 'RecesoDespuesBloque', t: 'int', k: 'prop', est: false },
+      { n: 'DuracionRecesoMinutos', t: 'int', k: 'prop', est: false },
+      { n: 'Descansos', t: 'ImmutableArray<Descanso>', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.ParticipacionCohorte', nombre: 'ParticipacionCohorte', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1701.1, y: 516.9, w: 192.0, h: 76.0, grado: 5,
+    miembros: [
+      { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Semestre', t: 'int', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoEnPensumId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoVisibleId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Matricula', t: 'int', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.RecursoDisponible', nombre: 'RecursoDisponible', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 2112.3, y: 440.3, w: 169.2, h: 56.0, grado: 1,
+    miembros: [
+      { n: 'RecursoId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Cantidad', t: 'int', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.RecursoRequerido', nombre: 'RecursoRequerido', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1679.4, y: 357.8, w: 161.6, h: 56.0, grado: 3,
+    miembros: [
+      { n: 'RecursoId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Cantidad', t: 'int', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.RequisitoCargado', nombre: 'RequisitoCargado', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1642.6, y: 693.4, w: 161.6, h: 76.0, grado: 3,
+    miembros: [
+      { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Semestre', t: 'int', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoIdSesion', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoVisibleId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoEnPensumId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Matricula', t: 'int', k: 'prop', est: false },
+      { n: 'BloquesSemanalesExactos', t: 'int', k: 'prop', est: false },
+      { n: 'DuracionSlots', t: 'int', k: 'prop', est: false },
+      { n: 'RequiereLaboratorio', t: 'bool', k: 'prop', est: false },
+      { n: 'TipoLaboratorioRequerido', t: 'string?', k: 'prop', est: false },
+      { n: 'Recursos', t: 'ImmutableArray<RecursoRequerido>', k: 'prop', est: false },
+      { n: 'AgrupacionAreaComunId', t: 'Guid?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Resultado', nombre: 'Resultado', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1519.7, y: 863.5, w: 150.0, h: 64.0, grado: 11,
+    miembros: [
+      { n: 'Colocadas', t: 'ImmutableArray<SesionColocada>', k: 'prop', est: false },
+      { n: 'Pendientes', t: 'ImmutableArray<AsignacionPendiente>', k: 'prop', est: false },
+      { n: 'Diagnosticos', t: 'ImmutableArray<Diagnostico>', k: 'prop', est: false },
+      { n: 'FueCancelado', t: 'bool', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.ResultadoVerificacion', nombre: 'ResultadoVerificacion', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1572.8, y: 605.2, w: 199.6, h: 60.0, grado: 7,
+    miembros: [
+      { n: 'ViolacionesNivel1', t: 'ImmutableArray<Violacion>', k: 'prop', est: false },
+      { n: 'CoberturaNivel2', t: 'ImmutableArray<Diagnostico>', k: 'prop', est: false },
+      { n: 'EsCorrecto', t: 'bool', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.SesionColocada', nombre: 'SesionColocada', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 2001.4, y: 639.7, w: 150.0, h: 64.0, grado: 4,
+    miembros: [
+      { n: 'SesionId', t: 'Guid', k: 'prop', est: false },
+      { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'AulaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Colocacion', t: 'Colocacion', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.SesionFijada', nombre: 'SesionFijada', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1696.2, y: 790.1, w: 150.0, h: 76.0, grado: 8,
+    miembros: [
+      { n: 'SesionId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Asignacion', t: 'ClaveAsignacion', k: 'prop', est: false },
+      { n: 'Ordinal', t: 'int', k: 'prop', est: false },
+      { n: 'CursoIdSesion', t: 'Guid', k: 'prop', est: false },
+      { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'AulaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Colocacion', t: 'Colocacion', k: 'prop', est: false },
+      { n: 'DuracionSlots', t: 'int', k: 'prop', est: false },
+      { n: 'Participantes', t: 'ImmutableArray<ParticipacionCohorte>', k: 'prop', est: false },
+      { n: 'AgrupacionAreaComunId', t: 'Guid?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.SesionRequerida', nombre: 'SesionRequerida', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1504.9, y: 1145.9, w: 154.0, h: 76.0, grado: 20,
+    miembros: [
+      { n: 'Id', t: 'Guid', k: 'prop', est: false },
+      { n: 'Asignacion', t: 'ClaveAsignacion', k: 'prop', est: false },
+      { n: 'Ordinal', t: 'int', k: 'prop', est: false },
+      { n: 'CursoIdSesion', t: 'Guid', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'DuracionSlots', t: 'int', k: 'prop', est: false },
+      { n: 'Participantes', t: 'ImmutableArray<ParticipacionCohorte>', k: 'prop', est: false },
+      { n: 'Recursos', t: 'ImmutableArray<RecursoRequerido>', k: 'prop', est: false },
+      { n: 'RequiereLaboratorio', t: 'bool', k: 'prop', est: false },
+      { n: 'TipoLaboratorioRequerido', t: 'string?', k: 'prop', est: false },
+      { n: 'AgrupacionAreaComunId', t: 'Guid?', k: 'prop', est: false },
+      { n: 'EstaFijada', t: 'bool', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.TipoAula', nombre: 'TipoAula', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1792.2, y: 273.4, w: 150.0, h: 64.0, grado: 2,
+    miembros: [
+      { n: 'Teorica', t: '', k: 'valor', est: false },
+      { n: 'Laboratorio', t: '', k: 'valor', est: false },
+      { n: 'Mixta', t: '', k: 'valor', est: false },
+      { n: 'Virtual', t: '', k: 'valor', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Validaciones', nombre: 'Validaciones', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1944.0, y: 823.0, w: 150.0, h: 76.0, grado: 7,
+    miembros: [
+      { n: 'ValidarJornada(int, int, int, int)', t: 'int', k: 'metodo', est: true },
+      { n: 'ValidarSesion(int, Guid, int, ImmutableArray<ParticipacionCohorte>, Guid?)', t: 'int', k: 'metodo', est: true },
+      { n: 'ValidarFijada(int, ImmutableArray<ParticipacionCohorte>)', t: 'int', k: 'metodo', est: true },
+      { n: 'ValidarInstantanea(Guid, ImmutableArray<Jornada>, ImmutableArray<Docente>, ImmutableArray<Aula>, ImmutableArray<SesionRequerida>, ImmutableArray<SesionFijada>)', t: 'Guid', k: 'metodo', est: true },
+      { n: 'ValidarParticipantes(ImmutableArray<ParticipacionCohorte>, string)', t: 'void', k: 'metodo', est: true },
+      { n: 'ValidarOrdenSesiones(ImmutableArray<SesionRequerida>, string)', t: 'void', k: 'metodo', est: true },
+      { n: 'ValidarOrdenFijadas(ImmutableArray<SesionFijada>, string)', t: 'void', k: 'metodo', est: true },
+      { n: 'ValidarCorrespondenciaFijadas(ImmutableArray<SesionRequerida>, ImmutableArray<SesionFijada>)', t: 'void', k: 'metodo', est: true },
+      { n: 'Comparar(ClaveAsignacion, int, ClaveAsignacion, int)', t: 'int', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Contratos.Motor.Violacion', nombre: 'Violacion', ns: 'Horarios.Contratos.Motor',
+    capa: 'contratos', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Motor/ContratoMotor.cs',
+    x: 1897.9, y: 191.1, w: 150.0, h: 60.0, grado: 2,
+    miembros: [
+      { n: 'Codigo', t: 'string', k: 'prop', est: false },
+      { n: 'Mensaje', t: 'string', k: 'prop', est: false },
+      { n: 'SesionIds', t: 'ImmutableArray<Guid>', k: 'prop', est: false },
+    ],
+  },
+  {
     id: 'Horarios.Contratos.Planes.ActualizarPlanSolicitud', nombre: 'ActualizarPlanSolicitud', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/ActualizarPlanSolicitud.cs',
-    x: 2690.2, y: 827.1, w: 214.8, h: 72.0, grado: 4,
+    x: 2004.6, y: 1631.2, w: 214.8, h: 72.0, grado: 4,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -1270,7 +1614,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.CambiarEstadoPlanSolicitud', nombre: 'CambiarEstadoPlanSolicitud', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/CambiarEstadoPlanSolicitud.cs',
-    x: 3161.4, y: 810.8, w: 237.6, h: 64.0, grado: 2,
+    x: 2456.3, y: 1868.1, w: 237.6, h: 64.0, grado: 2,
     miembros: [
       { n: 'PlanId', t: 'Guid', k: 'prop', est: false },
       { n: 'NuevoEstado', t: 'EstadoHorarioDto', k: 'prop', est: false },
@@ -1281,7 +1625,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.ConteosRevisionPlan', nombre: 'ConteosRevisionPlan', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/RevisionPlanDto.cs',
-    x: 2923.4, y: 861.1, w: 184.4, h: 72.0, grado: 3,
+    x: 2324.2, y: 1956.4, w: 184.4, h: 72.0, grado: 3,
     miembros: [
       { n: 'ExistePeriodo', t: 'bool', k: 'prop', est: false },
       { n: 'CohortesActivas', t: 'int', k: 'prop', est: false },
@@ -1294,7 +1638,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.CrearPlanSolicitud', nombre: 'CrearPlanSolicitud', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/CrearPlanSolicitud.cs',
-    x: 2519.3, y: 918.1, w: 176.8, h: 68.0, grado: 4,
+    x: 2169.8, y: 1721.5, w: 176.8, h: 68.0, grado: 4,
     miembros: [
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
       { n: 'Tipo', t: 'TipoPlanHorarioDto', k: 'prop', est: false },
@@ -1306,7 +1650,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.EstadoGeneracionDto', nombre: 'EstadoGeneracionDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Planes/GeneracionHorarioDtos.cs',
-    x: 2720.1, y: 431.2, w: 184.4, h: 72.0, grado: 2,
+    x: 1944.7, y: 1468.2, w: 184.4, h: 72.0, grado: 4,
     miembros: [
       { n: 'Pendiente', t: '', k: 'valor', est: false },
       { n: 'Generando', t: '', k: 'valor', est: false },
@@ -1319,7 +1663,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.EstadoHorarioDto', nombre: 'EstadoHorarioDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Planes/CambiarEstadoPlanSolicitud.cs',
-    x: 3075.7, y: 529.3, w: 161.6, h: 76.0, grado: 1,
+    x: 2477.4, y: 1700.8, w: 161.6, h: 76.0, grado: 1,
     miembros: [
       { n: 'Borrador', t: '', k: 'valor', est: false },
       { n: 'Generando', t: '', k: 'valor', est: false },
@@ -1336,7 +1680,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.GeneracionHorarioDto', nombre: 'GeneracionHorarioDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/GeneracionHorarioDtos.cs',
-    x: 2488.0, y: 680.2, w: 192.0, h: 76.0, grado: 4,
+    x: 1688.4, y: 1690.2, w: 192.0, h: 76.0, grado: 8,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PlanId', t: 'Guid', k: 'prop', est: false },
@@ -1357,7 +1701,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.HorarioGeneradoDto', nombre: 'HorarioGeneradoDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/GeneracionHorarioDtos.cs',
-    x: 2927.0, y: 435.0, w: 176.8, h: 72.0, grado: 3,
+    x: 2166.6, y: 1522.4, w: 176.8, h: 72.0, grado: 5,
     miembros: [
       { n: 'Sesiones', t: 'IReadOnlyList<SesionHorarioGeneradoDto>', k: 'prop', est: false },
       { n: 'Conflictos', t: 'IReadOnlyList<IncidenciaHorarioGeneradoDto>', k: 'prop', est: false },
@@ -1370,7 +1714,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.IncidenciaHorarioGeneradoDto', nombre: 'IncidenciaHorarioGeneradoDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/GeneracionHorarioDtos.cs',
-    x: 3039.6, y: 344.7, w: 252.8, h: 68.0, grado: 1,
+    x: 2311.2, y: 1428.5, w: 252.8, h: 68.0, grado: 1,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Mensaje', t: 'string', k: 'prop', est: false },
@@ -1382,7 +1726,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.MensajeGeneracionDto', nombre: 'MensajeGeneracionDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/GeneracionHorarioDtos.cs',
-    x: 2588.2, y: 523.0, w: 192.0, h: 64.0, grado: 3,
+    x: 1762.8, y: 1557.2, w: 192.0, h: 64.0, grado: 3,
     miembros: [
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
       { n: 'Mensaje', t: 'string', k: 'prop', est: false },
@@ -1393,7 +1737,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.ResultadoRevisionPlanDto', nombre: 'ResultadoRevisionPlanDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/RevisionPlanDto.cs',
-    x: 3106.3, y: 716.0, w: 222.4, h: 64.0, grado: 2,
+    x: 2328.8, y: 1610.6, w: 222.4, h: 64.0, grado: 2,
     miembros: [
       { n: 'PlanId', t: 'Guid', k: 'prop', est: false },
       { n: 'PuedeGenerarse', t: 'bool', k: 'prop', est: false },
@@ -1404,7 +1748,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.SesionHorarioGeneradoDto', nombre: 'SesionHorarioGeneradoDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Contratos/Planes/GeneracionHorarioDtos.cs',
-    x: 3184.2, y: 625.6, w: 222.4, h: 76.0, grado: 1,
+    x: 2427.1, y: 1520.6, w: 222.4, h: 76.0, grado: 1,
     miembros: [
       { n: 'SesionId', t: 'Guid', k: 'prop', est: false },
       { n: 'Curso', t: 'string', k: 'prop', est: false },
@@ -1428,7 +1772,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Contratos.Planes.TipoPlanHorarioDto', nombre: 'TipoPlanHorarioDto', ns: 'Horarios.Contratos.Planes',
     capa: 'contratos', modulo: 'Planes', kind: 'enum', abst: false, archivo: 'Horarios.Contratos/Planes/CrearPlanSolicitud.cs',
-    x: 2912.3, y: 623.3, w: 176.8, h: 56.0, grado: 3,
+    x: 2373.0, y: 1787.1, w: 176.8, h: 56.0, grado: 3,
     miembros: [
       { n: 'Clases', t: '', k: 'valor', est: false },
       { n: 'Examenes', t: '', k: 'valor', est: false },
@@ -1437,7 +1781,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.CrearCarrera', nombre: 'CrearCarrera', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/CrearCarrera.cs',
-    x: 4638.8, y: 836.5, w: 150.0, h: 52.0, grado: 3,
+    x: 5536.8, y: 773.2, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearCarreraSolicitud, CancellationToken)', t: 'Task<Carrera>', k: 'metodo', est: false },
     ],
@@ -1445,7 +1789,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.CrearFacultad', nombre: 'CrearFacultad', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/CrearFacultad.cs',
-    x: 5064.4, y: 841.9, w: 150.0, h: 52.0, grado: 3,
+    x: 5466.1, y: 930.0, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearFacultadSolicitud, CancellationToken)', t: 'Task<Facultad>', k: 'metodo', est: false },
     ],
@@ -1453,7 +1797,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.GeneradorCodigosAcademicos', nombre: 'GeneradorCodigosAcademicos', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/GeneradorCodigosAcademicos.cs',
-    x: 4982.3, y: 981.7, w: 237.6, h: 64.0, grado: 0,
+    x: 5625.4, y: 851.7, w: 237.6, h: 64.0, grado: 0,
     miembros: [
       { n: 'Facultad(IEnumerable<string>)', t: 'string', k: 'metodo', est: true },
       { n: 'Carrera(IEnumerable<string>)', t: 'string', k: 'metodo', est: true },
@@ -1464,7 +1808,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.GestionarAcademia', nombre: 'GestionarAcademia', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/GestionarAcademia.cs',
-    x: 4639.3, y: 286.8, w: 169.2, h: 76.0, grado: 20,
+    x: 5114.9, y: 300.8, w: 169.2, h: 76.0, grado: 21,
     miembros: [
       { n: 'CrearPensumAsync(CrearPensumSolicitud, CancellationToken)', t: 'Task<Pensum>', k: 'metodo', est: false },
       { n: 'CrearCursoAsync(CrearCursoEnPensumSolicitud, CancellationToken)', t: 'Task<CursoDePensum>', k: 'metodo', est: false },
@@ -1500,7 +1844,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', nombre: 'GestionarCatalogosAcademicos', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/GestionarCatalogosAcademicos.cs',
-    x: 4411.2, y: 789.2, w: 252.8, h: 72.0, grado: 5,
+    x: 5203.1, y: 936.5, w: 252.8, h: 72.0, grado: 6,
     miembros: [
       { n: 'ActualizarFacultadAsync(ActualizarFacultadSolicitud, CancellationToken)', t: 'Task<Facultad>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1513,7 +1857,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos', nombre: 'GestionarPeriodosAcademicos', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/GestionarPeriodosAcademicos.cs',
-    x: 4685.8, y: 621.4, w: 245.2, h: 76.0, grado: 5,
+    x: 5391.7, y: 583.5, w: 245.2, h: 76.0, grado: 6,
     miembros: [
       { n: 'CrearAsync(CrearPeriodoSolicitud, CancellationToken)', t: 'Task<PeriodoAcademico>', k: 'metodo', est: false },
       { n: 'ActualizarAsync(ActualizarPeriodoSolicitud, CancellationToken)', t: 'Task<PeriodoAcademico>', k: 'metodo', est: false },
@@ -1528,7 +1872,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.IDatosAcademia', nombre: 'IDatosAcademia', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Academia/IDatosAcademia.cs',
-    x: 4714.3, y: 451.8, w: 150.0, h: 76.0, grado: 13,
+    x: 5241.8, y: 681.1, w: 150.0, h: 76.0, grado: 13,
     miembros: [
       { n: 'ExisteFacultadConCodigoAsync(string, CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
       { n: 'ExisteCarreraConCodigoAsync(string, CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
@@ -1547,7 +1891,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica', nombre: 'IDatosGestionAcademica', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Academia/IDatosGestionAcademica.cs',
-    x: 4509.7, y: 383.8, w: 207.2, h: 76.0, grado: 21,
+    x: 4968.9, y: 397.8, w: 207.2, h: 76.0, grado: 21,
     miembros: [
       { n: 'CrearPensumAsync(CrearPensumSolicitud, CancellationToken)', t: 'Task<Pensum>', k: 'metodo', est: false },
       { n: 'CrearCursoEnPensumAsync(CrearCursoEnPensumSolicitud, CancellationToken)', t: 'Task<CursoDePensum>', k: 'metodo', est: false },
@@ -1578,7 +1922,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.IDatosPeriodosAcademicos', nombre: 'IDatosPeriodosAcademicos', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Academia/ListarPeriodosAcademicos.cs',
-    x: 4425.6, y: 637.4, w: 222.4, h: 76.0, grado: 7,
+    x: 5098.3, y: 842.0, w: 222.4, h: 76.0, grado: 7,
     miembros: [
       { n: 'ListarAsync(CancellationToken)', t: 'Task<IReadOnlyList<PeriodoAcademico>>', k: 'metodo', est: false },
       { n: 'ObtenerAsync(Guid, CancellationToken)', t: 'Task<PeriodoAcademico?>', k: 'metodo', est: false },
@@ -1593,7 +1937,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.IDatosSugerenciasSeccion', nombre: 'IDatosSugerenciasSeccion', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Academia/SugerirNuevaSeccion.cs',
-    x: 4852.0, y: 807.6, w: 222.4, h: 52.0, grado: 4,
+    x: 5337.8, y: 1018.8, w: 222.4, h: 52.0, grado: 4,
     miembros: [
       { n: 'CrearSugerenciaAsync(SolicitudSugerenciaSeccionDto, Guid, CancellationToken)', t: 'Task<SugerenciaSeccionDto>', k: 'metodo', est: false },
     ],
@@ -1601,7 +1945,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.ListarCarrerasActivas', nombre: 'ListarCarrerasActivas', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/ListarCarrerasPorFacultad.cs',
-    x: 4540.8, y: 536.4, w: 199.6, h: 52.0, grado: 2,
+    x: 5335.7, y: 811.5, w: 199.6, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(CancellationToken)', t: 'Task<IReadOnlyList<Carrera>>', k: 'metodo', est: false },
     ],
@@ -1609,7 +1953,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.ListarCarrerasPorFacultad', nombre: 'ListarCarrerasPorFacultad', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/ListarCarrerasPorFacultad.cs',
-    x: 4880.4, y: 536.8, w: 230.0, h: 52.0, grado: 2,
+    x: 5575.0, y: 668.0, w: 230.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<Carrera>>', k: 'metodo', est: false },
     ],
@@ -1617,7 +1961,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.ListarFacultades', nombre: 'ListarFacultades', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/ListarFacultades.cs',
-    x: 4985.2, y: 621.6, w: 161.6, h: 52.0, grado: 2,
+    x: 5584.0, y: 499.4, w: 161.6, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(CancellationToken)', t: 'Task<IReadOnlyList<Facultad>>', k: 'metodo', est: false },
     ],
@@ -1625,7 +1969,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.ListarPeriodosAcademicos', nombre: 'ListarPeriodosAcademicos', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/ListarPeriodosAcademicos.cs',
-    x: 4475.4, y: 988.2, w: 222.4, h: 52.0, grado: 2,
+    x: 5685.1, y: 595.1, w: 222.4, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(CancellationToken)', t: 'Task<IReadOnlyList<PeriodoAcademico>>', k: 'metodo', est: false },
     ],
@@ -1633,7 +1977,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion', nombre: 'SugerirNuevaSeccion', ns: 'Horarios.Aplicacion.Academia',
     capa: 'aplicacion', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Academia/SugerirNuevaSeccion.cs',
-    x: 5087.9, y: 725.6, w: 184.4, h: 52.0, grado: 3,
+    x: 5730.3, y: 740.7, w: 184.4, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(SolicitudSugerenciaSeccionDto, CancellationToken)', t: 'Task<SugerenciaSeccionDto>', k: 'metodo', est: false },
     ],
@@ -1641,7 +1985,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.AlcanceUsuario', nombre: 'AlcanceUsuario', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Acceso/ObtenerAlcanceUsuario.cs',
-    x: 4899.3, y: 1622.5, w: 150.0, h: 56.0, grado: 3,
+    x: 4079.9, y: 2220.1, w: 150.0, h: 56.0, grado: 3,
     miembros: [
       { n: 'DocenteId', t: 'Guid?', k: 'prop', est: false },
       { n: 'FacultadIds', t: 'IReadOnlyList<Guid>', k: 'prop', est: false },
@@ -1650,7 +1994,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.AutorizacionAplicacion', nombre: 'AutorizacionAplicacion', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Acceso/AutorizacionAplicacion.cs',
-    x: 5014.6, y: 1697.0, w: 207.2, h: 52.0, grado: 0,
+    x: 4354.9, y: 2332.6, w: 207.2, h: 52.0, grado: 1,
     miembros: [
       { n: 'Exigir(IContextoUsuario, string, string)', t: 'void', k: 'metodo', est: true },
     ],
@@ -1658,7 +2002,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.CerrarSesion', nombre: 'CerrarSesion', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Acceso/CerrarSesion.cs',
-    x: 4853.1, y: 1773.0, w: 150.0, h: 52.0, grado: 2,
+    x: 4188.7, y: 2443.4, w: 150.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(string, CancellationToken)', t: 'Task', k: 'metodo', est: false },
     ],
@@ -1666,7 +2010,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.CrearUsuarioInicial', nombre: 'CrearUsuarioInicial', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Acceso/CrearUsuarioInicial.cs',
-    x: 4775.6, y: 1548.2, w: 184.4, h: 52.0, grado: 3,
+    x: 4242.8, y: 2125.1, w: 184.4, h: 52.0, grado: 3,
     miembros: [
       { n: 'EjecutarAsync(CrearUsuarioInicialSolicitud, CancellationToken)', t: 'Task<Usuario>', k: 'metodo', est: false },
     ],
@@ -1674,7 +2018,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.IAutenticadorSupabase', nombre: 'IAutenticadorSupabase', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Acceso/IAutenticadorSupabase.cs',
-    x: 4725.2, y: 1698.8, w: 199.6, h: 56.0, grado: 4,
+    x: 4057.4, y: 2369.2, w: 199.6, h: 56.0, grado: 4,
     miembros: [
       { n: 'IniciarSesionAsync(string, string, CancellationToken)', t: 'Task<SesionSupabase>', k: 'metodo', est: false },
       { n: 'CerrarSesionAsync(string, CancellationToken)', t: 'Task', k: 'metodo', est: false },
@@ -1683,7 +2027,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.IDatosAcceso', nombre: 'IDatosAcceso', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Acceso/IDatosAcceso.cs',
-    x: 4645.7, y: 1464.0, w: 150.0, h: 76.0, grado: 7,
+    x: 4049.1, y: 2134.0, w: 150.0, h: 76.0, grado: 7,
     miembros: [
       { n: 'CrearUsuarioInicialAsync(CrearUsuarioInicialSolicitud, CancellationToken)', t: 'Task<Usuario>', k: 'metodo', est: false },
       { n: 'ObtenerPorCorreoAsync(string, CancellationToken)', t: 'Task<Usuario?>', k: 'metodo', est: false },
@@ -1697,7 +2041,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.IDatosAlcanceUsuario', nombre: 'IDatosAlcanceUsuario', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Acceso/ObtenerAlcanceUsuario.cs',
-    x: 4619.3, y: 1621.4, w: 192.0, h: 52.0, grado: 3,
+    x: 3961.3, y: 2295.1, w: 192.0, h: 52.0, grado: 3,
     miembros: [
       { n: 'ObtenerAsync(Guid, CancellationToken)', t: 'Task<AlcanceUsuario>', k: 'metodo', est: false },
     ],
@@ -1705,7 +2049,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.IniciarSesion', nombre: 'IniciarSesion', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Acceso/IniciarSesion.cs',
-    x: 4532.4, y: 1549.0, w: 150.0, h: 52.0, grado: 4,
+    x: 3872.3, y: 2174.7, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(string, string, CancellationToken)', t: 'Task<ResultadoInicioSesion>', k: 'metodo', est: false },
     ],
@@ -1713,7 +2057,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.ObtenerAlcanceUsuario', nombre: 'ObtenerAlcanceUsuario', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Acceso/ObtenerAlcanceUsuario.cs',
-    x: 4513.5, y: 1379.0, w: 199.6, h: 52.0, grado: 3,
+    x: 3940.3, y: 2050.0, w: 199.6, h: 52.0, grado: 3,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<AlcanceUsuario>', k: 'metodo', est: false },
     ],
@@ -1721,7 +2065,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.PermisoUsuario', nombre: 'PermisoUsuario', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Acceso/IDatosAcceso.cs',
-    x: 4642.6, y: 1290.8, w: 150.0, h: 60.0, grado: 3,
+    x: 4256.5, y: 2256.4, w: 150.0, h: 60.0, grado: 3,
     miembros: [
       { n: 'Recurso', t: 'string', k: 'prop', est: false },
       { n: 'Accion', t: 'string', k: 'prop', est: false },
@@ -1731,7 +2075,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.ResultadoInicioSesion', nombre: 'ResultadoInicioSesion', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Acceso/IniciarSesion.cs',
-    x: 4823.5, y: 1373.8, w: 199.6, h: 64.0, grado: 4,
+    x: 4102.0, y: 1971.9, w: 199.6, h: 64.0, grado: 4,
     miembros: [
       { n: 'Usuario', t: 'Usuario', k: 'prop', est: false },
       { n: 'Sesion', t: 'SesionSupabase', k: 'prop', est: false },
@@ -1742,7 +2086,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.SesionSupabase', nombre: 'SesionSupabase', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Acceso/IAutenticadorSupabase.cs',
-    x: 4469.4, y: 1208.7, w: 150.0, h: 64.0, grado: 6,
+    x: 3879.5, y: 1936.2, w: 150.0, h: 64.0, grado: 6,
     miembros: [
       { n: 'AuthUserId', t: 'Guid', k: 'prop', est: false },
       { n: 'TokenAcceso', t: 'string', k: 'prop', est: false },
@@ -1753,7 +2097,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Acceso.VerificarPermiso', nombre: 'VerificarPermiso', ns: 'Horarios.Aplicacion.Acceso',
     capa: 'aplicacion', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Acceso/VerificarPermiso.cs',
-    x: 5037.1, y: 1489.2, w: 161.6, h: 52.0, grado: 1,
+    x: 4438.7, y: 2216.5, w: 161.6, h: 52.0, grado: 1,
     miembros: [
       { n: 'EjecutarAsync(Guid, string, string, CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
     ],
@@ -1761,7 +2105,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.ActualizarAula', nombre: 'ActualizarAula', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/ActualizarAula.cs',
-    x: 4210.3, y: 1325.0, w: 150.0, h: 56.0, grado: 3,
+    x: 4605.5, y: 1471.9, w: 150.0, h: 56.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(ActualizarAulaSolicitud, CancellationToken)', t: 'Task<Aula>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1770,7 +2114,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.ActualizarJornada', nombre: 'ActualizarJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/ActualizarJornada.cs',
-    x: 4233.8, y: 1401.3, w: 169.2, h: 56.0, grado: 3,
+    x: 4496.8, y: 1395.6, w: 169.2, h: 56.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(ActualizarJornadaSolicitud, CancellationToken)', t: 'Task<Jornada>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1779,7 +2123,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.CrearAula', nombre: 'CrearAula', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/CrearAula.cs',
-    x: 3892.2, y: 1538.6, w: 150.0, h: 52.0, grado: 3,
+    x: 4475.4, y: 1546.2, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearAulaSolicitud, CancellationToken)', t: 'Task<Aula>', k: 'metodo', est: false },
     ],
@@ -1787,7 +2131,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada', nombre: 'CrearDescansoJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/CrearDescansoJornada.cs',
-    x: 4210.5, y: 1549.7, w: 192.0, h: 56.0, grado: 3,
+    x: 4351.1, y: 1620.5, w: 192.0, h: 56.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearDescansoJornadaSolicitud, CancellationToken)', t: 'Task<DescansoJornada>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1796,7 +2140,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.CrearJornada', nombre: 'CrearJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/CrearJornada.cs',
-    x: 4146.8, y: 1696.2, w: 150.0, h: 52.0, grado: 3,
+    x: 4299.2, y: 1775.7, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearJornadaSolicitud, CancellationToken)', t: 'Task<Jornada>', k: 'metodo', est: false },
     ],
@@ -1804,7 +2148,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.EliminarAula', nombre: 'EliminarAula', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/EliminarAula.cs',
-    x: 4073.5, y: 1769.2, w: 150.0, h: 52.0, grado: 1,
+    x: 4574.5, y: 1619.1, w: 150.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task', k: 'metodo', est: false },
     ],
@@ -1812,7 +2156,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.EliminarJornada', nombre: 'EliminarJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/EliminarJornada.cs',
-    x: 3895.2, y: 1728.2, w: 154.0, h: 52.0, grado: 1,
+    x: 4477.8, y: 1695.5, w: 154.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task', k: 'metodo', est: false },
     ],
@@ -1820,7 +2164,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada', nombre: 'GestionarDescansoJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/GestionarDescansoJornada.cs',
-    x: 3625.2, y: 1529.2, w: 222.4, h: 60.0, grado: 3,
+    x: 4194.7, y: 1699.5, w: 222.4, h: 60.0, grado: 4,
     miembros: [
       { n: 'ActualizarAsync(ActualizarDescansoJornadaSolicitud, CancellationToken)', t: 'Task<DescansoJornada>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1830,7 +2174,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas', nombre: 'GestionarRecursosAulas', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/GestionarRecursosAulas.cs',
-    x: 3590.8, y: 1323.9, w: 207.2, h: 76.0, grado: 7,
+    x: 3970.0, y: 1433.2, w: 207.2, h: 76.0, grado: 8,
     miembros: [
       { n: 'CrearAsync(CrearRecursoAulaSolicitud, CancellationToken)', t: 'Task<RecursoAula>', k: 'metodo', est: false },
       { n: 'AsignarAsync(AsignarRecursoAulaSolicitud, CancellationToken)', t: 'Task', k: 'metodo', est: false },
@@ -1844,7 +2188,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.IDatosAulas', nombre: 'IDatosAulas', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Aulas/IDatosAulas.cs',
-    x: 3915.6, y: 1336.1, w: 150.0, h: 76.0, grado: 23,
+    x: 4310.7, y: 1396.9, w: 150.0, h: 76.0, grado: 23,
     miembros: [
       { n: 'CrearAulaAsync(CrearAulaSolicitud, CancellationToken)', t: 'Task<Aula>', k: 'metodo', est: false },
       { n: 'CrearJornadaAsync(CrearJornadaSolicitud, CancellationToken)', t: 'Task<Jornada>', k: 'metodo', est: false },
@@ -1867,7 +2211,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', nombre: 'IDatosRecursosAulas', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Aulas/GestionarRecursosAulas.cs',
-    x: 3728.9, y: 1218.5, w: 184.4, h: 76.0, grado: 8,
+    x: 4044.3, y: 1543.4, w: 184.4, h: 76.0, grado: 8,
     miembros: [
       { n: 'CrearAsync(CrearRecursoAulaSolicitud, CancellationToken)', t: 'Task<RecursoAula>', k: 'metodo', est: false },
       { n: 'AsignarAsync(AsignarRecursoAulaSolicitud, CancellationToken)', t: 'Task', k: 'metodo', est: false },
@@ -1881,7 +2225,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.ListarAulas', nombre: 'ListarAulas', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/ListarAulas.cs',
-    x: 3759.7, y: 1655.7, w: 150.0, h: 52.0, grado: 2,
+    x: 4587.5, y: 1321.4, w: 150.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(CancellationToken)', t: 'Task<IReadOnlyList<Aula>>', k: 'metodo', est: false },
     ],
@@ -1889,7 +2233,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.ListarBloquesJornada', nombre: 'ListarBloquesJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/ListarBloquesJornada.cs',
-    x: 4113.3, y: 1248.8, w: 192.0, h: 56.0, grado: 2,
+    x: 4523.7, y: 1175.3, w: 192.0, h: 56.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<BloqueHorario>>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1898,7 +2242,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.ListarDescansosJornada', nombre: 'ListarDescansosJornada', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/ListarDescansosJornada.cs',
-    x: 4027.3, y: 1624.0, w: 207.2, h: 52.0, grado: 2,
+    x: 4643.4, y: 1249.4, w: 207.2, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<DescansoJornada>>', k: 'metodo', est: false },
     ],
@@ -1906,7 +2250,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Aulas.ListarJornadas', nombre: 'ListarJornadas', ns: 'Horarios.Aplicacion.Aulas',
     capa: 'aplicacion', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Aulas/ListarJornadas.cs',
-    x: 4104.9, y: 1475.5, w: 150.0, h: 52.0, grado: 2,
+    x: 4684.1, y: 1397.2, w: 150.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(CancellationToken)', t: 'Task<IReadOnlyList<Jornada>>', k: 'metodo', est: false },
     ],
@@ -1914,7 +2258,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Consultas.ConsultarReporte', nombre: 'ConsultarReporte', ns: 'Horarios.Aplicacion.Consultas',
     capa: 'aplicacion', modulo: 'Consultas', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Consultas/ConsultarReporte.cs',
-    x: 4961.3, y: 2107.2, w: 161.6, h: 52.0, grado: 3,
+    x: 4850.2, y: 2681.3, w: 161.6, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(ConsultarReporteSolicitud, CancellationToken)', t: 'Task<ReportePreliminarDto>', k: 'metodo', est: false },
     ],
@@ -1922,7 +2266,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Consultas.IDatosConsultas', nombre: 'IDatosConsultas', ns: 'Horarios.Aplicacion.Consultas',
     capa: 'aplicacion', modulo: 'Consultas', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Consultas/IDatosConsultas.cs',
-    x: 4977.7, y: 2235.0, w: 154.0, h: 52.0, grado: 4,
+    x: 4755.7, y: 2571.4, w: 154.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'ConsultarReporteAsync(ConsultarReporteSolicitud, CancellationToken)', t: 'Task<ReportePreliminarDto>', k: 'metodo', est: false },
     ],
@@ -1930,7 +2274,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', nombre: 'AutorizarCursoDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/AutorizarCursoDocente.cs',
-    x: 3818.0, y: 192.3, w: 199.6, h: 60.0, grado: 5,
+    x: 4334.9, y: 461.6, w: 199.6, h: 60.0, grado: 5,
     miembros: [
       { n: 'EjecutarAsync(AutorizarCursoDocenteSolicitud, CancellationToken)', t: 'Task<AsignacionDocenteCurso>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1940,7 +2284,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente', nombre: 'ConsultarDisponibilidadDeDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/ConsultarDisponibilidadDeDocente.cs',
-    x: 3941.5, y: 527.8, w: 283.2, h: 56.0, grado: 3,
+    x: 4376.9, y: 937.9, w: 283.2, h: 56.0, grado: 3,
     miembros: [
       { n: 'Ejecutar(Guid, CancellationToken)', t: 'Task<DisponibilidadDocenteDto?>', k: 'metodo', est: false },
       { n: 'UnauthorizedAccessException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1949,7 +2293,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente', nombre: 'CrearCuentaDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/CrearCuentaDocente.cs',
-    x: 3954.0, y: 1072.7, w: 176.8, h: 56.0, grado: 2,
+    x: 4572.1, y: 777.8, w: 176.8, h: 56.0, grado: 3,
     miembros: [
       { n: 'ListarVinculadasAsync(CancellationToken)', t: 'Task<IReadOnlySet<Guid>>', k: 'metodo', est: false },
       { n: 'EjecutarAsync(Guid, string, CancellationToken)', t: 'Task<CuentaDocenteResultado>', k: 'metodo', est: false },
@@ -1958,7 +2302,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.CrearDocente', nombre: 'CrearDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/CrearDocente.cs',
-    x: 3771.7, y: 605.1, w: 150.0, h: 52.0, grado: 3,
+    x: 4482.9, y: 537.9, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearDocenteSolicitud, CancellationToken)', t: 'Task<Docente>', k: 'metodo', est: false },
     ],
@@ -1966,7 +2310,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.CuentaDocenteResultado', nombre: 'CuentaDocenteResultado', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Docentes/CrearCuentaDocente.cs',
-    x: 3720.7, y: 924.4, w: 207.2, h: 56.0, grado: 3,
+    x: 4265.2, y: 861.7, w: 207.2, h: 56.0, grado: 3,
     miembros: [
       { n: 'YaExistia', t: 'bool', k: 'prop', est: false },
       { n: 'Mensaje', t: 'string', k: 'prop', est: false },
@@ -1975,7 +2319,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.FacultadesDocente', nombre: 'FacultadesDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/FacultadesDocente.cs',
-    x: 3833.0, y: 998.4, w: 169.2, h: 52.0, grado: 0,
+    x: 4506.8, y: 859.7, w: 169.2, h: 52.0, grado: 0,
     miembros: [
       { n: 'Normalizar(IReadOnlyList<Guid>?)', t: 'IReadOnlyList<Guid>', k: 'metodo', est: true },
     ],
@@ -1983,7 +2327,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', nombre: 'GestionarDisponibilidadDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/GestionarDisponibilidadDocente.cs',
-    x: 3763.1, y: 768.3, w: 268.0, h: 64.0, grado: 5,
+    x: 4296.8, y: 616.2, w: 268.0, h: 64.0, grado: 5,
     miembros: [
       { n: 'GuardarAsync(GuardarDisponibilidadDocenteSolicitud, CancellationToken)', t: 'Task<DisponibilidadDocenteDto>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -1994,7 +2338,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.GestionarDocentes', nombre: 'GestionarDocentes', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/GestionarDocentes.cs',
-    x: 3640.5, y: 684.2, w: 169.2, h: 64.0, grado: 3,
+    x: 4372.7, y: 781.5, w: 169.2, h: 64.0, grado: 4,
     miembros: [
       { n: 'ActualizarAsync(ActualizarDocenteSolicitud, CancellationToken)', t: 'Task<Docente>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -2005,7 +2349,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente', nombre: 'GuardarDisponibilidadDeDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/GuardarDisponibilidadDeDocente.cs',
-    x: 3947.7, y: 682.0, w: 268.0, h: 60.0, grado: 6,
+    x: 4481.2, y: 699.2, w: 268.0, h: 60.0, grado: 6,
     miembros: [
       { n: 'Ejecutar(GuardarDisponibilidadDeDocenteSolicitud, CancellationToken)', t: 'Task<DisponibilidadDocenteDto>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -2015,7 +2359,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.IContextoGestionDocentes', nombre: 'IContextoGestionDocentes', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Docentes/GestionarDisponibilidadDocente.cs',
-    x: 3635.4, y: 520.0, w: 222.4, h: 64.0, grado: 5,
+    x: 4150.5, y: 704.5, w: 222.4, h: 64.0, grado: 5,
     miembros: [
       { n: 'EsAdministrador', t: 'bool', k: 'prop', est: false },
       { n: 'EsDecano', t: 'bool', k: 'prop', est: false },
@@ -2026,7 +2370,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.IDatosCuentasDocentes', nombre: 'IDatosCuentasDocentes', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Docentes/CrearCuentaDocente.cs',
-    x: 3633.0, y: 848.3, w: 199.6, h: 56.0, grado: 3,
+    x: 4153.1, y: 784.7, w: 199.6, h: 56.0, grado: 3,
     miembros: [
       { n: 'ListarVinculadasAsync(CancellationToken)', t: 'Task<IReadOnlySet<Guid>>', k: 'metodo', est: false },
       { n: 'CrearAsync(Guid, string, CancellationToken)', t: 'Task<CuentaDocenteResultado>', k: 'metodo', est: false },
@@ -2035,7 +2379,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente', nombre: 'IDatosDisponibilidadDeDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Docentes/IDatosDisponibilidadDeDocente.cs',
-    x: 3732.5, y: 440.0, w: 260.4, h: 56.0, grado: 5,
+    x: 4006.4, y: 624.3, w: 260.4, h: 56.0, grado: 5,
     miembros: [
       { n: 'Guardar(DisponibilidadDeDocente, CancellationToken)', t: 'Task<DisponibilidadDocenteDto>', k: 'metodo', est: false },
       { n: 'Obtener(Guid, CancellationToken)', t: 'Task<DisponibilidadDocenteDto?>', k: 'metodo', est: false },
@@ -2044,7 +2388,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', nombre: 'IDatosDisponibilidadDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Docentes/GestionarDisponibilidadDocente.cs',
-    x: 3548.0, y: 602.1, w: 245.2, h: 60.0, grado: 5,
+    x: 3909.8, y: 449.9, w: 245.2, h: 60.0, grado: 5,
     miembros: [
       { n: 'ObtenerDocenteAsync(Guid, CancellationToken)', t: 'Task<Docente?>', k: 'metodo', est: false },
       { n: 'GuardarAsync(GuardarDisponibilidadDocenteSolicitud, CancellationToken)', t: 'Task<DisponibilidadDocenteDto>', k: 'metodo', est: false },
@@ -2054,7 +2398,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.IDatosDocentes', nombre: 'IDatosDocentes', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Docentes/IDatosDocentes.cs',
-    x: 3612.7, y: 353.9, w: 150.0, h: 76.0, grado: 14,
+    x: 4017.2, y: 538.2, w: 150.0, h: 76.0, grado: 14,
     miembros: [
       { n: 'CrearAsync(CrearDocenteSolicitud, CancellationToken)', t: 'Task<Docente>', k: 'metodo', est: false },
       { n: 'ListarActivosAsync(CancellationToken)', t: 'Task<IReadOnlyList<Docente>>', k: 'metodo', est: false },
@@ -2072,7 +2416,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.ListarCursosAutorizadosDocente', nombre: 'ListarCursosAutorizadosDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/ListarCursosAutorizadosDocente.cs',
-    x: 3710.4, y: 269.7, w: 268.0, h: 52.0, grado: 2,
+    x: 4024.3, y: 367.8, w: 268.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<AsignacionDocenteCurso>>', k: 'metodo', est: false },
     ],
@@ -2080,7 +2424,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.ListarDocentes', nombre: 'ListarDocentes', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/ListarDocentes.cs',
-    x: 3957.7, y: 268.8, w: 150.0, h: 52.0, grado: 2,
+    x: 4193.7, y: 537.9, w: 150.0, h: 52.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(CancellationToken)', t: 'Task<IReadOnlyList<DocenteResumenDto>>', k: 'metodo', est: false },
     ],
@@ -2088,7 +2432,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.ObtenerDocente', nombre: 'ObtenerDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/ObtenerDocente.cs',
-    x: 3847.1, y: 361.9, w: 150.0, h: 60.0, grado: 3,
+    x: 4133.5, y: 449.9, w: 150.0, h: 60.0, grado: 3,
     miembros: [
       { n: 'PorIdAsync(Guid, CancellationToken)', t: 'Task<DocenteResumenDto?>', k: 'metodo', est: false },
       { n: 'PorCodigoAsync(string, CancellationToken)', t: 'Task<DocenteResumenDto?>', k: 'metodo', est: false },
@@ -2098,7 +2442,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Docentes.RevocarCursoAutorizadoDocente', nombre: 'RevocarCursoAutorizadoDocente', ns: 'Horarios.Aplicacion.Docentes',
     capa: 'aplicacion', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Docentes/RevocarCursoAutorizadoDocente.cs',
-    x: 4078.6, y: 341.3, w: 260.4, h: 52.0, grado: 1,
+    x: 4659.1, y: 619.2, w: 260.4, h: 52.0, grado: 1,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task', k: 'metodo', est: false },
     ],
@@ -2106,7 +2450,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.CodigosErrorImportacion', nombre: 'CodigosErrorImportacion', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/CodigosErrorImportacion.cs',
-    x: 4252.4, y: 2398.7, w: 214.8, h: 76.0, grado: 0,
+    x: 5704.9, y: 2355.1, w: 214.8, h: 76.0, grado: 0,
     miembros: [
       { n: 'ArchivoNombreRequerido', t: 'string', k: 'prop', est: true },
       { n: 'ArchivoExtensionNoSoportada', t: 'string', k: 'prop', est: true },
@@ -2130,7 +2474,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.GenerarPlantillaImportacion', nombre: 'GenerarPlantillaImportacion', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/GenerarPlantillaImportacion.cs',
-    x: 4385.2, y: 2312.7, w: 245.2, h: 56.0, grado: 2,
+    x: 5557.0, y: 2441.2, w: 245.2, h: 56.0, grado: 2,
     miembros: [
       { n: 'Ejecutar(PlantillaImportacionVersionadaDto)', t: 'VistaPlantillaImportacionDto', k: 'metodo', est: false },
       { n: 'ObtenerNombrePlantilla(string)', t: 'string', k: 'metodo', est: true },
@@ -2139,7 +2483,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.GenerarVistaPreviaCsv', nombre: 'GenerarVistaPreviaCsv', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/GenerarVistaPreviaCsv.cs',
-    x: 4467.1, y: 2133.7, w: 199.6, h: 68.0, grado: 6,
+    x: 5465.6, y: 2090.8, w: 199.6, h: 68.0, grado: 6,
     miembros: [
       { n: 'Ejecutar(VistaPreviaCsvSolicitud)', t: 'ResultadoVistaPreviaImportacionDto', k: 'metodo', est: false },
       { n: 'Parsear(string, string, ICollection<ErrorImportacionDto>)', t: 'List<RegistroCsv>', k: 'metodo', est: true },
@@ -2151,7 +2495,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.GenerarVistaPreviaImportacion', nombre: 'GenerarVistaPreviaImportacion', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/GenerarVistaPreviaImportacion.cs',
-    x: 4284.7, y: 2040.7, w: 260.4, h: 76.0, grado: 6,
+    x: 5493.1, y: 2259.0, w: 260.4, h: 76.0, grado: 6,
     miembros: [
       { n: 'Ejecutar(VistaPreviaImportacionSolicitud)', t: 'ResultadoVistaPreviaImportacionDto', k: 'metodo', est: false },
       { n: 'LeerXlsx(VistaPreviaImportacionSolicitud, List<ErrorImportacionDto>)', t: 'ResultadoVistaPreviaImportacionDto', k: 'metodo', est: true },
@@ -2169,7 +2513,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.HojaXlsx', nombre: 'HojaXlsx', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/GenerarVistaPreviaImportacion.cs',
-    x: 4221.6, y: 2235.7, w: 150.0, h: 56.0, grado: 1,
+    x: 5420.9, y: 2345.5, w: 150.0, h: 56.0, grado: 1,
     miembros: [
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
       { n: 'Ruta', t: 'string', k: 'prop', est: false },
@@ -2178,7 +2522,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.RegistroCsv', nombre: 'RegistroCsv', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/GenerarVistaPreviaCsv.cs',
-    x: 4173.5, y: 2132.1, w: 150.0, h: 56.0, grado: 1,
+    x: 5355.1, y: 2172.9, w: 150.0, h: 56.0, grado: 1,
     miembros: [
       { n: 'Linea', t: 'int', k: 'prop', est: false },
       { n: 'Valores', t: 'IReadOnlyList<string>', k: 'prop', est: false },
@@ -2187,7 +2531,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.ValidarArchivoImportacion', nombre: 'ValidarArchivoImportacion', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/ValidarArchivoImportacion.cs',
-    x: 4689.5, y: 2045.0, w: 230.0, h: 60.0, grado: 6,
+    x: 5479.5, y: 1934.4, w: 230.0, h: 60.0, grado: 6,
     miembros: [
       { n: 'Ejecutar(ArchivoImportacionDto)', t: 'ResultadoValidacionImportacionDto', k: 'metodo', est: false },
       { n: 'ExtensionCoincideConTipo(string, TipoArchivoImportacion)', t: 'bool', k: 'metodo', est: true },
@@ -2197,15 +2541,137 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Importaciones.ValidarImportacionPlantilla', nombre: 'ValidarImportacionPlantilla', ns: 'Horarios.Aplicacion.Importaciones',
     capa: 'aplicacion', modulo: 'Importaciones', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Importaciones/ValidarImportacionPlantilla.cs',
-    x: 4328.5, y: 1931.5, w: 245.2, h: 52.0, grado: 2,
+    x: 5351.8, y: 2010.6, w: 245.2, h: 52.0, grado: 2,
     miembros: [
       { n: 'Ejecutar(PlantillaImportacionVersionadaDto, PlantillaImportacionVersionadaDto)', t: 'IReadOnlyList<ErrorImportacionDto>', k: 'metodo', est: false },
     ],
   },
   {
+    id: 'Horarios.Aplicacion.Motor.ConsultarHorarioGenerado', nombre: 'ConsultarHorarioGenerado', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/ConsultasGeneraciones.cs',
+    x: 5590.9, y: 1495.7, w: 222.4, h: 52.0, grado: 2,
+    miembros: [
+      { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<HorarioGeneradoDto>', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.DatosPlanIncompletosException', nombre: 'DatosPlanIncompletosException', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/GenerarHorarioPlan.cs',
+    x: 5613.0, y: 1641.1, w: 260.4, h: 52.0, grado: 0,
+    miembros: [
+      { n: 'DatosFaltantes', t: 'IReadOnlyList<string>', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', nombre: 'EjecutarGeneracionPlan', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/EjecutarGeneracionPlan.cs',
+    x: 4938.7, y: 1227.8, w: 207.2, h: 60.0, grado: 9,
+    miembros: [
+      { n: 'EjecutarAsync(SolicitudGeneracionEncolada, CancellationToken)', t: 'Task<GeneracionHorarioDto>', k: 'metodo', est: false },
+      { n: 'CerrarSinResultadoAsync(SolicitudGeneracionEncolada, EstadoGeneracionDto, long, string)', t: 'Task', k: 'metodo', est: false },
+      { n: 'CambiarEstadoAsync(PlanHorario, EstadoHorario, string, Guid?, CancellationToken)', t: 'Task', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.GeneracionPlanEnCursoException', nombre: 'GeneracionPlanEnCursoException', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/GenerarHorarioPlan.cs',
+    x: 5409.9, y: 1804.2, w: 268.0, h: 48.0, grado: 0,
+    miembros: [
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', nombre: 'GenerarHorarioPlan', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/GenerarHorarioPlan.cs',
+    x: 5245.0, y: 1509.1, w: 176.8, h: 60.0, grado: 7,
+    miembros: [
+      { n: 'VersionMotor', t: 'string', k: 'prop', est: true },
+      { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<GeneracionHorarioDto>', k: 'metodo', est: false },
+      { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.IColaGeneraciones', nombre: 'IColaGeneraciones', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Motor/PuertosMotor.cs',
+    x: 5349.9, y: 1656.6, w: 169.2, h: 52.0, grado: 3,
+    miembros: [
+      { n: 'Encolar(SolicitudGeneracionEncolada)', t: 'void', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.IContextoUsuario', nombre: 'IContextoUsuario', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Motor/IContextoUsuario.cs',
+    x: 5072.1, y: 1148.8, w: 161.6, h: 56.0, grado: 26,
+    miembros: [
+      { n: 'EstaAutenticado', t: 'bool', k: 'prop', est: false },
+      { n: 'TienePermiso(PermisoAplicacion)', t: 'bool', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', nombre: 'IDatosGeneraciones', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Motor/PuertosMotor.cs',
+    x: 4973.1, y: 1328.6, w: 176.8, h: 60.0, grado: 10,
+    miembros: [
+      { n: 'IniciarAsync(PlanHorario, Guid?, string, Instantanea, CancellationToken)', t: 'Task<GeneracionHorarioDto>', k: 'metodo', est: false },
+      { n: 'CerrarYGuardarHorarioAsync(Guid, EstadoGeneracionDto, long, Instantanea, Resultado?, ResultadoVerificacion?, string?, CancellationToken)', t: 'Task<GeneracionHorarioDto>', k: 'metodo', est: false },
+      { n: 'ListarPorPlanAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<GeneracionHorarioDto>>', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.IDatosHorarioGenerado', nombre: 'IDatosHorarioGenerado', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Motor/PuertosMotor.cs',
+    x: 5139.5, y: 1657.2, w: 199.6, h: 52.0, grado: 3,
+    miembros: [
+      { n: 'ConsultarAsync(Guid, CancellationToken)', t: 'Task<HorarioGeneradoDto>', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', nombre: 'IPreparadorInstantaneaMotor', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Motor/PuertosMotor.cs',
+    x: 5054.0, y: 1585.2, w: 245.2, h: 52.0, grado: 4,
+    miembros: [
+      { n: 'PrepararAsync(PlanHorario, CancellationToken)', t: 'Task<Instantanea>', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.ListarGeneracionesPlan', nombre: 'ListarGeneracionesPlan', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/ConsultasGeneraciones.cs',
+    x: 5470.5, y: 1568.1, w: 207.2, h: 52.0, grado: 2,
+    miembros: [
+      { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<GeneracionHorarioDto>>', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.PermisoAplicacion', nombre: 'PermisoAplicacion', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Motor/IContextoUsuario.cs',
+    x: 5256.2, y: 1731.9, w: 169.2, h: 56.0, grado: 3,
+    miembros: [
+      { n: 'Recurso', t: 'string', k: 'prop', est: false },
+      { n: 'Accion', t: 'string', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.PermisosMotor', nombre: 'PermisosMotor', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Motor/IContextoUsuario.cs',
+    x: 5535.8, y: 1713.2, w: 150.0, h: 52.0, grado: 1,
+    miembros: [
+      { n: 'Generar', t: 'PermisoAplicacion', k: 'prop', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', nombre: 'SolicitudGeneracionEncolada', ns: 'Horarios.Aplicacion.Motor',
+    capa: 'aplicacion', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Aplicacion/Motor/PuertosMotor.cs',
+    x: 4978.4, y: 1466.8, w: 245.2, h: 64.0, grado: 5,
+    miembros: [
+      { n: 'GeneracionId', t: 'Guid', k: 'prop', est: false },
+      { n: 'PlanEnGeneracion', t: 'PlanHorario', k: 'prop', est: false },
+      { n: 'Instantanea', t: 'Instantanea', k: 'prop', est: false },
+      { n: 'SolicitadaPorId', t: 'Guid?', k: 'prop', est: false },
+    ],
+  },
+  {
     id: 'Horarios.Aplicacion.Planes.AlcancePlan', nombre: 'AlcancePlan', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/AlcancePlan.cs',
-    x: 3842.1, y: 2441.2, w: 150.0, h: 52.0, grado: 0,
+    x: 4670.5, y: 2332.2, w: 150.0, h: 52.0, grado: 1,
     miembros: [
       { n: 'Normalizar(IReadOnlyList<Guid>?, string)', t: 'IReadOnlyList<Guid>', k: 'metodo', est: true },
     ],
@@ -2213,7 +2679,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan', nombre: 'CambiarEstadoPlan', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/CambiarEstadoPlan.cs',
-    x: 3814.0, y: 2291.0, w: 169.2, h: 56.0, grado: 3,
+    x: 4927.5, y: 2333.7, w: 169.2, h: 56.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CambiarEstadoPlanSolicitud, CancellationToken)', t: 'Task<PlanHorario>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -2222,7 +2688,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.ConsultarPlan', nombre: 'ConsultarPlan', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/ConsultarPlan.cs',
-    x: 3714.8, y: 2367.1, w: 150.0, h: 56.0, grado: 2,
+    x: 4815.9, y: 2409.8, w: 150.0, h: 56.0, grado: 2,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<PlanHorario>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -2231,7 +2697,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.CrearPlan', nombre: 'CrearPlan', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/CrearPlan.cs',
-    x: 3625.7, y: 2144.9, w: 150.0, h: 52.0, grado: 3,
+    x: 4674.6, y: 2186.6, w: 150.0, h: 52.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(CrearPlanSolicitud, CancellationToken)', t: 'Task<PlanHorario>', k: 'metodo', est: false },
     ],
@@ -2239,7 +2705,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.GestionarPlanes', nombre: 'GestionarPlanes', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/GestionarPlanes.cs',
-    x: 3729.5, y: 2067.9, w: 154.0, h: 60.0, grado: 3,
+    x: 4715.1, y: 2084.0, w: 154.0, h: 60.0, grado: 4,
     miembros: [
       { n: 'ActualizarAsync(ActualizarPlanSolicitud, CancellationToken)', t: 'Task<PlanHorario>', k: 'metodo', est: false },
       { n: 'KeyNotFoundException()', t: '??thrownew', k: 'metodo', est: false },
@@ -2249,7 +2715,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.IDatosPlanes', nombre: 'IDatosPlanes', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Planes/IDatosPlanes.cs',
-    x: 3728.2, y: 1944.3, w: 150.0, h: 76.0, grado: 12,
+    x: 4797.3, y: 1973.8, w: 150.0, h: 76.0, grado: 14,
     miembros: [
       { n: 'CrearAsync(CrearPlanSolicitud, CancellationToken)', t: 'Task<PlanHorario>', k: 'metodo', est: false },
       { n: 'ObtenerAsync(Guid, CancellationToken)', t: 'Task<PlanHorario?>', k: 'metodo', est: false },
@@ -2263,7 +2729,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.IDatosRevisionPlanes', nombre: 'IDatosRevisionPlanes', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'interfaz', abst: false, archivo: 'Horarios.Aplicacion/Planes/RevisarDatosPlan.cs',
-    x: 3675.6, y: 2217.0, w: 192.0, h: 52.0, grado: 3,
+    x: 4775.8, y: 2258.7, w: 192.0, h: 52.0, grado: 3,
     miembros: [
       { n: 'ObtenerConteosAsync(Guid, IReadOnlyList<Guid>, IReadOnlyList<Guid>, CancellationToken)', t: 'Task<ConteosRevisionPlan>', k: 'metodo', est: false },
     ],
@@ -2271,7 +2737,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.ListarPlanes', nombre: 'ListarPlanes', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/ListarPlanes.cs',
-    x: 3905.2, y: 1901.0, w: 150.0, h: 52.0, grado: 3,
+    x: 4865.3, y: 2161.0, w: 150.0, h: 52.0, grado: 3,
     miembros: [
       { n: 'EjecutarAsync(Guid?, TipoPlanHorarioDto?, CancellationToken)', t: 'Task<IReadOnlyList<PlanHorario>>', k: 'metodo', est: false },
     ],
@@ -2279,16 +2745,265 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Aplicacion.Planes.RevisarDatosPlan', nombre: 'RevisarDatosPlan', ns: 'Horarios.Aplicacion.Planes',
     capa: 'aplicacion', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Aplicacion/Planes/RevisarDatosPlan.cs',
-    x: 3941.7, y: 2367.1, w: 161.6, h: 56.0, grado: 3,
+    x: 5072.4, y: 2079.6, w: 161.6, h: 56.0, grado: 4,
     miembros: [
       { n: 'EjecutarAsync(Guid, CancellationToken)', t: 'Task<ResultadoRevisionPlanDto>', k: 'metodo', est: false },
       { n: 'InvalidOperationException()', t: '??thrownew', k: 'metodo', est: false },
     ],
   },
   {
+    id: 'Horarios.Motor.Construccion.AgendaDeCohortes', nombre: 'AgendaDeCohortes', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Construccion/ColocadorVoraz.cs',
+    x: 6437.2, y: 963.7, w: 161.6, h: 72.0, grado: 6,
+    miembros: [
+      { n: 'Anotar(SesionRequerida, Colocacion)', t: 'void', k: 'metodo', est: false },
+      { n: 'Borrar(SesionRequerida, Colocacion)', t: 'void', k: 'metodo', est: false },
+      { n: 'TieneElCursoEseDia(SesionRequerida, DiaSemana)', t: 'bool', k: 'metodo', est: false },
+      { n: 'ClasesDelDia(SesionRequerida, DiaSemana)', t: 'int', k: 'metodo', est: false },
+      { n: 'DistanciaMasCorta(SesionRequerida, Colocacion)', t: 'int', k: 'metodo', est: false },
+      { n: 'ClaseDe(ParticipacionCohorte, SesionRequerida, Colocacion)', t: 'Clase', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Construccion.AsignacionPrecalculada', nombre: 'AsignacionPrecalculada', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'record', abst: false, archivo: 'Horarios.Motor/Construccion/Precalculo.cs',
+    x: 6366.2, y: 799.1, w: 207.2, h: 76.0, grado: 8,
+    miembros: [
+      { n: 'Asignacion', t: 'ClaveAsignacion', k: 'prop', est: false },
+      { n: 'Sesiones', t: 'ImmutableArray<SesionRequerida>', k: 'prop', est: false },
+      { n: 'DocentesFactibles', t: 'ImmutableArray<Docente>', k: 'prop', est: false },
+      { n: 'AulasFactibles', t: 'ImmutableArray<Aula>', k: 'prop', est: false },
+      { n: 'ColocacionesFactibles', t: 'ImmutableArray<Colocacion>', k: 'prop', est: false },
+      { n: 'AplicaP02', t: 'bool', k: 'prop', est: false },
+      { n: 'Imposibilidad', t: 'string?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Construccion.Clase', nombre: 'Clase', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'record', abst: false, archivo: 'Horarios.Motor/Construccion/ColocadorVoraz.cs',
+    x: 6300.7, y: 1280.7, w: 150.0, h: 60.0, grado: 1,
+    miembros: [
+      { n: 'CursoVisible', t: 'Guid', k: 'prop', est: false },
+      { n: 'SlotInicio', t: 'int', k: 'prop', est: false },
+      { n: 'SlotFin', t: 'int', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Construccion.ColocadorVoraz', nombre: 'ColocadorVoraz', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Construccion/ColocadorVoraz.cs',
+    x: 6512.6, y: 702.9, w: 150.0, h: 76.0, grado: 15,
+    miembros: [
+      { n: 'Colocar(CancellationToken)', t: 'Resultado', k: 'metodo', est: false },
+      { n: 'OcuparFijadas()', t: 'void', k: 'metodo', est: false },
+      { n: 'Requerida(SesionFijada)', t: 'SesionRequerida', k: 'metodo', est: false },
+      { n: 'VerificarFila(SesionFijada, SesionRequerida, Docente, Aula)', t: 'void', k: 'metodo', est: false },
+      { n: 'Exigir(bool, Guid, string)', t: 'void', k: 'metodo', est: true },
+      { n: 'VerificarContinuidadYCarga(SesionFijada, Docente)', t: 'void', k: 'metodo', est: false },
+      { n: 'VerificarSolape(SesionFijada, SesionRequerida, Docente, Aula)', t: 'void', k: 'metodo', est: false },
+      { n: 'Atender(AsignacionPrecalculada)', t: 'void', k: 'metodo', est: false },
+      { n: 'Candidatos(AsignacionPrecalculada)', t: 'ImmutableArray<Docente>', k: 'metodo', est: false },
+      { n: 'ColocarUna(AsignacionPrecalculada, SesionRequerida, Docente, ImmutableArray<Aula>, ContadorRechazos)', t: 'SesionColocada?', k: 'metodo', est: false },
+      { n: 'CohortesLibres(SesionRequerida, Colocacion)', t: 'bool', k: 'metodo', est: false },
+      { n: 'Ocupar(SesionRequerida, SesionColocada)', t: 'void', k: 'metodo', est: false },
+      { n: 'Liberar(SesionRequerida, SesionColocada)', t: 'void', k: 'metodo', est: false },
+      { n: 'Anotar(AsignacionPrecalculada, string)', t: 'void', k: 'metodo', est: false },
+      { n: 'NoAtendida(AsignacionPrecalculada)', t: 'bool', k: 'metodo', est: false },
+      { n: 'Motivo(AsignacionPrecalculada, ContadorRechazos, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'Culpables(ImmutableArray<Guid>, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'NombreDeRegla(string)', t: 'string', k: 'metodo', est: true },
+      { n: 'SinCandidatos(AsignacionPrecalculada)', t: 'string', k: 'metodo', est: true },
+      { n: 'Emitidas()', t: 'ImmutableArray<SesionColocada>', k: 'metodo', est: false },
+      { n: 'Pendientes()', t: 'ImmutableArray<AsignacionPendiente>', k: 'metodo', est: false },
+      { n: 'Diagnosticos()', t: 'ImmutableArray<Diagnostico>', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Construccion.ContadorRechazos', nombre: 'ContadorRechazos', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Construccion/ColocadorVoraz.cs',
+    x: 6106.9, y: 984.2, w: 161.6, h: 60.0, grado: 1,
+    miembros: [
+      { n: 'Total', t: 'int', k: 'prop', est: false },
+      { n: 'Vacio', t: 'bool', k: 'prop', est: false },
+      { n: 'Contar(string, Guid?)', t: 'void', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Construccion.OrdenDeTrabajo', nombre: 'OrdenDeTrabajo', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Construccion/OrdenDeTrabajo.cs',
+    x: 6240.8, y: 896.1, w: 150.0, h: 76.0, grado: 7,
+    miembros: [
+      { n: 'Asignaciones(ImmutableArray<AsignacionPrecalculada>)', t: 'ImmutableArray<AsignacionPrecalculada>', k: 'metodo', est: true },
+      { n: 'Docentes(ImmutableArray<Docente>, RegistroCarga)', t: 'ImmutableArray<Docente>', k: 'metodo', est: true },
+      { n: 'Aulas(ImmutableArray<Aula>, SesionRequerida)', t: 'ImmutableArray<Aula>', k: 'metodo', est: true },
+      { n: 'Colocaciones(ImmutableArray<Colocacion>, SesionRequerida, AgendaDeCohortes)', t: 'ImmutableArray<Colocacion>', k: 'metodo', est: true },
+      { n: 'Dificultad(AsignacionPrecalculada)', t: 'int', k: 'metodo', est: true },
+      { n: 'Alumnos(SesionRequerida)', t: 'int', k: 'metodo', est: true },
+      { n: 'Ocupacion(Docente, RegistroCarga)', t: 'double', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Construccion.Precalculo', nombre: 'Precalculo', ns: 'Horarios.Motor.Construccion',
+    capa: 'motor', modulo: 'Construccion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Construccion/Precalculo.cs',
+    x: 6571.3, y: 869.4, w: 150.0, h: 76.0, grado: 11,
+    miembros: [
+      { n: 'Asignaciones', t: 'ImmutableArray<AsignacionPrecalculada>', k: 'prop', est: false },
+      { n: 'Diagnosticos', t: 'ImmutableArray<Diagnostico>', k: 'prop', est: false },
+      { n: 'Calcular(ImmutableArray<SesionRequerida>, Instantanea, RejillaTiempo, ImmutableDictionary<Guid,Jornada>, ImmutableArray<Diagnostico>.Builder)', t: 'AsignacionPrecalculada', k: 'metodo', est: true },
+      { n: 'Imposibilidad(SesionRequerida, Instantanea, RejillaTiempo, ImmutableDictionary<Guid,Jornada>, ImmutableArray<Docente>, ImmutableArray<Docente>, ImmutableArray<Aula>, ImmutableArray<Colocacion>)', t: 'string?', k: 'metodo', est: true },
+      { n: 'MensajeSinDocente(SesionRequerida, ImmutableArray<Docente>, ImmutableArray<Colocacion>, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'Nombrar(ImmutableArray<Docente>, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'ConMayuscula(string)', t: 'string', k: 'metodo', est: true },
+      { n: 'MotivoDeAulas(ImmutableArray<Aula>, SesionRequerida, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'MotivoDeRecursos(ImmutableArray<Aula>, SesionRequerida, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'MotivoDeColocaciones(SesionRequerida, RejillaTiempo, ImmutableDictionary<Guid,Jornada>, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'SemestresQueNoCaben(Instantanea, ImmutableDictionary<Guid,Jornada>)', t: 'ImmutableArray<Diagnostico>', k: 'metodo', est: true },
+      { n: 'SlotsDeLaJornada(Jornada)', t: 'int', k: 'metodo', est: true },
+      { n: 'SesionesQueSobran(ImmutableArray<int>, int)', t: 'int', k: 'metodo', est: true },
+      { n: 'Describir(SesionRequerida, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Descripciones', nombre: 'Descripciones', ns: 'Horarios.Motor',
+    capa: 'motor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Descripciones.cs',
+    x: 6483.4, y: 1927.3, w: 150.0, h: 56.0, grado: 2,
+    miembros: [
+      { n: 'Asignacion(SesionRequerida, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'Cohortes(SesionRequerida, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Expansion.ExpansorAsignaciones', nombre: 'ExpansorAsignaciones', ns: 'Horarios.Motor.Expansion',
+    capa: 'motor', modulo: 'Expansion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Expansion/ExpansorAsignaciones.cs',
+    x: 6236.4, y: 1809.3, w: 192.0, h: 72.0, grado: 3,
+    miembros: [
+      { n: 'Expandir(Guid, IEnumerable<RequisitoCargado>)', t: 'ImmutableArray<SesionRequerida>', k: 'metodo', est: false },
+      { n: 'ClaveDe(RequisitoCargado)', t: 'ClaveAsignacion', k: 'metodo', est: true },
+      { n: 'ExpandirGrupo(Guid, ClaveAsignacion, ImmutableArray<RequisitoCargado>, ImmutableArray<SesionRequerida>.Builder)', t: 'void', k: 'metodo', est: true },
+      { n: 'CantidadDeSesiones(RequisitoCargado)', t: 'int', k: 'metodo', est: true },
+      { n: 'Culpable(ClaveAsignacion, Guid?)', t: 'string', k: 'metodo', est: true },
+      { n: 'Discrepan(ClaveAsignacion, Guid?, string, RequisitoCargado, object, RequisitoCargado, object)', t: 'InvalidOperationException', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Expansion.ReconciliadorFijadas', nombre: 'ReconciliadorFijadas', ns: 'Horarios.Motor.Expansion',
+    capa: 'motor', modulo: 'Expansion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Expansion/ReconciliadorFijadas.cs',
+    x: 6092.3, y: 1892.3, w: 192.0, h: 52.0, grado: 2,
+    miembros: [
+      { n: 'PrimeraDiferencia(SesionRequerida, SesionFijada)', t: 'string?', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.MotorHorarios', nombre: 'MotorHorarios', ns: 'Horarios.Motor',
+    capa: 'motor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Motor/MotorHorarios.cs',
+    x: 6601.2, y: 1762.2, w: 150.0, h: 52.0, grado: 3,
+    miembros: [
+      { n: 'Ejecutar(Instantanea, CancellationToken)', t: 'Resultado', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Ocupacion.RegistroCarga', nombre: 'RegistroCarga', ns: 'Horarios.Motor.Ocupacion',
+    capa: 'motor', modulo: 'Ocupacion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Ocupacion/RegistroCarga.cs',
+    x: 6212.3, y: 1552.0, w: 150.0, h: 60.0, grado: 2,
+    miembros: [
+      { n: 'Cuenta(Guid)', t: 'int', k: 'metodo', est: false },
+      { n: 'Anotada(Guid, ClaveAsignacion)', t: 'bool', k: 'metodo', est: false },
+      { n: 'Anotar(Guid, ClaveAsignacion)', t: 'void', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Ocupacion.RegistroContinuidad', nombre: 'RegistroContinuidad', ns: 'Horarios.Motor.Ocupacion',
+    capa: 'motor', modulo: 'Ocupacion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Ocupacion/RegistroContinuidad.cs',
+    x: 6044.7, y: 1632.2, w: 184.4, h: 56.0, grado: 1,
+    miembros: [
+      { n: 'DocenteDe(ClaveAsignacion)', t: 'Guid?', k: 'metodo', est: false },
+      { n: 'Elegir(ClaveAsignacion, Guid)', t: 'void', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Ocupacion.RegistroOcupacion', nombre: 'RegistroOcupacion', ns: 'Horarios.Motor.Ocupacion',
+    capa: 'motor', modulo: 'Ocupacion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Ocupacion/RegistroOcupacion.cs',
+    x: 6201.0, y: 1416.7, w: 169.2, h: 60.0, grado: 2,
+    miembros: [
+      { n: 'Libre(Guid, Guid, Colocacion, int)', t: 'bool', k: 'metodo', est: false },
+      { n: 'Ocupar(Guid, Guid, Colocacion, int)', t: 'void', k: 'metodo', est: false },
+      { n: 'Liberar(Guid, Guid, Colocacion, int)', t: 'void', k: 'metodo', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Reglas.ReglasAula', nombre: 'ReglasAula', ns: 'Horarios.Motor.Reglas',
+    capa: 'motor', modulo: 'Reglas', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Reglas/ReglasAula.cs',
+    x: 6615.3, y: 1579.6, w: 150.0, h: 64.0, grado: 2,
+    miembros: [
+      { n: 'AulaAdmiteLaboratorio(Aula, SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+      { n: 'AulaTieneTipoDeLaboratorio(Aula, SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+      { n: 'AulaTieneRecursos(Aula, SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+      { n: 'AulaTieneCapacidad(Aula, SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Reglas.ReglasCohorte', nombre: 'ReglasCohorte', ns: 'Horarios.Motor.Reglas',
+    capa: 'motor', modulo: 'Reglas', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Reglas/ReglasCohorte.cs',
+    x: 6438.3, y: 1612.4, w: 150.0, h: 60.0, grado: 1,
+    miembros: [
+      { n: 'CohortesEnLaJornadaDeLaSesion(SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+      { n: 'CursoVisibleUnicoPorCohorte(SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+      { n: 'CursoVisibleEsElDeLaSesion(SesionRequerida)', t: 'bool', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Reglas.ReglasDocente', nombre: 'ReglasDocente', ns: 'Horarios.Motor.Reglas',
+    capa: 'motor', modulo: 'Reglas', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Reglas/ReglasDocente.cs',
+    x: 6645.0, y: 1434.5, w: 150.0, h: 60.0, grado: 4,
+    miembros: [
+      { n: 'DocenteAutorizado(Docente, SesionRequerida, Instantanea)', t: 'bool', k: 'metodo', est: true },
+      { n: 'DocenteDisponible(Docente, SesionRequerida, Colocacion)', t: 'bool', k: 'metodo', est: true },
+      { n: 'Equivalentes(Instantanea, Guid)', t: 'ImmutableHashSet<Guid>', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Tiempo.RejillaTiempo', nombre: 'RejillaTiempo', ns: 'Horarios.Motor.Tiempo',
+    capa: 'motor', modulo: 'Tiempo', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Tiempo/RejillaTiempo.cs',
+    x: 6569.1, y: 2168.2, w: 150.0, h: 64.0, grado: 6,
+    miembros: [
+      { n: 'ColocacionesDe(Guid, int)', t: 'ImmutableArray<Colocacion>', k: 'metodo', est: false },
+      { n: 'ObtenerJornada(Guid)', t: 'Jornada', k: 'metodo', est: false },
+      { n: 'ValidarRangoSlots(Jornada, int, int)', t: 'void', k: 'metodo', est: true },
+      { n: 'EsValida(Jornada, Colocacion, int)', t: 'bool', k: 'metodo', est: true },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Verificacion.SesionResultado', nombre: 'SesionResultado', ns: 'Horarios.Motor.Verificacion',
+    capa: 'motor', modulo: 'Verificacion', kind: 'record', abst: false, archivo: 'Horarios.Motor/Verificacion/VerificadorHorario.cs',
+    x: 6105.4, y: 2277.2, w: 154.0, h: 56.0, grado: 3,
+    miembros: [
+      { n: 'Requerida', t: 'SesionRequerida', k: 'prop', est: false },
+      { n: 'Colocada', t: 'SesionColocada', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Motor.Verificacion.VerificadorHorario', nombre: 'VerificadorHorario', ns: 'Horarios.Motor.Verificacion',
+    capa: 'motor', modulo: 'Verificacion', kind: 'clase', abst: false, archivo: 'Horarios.Motor/Verificacion/VerificadorHorario.cs',
+    x: 6329.7, y: 2069.3, w: 176.8, h: 76.0, grado: 13,
+    miembros: [
+      { n: 'Verificar(Instantanea, Resultado)', t: 'ResultadoVerificacion', k: 'metodo', est: false },
+      { n: 'VerificarEstructura(Instantanea, Resultado, List<Violacion>)', t: 'void', k: 'metodo', est: true },
+      { n: 'VerificarFila(SesionResultado, Instantanea, ImmutableDictionary<Guid,Docente>, ImmutableDictionary<Guid,Aula>, ImmutableHashSet<Guid>, RejillaTiempo, List<Violacion>)', t: 'void', k: 'metodo', est: true },
+      { n: 'VerificarContinuidad(ImmutableArray<SesionResultado>, List<Violacion>, CatalogoNombres)', t: 'void', k: 'metodo', est: true },
+      { n: 'VerificarAreasComunes(Instantanea, ImmutableArray<SesionResultado>, List<Violacion>)', t: 'void', k: 'metodo', est: true },
+      { n: 'VerificarCarga(ImmutableArray<SesionResultado>, ImmutableDictionary<Guid,Docente>, List<Violacion>, CatalogoNombres)', t: 'void', k: 'metodo', est: true },
+      { n: 'VerificarColisiones(ImmutableArray<SesionResultado>, RejillaTiempo, List<Violacion>, CatalogoNombres)', t: 'void', k: 'metodo', est: true },
+      { n: 'Choque(SesionResultado, SesionResultado, CatalogoNombres)', t: 'string', k: 'metodo', est: true },
+      { n: 'VerificarCobertura(Instantanea, ImmutableArray<SesionResultado>)', t: 'ImmutableArray<Diagnostico>', k: 'metodo', est: true },
+      { n: 'EsColocacionValida(RejillaTiempo, SesionRequerida, Colocacion)', t: 'bool', k: 'metodo', est: true },
+      { n: 'SeSolapan(SesionResultado, SesionResultado, RejillaTiempo)', t: 'bool', k: 'metodo', est: true },
+      { n: 'Agregar(List<Violacion>, string, string, Guid)', t: 'void', k: 'metodo', est: true },
+      { n: 'Ordenar(List<Violacion>)', t: 'ImmutableArray<Violacion>', k: 'metodo', est: true },
+    ],
+  },
+  {
     id: 'Horarios.Infraestructura.Academia.CarreraFila', nombre: 'CarreraFila', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosAcademiaPostgres.cs',
-    x: 5791.7, y: 1590.6, w: 150.0, h: 76.0, grado: 1,
+    x: 7344.8, y: 1916.4, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'FacultadId', t: 'Guid', k: 'prop', est: false },
@@ -2307,7 +3022,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.DatosAcademiaPostgres', nombre: 'DatosAcademiaPostgres', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosAcademiaPostgres.cs',
-    x: 5905.1, y: 1186.3, w: 199.6, h: 76.0, grado: 8,
+    x: 7553.5, y: 1542.0, w: 199.6, h: 76.0, grado: 8,
     miembros: [
       { n: 'ExisteFacultadConCodigoAsync(string, CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
       { n: 'ExisteCarreraConCodigoAsync(string, CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
@@ -2328,7 +3043,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.DatosGestionAcademicaPostgres', nombre: 'DatosGestionAcademicaPostgres', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosGestionAcademicaPostgres.cs',
-    x: 6013.5, y: 1011.6, w: 260.4, h: 76.0, grado: 22,
+    x: 7724.7, y: 1397.1, w: 260.4, h: 76.0, grado: 22,
     miembros: [
       { n: 'CrearPensumAsync(CrearPensumSolicitud, CancellationToken)', t: 'Task<Pensum>', k: 'metodo', est: false },
       { n: 'CrearCursoEnPensumAsync(CrearCursoEnPensumSolicitud, CancellationToken)', t: 'Task<CursoDePensum>', k: 'metodo', est: false },
@@ -2362,7 +3077,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.DatosPeriodosAcademicosPostgres', nombre: 'DatosPeriodosAcademicosPostgres', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosPeriodosAcademicosPostgres.cs',
-    x: 5822.5, y: 1283.3, w: 275.6, h: 76.0, grado: 6,
+    x: 7489.6, y: 1659.1, w: 275.6, h: 76.0, grado: 6,
     miembros: [
       { n: 'ListarAsync(CancellationToken)', t: 'Task<IReadOnlyList<PeriodoAcademico>>', k: 'metodo', est: false },
       { n: 'ObtenerAsync(Guid, CancellationToken)', t: 'Task<PeriodoAcademico?>', k: 'metodo', est: false },
@@ -2377,7 +3092,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.DatosSugerenciasSeccionPostgres', nombre: 'DatosSugerenciasSeccionPostgres', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosSugerenciasSeccionPostgres.cs',
-    x: 5894.6, y: 1394.1, w: 275.6, h: 52.0, grado: 4,
+    x: 7501.0, y: 1832.3, w: 275.6, h: 52.0, grado: 4,
     miembros: [
       { n: 'CrearSugerenciaAsync(SolicitudSugerenciaSeccionDto, Guid, CancellationToken)', t: 'Task<SugerenciaSeccionDto>', k: 'metodo', est: false },
     ],
@@ -2385,7 +3100,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.FacultadFila', nombre: 'FacultadFila', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosAcademiaPostgres.cs',
-    x: 5547.4, y: 1451.5, w: 150.0, h: 76.0, grado: 1,
+    x: 6925.0, y: 1836.7, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -2402,7 +3117,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.IdFila', nombre: 'IdFila', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosAcademiaPostgres.cs',
-    x: 5614.7, y: 1632.9, w: 150.0, h: 52.0, grado: 0,
+    x: 7167.8, y: 1941.8, w: 150.0, h: 52.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2410,7 +3125,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.PensumFila', nombre: 'PensumFila', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosGestionAcademicaPostgres.cs',
-    x: 5768.0, y: 1475.1, w: 150.0, h: 68.0, grado: 1,
+    x: 7360.0, y: 1752.1, w: 150.0, h: 68.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'CarreraId', t: 'Guid', k: 'prop', est: false },
@@ -2422,7 +3137,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Academia.PeriodoFila', nombre: 'PeriodoFila', ns: 'Horarios.Infraestructura.Academia',
     capa: 'infraestructura', modulo: 'Academia', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Academia/DatosPeriodosAcademicosPostgres.cs',
-    x: 5699.3, y: 1182.5, w: 150.0, h: 72.0, grado: 2,
+    x: 7352.5, y: 1564.9, w: 150.0, h: 72.0, grado: 2,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -2435,7 +3150,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.AutenticadorSupabase', nombre: 'AutenticadorSupabase', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Acceso/AutenticadorSupabase.cs',
-    x: 6704.4, y: 1312.7, w: 192.0, h: 60.0, grado: 3,
+    x: 8425.9, y: 1671.7, w: 192.0, h: 60.0, grado: 3,
     miembros: [
       { n: 'IniciarSesionAsync(string, string, CancellationToken)', t: 'Task<SesionSupabase>', k: 'metodo', est: false },
       { n: 'InvalidOperationException()', t: '??thrownew', k: 'metodo', est: false },
@@ -2445,7 +3160,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.DatosAccesoPostgres', nombre: 'DatosAccesoPostgres', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Acceso/DatosAccesoPostgres.cs',
-    x: 6725.5, y: 1175.3, w: 184.4, h: 76.0, grado: 6,
+    x: 8531.5, y: 1582.8, w: 184.4, h: 76.0, grado: 6,
     miembros: [
       { n: 'CrearUsuarioInicialAsync(CrearUsuarioInicialSolicitud, CancellationToken)', t: 'Task<Usuario>', k: 'metodo', est: false },
       { n: 'ObtenerPorCorreoAsync(string, CancellationToken)', t: 'Task<Usuario?>', k: 'metodo', est: false },
@@ -2460,7 +3175,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.DatosAlcanceUsuarioPostgres', nombre: 'DatosAlcanceUsuarioPostgres', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Acceso/DatosAlcanceUsuarioPostgres.cs',
-    x: 6620.5, y: 1397.0, w: 245.2, h: 52.0, grado: 3,
+    x: 8415.1, y: 1761.6, w: 245.2, h: 52.0, grado: 3,
     miembros: [
       { n: 'ObtenerAsync(Guid, CancellationToken)', t: 'Task<AlcanceUsuario>', k: 'metodo', est: false },
     ],
@@ -2468,7 +3183,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.IdFila', nombre: 'IdFila', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Acceso/DatosAccesoPostgres.cs',
-    x: 6330.7, y: 1371.0, w: 150.0, h: 52.0, grado: 0,
+    x: 8187.8, y: 1738.8, w: 150.0, h: 52.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2476,7 +3191,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.RespuestaSesion', nombre: 'RespuestaSesion', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Acceso/AutenticadorSupabase.cs',
-    x: 6296.7, y: 1249.7, w: 154.0, h: 64.0, grado: 1,
+    x: 8024.1, y: 1659.8, w: 154.0, h: 64.0, grado: 1,
     miembros: [
       { n: 'AccessToken', t: 'string?', k: 'prop', est: false },
       { n: 'RefreshToken', t: 'string?', k: 'prop', est: false },
@@ -2487,7 +3202,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.UsuarioFila', nombre: 'UsuarioFila', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Acceso/DatosAccesoPostgres.cs',
-    x: 6507.0, y: 1312.8, w: 150.0, h: 76.0, grado: 1,
+    x: 8005.9, y: 1505.0, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'AuthUserId', t: 'Guid?', k: 'prop', est: false },
@@ -2505,7 +3220,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Acceso.UsuarioSupabase', nombre: 'UsuarioSupabase', ns: 'Horarios.Infraestructura.Acceso',
     capa: 'infraestructura', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Acceso/AutenticadorSupabase.cs',
-    x: 6456.7, y: 1469.2, w: 154.0, h: 52.0, grado: 1,
+    x: 8281.4, y: 1834.0, w: 154.0, h: 52.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid?', k: 'prop', est: false },
     ],
@@ -2513,7 +3228,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Aulas.AulaFila', nombre: 'AulaFila', ns: 'Horarios.Infraestructura.Aulas',
     capa: 'infraestructura', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Aulas/DatosAulasPostgres.cs',
-    x: 5729.6, y: 2220.4, w: 150.0, h: 76.0, grado: 1,
+    x: 7288.0, y: 2494.1, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -2533,7 +3248,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', nombre: 'DatosAulasPostgres', ns: 'Horarios.Infraestructura.Aulas',
     capa: 'infraestructura', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Aulas/DatosAulasPostgres.cs',
-    x: 6095.5, y: 1772.9, w: 176.8, h: 76.0, grado: 13,
+    x: 7628.6, y: 2081.8, w: 176.8, h: 76.0, grado: 13,
     miembros: [
       { n: 'CrearDescansoAsync(CrearDescansoJornadaSolicitud, CancellationToken)', t: 'Task<DescansoJornada>', k: 'metodo', est: false },
       { n: 'ListarDescansosAsync(Guid, CancellationToken)', t: 'Task<IReadOnlyList<DescansoJornada>>', k: 'metodo', est: false },
@@ -2558,7 +3273,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres', nombre: 'DatosRecursosAulasPostgres', ns: 'Horarios.Infraestructura.Aulas',
     capa: 'infraestructura', modulo: 'Aulas', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Aulas/DatosRecursosAulasPostgres.cs',
-    x: 5958.8, y: 1869.9, w: 237.6, h: 76.0, grado: 8,
+    x: 7431.1, y: 2393.4, w: 237.6, h: 76.0, grado: 8,
     miembros: [
       { n: 'CrearAsync(CrearRecursoAulaSolicitud, CancellationToken)', t: 'Task<RecursoAula>', k: 'metodo', est: false },
       { n: 'AsignarAsync(AsignarRecursoAulaSolicitud, CancellationToken)', t: 'Task', k: 'metodo', est: false },
@@ -2572,7 +3287,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Aulas.DescansoFila', nombre: 'DescansoFila', ns: 'Horarios.Infraestructura.Aulas',
     capa: 'infraestructura', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Aulas/DatosAulasPostgres.cs',
-    x: 5552.6, y: 2187.8, w: 150.0, h: 72.0, grado: 1,
+    x: 7111.7, y: 2489.2, w: 150.0, h: 72.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
@@ -2585,7 +3300,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Aulas.IdFila', nombre: 'IdFila', ns: 'Horarios.Infraestructura.Aulas',
     capa: 'infraestructura', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Aulas/DatosAulasPostgres.cs',
-    x: 5466.1, y: 2105.4, w: 150.0, h: 52.0, grado: 0,
+    x: 6935.4, y: 2455.8, w: 150.0, h: 52.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2593,7 +3308,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Aulas.JornadaFila', nombre: 'JornadaFila', ns: 'Horarios.Infraestructura.Aulas',
     capa: 'infraestructura', modulo: 'Aulas', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Aulas/DatosAulasPostgres.cs',
-    x: 5511.7, y: 1961.1, w: 150.0, h: 76.0, grado: 1,
+    x: 6991.7, y: 2310.7, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -2615,7 +3330,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres', nombre: 'DatosConsultasPostgres', ns: 'Horarios.Infraestructura.Consultas',
     capa: 'infraestructura', modulo: 'Consultas', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Consultas/DatosConsultasPostgres.cs',
-    x: 6145.1, y: 2360.4, w: 207.2, h: 52.0, grado: 4,
+    x: 8110.9, y: 2754.1, w: 207.2, h: 52.0, grado: 4,
     miembros: [
       { n: 'ConsultarReporteAsync(ConsultarReporteSolicitud, CancellationToken)', t: 'Task<ReportePreliminarDto>', k: 'metodo', est: false },
     ],
@@ -2623,7 +3338,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.DatosCuentasDocentesSupabase', nombre: 'DatosCuentasDocentesSupabase', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosCuentasDocentesSupabase.cs',
-    x: 6663.3, y: 356.8, w: 252.8, h: 60.0, grado: 3,
+    x: 7911.0, y: 903.0, w: 252.8, h: 60.0, grado: 3,
     miembros: [
       { n: 'ListarVinculadasAsync(CancellationToken)', t: 'Task<IReadOnlySet<Guid>>', k: 'metodo', est: false },
       { n: 'CrearAsync(Guid, string, CancellationToken)', t: 'Task<CuentaDocenteResultado>', k: 'metodo', est: false },
@@ -2633,7 +3348,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDeDocentePostgres', nombre: 'DatosDisponibilidadDeDocentePostgres', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDisponibilidadDeDocentePostgres.cs',
-    x: 6728.8, y: 532.0, w: 313.6, h: 56.0, grado: 4,
+    x: 7930.4, y: 1077.3, w: 313.6, h: 56.0, grado: 4,
     miembros: [
       { n: 'Guardar(DisponibilidadDeDocente, CancellationToken)', t: 'Task<DisponibilidadDocenteDto>', k: 'metodo', est: false },
       { n: 'Obtener(Guid, CancellationToken)', t: 'Task<DisponibilidadDocenteDto?>', k: 'metodo', est: false },
@@ -2642,7 +3357,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', nombre: 'DatosDisponibilidadDocentePostgres', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDisponibilidadDocentePostgres.cs',
-    x: 6830.9, y: 610.2, w: 298.4, h: 60.0, grado: 6,
+    x: 8008.8, y: 822.0, w: 298.4, h: 60.0, grado: 6,
     miembros: [
       { n: 'ObtenerDocenteAsync(Guid, CancellationToken)', t: 'Task<Docente?>', k: 'metodo', est: false },
       { n: 'GuardarAsync(GuardarDisponibilidadDocenteSolicitud, CancellationToken)', t: 'Task<DisponibilidadDocenteDto>', k: 'metodo', est: false },
@@ -2652,7 +3367,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', nombre: 'DatosDocentesPostgres', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDocentesPostgres.cs',
-    x: 6846.0, y: 445.8, w: 199.6, h: 76.0, grado: 7,
+    x: 8062.9, y: 991.2, w: 199.6, h: 76.0, grado: 7,
     miembros: [
       { n: 'CrearAsync(CrearDocenteSolicitud, CancellationToken)', t: 'Task<Docente>', k: 'metodo', est: false },
       { n: 'ListarActivosAsync(CancellationToken)', t: 'Task<IReadOnlyList<Docente>>', k: 'metodo', est: false },
@@ -2674,7 +3389,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.DocenteFila', nombre: 'DocenteFila', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDocentesPostgres.cs',
-    x: 6575.3, y: 645.8, w: 150.0, h: 76.0, grado: 2,
+    x: 7588.0, y: 1245.1, w: 150.0, h: 76.0, grado: 2,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Codigo', t: 'string', k: 'prop', est: false },
@@ -2696,7 +3411,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.IdFila', nombre: 'IdFila', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDocentesPostgres.cs',
-    x: 6436.7, y: 868.1, w: 150.0, h: 52.0, grado: 0,
+    x: 7764.6, y: 1229.2, w: 150.0, h: 52.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2704,7 +3419,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.PertenenciaFacultadFila', nombre: 'PertenenciaFacultadFila', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDocentesPostgres.cs',
-    x: 6301.2, y: 784.7, w: 214.8, h: 52.0, grado: 1,
+    x: 7418.4, y: 986.0, w: 214.8, h: 52.0, grado: 1,
     miembros: [
       { n: 'FacultadId', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2712,7 +3427,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.PertenenciaFila', nombre: 'PertenenciaFila', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosDocentesPostgres.cs',
-    x: 6266.2, y: 586.2, w: 154.0, h: 52.0, grado: 0,
+    x: 7823.6, y: 745.7, w: 154.0, h: 52.0, grado: 0,
     miembros: [
       { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2720,7 +3435,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.RespuestaCuenta', nombre: 'RespuestaCuenta', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosCuentasDocentesSupabase.cs',
-    x: 6521.1, y: 276.6, w: 154.0, h: 60.0, grado: 0,
+    x: 7629.8, y: 1003.4, w: 154.0, h: 60.0, grado: 0,
     miembros: [
       { n: 'YaExistia', t: 'bool', k: 'prop', est: false },
       { n: 'Mensaje', t: 'string?', k: 'prop', est: false },
@@ -2730,16 +3445,87 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Docentes.RespuestaListado', nombre: 'RespuestaListado', ns: 'Horarios.Infraestructura.Docentes',
     capa: 'infraestructura', modulo: 'Docentes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Docentes/DatosCuentasDocentesSupabase.cs',
-    x: 6418.4, y: 501.3, w: 161.6, h: 56.0, grado: 0,
+    x: 7450.6, y: 1158.6, w: 161.6, h: 56.0, grado: 0,
     miembros: [
       { n: 'DocenteIds', t: 'IReadOnlyList<Guid>?', k: 'prop', est: false },
       { n: 'Error', t: 'string?', k: 'prop', est: false },
     ],
   },
   {
+    id: 'Horarios.Infraestructura.Motor.FilaFijada', nombre: 'FilaFijada', ns: 'Horarios.Infraestructura.Motor',
+    capa: 'infraestructura', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Motor/PreparadorInstantaneaMotorPostgres.cs',
+    x: 8212.9, y: 2172.5, w: 150.0, h: 76.0, grado: 3,
+    miembros: [
+      { n: 'SesionId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoIdSesion', t: 'Guid', k: 'prop', est: false },
+      { n: 'DocenteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'AulaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Dia', t: 'DiaSemana', k: 'prop', est: false },
+      { n: 'SlotInicio', t: 'int', k: 'prop', est: false },
+      { n: 'DuracionSlots', t: 'int', k: 'prop', est: false },
+      { n: 'AgrupacionAreaComunId', t: 'Guid?', k: 'prop', est: false },
+      { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Participacion', t: 'ParticipacionCohorte?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Infraestructura.Motor.FilaRequisito', nombre: 'FilaRequisito', ns: 'Horarios.Infraestructura.Motor',
+    capa: 'infraestructura', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Motor/PreparadorInstantaneaMotorPostgres.cs',
+    x: 8012.1, y: 2442.4, w: 150.0, h: 76.0, grado: 2,
+    miembros: [
+      { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
+      { n: 'PensumId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Semestre', t: 'int', k: 'prop', est: false },
+      { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoVisibleId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CursoEnPensumId', t: 'Guid', k: 'prop', est: false },
+      { n: 'Matricula', t: 'int', k: 'prop', est: false },
+      { n: 'BloquesSemanalesExactos', t: 'int', k: 'prop', est: false },
+      { n: 'DuracionSlots', t: 'int', k: 'prop', est: false },
+      { n: 'RequiereLaboratorio', t: 'bool', k: 'prop', est: false },
+      { n: 'TipoLaboratorioRequerido', t: 'string?', k: 'prop', est: false },
+      { n: 'Recursos', t: 'ImmutableArray<RecursoRequerido>', k: 'prop', est: false },
+      { n: 'AgrupacionAreaComunId', t: 'Guid?', k: 'prop', est: false },
+      { n: 'CursoSesionAgrupacion', t: 'Guid?', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Infraestructura.Motor.MembresiaAgrupacion', nombre: 'MembresiaAgrupacion', ns: 'Horarios.Infraestructura.Motor',
+    capa: 'infraestructura', modulo: 'Motor', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Motor/PreparadorInstantaneaMotorPostgres.cs',
+    x: 7885.2, y: 2341.9, w: 184.4, h: 56.0, grado: 1,
+    miembros: [
+      { n: 'AgrupacionId', t: 'Guid', k: 'prop', est: false },
+      { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
+    ],
+  },
+  {
+    id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', nombre: 'PreparadorInstantaneaMotorPostgres', ns: 'Horarios.Infraestructura.Motor',
+    capa: 'infraestructura', modulo: 'Motor', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Motor/PreparadorInstantaneaMotorPostgres.cs',
+    x: 8464.1, y: 2133.6, w: 298.4, h: 76.0, grado: 15,
+    miembros: [
+      { n: 'SinCohortes', t: 'string', k: 'prop', est: true },
+      { n: 'SinRequisitos', t: 'string', k: 'prop', est: true },
+      { n: 'PrepararAsync(PlanHorario, CancellationToken)', t: 'Task<Instantanea>', k: 'metodo', est: false },
+      { n: 'Identificadores(AlcancePlan, ImmutableArray<Jornada>, ImmutableArray<Docente>, ImmutableArray<Aula>, ImmutableArray<SesionRequerida>)', t: 'ImmutableArray<Guid>', k: 'metodo', est: true },
+      { n: 'CargarNombresAsync(AlcancePlan, ImmutableArray<Guid>, CancellationToken)', t: 'Task<CatalogoNombres>', k: 'metodo', est: false },
+      { n: 'MapearRequisitos(IEnumerable<FilaRequisito>, IEnumerable<MembresiaAgrupacion>)', t: 'ImmutableArray<RequisitoCargado>', k: 'metodo', est: true },
+      { n: 'MapearFijadas(IEnumerable<FilaFijada>)', t: 'ImmutableArray<SesionFijada>', k: 'metodo', est: true },
+      { n: 'CargarJornadasAsync(AlcancePlan, CancellationToken)', t: 'Task<ImmutableArray<Jornada>>', k: 'metodo', est: false },
+      { n: 'CargarFilasRequisitoAsync(AlcancePlan, CancellationToken)', t: 'Task<ImmutableArray<FilaRequisito>>', k: 'metodo', est: false },
+      { n: 'CargarMembresiasAgrupacionAsync(AlcancePlan, CancellationToken)', t: 'Task<ImmutableArray<MembresiaAgrupacion>>', k: 'metodo', est: false },
+      { n: 'CargarDocentesAsync(AlcancePlan, CancellationToken)', t: 'Task<ImmutableArray<Docente>>', k: 'metodo', est: false },
+      { n: 'CargarAulasAsync(CancellationToken)', t: 'Task<ImmutableArray<Aula>>', k: 'metodo', est: false },
+      { n: 'CargarEquivalenciasAsync(ImmutableArray<RequisitoCargado>, CancellationToken)', t: 'Task<ImmutableDictionary<Guid,ImmutableHashSet<Guid>>>', k: 'metodo', est: false },
+      { n: 'CargarFilasFijadaAsync(Guid, AlcancePlan, CancellationToken)', t: 'Task<ImmutableArray<FilaFijada>>', k: 'metodo', est: false },
+      { n: 'AgregarAlcance(NpgsqlCommand, AlcancePlan)', t: 'void', k: 'metodo', est: true },
+      { n: 'ADia(string)', t: 'DiaSemana', k: 'metodo', est: true },
+    ],
+  },
+  {
     id: 'Horarios.Infraestructura.Planes.CarreraAlcanceFila', nombre: 'CarreraAlcanceFila', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosPlanesPostgres.cs',
-    x: 5717.5, y: 365.1, w: 176.8, h: 52.0, grado: 1,
+    x: 7463.3, y: 353.0, w: 176.8, h: 52.0, grado: 1,
     miembros: [
       { n: 'CarreraId', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2747,7 +3533,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.ConflictoAGuardar', nombre: 'ConflictoAGuardar', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosGeneracionesPostgres.cs',
-    x: 5394.7, y: 564.7, w: 169.2, h: 60.0, grado: 1,
+    x: 7474.0, y: 540.7, w: 169.2, h: 60.0, grado: 1,
     miembros: [
       { n: 'Tipo', t: 'string', k: 'prop', est: false },
       { n: 'Descripcion', t: 'string', k: 'prop', est: false },
@@ -2757,7 +3543,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', nombre: 'DatosGeneracionesPostgres', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosGeneracionesPostgres.cs',
-    x: 5998.2, y: 389.1, w: 230.0, h: 68.0, grado: 6,
+    x: 8120.6, y: 165.0, w: 230.0, h: 68.0, grado: 11,
     miembros: [
       { n: 'IniciarAsync(PlanHorario, Guid?, string, Instantanea, CancellationToken)', t: 'Task<GeneracionHorarioDto>', k: 'metodo', est: false },
       { n: 'CerrarYGuardarHorarioAsync(Guid, EstadoGeneracionDto, long, Instantanea, Resultado?, ResultadoVerificacion?, string?, CancellationToken)', t: 'Task<GeneracionHorarioDto>', k: 'metodo', est: false },
@@ -2769,7 +3555,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.DatosPlanesPostgres', nombre: 'DatosPlanesPostgres', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosPlanesPostgres.cs',
-    x: 5924.2, y: 296.9, w: 184.4, h: 76.0, grado: 7,
+    x: 7965.0, y: 258.0, w: 184.4, h: 76.0, grado: 7,
     miembros: [
       { n: 'CrearAsync(CrearPlanSolicitud, CancellationToken)', t: 'Task<PlanHorario>', k: 'metodo', est: false },
       { n: 'ObtenerAsync(Guid, CancellationToken)', t: 'Task<PlanHorario?>', k: 'metodo', est: false },
@@ -2785,7 +3571,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres', nombre: 'DatosRevisionPlanesPostgres', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosRevisionPlanesPostgres.cs',
-    x: 5661.4, y: 871.6, w: 245.2, h: 52.0, grado: 3,
+    x: 7639.5, y: 617.7, w: 245.2, h: 52.0, grado: 3,
     miembros: [
       { n: 'ObtenerConteosAsync(Guid, IReadOnlyList<Guid>, IReadOnlyList<Guid>, CancellationToken)', t: 'Task<ConteosRevisionPlan>', k: 'metodo', est: false },
     ],
@@ -2793,7 +3579,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.HorarioAGuardar', nombre: 'HorarioAGuardar', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosGeneracionesPostgres.cs',
-    x: 5497.1, y: 792.1, w: 154.0, h: 64.0, grado: 3,
+    x: 7862.6, y: 127.3, w: 154.0, h: 64.0, grado: 7,
     miembros: [
       { n: 'Sesiones', t: 'IReadOnlyList<SesionAGuardar>', k: 'prop', est: false },
       { n: 'Pendientes', t: 'IReadOnlyList<PendienteAGuardar>', k: 'prop', est: false },
@@ -2804,7 +3590,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.IdFila', nombre: 'IdFila', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosPlanesPostgres.cs',
-    x: 5415.6, y: 687.8, w: 150.0, h: 52.0, grado: 0,
+    x: 7376.3, y: 445.5, w: 150.0, h: 52.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2812,7 +3598,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.JornadaAlcanceFila', nombre: 'JornadaAlcanceFila', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosPlanesPostgres.cs',
-    x: 5424.2, y: 470.3, w: 176.8, h: 52.0, grado: 1,
+    x: 7326.5, y: 280.7, w: 176.8, h: 52.0, grado: 1,
     miembros: [
       { n: 'JornadaId', t: 'Guid', k: 'prop', est: false },
     ],
@@ -2820,7 +3606,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.PendienteAGuardar', nombre: 'PendienteAGuardar', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosGeneracionesPostgres.cs',
-    x: 5517.5, y: 394.0, w: 169.2, h: 60.0, grado: 1,
+    x: 7398.1, y: 203.7, w: 169.2, h: 60.0, grado: 1,
     miembros: [
       { n: 'CursoId', t: 'Guid', k: 'prop', est: false },
       { n: 'CohorteId', t: 'Guid', k: 'prop', est: false },
@@ -2830,7 +3616,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.PlanFila', nombre: 'PlanFila', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosPlanesPostgres.cs',
-    x: 5612.7, y: 281.1, w: 150.0, h: 76.0, grado: 3,
+    x: 7493.3, y: 115.5, w: 150.0, h: 76.0, grado: 3,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'PeriodoId', t: 'Guid', k: 'prop', est: false },
@@ -2851,7 +3637,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Planes.SesionAGuardar', nombre: 'SesionAGuardar', ns: 'Horarios.Infraestructura.Planes',
     capa: 'infraestructura', modulo: 'Planes', kind: 'record', abst: false, archivo: 'Horarios.Infraestructura/Planes/DatosGeneracionesPostgres.cs',
-    x: 5581.3, y: 576.0, w: 150.0, h: 76.0, grado: 1,
+    x: 7669.6, y: 108.0, w: 150.0, h: 76.0, grado: 1,
     miembros: [
       { n: 'SesionId', t: 'Guid', k: 'prop', est: false },
       { n: 'CursoId', t: 'Guid', k: 'prop', est: false },
@@ -2869,7 +3655,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', nombre: 'ClienteDatosSupabase', ns: 'Horarios.Infraestructura.Supabase',
     capa: 'infraestructura', modulo: 'Supabase', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Supabase/ClienteDatosSupabase.cs',
-    x: 6803.0, y: 1942.4, w: 192.0, h: 76.0, grado: 16,
+    x: 7835.3, y: 2743.7, w: 192.0, h: 76.0, grado: 16,
     miembros: [
       { n: 'Json', t: 'JsonSerializerOptions', k: 'prop', est: true },
       { n: 'EliminarAsync(string, IEnumerable<KeyValuePair<string,string?>>, CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
@@ -2897,7 +3683,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Supabase.ContextoTokenSupabase', nombre: 'ContextoTokenSupabase', ns: 'Horarios.Infraestructura.Supabase',
     capa: 'infraestructura', modulo: 'Supabase', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Supabase/ContextoTokenSupabase.cs',
-    x: 6433.0, y: 2117.6, w: 199.6, h: 52.0, grado: 1,
+    x: 7428.6, y: 2874.1, w: 199.6, h: 52.0, grado: 1,
     miembros: [
       { n: 'TokenAcceso', t: 'string?', k: 'prop', est: false },
     ],
@@ -2905,7 +3691,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Supabase.IContextoTokenSupabase', nombre: 'IContextoTokenSupabase', ns: 'Horarios.Infraestructura.Supabase',
     capa: 'infraestructura', modulo: 'Supabase', kind: 'interfaz', abst: false, archivo: 'Horarios.Infraestructura/Supabase/ContextoTokenSupabase.cs',
-    x: 6459.5, y: 1875.7, w: 207.2, h: 52.0, grado: 6,
+    x: 7482.2, y: 2634.1, w: 207.2, h: 52.0, grado: 6,
     miembros: [
       { n: 'TokenAcceso', t: 'string?', k: 'prop', est: false },
     ],
@@ -2913,7 +3699,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Infraestructura.Supabase.TimeOnlyJsonConverter', nombre: 'TimeOnlyJsonConverter', ns: 'Horarios.Infraestructura.Supabase',
     capa: 'infraestructura', modulo: 'Supabase', kind: 'clase', abst: false, archivo: 'Horarios.Infraestructura/Supabase/ClienteDatosSupabase.cs',
-    x: 6359.7, y: 1999.2, w: 199.6, h: 56.0, grado: 0,
+    x: 7359.0, y: 2746.2, w: 199.6, h: 56.0, grado: 0,
     miembros: [
       { n: 'Read(Utf8JsonReader, Type, JsonSerializerOptions)', t: 'TimeOnly', k: 'metodo', est: false },
       { n: 'Write(Utf8JsonWriter, TimeOnly, JsonSerializerOptions)', t: 'void', k: 'metodo', est: false },
@@ -2922,14 +3708,14 @@ export const CLASES: Clase[] = [
   {
     id: '?.Program', nombre: 'Program', ns: '?',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Program.cs',
-    x: 3696.3, y: 3398.5, w: 150.0, h: 48.0, grado: 0,
+    x: 4490.5, y: 3560.0, w: 150.0, h: 48.0, grado: 0,
     miembros: [
     ],
   },
   {
     id: 'Horarios.Blazor.Acceso.AlmacenSesionesServidor', nombre: 'AlmacenSesionesServidor', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Acceso/AlmacenSesionesServidor.cs',
-    x: 3749.2, y: 2876.9, w: 214.8, h: 60.0, grado: 2,
+    x: 4461.7, y: 3216.7, w: 214.8, h: 60.0, grado: 2,
     miembros: [
       { n: 'Guardar(SesionSupabase)', t: 'Guid', k: 'metodo', est: false },
       { n: 'IntentarObtener(Guid, SesionSupabase?)', t: 'bool', k: 'metodo', est: false },
@@ -2939,7 +3725,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Acceso.ContextoGestionDocentesHttp', nombre: 'ContextoGestionDocentesHttp', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Acceso/ContextoGestionDocentesHttp.cs',
-    x: 3664.3, y: 2797.9, w: 245.2, h: 56.0, grado: 1,
+    x: 4420.0, y: 3058.1, w: 245.2, h: 56.0, grado: 1,
     miembros: [
       { n: 'Usuario', t: 'ClaimsPrincipal?', k: 'prop', est: false },
       { n: 'EsDecano', t: 'bool', k: 'prop', est: false },
@@ -2948,14 +3734,14 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Acceso.ContextoTokenSupabaseHttp', nombre: 'ContextoTokenSupabaseHttp', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Acceso/ContextoTokenSupabaseHttp.cs',
-    x: 3268.9, y: 3026.1, w: 230.0, h: 48.0, grado: 1,
+    x: 4073.9, y: 3370.6, w: 230.0, h: 48.0, grado: 1,
     miembros: [
     ],
   },
   {
     id: 'Horarios.Blazor.Acceso.ContextoUsuarioHttp', nombre: 'ContextoUsuarioHttp', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Acceso/ContextoUsuarioHttp.cs',
-    x: 3281.4, y: 2883.5, w: 184.4, h: 52.0, grado: 0,
+    x: 4602.7, y: 3293.0, w: 184.4, h: 52.0, grado: 2,
     miembros: [
       { n: 'TienePermiso(PermisoAplicacion)', t: 'bool', k: 'metodo', est: false },
     ],
@@ -2963,7 +3749,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Acceso.CredencialesFormulario', nombre: 'CredencialesFormulario', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Blazor/Acceso/EndpointsAcceso.cs',
-    x: 3382.5, y: 2806.8, w: 207.2, h: 56.0, grado: 1,
+    x: 4123.2, y: 3220.8, w: 207.2, h: 56.0, grado: 1,
     miembros: [
       { n: 'Correo', t: 'string', k: 'prop', est: false },
       { n: 'Contrasena', t: 'string', k: 'prop', est: false },
@@ -2972,7 +3758,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Acceso.EndpointsAcceso', nombre: 'EndpointsAcceso', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Acceso/EndpointsAcceso.cs',
-    x: 3819.1, y: 3022.7, w: 154.0, h: 60.0, grado: 4,
+    x: 4657.8, y: 3369.3, w: 154.0, h: 60.0, grado: 4,
     miembros: [
       { n: 'Mapear(WebApplication)', t: 'void', k: 'metodo', est: true },
       { n: 'IniciarSesionAsync(HttpContext, IniciarSesion, ObtenerAlcanceUsuario, ILoggerFactory, CredencialesFormulario, CancellationToken)', t: 'Task<IResult>', k: 'metodo', est: true },
@@ -2982,7 +3768,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Acceso.EntradaSesion', nombre: 'EntradaSesion', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'record', abst: false, archivo: 'Horarios.Blazor/Acceso/AlmacenSesionesServidor.cs',
-    x: 3528.0, y: 2900.9, w: 150.0, h: 56.0, grado: 1,
+    x: 4242.9, y: 3297.0, w: 150.0, h: 56.0, grado: 1,
     miembros: [
       { n: 'Sesion', t: 'SesionSupabase', k: 'prop', est: false },
       { n: 'ExpiraEn', t: 'DateTimeOffset', k: 'prop', est: false },
@@ -2991,7 +3777,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Acceso.IAlmacenSesionesServidor', nombre: 'IAlmacenSesionesServidor', ns: 'Horarios.Blazor.Acceso',
     capa: 'blazor', modulo: 'Acceso', kind: 'interfaz', abst: false, archivo: 'Horarios.Blazor/Acceso/AlmacenSesionesServidor.cs',
-    x: 3527.4, y: 2719.5, w: 222.4, h: 60.0, grado: 2,
+    x: 4288.5, y: 3136.4, w: 222.4, h: 60.0, grado: 2,
     miembros: [
       { n: 'Guardar(SesionSupabase)', t: 'Guid', k: 'metodo', est: false },
       { n: 'IntentarObtener(Guid, SesionSupabase?)', t: 'bool', k: 'metodo', est: false },
@@ -3001,7 +3787,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Busqueda', nombre: 'Busqueda', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/Busqueda.cs',
-    x: 3560.2, y: 3513.6, w: 150.0, h: 56.0, grado: 0,
+    x: 4325.2, y: 3706.4, w: 150.0, h: 56.0, grado: 0,
     miembros: [
       { n: 'Coincide(string?, string?)', t: 'bool', k: 'metodo', est: true },
       { n: 'Normalizar(string)', t: 'string', k: 'metodo', est: true },
@@ -3010,7 +3796,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.ColaGeneracionesEnMemoria', nombre: 'ColaGeneracionesEnMemoria', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/ColaGeneracionesEnMemoria.cs',
-    x: 3343.2, y: 3512.6, w: 230.0, h: 56.0, grado: 2,
+    x: 4589.3, y: 3802.0, w: 230.0, h: 56.0, grado: 4,
     miembros: [
       { n: 'Encolar(SolicitudGeneracionEncolada)', t: 'void', k: 'metodo', est: false },
       { n: 'TiempoMaximoSegundos()', t: 'int', k: 'metodo', est: false },
@@ -3019,7 +3805,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.ColaTrabajosPesados', nombre: 'ColaTrabajosPesados', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/TrabajosPesados.cs',
-    x: 3279.1, y: 3416.8, w: 184.4, h: 56.0, grado: 2,
+    x: 4117.8, y: 3818.6, w: 184.4, h: 56.0, grado: 2,
     miembros: [
       { n: 'Encolar(string, Func<CancellationToken,Task>)', t: 'Guid', k: 'metodo', est: false },
       { n: 'ProcesarSiguienteAsync(CancellationToken)', t: 'Task<bool>', k: 'metodo', est: false },
@@ -3028,7 +3814,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.Components.PaginaConMensaje', nombre: 'PaginaConMensaje', ns: 'Horarios.Blazor.Components',
     capa: 'blazor', modulo: 'Components', kind: 'clase', abst: true, archivo: 'Horarios.Blazor/Components/PaginaConMensaje.cs',
-    x: 3525.0, y: 3651.6, w: 161.6, h: 68.0, grado: 0,
+    x: 4346.8, y: 3956.6, w: 161.6, h: 68.0, grado: 0,
     miembros: [
       { n: 'RecargarAsync()', t: 'Task', k: 'metodo', est: false },
       { n: 'Informar(string)', t: 'void', k: 'metodo', est: false },
@@ -3040,7 +3826,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.PresentacionErroresCatalogo', nombre: 'PresentacionErroresCatalogo', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/PresentacionErroresCatalogo.cs',
-    x: 3256.8, y: 3286.3, w: 245.2, h: 76.0, grado: 0,
+    x: 4064.7, y: 3684.0, w: 245.2, h: 76.0, grado: 0,
     miembros: [
       { n: 'JornadaDuplicada', t: 'string', k: 'prop', est: true },
       { n: 'AulaDuplicada', t: 'string', k: 'prop', est: true },
@@ -3055,7 +3841,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.PresentacionGeneraciones', nombre: 'PresentacionGeneraciones', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/PresentacionGeneraciones.cs',
-    x: 3804.6, y: 3198.6, w: 222.4, h: 76.0, grado: 3,
+    x: 4640.4, y: 3643.0, w: 222.4, h: 76.0, grado: 3,
     miembros: [
       { n: 'Etiqueta(string)', t: 'string', k: 'metodo', est: true },
       { n: 'Explicar(MensajeGeneracionDto)', t: 'string', k: 'metodo', est: true },
@@ -3070,7 +3856,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.ProcesadorTrabajosPesados', nombre: 'ProcesadorTrabajosPesados', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'clase', abst: false, archivo: 'Horarios.Blazor/ProcesadorTrabajosPesados.cs',
-    x: 3317.6, y: 3154.7, w: 230.0, h: 52.0, grado: 1,
+    x: 4136.9, y: 3582.3, w: 230.0, h: 52.0, grado: 1,
     miembros: [
       { n: 'ExecuteAsync(CancellationToken)', t: 'Task', k: 'metodo', est: false },
     ],
@@ -3078,7 +3864,7 @@ export const CLASES: Clase[] = [
   {
     id: 'Horarios.Blazor.TrabajoPesado', nombre: 'TrabajoPesado', ns: 'Horarios.Blazor',
     capa: 'blazor', modulo: 'Núcleo', kind: 'record', abst: false, archivo: 'Horarios.Blazor/TrabajosPesados.cs',
-    x: 3490.4, y: 3264.8, w: 150.0, h: 60.0, grado: 0,
+    x: 4281.3, y: 3505.3, w: 150.0, h: 60.0, grado: 0,
     miembros: [
       { n: 'Id', t: 'Guid', k: 'prop', est: false },
       { n: 'Nombre', t: 'string', k: 'prop', est: false },
@@ -3089,12 +3875,15 @@ export const CLASES: Clase[] = [
 
 export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Academia.CrearCarrera->Horarios.Aplicacion.Academia.IDatosAcademia', de: 'Horarios.Aplicacion.Academia.CrearCarrera', a: 'Horarios.Aplicacion.Academia.IDatosAcademia', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Academia.CrearCarrera->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Academia.CrearCarrera', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Academia.CrearCarrera->Horarios.Contratos.Academia.CrearCarreraSolicitud', de: 'Horarios.Aplicacion.Academia.CrearCarrera', a: 'Horarios.Contratos.Academia.CrearCarreraSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.CrearCarrera->Horarios.Dominio.Academia.Carrera', de: 'Horarios.Aplicacion.Academia.CrearCarrera', a: 'Horarios.Dominio.Academia.Carrera', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.CrearFacultad->Horarios.Aplicacion.Academia.IDatosAcademia', de: 'Horarios.Aplicacion.Academia.CrearFacultad', a: 'Horarios.Aplicacion.Academia.IDatosAcademia', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Academia.CrearFacultad->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Academia.CrearFacultad', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Academia.CrearFacultad->Horarios.Contratos.Academia.CrearFacultadSolicitud', de: 'Horarios.Aplicacion.Academia.CrearFacultad', a: 'Horarios.Contratos.Academia.CrearFacultadSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.CrearFacultad->Horarios.Dominio.Academia.Facultad', de: 'Horarios.Aplicacion.Academia.CrearFacultad', a: 'Horarios.Dominio.Academia.Facultad', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Aplicacion.Academia.IDatosGestionAcademica', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Aplicacion.Academia.IDatosGestionAcademica', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Contratos.Academia.ActivarCohortePeriodoSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Contratos.Academia.ActivarCohortePeriodoSolicitud', tipo: 'usa', via: ['ActivarCohorteAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Contratos.Academia.ActualizarAgrupacionAreaComunSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Contratos.Academia.ActualizarAgrupacionAreaComunSolicitud', tipo: 'usa', via: ['ActualizarAgrupacionAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Contratos.Academia.ActualizarCohorteSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Contratos.Academia.ActualizarCohorteSolicitud', tipo: 'usa', via: ['ActualizarCohorteAsync'] },
@@ -3115,11 +3904,13 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Dominio.Academia.CursoEnPensum', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Dominio.Academia.CursoEnPensum', tipo: 'usa', via: ['ListarCursosPensumAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarAcademia->Horarios.Dominio.Academia.Pensum', de: 'Horarios.Aplicacion.Academia.GestionarAcademia', a: 'Horarios.Dominio.Academia.Pensum', tipo: 'usa', via: ['ActualizarPensumAsync', 'CrearPensumAsync', 'ListarPensumsAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos->Horarios.Aplicacion.Academia.IDatosAcademia', de: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', a: 'Horarios.Aplicacion.Academia.IDatosAcademia', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos->Horarios.Contratos.Academia.ActualizarCarreraSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', a: 'Horarios.Contratos.Academia.ActualizarCarreraSolicitud', tipo: 'usa', via: ['ActualizarCarreraAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos->Horarios.Contratos.Academia.ActualizarFacultadSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', a: 'Horarios.Contratos.Academia.ActualizarFacultadSolicitud', tipo: 'usa', via: ['ActualizarFacultadAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos->Horarios.Dominio.Academia.Carrera', de: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', a: 'Horarios.Dominio.Academia.Carrera', tipo: 'usa', via: ['ActualizarCarreraAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos->Horarios.Dominio.Academia.Facultad', de: 'Horarios.Aplicacion.Academia.GestionarCatalogosAcademicos', a: 'Horarios.Dominio.Academia.Facultad', tipo: 'usa', via: ['ActualizarFacultadAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos->Horarios.Aplicacion.Academia.IDatosPeriodosAcademicos', de: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos', a: 'Horarios.Aplicacion.Academia.IDatosPeriodosAcademicos', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos->Horarios.Contratos.Academia.ActualizarPeriodoSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos', a: 'Horarios.Contratos.Academia.ActualizarPeriodoSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos->Horarios.Contratos.Academia.CrearPeriodoSolicitud', de: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos', a: 'Horarios.Contratos.Academia.CrearPeriodoSolicitud', tipo: 'usa', via: ['CrearAsync'] },
   { id: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos->Horarios.Dominio.Academia.CursoCubiertoPeriodo', de: 'Horarios.Aplicacion.Academia.GestionarPeriodosAcademicos', a: 'Horarios.Dominio.Academia.CursoCubiertoPeriodo', tipo: 'usa', via: ['ListarCoberturaAsync'] },
@@ -3164,8 +3955,10 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Academia.ListarPeriodosAcademicos->Horarios.Aplicacion.Academia.IDatosPeriodosAcademicos', de: 'Horarios.Aplicacion.Academia.ListarPeriodosAcademicos', a: 'Horarios.Aplicacion.Academia.IDatosPeriodosAcademicos', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Academia.ListarPeriodosAcademicos->Horarios.Dominio.Academia.PeriodoAcademico', de: 'Horarios.Aplicacion.Academia.ListarPeriodosAcademicos', a: 'Horarios.Dominio.Academia.PeriodoAcademico', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion->Horarios.Aplicacion.Academia.IDatosSugerenciasSeccion', de: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion', a: 'Horarios.Aplicacion.Academia.IDatosSugerenciasSeccion', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion->Horarios.Contratos.Academia.SolicitudSugerenciaSeccionDto', de: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion', a: 'Horarios.Contratos.Academia.SolicitudSugerenciaSeccionDto', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion->Horarios.Contratos.Academia.SugerenciaSeccionDto', de: 'Horarios.Aplicacion.Academia.SugerirNuevaSeccion', a: 'Horarios.Contratos.Academia.SugerenciaSeccionDto', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Acceso.AutorizacionAplicacion->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Acceso.AutorizacionAplicacion', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'usa', via: ['Exigir'] },
   { id: 'Horarios.Aplicacion.Acceso.CerrarSesion->Horarios.Aplicacion.Acceso.IAutenticadorSupabase', de: 'Horarios.Aplicacion.Acceso.CerrarSesion', a: 'Horarios.Aplicacion.Acceso.IAutenticadorSupabase', tipo: 'depende', via: ['autenticador'] },
   { id: 'Horarios.Aplicacion.Acceso.CrearUsuarioInicial->Horarios.Aplicacion.Acceso.IDatosAcceso', de: 'Horarios.Aplicacion.Acceso.CrearUsuarioInicial', a: 'Horarios.Aplicacion.Acceso.IDatosAcceso', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Acceso.CrearUsuarioInicial->Horarios.Contratos.Acceso.CrearUsuarioInicialSolicitud', de: 'Horarios.Aplicacion.Acceso.CrearUsuarioInicial', a: 'Horarios.Contratos.Acceso.CrearUsuarioInicialSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
@@ -3185,26 +3978,35 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Acceso.ResultadoInicioSesion->Horarios.Dominio.Acceso.Usuario', de: 'Horarios.Aplicacion.Acceso.ResultadoInicioSesion', a: 'Horarios.Dominio.Acceso.Usuario', tipo: 'usa', via: ['Usuario'] },
   { id: 'Horarios.Aplicacion.Acceso.VerificarPermiso->Horarios.Aplicacion.Acceso.IDatosAcceso', de: 'Horarios.Aplicacion.Acceso.VerificarPermiso', a: 'Horarios.Aplicacion.Acceso.IDatosAcceso', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Aulas.ActualizarAula->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.ActualizarAula', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.ActualizarAula->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.ActualizarAula', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.ActualizarAula->Horarios.Contratos.Aulas.ActualizarAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.ActualizarAula', a: 'Horarios.Contratos.Aulas.ActualizarAulaSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
-  { id: 'Horarios.Aplicacion.Aulas.ActualizarAula->Horarios.Dominio.Aulas.Aula', de: 'Horarios.Aplicacion.Aulas.ActualizarAula', a: 'Horarios.Dominio.Aulas.Aula', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.ActualizarAula->Horarios.Contratos.Motor.Aula', de: 'Horarios.Aplicacion.Aulas.ActualizarAula', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.ActualizarJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.ActualizarJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.ActualizarJornada->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.ActualizarJornada', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.ActualizarJornada->Horarios.Contratos.Aulas.ActualizarJornadaSolicitud', de: 'Horarios.Aplicacion.Aulas.ActualizarJornada', a: 'Horarios.Contratos.Aulas.ActualizarJornadaSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
-  { id: 'Horarios.Aplicacion.Aulas.ActualizarJornada->Horarios.Dominio.Aulas.Jornada', de: 'Horarios.Aplicacion.Aulas.ActualizarJornada', a: 'Horarios.Dominio.Aulas.Jornada', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.ActualizarJornada->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Aplicacion.Aulas.ActualizarJornada', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearAula->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.CrearAula', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.CrearAula->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.CrearAula', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearAula->Horarios.Contratos.Aulas.CrearAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.CrearAula', a: 'Horarios.Contratos.Aulas.CrearAulaSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
-  { id: 'Horarios.Aplicacion.Aulas.CrearAula->Horarios.Dominio.Aulas.Aula', de: 'Horarios.Aplicacion.Aulas.CrearAula', a: 'Horarios.Dominio.Aulas.Aula', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.CrearAula->Horarios.Contratos.Motor.Aula', de: 'Horarios.Aplicacion.Aulas.CrearAula', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada->Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', de: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada', a: 'Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada->Horarios.Dominio.Aulas.DescansoJornada', de: 'Horarios.Aplicacion.Aulas.CrearDescansoJornada', a: 'Horarios.Dominio.Aulas.DescansoJornada', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.CrearJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.CrearJornada->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.CrearJornada', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.CrearJornada->Horarios.Contratos.Aulas.CrearJornadaSolicitud', de: 'Horarios.Aplicacion.Aulas.CrearJornada', a: 'Horarios.Contratos.Aulas.CrearJornadaSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
-  { id: 'Horarios.Aplicacion.Aulas.CrearJornada->Horarios.Dominio.Aulas.Jornada', de: 'Horarios.Aplicacion.Aulas.CrearJornada', a: 'Horarios.Dominio.Aulas.Jornada', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.CrearJornada->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Aplicacion.Aulas.CrearJornada', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.EliminarAula->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.EliminarAula', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.EliminarAula->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.EliminarAula', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.EliminarJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.EliminarJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.EliminarJornada->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.EliminarJornada', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada->Horarios.Contratos.Aulas.ActualizarDescansoJornadaSolicitud', de: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada', a: 'Horarios.Contratos.Aulas.ActualizarDescansoJornadaSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada->Horarios.Dominio.Aulas.DescansoJornada', de: 'Horarios.Aplicacion.Aulas.GestionarDescansoJornada', a: 'Horarios.Dominio.Aulas.DescansoJornada', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas->Horarios.Aplicacion.Aulas.IDatosRecursosAulas', de: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas', a: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas->Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas', a: 'Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas->Horarios.Contratos.Aulas.AsignarRecursoAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas', a: 'Horarios.Contratos.Aulas.AsignarRecursoAulaSolicitud', tipo: 'usa', via: ['AsignarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas->Horarios.Contratos.Aulas.CrearRecursoAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.GestionarRecursosAulas', a: 'Horarios.Contratos.Aulas.CrearRecursoAulaSolicitud', tipo: 'usa', via: ['CrearAsync'] },
@@ -3217,9 +4019,9 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Contratos.Aulas.CrearAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Contratos.Aulas.CrearAulaSolicitud', tipo: 'usa', via: ['CrearAulaAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', tipo: 'usa', via: ['CrearDescansoAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Contratos.Aulas.CrearJornadaSolicitud', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Contratos.Aulas.CrearJornadaSolicitud', tipo: 'usa', via: ['CrearJornadaAsync'] },
-  { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Dominio.Aulas.Aula', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Dominio.Aulas.Aula', tipo: 'usa', via: ['ActualizarAulaAsync', 'CrearAulaAsync', 'ListarAulasActivasAsync', 'ObtenerAulaAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Contratos.Motor.Aula', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['ActualizarAulaAsync', 'CrearAulaAsync', 'ListarAulasActivasAsync', 'ObtenerAulaAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['ActualizarJornadaAsync', 'CrearJornadaAsync', 'ListarJornadasActivasAsync', 'ObtenerJornadaAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Dominio.Aulas.DescansoJornada', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Dominio.Aulas.DescansoJornada', tipo: 'usa', via: ['ActualizarDescansoAsync', 'CrearDescansoAsync', 'ListarDescansosAsync', 'ObtenerDescansoAsync'] },
-  { id: 'Horarios.Aplicacion.Aulas.IDatosAulas->Horarios.Dominio.Aulas.Jornada', de: 'Horarios.Aplicacion.Aulas.IDatosAulas', a: 'Horarios.Dominio.Aulas.Jornada', tipo: 'usa', via: ['ActualizarJornadaAsync', 'CrearJornadaAsync', 'ListarJornadasActivasAsync', 'ObtenerJornadaAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas->Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', a: 'Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas->Horarios.Contratos.Aulas.AsignarRecursoAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', a: 'Horarios.Contratos.Aulas.AsignarRecursoAulaSolicitud', tipo: 'usa', via: ['AsignarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas->Horarios.Contratos.Aulas.CrearRecursoAulaSolicitud', de: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', a: 'Horarios.Contratos.Aulas.CrearRecursoAulaSolicitud', tipo: 'usa', via: ['CrearAsync'] },
@@ -3227,14 +4029,15 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas->Horarios.Dominio.Aulas.RecursoAsignadoAula', de: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', a: 'Horarios.Dominio.Aulas.RecursoAsignadoAula', tipo: 'usa', via: ['ListarPorAulaAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas->Horarios.Dominio.Aulas.RecursoAula', de: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', a: 'Horarios.Dominio.Aulas.RecursoAula', tipo: 'usa', via: ['ActualizarAsync', 'CrearAsync', 'ListarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.ListarAulas->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.ListarAulas', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
-  { id: 'Horarios.Aplicacion.Aulas.ListarAulas->Horarios.Dominio.Aulas.Aula', de: 'Horarios.Aplicacion.Aulas.ListarAulas', a: 'Horarios.Dominio.Aulas.Aula', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.ListarAulas->Horarios.Contratos.Motor.Aula', de: 'Horarios.Aplicacion.Aulas.ListarAulas', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.ListarBloquesJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.ListarBloquesJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Aulas.ListarBloquesJornada->Horarios.Dominio.Aulas.BloqueHorario', de: 'Horarios.Aplicacion.Aulas.ListarBloquesJornada', a: 'Horarios.Dominio.Aulas.BloqueHorario', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.ListarDescansosJornada->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.ListarDescansosJornada', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Aulas.ListarDescansosJornada->Horarios.Dominio.Aulas.DescansoJornada', de: 'Horarios.Aplicacion.Aulas.ListarDescansosJornada', a: 'Horarios.Dominio.Aulas.DescansoJornada', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Aulas.ListarJornadas->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Aulas.ListarJornadas', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datos'] },
-  { id: 'Horarios.Aplicacion.Aulas.ListarJornadas->Horarios.Dominio.Aulas.Jornada', de: 'Horarios.Aplicacion.Aulas.ListarJornadas', a: 'Horarios.Dominio.Aulas.Jornada', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Aulas.ListarJornadas->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Aplicacion.Aulas.ListarJornadas', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Consultas.ConsultarReporte->Horarios.Aplicacion.Consultas.IDatosConsultas', de: 'Horarios.Aplicacion.Consultas.ConsultarReporte', a: 'Horarios.Aplicacion.Consultas.IDatosConsultas', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Consultas.ConsultarReporte->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Consultas.ConsultarReporte', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Consultas.ConsultarReporte->Horarios.Contratos.Consultas.ConsultarReporteSolicitud', de: 'Horarios.Aplicacion.Consultas.ConsultarReporte', a: 'Horarios.Contratos.Consultas.ConsultarReporteSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Consultas.ConsultarReporte->Horarios.Contratos.Consultas.ReportePreliminarDto', de: 'Horarios.Aplicacion.Consultas.ConsultarReporte', a: 'Horarios.Contratos.Consultas.ReportePreliminarDto', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Consultas.IDatosConsultas->Horarios.Contratos.Consultas.ConsultarReporteSolicitud', de: 'Horarios.Aplicacion.Consultas.IDatosConsultas', a: 'Horarios.Contratos.Consultas.ConsultarReporteSolicitud', tipo: 'usa', via: ['ConsultarReporteAsync'] },
@@ -3242,24 +4045,27 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente->Horarios.Aplicacion.Docentes.IContextoGestionDocentes', de: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', a: 'Horarios.Aplicacion.Docentes.IContextoGestionDocentes', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente->Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', a: 'Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['PuedeAutorizar'] },
   { id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente->Horarios.Dominio.Docentes.AsignacionDocenteCurso', de: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', a: 'Horarios.Dominio.Docentes.AsignacionDocenteCurso', tipo: 'usa', via: ['EjecutarAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.AutorizarCursoDocente', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['PuedeAutorizar'] },
   { id: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente->Horarios.Aplicacion.Docentes.IContextoGestionDocentes', de: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente', a: 'Horarios.Aplicacion.Docentes.IContextoGestionDocentes', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente->Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente', de: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente', tipo: 'depende', via: ['datosDisponibilidad'] },
   { id: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente->Horarios.Contratos.Docentes.DisponibilidadDocenteDto', de: 'Horarios.Aplicacion.Docentes.ConsultarDisponibilidadDeDocente', a: 'Horarios.Contratos.Docentes.DisponibilidadDocenteDto', tipo: 'usa', via: ['Ejecutar'] },
   { id: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente->Horarios.Aplicacion.Docentes.CuentaDocenteResultado', de: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente', a: 'Horarios.Aplicacion.Docentes.CuentaDocenteResultado', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente->Horarios.Aplicacion.Docentes.IDatosCuentasDocentes', de: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente', a: 'Horarios.Aplicacion.Docentes.IDatosCuentasDocentes', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Docentes.CrearCuentaDocente', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.CrearDocente->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.CrearDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datosDocentes'] },
+  { id: 'Horarios.Aplicacion.Docentes.CrearDocente->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Docentes.CrearDocente', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.CrearDocente->Horarios.Contratos.Docentes.CrearDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.CrearDocente', a: 'Horarios.Contratos.Docentes.CrearDocenteSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.CrearDocente->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.CrearDocente', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Docentes.CrearDocente->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.CrearDocente', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente->Horarios.Aplicacion.Docentes.IContextoGestionDocentes', de: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', a: 'Horarios.Aplicacion.Docentes.IContextoGestionDocentes', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente->Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', de: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente->Horarios.Contratos.Docentes.DisponibilidadDocenteDto', de: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', a: 'Horarios.Contratos.Docentes.DisponibilidadDocenteDto', tipo: 'usa', via: ['GuardarAsync', 'ObtenerAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente->Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', a: 'Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', tipo: 'usa', via: ['GuardarAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['PuedeGestionar'] },
+  { id: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.GestionarDisponibilidadDocente', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['PuedeGestionar'] },
   { id: 'Horarios.Aplicacion.Docentes.GestionarDocentes->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.GestionarDocentes', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Docentes.GestionarDocentes->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Docentes.GestionarDocentes', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.GestionarDocentes->Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.GestionarDocentes', a: 'Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.GestionarDocentes->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.GestionarDocentes', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ActualizarAsync'] },
+  { id: 'Horarios.Aplicacion.Docentes.GestionarDocentes->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.GestionarDocentes', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'depende', via: ['datosAulas'] },
   { id: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente->Horarios.Aplicacion.Docentes.IContextoGestionDocentes', de: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente', a: 'Horarios.Aplicacion.Docentes.IContextoGestionDocentes', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente->Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente', de: 'Horarios.Aplicacion.Docentes.GuardarDisponibilidadDeDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente', tipo: 'depende', via: ['datosDisponibilidad'] },
@@ -3271,19 +4077,19 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente->Horarios.Dominio.Docentes.DisponibilidadDeDocente', de: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDeDocente', a: 'Horarios.Dominio.Docentes.DisponibilidadDeDocente', tipo: 'usa', via: ['Guardar'] },
   { id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente->Horarios.Contratos.Docentes.DisponibilidadDocenteDto', de: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', a: 'Horarios.Contratos.Docentes.DisponibilidadDocenteDto', tipo: 'usa', via: ['GuardarAsync', 'ObtenerAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente->Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', a: 'Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', tipo: 'usa', via: ['GuardarAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ObtenerDocenteAsync'] },
+  { id: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.IDatosDisponibilidadDocente', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ObtenerDocenteAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.IDatosDocentes->Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.IDatosDocentes', a: 'Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.IDatosDocentes->Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.IDatosDocentes', a: 'Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', tipo: 'usa', via: ['AutorizarCursoAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.IDatosDocentes->Horarios.Contratos.Docentes.CrearDocenteSolicitud', de: 'Horarios.Aplicacion.Docentes.IDatosDocentes', a: 'Horarios.Contratos.Docentes.CrearDocenteSolicitud', tipo: 'usa', via: ['CrearAsync'] },
+  { id: 'Horarios.Aplicacion.Docentes.IDatosDocentes->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.IDatosDocentes', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ActualizarAsync', 'CrearAsync', 'ListarActivosAsync', 'ListarPorFacultadAsync', 'ObtenerPorCodigoAsync', 'ObtenerPorIdAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.IDatosDocentes->Horarios.Dominio.Docentes.AsignacionDocenteCurso', de: 'Horarios.Aplicacion.Docentes.IDatosDocentes', a: 'Horarios.Dominio.Docentes.AsignacionDocenteCurso', tipo: 'usa', via: ['AutorizarCursoAsync', 'ListarCursosAutorizadosAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.IDatosDocentes->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.IDatosDocentes', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ActualizarAsync', 'CrearAsync', 'ListarActivosAsync', 'ListarPorFacultadAsync', 'ObtenerPorCodigoAsync', 'ObtenerPorIdAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.ListarCursosAutorizadosDocente->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.ListarCursosAutorizadosDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Docentes.ListarCursosAutorizadosDocente->Horarios.Dominio.Docentes.AsignacionDocenteCurso', de: 'Horarios.Aplicacion.Docentes.ListarCursosAutorizadosDocente', a: 'Horarios.Dominio.Docentes.AsignacionDocenteCurso', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.ListarDocentes->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.ListarDocentes', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datosDocentes'] },
   { id: 'Horarios.Aplicacion.Docentes.ListarDocentes->Horarios.Contratos.Docentes.DocenteResumenDto', de: 'Horarios.Aplicacion.Docentes.ListarDocentes', a: 'Horarios.Contratos.Docentes.DocenteResumenDto', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Docentes.ObtenerDocente->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.ObtenerDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datosDocentes'] },
   { id: 'Horarios.Aplicacion.Docentes.ObtenerDocente->Horarios.Contratos.Docentes.DocenteResumenDto', de: 'Horarios.Aplicacion.Docentes.ObtenerDocente', a: 'Horarios.Contratos.Docentes.DocenteResumenDto', tipo: 'usa', via: ['ConvertirADto', 'PorCodigoAsync', 'PorIdAsync'] },
-  { id: 'Horarios.Aplicacion.Docentes.ObtenerDocente->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Aplicacion.Docentes.ObtenerDocente', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ConvertirADto'] },
+  { id: 'Horarios.Aplicacion.Docentes.ObtenerDocente->Horarios.Contratos.Motor.Docente', de: 'Horarios.Aplicacion.Docentes.ObtenerDocente', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ConvertirADto'] },
   { id: 'Horarios.Aplicacion.Docentes.RevocarCursoAutorizadoDocente->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Aplicacion.Docentes.RevocarCursoAutorizadoDocente', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Importaciones.GenerarPlantillaImportacion->Horarios.Contratos.Importaciones.PlantillaImportacionVersionadaDto', de: 'Horarios.Aplicacion.Importaciones.GenerarPlantillaImportacion', a: 'Horarios.Contratos.Importaciones.PlantillaImportacionVersionadaDto', tipo: 'usa', via: ['Ejecutar'] },
   { id: 'Horarios.Aplicacion.Importaciones.GenerarPlantillaImportacion->Horarios.Contratos.Importaciones.VistaPlantillaImportacionDto', de: 'Horarios.Aplicacion.Importaciones.GenerarPlantillaImportacion', a: 'Horarios.Contratos.Importaciones.VistaPlantillaImportacionDto', tipo: 'usa', via: ['Ejecutar'] },
@@ -3304,14 +4110,51 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Aplicacion.Importaciones.ValidarArchivoImportacion->Horarios.Contratos.Importaciones.TipoArchivoImportacion', de: 'Horarios.Aplicacion.Importaciones.ValidarArchivoImportacion', a: 'Horarios.Contratos.Importaciones.TipoArchivoImportacion', tipo: 'usa', via: ['ExtensionCoincideConTipo'] },
   { id: 'Horarios.Aplicacion.Importaciones.ValidarImportacionPlantilla->Horarios.Contratos.Importaciones.ErrorImportacionDto', de: 'Horarios.Aplicacion.Importaciones.ValidarImportacionPlantilla', a: 'Horarios.Contratos.Importaciones.ErrorImportacionDto', tipo: 'usa', via: ['Ejecutar'] },
   { id: 'Horarios.Aplicacion.Importaciones.ValidarImportacionPlantilla->Horarios.Contratos.Importaciones.PlantillaImportacionVersionadaDto', de: 'Horarios.Aplicacion.Importaciones.ValidarImportacionPlantilla', a: 'Horarios.Contratos.Importaciones.PlantillaImportacionVersionadaDto', tipo: 'usa', via: ['Ejecutar'] },
+  { id: 'Horarios.Aplicacion.Motor.ConsultarHorarioGenerado->Horarios.Aplicacion.Motor.IDatosHorarioGenerado', de: 'Horarios.Aplicacion.Motor.ConsultarHorarioGenerado', a: 'Horarios.Aplicacion.Motor.IDatosHorarioGenerado', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Motor.ConsultarHorarioGenerado->Horarios.Contratos.Planes.HorarioGeneradoDto', de: 'Horarios.Aplicacion.Motor.ConsultarHorarioGenerado', a: 'Horarios.Contratos.Planes.HorarioGeneradoDto', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Aplicacion.Motor.IDatosGeneraciones', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', tipo: 'depende', via: ['generaciones'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', tipo: 'usa', via: ['CerrarSinResultadoAsync', 'EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Aplicacion.Planes.IDatosPlanes', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Aplicacion.Planes.IDatosPlanes', tipo: 'depende', via: ['planes'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Contratos.Motor.IMotorHorarios', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Contratos.Motor.IMotorHorarios', tipo: 'depende', via: ['motor'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Contratos.Motor.IVerificadorHorario', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Contratos.Motor.IVerificadorHorario', tipo: 'depende', via: ['verificador'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Contratos.Planes.EstadoGeneracionDto', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Contratos.Planes.EstadoGeneracionDto', tipo: 'usa', via: ['CerrarSinResultadoAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Contratos.Planes.GeneracionHorarioDto', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Contratos.Planes.GeneracionHorarioDto', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Dominio.Planes.EstadoHorario', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Dominio.Planes.EstadoHorario', tipo: 'usa', via: ['CambiarEstadoAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Motor.EjecutarGeneracionPlan', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['CambiarEstadoAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Aplicacion.Motor.IColaGeneraciones', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Aplicacion.Motor.IColaGeneraciones', tipo: 'depende', via: ['cola'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contextoUsuario'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Aplicacion.Motor.IDatosGeneraciones', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', tipo: 'depende', via: ['generaciones'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', tipo: 'depende', via: ['preparador'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Aplicacion.Planes.IDatosPlanes', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Aplicacion.Planes.IDatosPlanes', tipo: 'depende', via: ['planes'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Aplicacion.Planes.RevisarDatosPlan', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Aplicacion.Planes.RevisarDatosPlan', tipo: 'depende', via: ['revisarDatos'] },
+  { id: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan->Horarios.Contratos.Planes.GeneracionHorarioDto', de: 'Horarios.Aplicacion.Motor.GenerarHorarioPlan', a: 'Horarios.Contratos.Planes.GeneracionHorarioDto', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IColaGeneraciones->Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', de: 'Horarios.Aplicacion.Motor.IColaGeneraciones', a: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', tipo: 'usa', via: ['Encolar'] },
+  { id: 'Horarios.Aplicacion.Motor.IContextoUsuario->Horarios.Aplicacion.Motor.PermisoAplicacion', de: 'Horarios.Aplicacion.Motor.IContextoUsuario', a: 'Horarios.Aplicacion.Motor.PermisoAplicacion', tipo: 'usa', via: ['TienePermiso'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync', 'IniciarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones->Horarios.Contratos.Motor.ResultadoVerificacion', de: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', a: 'Horarios.Contratos.Motor.ResultadoVerificacion', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones->Horarios.Contratos.Planes.EstadoGeneracionDto', de: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', a: 'Horarios.Contratos.Planes.EstadoGeneracionDto', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones->Horarios.Contratos.Planes.GeneracionHorarioDto', de: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', a: 'Horarios.Contratos.Planes.GeneracionHorarioDto', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync', 'IniciarAsync', 'ListarPorPlanAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosGeneraciones->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['IniciarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IDatosHorarioGenerado->Horarios.Contratos.Planes.HorarioGeneradoDto', de: 'Horarios.Aplicacion.Motor.IDatosHorarioGenerado', a: 'Horarios.Contratos.Planes.HorarioGeneradoDto', tipo: 'usa', via: ['ConsultarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['PrepararAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['PrepararAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.ListarGeneracionesPlan->Horarios.Aplicacion.Motor.IDatosGeneraciones', de: 'Horarios.Aplicacion.Motor.ListarGeneracionesPlan', a: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', tipo: 'depende', via: ['datos'] },
+  { id: 'Horarios.Aplicacion.Motor.ListarGeneracionesPlan->Horarios.Contratos.Planes.GeneracionHorarioDto', de: 'Horarios.Aplicacion.Motor.ListarGeneracionesPlan', a: 'Horarios.Contratos.Planes.GeneracionHorarioDto', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Motor.PermisosMotor->Horarios.Aplicacion.Motor.PermisoAplicacion', de: 'Horarios.Aplicacion.Motor.PermisosMotor', a: 'Horarios.Aplicacion.Motor.PermisoAplicacion', tipo: 'usa', via: ['Generar'] },
+  { id: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['Instantanea'] },
+  { id: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['PlanEnGeneracion'] },
+  { id: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan->Horarios.Aplicacion.Planes.IDatosPlanes', de: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan', a: 'Horarios.Aplicacion.Planes.IDatosPlanes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan->Horarios.Contratos.Planes.CambiarEstadoPlanSolicitud', de: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan', a: 'Horarios.Contratos.Planes.CambiarEstadoPlanSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Planes.CambiarEstadoPlan', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Planes.ConsultarPlan->Horarios.Aplicacion.Planes.IDatosPlanes', de: 'Horarios.Aplicacion.Planes.ConsultarPlan', a: 'Horarios.Aplicacion.Planes.IDatosPlanes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Planes.ConsultarPlan->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Planes.ConsultarPlan', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Planes.CrearPlan->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Planes.CrearPlan', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Planes.CrearPlan->Horarios.Aplicacion.Planes.IDatosPlanes', de: 'Horarios.Aplicacion.Planes.CrearPlan', a: 'Horarios.Aplicacion.Planes.IDatosPlanes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Planes.CrearPlan->Horarios.Contratos.Planes.CrearPlanSolicitud', de: 'Horarios.Aplicacion.Planes.CrearPlan', a: 'Horarios.Contratos.Planes.CrearPlanSolicitud', tipo: 'usa', via: ['EjecutarAsync'] },
   { id: 'Horarios.Aplicacion.Planes.CrearPlan->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Planes.CrearPlan', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['EjecutarAsync'] },
+  { id: 'Horarios.Aplicacion.Planes.GestionarPlanes->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Aplicacion.Planes.GestionarPlanes', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'depende', via: ['contexto'] },
   { id: 'Horarios.Aplicacion.Planes.GestionarPlanes->Horarios.Aplicacion.Planes.IDatosPlanes', de: 'Horarios.Aplicacion.Planes.GestionarPlanes', a: 'Horarios.Aplicacion.Planes.IDatosPlanes', tipo: 'depende', via: ['datos'] },
   { id: 'Horarios.Aplicacion.Planes.GestionarPlanes->Horarios.Contratos.Planes.ActualizarPlanSolicitud', de: 'Horarios.Aplicacion.Planes.GestionarPlanes', a: 'Horarios.Contratos.Planes.ActualizarPlanSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Aplicacion.Planes.GestionarPlanes->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Aplicacion.Planes.GestionarPlanes', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['ActualizarAsync'] },
@@ -3331,12 +4174,16 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Blazor.Acceso.AlmacenSesionesServidor->Horarios.Blazor.Acceso.IAlmacenSesionesServidor', de: 'Horarios.Blazor.Acceso.AlmacenSesionesServidor', a: 'Horarios.Blazor.Acceso.IAlmacenSesionesServidor', tipo: 'implementa', via: ['IAlmacenSesionesServidor'] },
   { id: 'Horarios.Blazor.Acceso.ContextoGestionDocentesHttp->Horarios.Aplicacion.Docentes.IContextoGestionDocentes', de: 'Horarios.Blazor.Acceso.ContextoGestionDocentesHttp', a: 'Horarios.Aplicacion.Docentes.IContextoGestionDocentes', tipo: 'implementa', via: ['IContextoGestionDocentes'] },
   { id: 'Horarios.Blazor.Acceso.ContextoTokenSupabaseHttp->Horarios.Infraestructura.Supabase.IContextoTokenSupabase', de: 'Horarios.Blazor.Acceso.ContextoTokenSupabaseHttp', a: 'Horarios.Infraestructura.Supabase.IContextoTokenSupabase', tipo: 'implementa', via: ['IContextoTokenSupabase'] },
+  { id: 'Horarios.Blazor.Acceso.ContextoUsuarioHttp->Horarios.Aplicacion.Motor.IContextoUsuario', de: 'Horarios.Blazor.Acceso.ContextoUsuarioHttp', a: 'Horarios.Aplicacion.Motor.IContextoUsuario', tipo: 'implementa', via: ['IContextoUsuario'] },
+  { id: 'Horarios.Blazor.Acceso.ContextoUsuarioHttp->Horarios.Aplicacion.Motor.PermisoAplicacion', de: 'Horarios.Blazor.Acceso.ContextoUsuarioHttp', a: 'Horarios.Aplicacion.Motor.PermisoAplicacion', tipo: 'usa', via: ['TienePermiso'] },
   { id: 'Horarios.Blazor.Acceso.EndpointsAcceso->Horarios.Aplicacion.Acceso.CerrarSesion', de: 'Horarios.Blazor.Acceso.EndpointsAcceso', a: 'Horarios.Aplicacion.Acceso.CerrarSesion', tipo: 'usa', via: ['CerrarSesionAsync'] },
   { id: 'Horarios.Blazor.Acceso.EndpointsAcceso->Horarios.Aplicacion.Acceso.IniciarSesion', de: 'Horarios.Blazor.Acceso.EndpointsAcceso', a: 'Horarios.Aplicacion.Acceso.IniciarSesion', tipo: 'usa', via: ['IniciarSesionAsync'] },
   { id: 'Horarios.Blazor.Acceso.EndpointsAcceso->Horarios.Aplicacion.Acceso.ObtenerAlcanceUsuario', de: 'Horarios.Blazor.Acceso.EndpointsAcceso', a: 'Horarios.Aplicacion.Acceso.ObtenerAlcanceUsuario', tipo: 'usa', via: ['IniciarSesionAsync'] },
   { id: 'Horarios.Blazor.Acceso.EndpointsAcceso->Horarios.Blazor.Acceso.CredencialesFormulario', de: 'Horarios.Blazor.Acceso.EndpointsAcceso', a: 'Horarios.Blazor.Acceso.CredencialesFormulario', tipo: 'usa', via: ['IniciarSesionAsync'] },
   { id: 'Horarios.Blazor.Acceso.EntradaSesion->Horarios.Aplicacion.Acceso.SesionSupabase', de: 'Horarios.Blazor.Acceso.EntradaSesion', a: 'Horarios.Aplicacion.Acceso.SesionSupabase', tipo: 'usa', via: ['Sesion'] },
   { id: 'Horarios.Blazor.Acceso.IAlmacenSesionesServidor->Horarios.Aplicacion.Acceso.SesionSupabase', de: 'Horarios.Blazor.Acceso.IAlmacenSesionesServidor', a: 'Horarios.Aplicacion.Acceso.SesionSupabase', tipo: 'usa', via: ['Guardar', 'IntentarObtener'] },
+  { id: 'Horarios.Blazor.ColaGeneracionesEnMemoria->Horarios.Aplicacion.Motor.IColaGeneraciones', de: 'Horarios.Blazor.ColaGeneracionesEnMemoria', a: 'Horarios.Aplicacion.Motor.IColaGeneraciones', tipo: 'implementa', via: ['IColaGeneraciones'] },
+  { id: 'Horarios.Blazor.ColaGeneracionesEnMemoria->Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', de: 'Horarios.Blazor.ColaGeneracionesEnMemoria', a: 'Horarios.Aplicacion.Motor.SolicitudGeneracionEncolada', tipo: 'usa', via: ['Encolar'] },
   { id: 'Horarios.Blazor.ColaGeneracionesEnMemoria->Horarios.Blazor.ColaTrabajosPesados', de: 'Horarios.Blazor.ColaGeneracionesEnMemoria', a: 'Horarios.Blazor.ColaTrabajosPesados', tipo: 'depende', via: ['cola'] },
   { id: 'Horarios.Blazor.ColaGeneracionesEnMemoria->Horarios.Infraestructura.Supabase.IContextoTokenSupabase', de: 'Horarios.Blazor.ColaGeneracionesEnMemoria', a: 'Horarios.Infraestructura.Supabase.IContextoTokenSupabase', tipo: 'depende', via: ['contextoToken'] },
   { id: 'Horarios.Blazor.PresentacionGeneraciones->Horarios.Contratos.Planes.GeneracionHorarioDto', de: 'Horarios.Blazor.PresentacionGeneraciones', a: 'Horarios.Contratos.Planes.GeneracionHorarioDto', tipo: 'usa', via: ['PrimerError', 'ResumenFinal'] },
@@ -3366,6 +4213,47 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Contratos.Importaciones.VistaPlantillaImportacionDto->Horarios.Contratos.Importaciones.TipoArchivoImportacion', de: 'Horarios.Contratos.Importaciones.VistaPlantillaImportacionDto', a: 'Horarios.Contratos.Importaciones.TipoArchivoImportacion', tipo: 'usa', via: ['TipoArchivo'] },
   { id: 'Horarios.Contratos.Importaciones.VistaPreviaCsvSolicitud->Horarios.Contratos.Importaciones.ArchivoImportacionDto', de: 'Horarios.Contratos.Importaciones.VistaPreviaCsvSolicitud', a: 'Horarios.Contratos.Importaciones.ArchivoImportacionDto', tipo: 'usa', via: ['Archivo'] },
   { id: 'Horarios.Contratos.Importaciones.VistaPreviaImportacionSolicitud->Horarios.Contratos.Importaciones.ArchivoImportacionDto', de: 'Horarios.Contratos.Importaciones.VistaPreviaImportacionSolicitud', a: 'Horarios.Contratos.Importaciones.ArchivoImportacionDto', tipo: 'usa', via: ['Archivo'] },
+  { id: 'Horarios.Contratos.Motor.AsignacionPendiente->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Contratos.Motor.AsignacionPendiente', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['Asignacion'] },
+  { id: 'Horarios.Contratos.Motor.Aula->Horarios.Contratos.Motor.RecursoDisponible', de: 'Horarios.Contratos.Motor.Aula', a: 'Horarios.Contratos.Motor.RecursoDisponible', tipo: 'usa', via: ['Recursos'] },
+  { id: 'Horarios.Contratos.Motor.Aula->Horarios.Contratos.Motor.TipoAula', de: 'Horarios.Contratos.Motor.Aula', a: 'Horarios.Contratos.Motor.TipoAula', tipo: 'usa', via: ['Tipo'] },
+  { id: 'Horarios.Contratos.Motor.Colocacion->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Contratos.Motor.Colocacion', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['Dia'] },
+  { id: 'Horarios.Contratos.Motor.Descanso->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Contratos.Motor.Descanso', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['Dia'] },
+  { id: 'Horarios.Contratos.Motor.Docente->Horarios.Contratos.Motor.AutorizacionDocente', de: 'Horarios.Contratos.Motor.Docente', a: 'Horarios.Contratos.Motor.AutorizacionDocente', tipo: 'usa', via: ['Autorizaciones'] },
+  { id: 'Horarios.Contratos.Motor.IMotorHorarios->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Contratos.Motor.IMotorHorarios', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['Ejecutar'] },
+  { id: 'Horarios.Contratos.Motor.IMotorHorarios->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Contratos.Motor.IMotorHorarios', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['Ejecutar'] },
+  { id: 'Horarios.Contratos.Motor.IVerificadorHorario->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Contratos.Motor.IVerificadorHorario', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['Verificar'] },
+  { id: 'Horarios.Contratos.Motor.IVerificadorHorario->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Contratos.Motor.IVerificadorHorario', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['Verificar'] },
+  { id: 'Horarios.Contratos.Motor.IVerificadorHorario->Horarios.Contratos.Motor.ResultadoVerificacion', de: 'Horarios.Contratos.Motor.IVerificadorHorario', a: 'Horarios.Contratos.Motor.ResultadoVerificacion', tipo: 'usa', via: ['Verificar'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.AlcancePlan', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.AlcancePlan', tipo: 'usa', via: ['Alcance'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.Aula', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['Aulas'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.CatalogoNombres', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.CatalogoNombres', tipo: 'usa', via: ['Nombres'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.Diagnostico', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.Diagnostico', tipo: 'usa', via: ['DiagnosticosDeCarga'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.Docente', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['Docentes'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['Jornadas'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.SesionFijada', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.SesionFijada', tipo: 'usa', via: ['Fijadas'] },
+  { id: 'Horarios.Contratos.Motor.Instantanea->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Contratos.Motor.Instantanea', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Sesiones'] },
+  { id: 'Horarios.Contratos.Motor.Jornada->Horarios.Contratos.Motor.Descanso', de: 'Horarios.Contratos.Motor.Jornada', a: 'Horarios.Contratos.Motor.Descanso', tipo: 'usa', via: ['Descansos'] },
+  { id: 'Horarios.Contratos.Motor.Jornada->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Contratos.Motor.Jornada', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['DiasActivos'] },
+  { id: 'Horarios.Contratos.Motor.RequisitoCargado->Horarios.Contratos.Motor.RecursoRequerido', de: 'Horarios.Contratos.Motor.RequisitoCargado', a: 'Horarios.Contratos.Motor.RecursoRequerido', tipo: 'usa', via: ['Recursos'] },
+  { id: 'Horarios.Contratos.Motor.Resultado->Horarios.Contratos.Motor.AsignacionPendiente', de: 'Horarios.Contratos.Motor.Resultado', a: 'Horarios.Contratos.Motor.AsignacionPendiente', tipo: 'usa', via: ['Pendientes'] },
+  { id: 'Horarios.Contratos.Motor.Resultado->Horarios.Contratos.Motor.Diagnostico', de: 'Horarios.Contratos.Motor.Resultado', a: 'Horarios.Contratos.Motor.Diagnostico', tipo: 'usa', via: ['Diagnosticos'] },
+  { id: 'Horarios.Contratos.Motor.Resultado->Horarios.Contratos.Motor.SesionColocada', de: 'Horarios.Contratos.Motor.Resultado', a: 'Horarios.Contratos.Motor.SesionColocada', tipo: 'usa', via: ['Colocadas'] },
+  { id: 'Horarios.Contratos.Motor.ResultadoVerificacion->Horarios.Contratos.Motor.Diagnostico', de: 'Horarios.Contratos.Motor.ResultadoVerificacion', a: 'Horarios.Contratos.Motor.Diagnostico', tipo: 'usa', via: ['CoberturaNivel2'] },
+  { id: 'Horarios.Contratos.Motor.ResultadoVerificacion->Horarios.Contratos.Motor.Violacion', de: 'Horarios.Contratos.Motor.ResultadoVerificacion', a: 'Horarios.Contratos.Motor.Violacion', tipo: 'usa', via: ['ViolacionesNivel1'] },
+  { id: 'Horarios.Contratos.Motor.SesionColocada->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Contratos.Motor.SesionColocada', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['Colocacion'] },
+  { id: 'Horarios.Contratos.Motor.SesionFijada->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Contratos.Motor.SesionFijada', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['Asignacion'] },
+  { id: 'Horarios.Contratos.Motor.SesionFijada->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Contratos.Motor.SesionFijada', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['Colocacion'] },
+  { id: 'Horarios.Contratos.Motor.SesionFijada->Horarios.Contratos.Motor.ParticipacionCohorte', de: 'Horarios.Contratos.Motor.SesionFijada', a: 'Horarios.Contratos.Motor.ParticipacionCohorte', tipo: 'usa', via: ['Participantes'] },
+  { id: 'Horarios.Contratos.Motor.SesionRequerida->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Contratos.Motor.SesionRequerida', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['Asignacion'] },
+  { id: 'Horarios.Contratos.Motor.SesionRequerida->Horarios.Contratos.Motor.ParticipacionCohorte', de: 'Horarios.Contratos.Motor.SesionRequerida', a: 'Horarios.Contratos.Motor.ParticipacionCohorte', tipo: 'usa', via: ['Participantes'] },
+  { id: 'Horarios.Contratos.Motor.SesionRequerida->Horarios.Contratos.Motor.RecursoRequerido', de: 'Horarios.Contratos.Motor.SesionRequerida', a: 'Horarios.Contratos.Motor.RecursoRequerido', tipo: 'usa', via: ['Recursos'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.Aula', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['ValidarInstantanea'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['Comparar'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.Docente', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ValidarInstantanea'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['ValidarInstantanea'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.ParticipacionCohorte', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.ParticipacionCohorte', tipo: 'usa', via: ['ValidarFijada', 'ValidarParticipantes', 'ValidarSesion'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.SesionFijada', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.SesionFijada', tipo: 'usa', via: ['ValidarCorrespondenciaFijadas', 'ValidarInstantanea', 'ValidarOrdenFijadas'] },
+  { id: 'Horarios.Contratos.Motor.Validaciones->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Contratos.Motor.Validaciones', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['ValidarCorrespondenciaFijadas', 'ValidarInstantanea', 'ValidarOrdenSesiones'] },
   { id: 'Horarios.Contratos.Planes.ActualizarPlanSolicitud->Horarios.Contratos.Planes.TipoPlanHorarioDto', de: 'Horarios.Contratos.Planes.ActualizarPlanSolicitud', a: 'Horarios.Contratos.Planes.TipoPlanHorarioDto', tipo: 'usa', via: ['Tipo'] },
   { id: 'Horarios.Contratos.Planes.CambiarEstadoPlanSolicitud->Horarios.Contratos.Planes.EstadoHorarioDto', de: 'Horarios.Contratos.Planes.CambiarEstadoPlanSolicitud', a: 'Horarios.Contratos.Planes.EstadoHorarioDto', tipo: 'usa', via: ['NuevoEstado'] },
   { id: 'Horarios.Contratos.Planes.CrearPlanSolicitud->Horarios.Contratos.Planes.TipoPlanHorarioDto', de: 'Horarios.Contratos.Planes.CrearPlanSolicitud', a: 'Horarios.Contratos.Planes.TipoPlanHorarioDto', tipo: 'usa', via: ['Tipo'] },
@@ -3450,7 +4338,7 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Infraestructura.Acceso.DatosAlcanceUsuarioPostgres->Horarios.Infraestructura.Supabase.ClienteDatosSupabase', de: 'Horarios.Infraestructura.Acceso.DatosAlcanceUsuarioPostgres', a: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', tipo: 'depende', via: ['supabase'] },
   { id: 'Horarios.Infraestructura.Acceso.RespuestaSesion->Horarios.Infraestructura.Acceso.UsuarioSupabase', de: 'Horarios.Infraestructura.Acceso.RespuestaSesion', a: 'Horarios.Infraestructura.Acceso.UsuarioSupabase', tipo: 'usa', via: ['User'] },
   { id: 'Horarios.Infraestructura.Acceso.UsuarioFila->Horarios.Dominio.Acceso.Usuario', de: 'Horarios.Infraestructura.Acceso.UsuarioFila', a: 'Horarios.Dominio.Acceso.Usuario', tipo: 'usa', via: ['ADominio'] },
-  { id: 'Horarios.Infraestructura.Aulas.AulaFila->Horarios.Dominio.Aulas.Aula', de: 'Horarios.Infraestructura.Aulas.AulaFila', a: 'Horarios.Dominio.Aulas.Aula', tipo: 'usa', via: ['ADominio'] },
+  { id: 'Horarios.Infraestructura.Aulas.AulaFila->Horarios.Contratos.Motor.Aula', de: 'Horarios.Infraestructura.Aulas.AulaFila', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['ADominio'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Aplicacion.Aulas.IDatosAulas', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Aplicacion.Aulas.IDatosAulas', tipo: 'implementa', via: ['IDatosAulas'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Aulas.ActualizarAulaSolicitud', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Aulas.ActualizarAulaSolicitud', tipo: 'usa', via: ['ActualizarAulaAsync'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Aulas.ActualizarDescansoJornadaSolicitud', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Aulas.ActualizarDescansoJornadaSolicitud', tipo: 'usa', via: ['ActualizarDescansoAsync'] },
@@ -3458,11 +4346,11 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Aulas.CrearAulaSolicitud', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Aulas.CrearAulaSolicitud', tipo: 'usa', via: ['CrearAulaAsync'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Aulas.CrearDescansoJornadaSolicitud', tipo: 'usa', via: ['CrearDescansoAsync'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Aulas.CrearJornadaSolicitud', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Aulas.CrearJornadaSolicitud', tipo: 'usa', via: ['CrearJornadaAsync'] },
-  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Dominio.Aulas.Aula', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Dominio.Aulas.Aula', tipo: 'usa', via: ['ActualizarAulaAsync', 'CrearAulaAsync', 'ListarAulasActivasAsync', 'ObtenerAulaAsync'] },
+  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Motor.Aula', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['ActualizarAulaAsync', 'CrearAulaAsync', 'ListarAulasActivasAsync', 'ObtenerAulaAsync'] },
+  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['AClaseDia'] },
+  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['ActualizarJornadaAsync', 'CrearJornadaAsync', 'ListarJornadasActivasAsync', 'ObtenerJornadaAsync'] },
+  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Contratos.Motor.TipoAula', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Contratos.Motor.TipoAula', tipo: 'usa', via: ['AClaseTipo'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Dominio.Aulas.DescansoJornada', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Dominio.Aulas.DescansoJornada', tipo: 'usa', via: ['ActualizarDescansoAsync', 'CrearDescansoAsync', 'ListarDescansosAsync', 'ObtenerDescansoAsync'] },
-  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Dominio.Aulas.DiaSemana', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Dominio.Aulas.DiaSemana', tipo: 'usa', via: ['AClaseDia'] },
-  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Dominio.Aulas.Jornada', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Dominio.Aulas.Jornada', tipo: 'usa', via: ['ActualizarJornadaAsync', 'CrearJornadaAsync', 'ListarJornadasActivasAsync', 'ObtenerJornadaAsync'] },
-  { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Dominio.Aulas.TipoAula', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Dominio.Aulas.TipoAula', tipo: 'usa', via: ['AClaseTipo'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres->Horarios.Infraestructura.Supabase.ClienteDatosSupabase', de: 'Horarios.Infraestructura.Aulas.DatosAulasPostgres', a: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', tipo: 'depende', via: ['supabase'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres->Horarios.Aplicacion.Aulas.IDatosRecursosAulas', de: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres', a: 'Horarios.Aplicacion.Aulas.IDatosRecursosAulas', tipo: 'implementa', via: ['IDatosRecursosAulas'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres->Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', de: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres', a: 'Horarios.Contratos.Aulas.ActualizarRecursoAulaSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
@@ -3473,7 +4361,7 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres->Horarios.Dominio.Aulas.RecursoAula', de: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres', a: 'Horarios.Dominio.Aulas.RecursoAula', tipo: 'usa', via: ['ActualizarAsync', 'CrearAsync', 'ListarAsync'] },
   { id: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres->Horarios.Infraestructura.Supabase.ClienteDatosSupabase', de: 'Horarios.Infraestructura.Aulas.DatosRecursosAulasPostgres', a: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', tipo: 'depende', via: ['supabase'] },
   { id: 'Horarios.Infraestructura.Aulas.DescansoFila->Horarios.Dominio.Aulas.DescansoJornada', de: 'Horarios.Infraestructura.Aulas.DescansoFila', a: 'Horarios.Dominio.Aulas.DescansoJornada', tipo: 'usa', via: ['ADominio'] },
-  { id: 'Horarios.Infraestructura.Aulas.JornadaFila->Horarios.Dominio.Aulas.Jornada', de: 'Horarios.Infraestructura.Aulas.JornadaFila', a: 'Horarios.Dominio.Aulas.Jornada', tipo: 'usa', via: ['ADominio'] },
+  { id: 'Horarios.Infraestructura.Aulas.JornadaFila->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Infraestructura.Aulas.JornadaFila', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['ADominio'] },
   { id: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres->Horarios.Aplicacion.Consultas.IDatosConsultas', de: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres', a: 'Horarios.Aplicacion.Consultas.IDatosConsultas', tipo: 'implementa', via: ['IDatosConsultas'] },
   { id: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres->Horarios.Contratos.Consultas.ConsultarReporteSolicitud', de: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres', a: 'Horarios.Contratos.Consultas.ConsultarReporteSolicitud', tipo: 'usa', via: ['ConsultarReporteAsync'] },
   { id: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres->Horarios.Contratos.Consultas.ReportePreliminarDto', de: 'Horarios.Infraestructura.Consultas.DatosConsultasPostgres', a: 'Horarios.Contratos.Consultas.ReportePreliminarDto', tipo: 'usa', via: ['ConsultarReporteAsync'] },
@@ -3489,17 +4377,40 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'depende', via: ['datosDocentes'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres->Horarios.Contratos.Docentes.DisponibilidadDocenteDto', de: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', a: 'Horarios.Contratos.Docentes.DisponibilidadDocenteDto', tipo: 'usa', via: ['GuardarAsync', 'ObtenerAsync'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres->Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', de: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', a: 'Horarios.Contratos.Docentes.GuardarDisponibilidadDocenteSolicitud', tipo: 'usa', via: ['GuardarAsync'] },
-  { id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ObtenerDocenteAsync'] },
+  { id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres->Horarios.Contratos.Motor.Docente', de: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ObtenerDocenteAsync'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres->Horarios.Infraestructura.Supabase.ClienteDatosSupabase', de: 'Horarios.Infraestructura.Docentes.DatosDisponibilidadDocentePostgres', a: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', tipo: 'depende', via: ['supabase'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Aplicacion.Docentes.IDatosDocentes', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Aplicacion.Docentes.IDatosDocentes', tipo: 'implementa', via: ['IDatosDocentes'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Contratos.Docentes.ActualizarDocenteSolicitud', tipo: 'usa', via: ['ActualizarAsync'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Contratos.Docentes.AutorizarCursoDocenteSolicitud', tipo: 'usa', via: ['AutorizarCursoAsync'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Contratos.Docentes.CrearDocenteSolicitud', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Contratos.Docentes.CrearDocenteSolicitud', tipo: 'usa', via: ['CrearAsync'] },
+  { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Contratos.Motor.Docente', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ActualizarAsync', 'ConsultarActivosAsync', 'ConsultarUnoActivoAsync', 'CrearAsync', 'ListarActivosAsync', 'ListarPorFacultadAsync'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Dominio.Docentes.AsignacionDocenteCurso', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Dominio.Docentes.AsignacionDocenteCurso', tipo: 'usa', via: ['AutorizarCursoAsync', 'ListarCursosAutorizadosAsync'] },
-  { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ActualizarAsync', 'ConsultarActivosAsync', 'ConsultarUnoActivoAsync', 'CrearAsync', 'ListarActivosAsync', 'ListarPorFacultadAsync'] },
   { id: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres->Horarios.Infraestructura.Supabase.ClienteDatosSupabase', de: 'Horarios.Infraestructura.Docentes.DatosDocentesPostgres', a: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', tipo: 'depende', via: ['supabase'] },
-  { id: 'Horarios.Infraestructura.Docentes.DocenteFila->Horarios.Dominio.Docentes.Docente', de: 'Horarios.Infraestructura.Docentes.DocenteFila', a: 'Horarios.Dominio.Docentes.Docente', tipo: 'usa', via: ['ADominio'] },
+  { id: 'Horarios.Infraestructura.Docentes.DocenteFila->Horarios.Contratos.Motor.Docente', de: 'Horarios.Infraestructura.Docentes.DocenteFila', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['ADominio'] },
   { id: 'Horarios.Infraestructura.Docentes.DocenteFila->Horarios.Infraestructura.Docentes.PertenenciaFacultadFila', de: 'Horarios.Infraestructura.Docentes.DocenteFila', a: 'Horarios.Infraestructura.Docentes.PertenenciaFacultadFila', tipo: 'usa', via: ['DocenteFacultades'] },
+  { id: 'Horarios.Infraestructura.Motor.FilaFijada->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Infraestructura.Motor.FilaFijada', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['Dia'] },
+  { id: 'Horarios.Infraestructura.Motor.FilaFijada->Horarios.Contratos.Motor.ParticipacionCohorte', de: 'Horarios.Infraestructura.Motor.FilaFijada', a: 'Horarios.Contratos.Motor.ParticipacionCohorte', tipo: 'usa', via: ['Participacion'] },
+  { id: 'Horarios.Infraestructura.Motor.FilaRequisito->Horarios.Contratos.Motor.RecursoRequerido', de: 'Horarios.Infraestructura.Motor.FilaRequisito', a: 'Horarios.Contratos.Motor.RecursoRequerido', tipo: 'usa', via: ['Recursos'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Aplicacion.Motor.IPreparadorInstantaneaMotor', tipo: 'implementa', via: ['IPreparadorInstantaneaMotor'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Aplicacion.Planes.AlcancePlan', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Aplicacion.Planes.AlcancePlan', tipo: 'usa', via: ['AgregarAlcance', 'CargarDocentesAsync', 'CargarFilasFijadaAsync', 'CargarFilasRequisitoAsync', 'CargarJornadasAsync', 'CargarMembresiasAgrupacionAsync'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.Aula', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['CargarAulasAsync', 'Identificadores'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.CatalogoNombres', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.CatalogoNombres', tipo: 'usa', via: ['CargarNombresAsync'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['ADia'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.Docente', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['CargarDocentesAsync', 'Identificadores'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['PrepararAsync'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['CargarJornadasAsync', 'Identificadores'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.RequisitoCargado', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.RequisitoCargado', tipo: 'usa', via: ['CargarEquivalenciasAsync', 'MapearRequisitos'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.SesionFijada', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.SesionFijada', tipo: 'usa', via: ['MapearFijadas'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Identificadores'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Dominio.Planes.PlanHorario', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Dominio.Planes.PlanHorario', tipo: 'usa', via: ['PrepararAsync'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Infraestructura.Motor.FilaFijada', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Infraestructura.Motor.FilaFijada', tipo: 'usa', via: ['CargarFilasFijadaAsync', 'MapearFijadas'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Infraestructura.Motor.FilaRequisito', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Infraestructura.Motor.FilaRequisito', tipo: 'usa', via: ['CargarFilasRequisitoAsync', 'MapearRequisitos'] },
+  { id: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres->Horarios.Infraestructura.Motor.MembresiaAgrupacion', de: 'Horarios.Infraestructura.Motor.PreparadorInstantaneaMotorPostgres', a: 'Horarios.Infraestructura.Motor.MembresiaAgrupacion', tipo: 'usa', via: ['CargarMembresiasAgrupacionAsync', 'MapearRequisitos'] },
+  { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Aplicacion.Motor.IDatosGeneraciones', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Aplicacion.Motor.IDatosGeneraciones', tipo: 'implementa', via: ['IDatosGeneraciones'] },
+  { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Aplicacion.Motor.IDatosHorarioGenerado', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Aplicacion.Motor.IDatosHorarioGenerado', tipo: 'implementa', via: ['IDatosHorarioGenerado'] },
+  { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync', 'IniciarAsync'] },
+  { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync', 'CrearMensajes'] },
+  { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Contratos.Motor.ResultadoVerificacion', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Contratos.Motor.ResultadoVerificacion', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync', 'CrearMensajes'] },
   { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Contratos.Planes.EstadoGeneracionDto', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Contratos.Planes.EstadoGeneracionDto', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync'] },
   { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Contratos.Planes.GeneracionHorarioDto', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Contratos.Planes.GeneracionHorarioDto', tipo: 'usa', via: ['CerrarYGuardarHorarioAsync', 'IniciarAsync', 'ListarPorPlanAsync'] },
   { id: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres->Horarios.Contratos.Planes.HorarioGeneradoDto', de: 'Horarios.Infraestructura.Planes.DatosGeneracionesPostgres', a: 'Horarios.Contratos.Planes.HorarioGeneradoDto', tipo: 'usa', via: ['ConsultarAsync'] },
@@ -3516,6 +4427,10 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres->Horarios.Aplicacion.Planes.IDatosRevisionPlanes', de: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres', a: 'Horarios.Aplicacion.Planes.IDatosRevisionPlanes', tipo: 'implementa', via: ['IDatosRevisionPlanes'] },
   { id: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres->Horarios.Contratos.Planes.ConteosRevisionPlan', de: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres', a: 'Horarios.Contratos.Planes.ConteosRevisionPlan', tipo: 'usa', via: ['ObtenerConteosAsync'] },
   { id: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres->Horarios.Infraestructura.Supabase.ClienteDatosSupabase', de: 'Horarios.Infraestructura.Planes.DatosRevisionPlanesPostgres', a: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', tipo: 'depende', via: ['supabase'] },
+  { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'depende', via: ['instantanea'] },
+  { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'depende', via: ['resultado'] },
+  { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Contratos.Motor.ResultadoVerificacion', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Contratos.Motor.ResultadoVerificacion', tipo: 'depende', via: ['verificacion'] },
+  { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['RequisitoUnico'] },
   { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Infraestructura.Planes.ConflictoAGuardar', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Infraestructura.Planes.ConflictoAGuardar', tipo: 'usa', via: ['Conflictos'] },
   { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Infraestructura.Planes.PendienteAGuardar', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Infraestructura.Planes.PendienteAGuardar', tipo: 'usa', via: ['Pendientes'] },
   { id: 'Horarios.Infraestructura.Planes.HorarioAGuardar->Horarios.Infraestructura.Planes.SesionAGuardar', de: 'Horarios.Infraestructura.Planes.HorarioAGuardar', a: 'Horarios.Infraestructura.Planes.SesionAGuardar', tipo: 'usa', via: ['Sesiones'] },
@@ -3524,8 +4439,88 @@ export const RELACIONES: Relacion[] = [
   { id: 'Horarios.Infraestructura.Planes.PlanFila->Horarios.Infraestructura.Planes.JornadaAlcanceFila', de: 'Horarios.Infraestructura.Planes.PlanFila', a: 'Horarios.Infraestructura.Planes.JornadaAlcanceFila', tipo: 'usa', via: ['PlanJornadas'] },
   { id: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase->Horarios.Infraestructura.Supabase.IContextoTokenSupabase', de: 'Horarios.Infraestructura.Supabase.ClienteDatosSupabase', a: 'Horarios.Infraestructura.Supabase.IContextoTokenSupabase', tipo: 'depende', via: ['contextoToken'] },
   { id: 'Horarios.Infraestructura.Supabase.ContextoTokenSupabase->Horarios.Infraestructura.Supabase.IContextoTokenSupabase', de: 'Horarios.Infraestructura.Supabase.ContextoTokenSupabase', a: 'Horarios.Infraestructura.Supabase.IContextoTokenSupabase', tipo: 'implementa', via: ['IContextoTokenSupabase'] },
+  { id: 'Horarios.Motor.Construccion.AgendaDeCohortes->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Construccion.AgendaDeCohortes', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['Anotar', 'Borrar', 'ClaseDe', 'DistanciaMasCorta'] },
+  { id: 'Horarios.Motor.Construccion.AgendaDeCohortes->Horarios.Contratos.Motor.DiaSemana', de: 'Horarios.Motor.Construccion.AgendaDeCohortes', a: 'Horarios.Contratos.Motor.DiaSemana', tipo: 'usa', via: ['ClasesDelDia', 'TieneElCursoEseDia'] },
+  { id: 'Horarios.Motor.Construccion.AgendaDeCohortes->Horarios.Contratos.Motor.ParticipacionCohorte', de: 'Horarios.Motor.Construccion.AgendaDeCohortes', a: 'Horarios.Contratos.Motor.ParticipacionCohorte', tipo: 'usa', via: ['ClaseDe'] },
+  { id: 'Horarios.Motor.Construccion.AgendaDeCohortes->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Construccion.AgendaDeCohortes', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Anotar', 'Borrar', 'ClaseDe', 'ClasesDelDia', 'DistanciaMasCorta', 'TieneElCursoEseDia'] },
+  { id: 'Horarios.Motor.Construccion.AgendaDeCohortes->Horarios.Motor.Construccion.Clase', de: 'Horarios.Motor.Construccion.AgendaDeCohortes', a: 'Horarios.Motor.Construccion.Clase', tipo: 'usa', via: ['ClaseDe'] },
+  { id: 'Horarios.Motor.Construccion.AsignacionPrecalculada->Horarios.Contratos.Motor.Aula', de: 'Horarios.Motor.Construccion.AsignacionPrecalculada', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['AulasFactibles'] },
+  { id: 'Horarios.Motor.Construccion.AsignacionPrecalculada->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Motor.Construccion.AsignacionPrecalculada', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['Asignacion'] },
+  { id: 'Horarios.Motor.Construccion.AsignacionPrecalculada->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Construccion.AsignacionPrecalculada', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['ColocacionesFactibles'] },
+  { id: 'Horarios.Motor.Construccion.AsignacionPrecalculada->Horarios.Contratos.Motor.Docente', de: 'Horarios.Motor.Construccion.AsignacionPrecalculada', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['DocentesFactibles'] },
+  { id: 'Horarios.Motor.Construccion.AsignacionPrecalculada->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Construccion.AsignacionPrecalculada', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Sesiones'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.AsignacionPendiente', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.AsignacionPendiente', tipo: 'usa', via: ['Pendientes'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.Aula', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['ColocarUna', 'VerificarFila', 'VerificarSolape'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.CatalogoNombres', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.CatalogoNombres', tipo: 'usa', via: ['Culpables', 'Motivo'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['CohortesLibres'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.Diagnostico', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.Diagnostico', tipo: 'usa', via: ['Diagnosticos'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.Docente', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['Candidatos', 'ColocarUna', 'VerificarContinuidadYCarga', 'VerificarFila', 'VerificarSolape'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'depende', via: ['instantanea'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['Colocar'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.SesionColocada', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.SesionColocada', tipo: 'usa', via: ['ColocarUna', 'Emitidas', 'Liberar', 'Ocupar'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.SesionFijada', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.SesionFijada', tipo: 'usa', via: ['Requerida', 'VerificarContinuidadYCarga', 'VerificarFila', 'VerificarSolape'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['CohortesLibres', 'ColocarUna', 'Liberar', 'Ocupar', 'Requerida', 'VerificarFila'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Motor.Construccion.AsignacionPrecalculada', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Motor.Construccion.AsignacionPrecalculada', tipo: 'usa', via: ['Anotar', 'Atender', 'Candidatos', 'ColocarUna', 'Motivo', 'NoAtendida'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Motor.Construccion.ContadorRechazos', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Motor.Construccion.ContadorRechazos', tipo: 'usa', via: ['ColocarUna', 'Motivo'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Motor.Construccion.Precalculo', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Motor.Construccion.Precalculo', tipo: 'depende', via: ['precalculo'] },
+  { id: 'Horarios.Motor.Construccion.ColocadorVoraz->Horarios.Motor.Tiempo.RejillaTiempo', de: 'Horarios.Motor.Construccion.ColocadorVoraz', a: 'Horarios.Motor.Tiempo.RejillaTiempo', tipo: 'depende', via: ['rejilla'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Contratos.Motor.Aula', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['Aulas'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['Colocaciones'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Contratos.Motor.Docente', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['Docentes', 'Ocupacion'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Alumnos', 'Aulas', 'Colocaciones'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Motor.Construccion.AgendaDeCohortes', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Motor.Construccion.AgendaDeCohortes', tipo: 'usa', via: ['Colocaciones'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Motor.Construccion.AsignacionPrecalculada', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Motor.Construccion.AsignacionPrecalculada', tipo: 'usa', via: ['Asignaciones', 'Dificultad'] },
+  { id: 'Horarios.Motor.Construccion.OrdenDeTrabajo->Horarios.Motor.Ocupacion.RegistroCarga', de: 'Horarios.Motor.Construccion.OrdenDeTrabajo', a: 'Horarios.Motor.Ocupacion.RegistroCarga', tipo: 'usa', via: ['Docentes', 'Ocupacion'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.Aula', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['Imposibilidad', 'MotivoDeAulas', 'MotivoDeRecursos'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.CatalogoNombres', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.CatalogoNombres', tipo: 'usa', via: ['Describir', 'MensajeSinDocente', 'MotivoDeAulas', 'MotivoDeColocaciones', 'MotivoDeRecursos', 'Nombrar'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['Imposibilidad', 'MensajeSinDocente'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.Diagnostico', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.Diagnostico', tipo: 'usa', via: ['Calcular', 'Diagnosticos', 'SemestresQueNoCaben'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.Docente', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['Imposibilidad', 'MensajeSinDocente', 'Nombrar'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'depende', via: ['instantanea'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'usa', via: ['Calcular', 'Imposibilidad', 'MotivoDeColocaciones', 'SemestresQueNoCaben', 'SlotsDeLaJornada'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Calcular', 'Describir', 'Imposibilidad', 'MensajeSinDocente', 'MotivoDeAulas', 'MotivoDeColocaciones'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Motor.Construccion.AsignacionPrecalculada', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Motor.Construccion.AsignacionPrecalculada', tipo: 'usa', via: ['Asignaciones', 'Calcular'] },
+  { id: 'Horarios.Motor.Construccion.Precalculo->Horarios.Motor.Tiempo.RejillaTiempo', de: 'Horarios.Motor.Construccion.Precalculo', a: 'Horarios.Motor.Tiempo.RejillaTiempo', tipo: 'depende', via: ['rejilla'] },
+  { id: 'Horarios.Motor.Descripciones->Horarios.Contratos.Motor.CatalogoNombres', de: 'Horarios.Motor.Descripciones', a: 'Horarios.Contratos.Motor.CatalogoNombres', tipo: 'usa', via: ['Asignacion', 'Cohortes'] },
+  { id: 'Horarios.Motor.Descripciones->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Descripciones', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Asignacion', 'Cohortes'] },
+  { id: 'Horarios.Motor.Expansion.ExpansorAsignaciones->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Motor.Expansion.ExpansorAsignaciones', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['ClaveDe', 'Culpable', 'Discrepan', 'ExpandirGrupo'] },
+  { id: 'Horarios.Motor.Expansion.ExpansorAsignaciones->Horarios.Contratos.Motor.RequisitoCargado', de: 'Horarios.Motor.Expansion.ExpansorAsignaciones', a: 'Horarios.Contratos.Motor.RequisitoCargado', tipo: 'usa', via: ['CantidadDeSesiones', 'ClaveDe', 'Discrepan', 'Expandir', 'ExpandirGrupo'] },
+  { id: 'Horarios.Motor.Expansion.ExpansorAsignaciones->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Expansion.ExpansorAsignaciones', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Expandir', 'ExpandirGrupo'] },
+  { id: 'Horarios.Motor.Expansion.ReconciliadorFijadas->Horarios.Contratos.Motor.SesionFijada', de: 'Horarios.Motor.Expansion.ReconciliadorFijadas', a: 'Horarios.Contratos.Motor.SesionFijada', tipo: 'usa', via: ['PrimeraDiferencia'] },
+  { id: 'Horarios.Motor.Expansion.ReconciliadorFijadas->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Expansion.ReconciliadorFijadas', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['PrimeraDiferencia'] },
+  { id: 'Horarios.Motor.MotorHorarios->Horarios.Contratos.Motor.IMotorHorarios', de: 'Horarios.Motor.MotorHorarios', a: 'Horarios.Contratos.Motor.IMotorHorarios', tipo: 'implementa', via: ['IMotorHorarios'] },
+  { id: 'Horarios.Motor.MotorHorarios->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Motor.MotorHorarios', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['Ejecutar'] },
+  { id: 'Horarios.Motor.MotorHorarios->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Motor.MotorHorarios', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['Ejecutar'] },
+  { id: 'Horarios.Motor.Ocupacion.RegistroCarga->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Motor.Ocupacion.RegistroCarga', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['Anotada', 'Anotar'] },
+  { id: 'Horarios.Motor.Ocupacion.RegistroContinuidad->Horarios.Contratos.Motor.ClaveAsignacion', de: 'Horarios.Motor.Ocupacion.RegistroContinuidad', a: 'Horarios.Contratos.Motor.ClaveAsignacion', tipo: 'usa', via: ['DocenteDe', 'Elegir'] },
+  { id: 'Horarios.Motor.Ocupacion.RegistroOcupacion->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Ocupacion.RegistroOcupacion', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['Liberar', 'Libre', 'Ocupar'] },
+  { id: 'Horarios.Motor.Ocupacion.RegistroOcupacion->Horarios.Motor.Tiempo.RejillaTiempo', de: 'Horarios.Motor.Ocupacion.RegistroOcupacion', a: 'Horarios.Motor.Tiempo.RejillaTiempo', tipo: 'depende', via: ['rejilla'] },
+  { id: 'Horarios.Motor.Reglas.ReglasAula->Horarios.Contratos.Motor.Aula', de: 'Horarios.Motor.Reglas.ReglasAula', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['AulaAdmiteLaboratorio', 'AulaTieneCapacidad', 'AulaTieneRecursos', 'AulaTieneTipoDeLaboratorio'] },
+  { id: 'Horarios.Motor.Reglas.ReglasAula->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Reglas.ReglasAula', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['AulaAdmiteLaboratorio', 'AulaTieneCapacidad', 'AulaTieneRecursos', 'AulaTieneTipoDeLaboratorio'] },
+  { id: 'Horarios.Motor.Reglas.ReglasCohorte->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Reglas.ReglasCohorte', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['CohortesEnLaJornadaDeLaSesion', 'CursoVisibleEsElDeLaSesion', 'CursoVisibleUnicoPorCohorte'] },
+  { id: 'Horarios.Motor.Reglas.ReglasDocente->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Reglas.ReglasDocente', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['DocenteDisponible'] },
+  { id: 'Horarios.Motor.Reglas.ReglasDocente->Horarios.Contratos.Motor.Docente', de: 'Horarios.Motor.Reglas.ReglasDocente', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['DocenteAutorizado', 'DocenteDisponible'] },
+  { id: 'Horarios.Motor.Reglas.ReglasDocente->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Motor.Reglas.ReglasDocente', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['DocenteAutorizado', 'Equivalentes'] },
+  { id: 'Horarios.Motor.Reglas.ReglasDocente->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Reglas.ReglasDocente', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['DocenteAutorizado', 'DocenteDisponible'] },
+  { id: 'Horarios.Motor.Tiempo.RejillaTiempo->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Tiempo.RejillaTiempo', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['ColocacionesDe', 'EsValida'] },
+  { id: 'Horarios.Motor.Tiempo.RejillaTiempo->Horarios.Contratos.Motor.Jornada', de: 'Horarios.Motor.Tiempo.RejillaTiempo', a: 'Horarios.Contratos.Motor.Jornada', tipo: 'depende', via: ['jornadas'] },
+  { id: 'Horarios.Motor.Verificacion.SesionResultado->Horarios.Contratos.Motor.SesionColocada', de: 'Horarios.Motor.Verificacion.SesionResultado', a: 'Horarios.Contratos.Motor.SesionColocada', tipo: 'usa', via: ['Colocada'] },
+  { id: 'Horarios.Motor.Verificacion.SesionResultado->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Verificacion.SesionResultado', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['Requerida'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Aula', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Aula', tipo: 'usa', via: ['VerificarFila'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.CatalogoNombres', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.CatalogoNombres', tipo: 'usa', via: ['Choque', 'VerificarCarga', 'VerificarColisiones', 'VerificarContinuidad'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Colocacion', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Colocacion', tipo: 'usa', via: ['EsColocacionValida'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Diagnostico', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Diagnostico', tipo: 'usa', via: ['VerificarCobertura'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Docente', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Docente', tipo: 'usa', via: ['VerificarCarga', 'VerificarFila'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.IVerificadorHorario', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.IVerificadorHorario', tipo: 'implementa', via: ['IVerificadorHorario'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Instantanea', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Instantanea', tipo: 'usa', via: ['Verificar', 'VerificarAreasComunes', 'VerificarCobertura', 'VerificarEstructura', 'VerificarFila'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Resultado', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Resultado', tipo: 'usa', via: ['Verificar', 'VerificarEstructura'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.ResultadoVerificacion', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.ResultadoVerificacion', tipo: 'usa', via: ['Verificar'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.SesionRequerida', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.SesionRequerida', tipo: 'usa', via: ['EsColocacionValida'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Contratos.Motor.Violacion', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Contratos.Motor.Violacion', tipo: 'usa', via: ['Agregar', 'Ordenar', 'VerificarAreasComunes', 'VerificarCarga', 'VerificarColisiones', 'VerificarContinuidad'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Motor.Tiempo.RejillaTiempo', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Motor.Tiempo.RejillaTiempo', tipo: 'usa', via: ['EsColocacionValida', 'SeSolapan', 'VerificarColisiones', 'VerificarFila'] },
+  { id: 'Horarios.Motor.Verificacion.VerificadorHorario->Horarios.Motor.Verificacion.SesionResultado', de: 'Horarios.Motor.Verificacion.VerificadorHorario', a: 'Horarios.Motor.Verificacion.SesionResultado', tipo: 'usa', via: ['Choque', 'SeSolapan', 'VerificarAreasComunes', 'VerificarCarga', 'VerificarCobertura', 'VerificarColisiones'] },
 ];
 
-export const LIENZO = { ancho: 7050.1, alto: 3755.6 };
-export const TOTAL_MIEMBROS = 1239;
-export const TOTAL_RELACIONES = 436;
+export const LIENZO = { ancho: 8693.7, alto: 4060.6 };
+export const TOTAL_MIEMBROS = 1551;
+export const TOTAL_RELACIONES = 645;
