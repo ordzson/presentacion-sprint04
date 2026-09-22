@@ -20,7 +20,8 @@ DOMINIOS = {
         "curso_comun", "curso_comun_cursos", "cohortes", "cohorte_periodos",
         "periodos_academicos", "jornadas", "jornada_descansos", "carrera_jornadas",
         "agrupaciones_area_comun", "agrupacion_area_comun_cursos",
-        "agrupacion_area_comun_cohortes",
+        "agrupacion_area_comun_cohortes", "jornada_extraordinaria_periodos",
+        "jornada_extraordinaria_docentes",
     ],
     "infraestructura": ["aulas", "recursos", "aula_recursos", "curso_recursos_requeridos"],
     "docentes": [
@@ -41,7 +42,7 @@ DOMINIOS = {
     "importacion": ["importaciones", "importacion_errores", "plantillas_importacion"],
     "seguridad": ["usuarios", "roles", "permisos_acceso", "rol_permisos", "usuario_roles",
                   "usuario_facultades"],
-    "operacion": ["notificaciones", "plantillas_notificacion", "auditoria", "reportes"],
+    "operacion": ["notificaciones", "notificacion_destinatarios", "plantillas_notificacion", "auditoria", "reportes"],
 }
 DOM_DE = {t: d for d, ts in DOMINIOS.items() for t in ts}
 

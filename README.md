@@ -5,7 +5,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ## Información de base de datos
 
 El diagrama y el catálogo usan la misma instantánea: `docs/database.sql`, exportada el
-2026-09-09 desde `supabase_db_horarios`, la base local de `HORARIOS/Horarios-develop`.
+2026-09-22 desde `supabase_db_horarios`, la base local de `HORARIOS/Horarios-develop`.
 Contiene únicamente la estructura del esquema `horarios`, sin filas, propietarios ni
 permisos GRANT. Refleja la base local consultada; no acredita el estado del servidor remoto.
 

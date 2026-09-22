@@ -22,26 +22,26 @@ export const CAPTURAS: Captura[] = [
     ruta: '/',
     titulo: 'Inicio · recorrido de 6 pasos',
     resumen:
-      'La portada no es un panel de métricas: es una guía de inicio. Seis tarjetas numeradas en el mismo orden que el menú lateral.',
+      'La portada no es un panel de métricas: es una guía de inicio. Seis tarjetas numeradas en el mismo orden que el menú lateral, con saludo y fecha arriba.',
     imagen: 'capturas/inicio.png',
     puntos: [
-      'Bloque .hero-panel con degradado propio y la pregunta directa «¿Qué necesitas hacer?».',
-      '.workflow-grid de 6 columnas; la flecha entre tarjetas es un ::after, no una imagen.',
-      'Menú lateral con los mismos números 1–6, así el usuario nunca pierde en qué paso está.',
+      'El menú lateral agrupa «Preparar datos» (1–5, con 4b para jornadas extraordinarias) y «Generar y revisar» (6–8).',
+      'Cada tarjeta termina en un enlace «Ir a …»: la portada es el índice del proceso.',
+      'Arriba a la derecha, la campana de notificaciones con el contador de no leídas.',
     ],
-    archivo: 'Components/Pages/Home.razor',
+    archivo: 'Components/Pages/Home.razor · Layout/NavMenu.razor',
   },
   {
     id: 'periodos',
     ruta: '/periodos',
     titulo: 'Períodos · paso 1',
     resumen:
-      'Primera pantalla del flujo. Formulario y tabla conviven en la misma tarjeta para que crear y revisar sea un solo movimiento.',
+      'Primera pantalla del flujo. Tres partes en pestañas: el período, las cohortes que lo cursan y los cursos que se programarán.',
     imagen: 'capturas/periodos.png',
     puntos: [
-      'Patrón fijo de encabezado: .eyebrow («Configuración · paso 1») + h1 + una línea de explicación.',
-      'Sub-navegación en píldoras (.section-tabs) para las tres partes del paso.',
-      'Contador .status-chip («1 períodos») y estado «Borrador» como chip, no como texto suelto.',
+      'Patrón fijo de encabezado: eyebrow («Configuración · paso 1») + h1 + una línea de explicación + «Continuar a …».',
+      'Contador en chip («7 períodos») y estado como chip, no como texto suelto.',
+      'La tercera pestaña enseña qué cursos saldrán del pensum × semestre antes de generar nada.',
     ],
     archivo: 'Components/Pages/Periodos.razor',
   },
@@ -50,12 +50,12 @@ export const CAPTURAS: Captura[] = [
     ruta: '/aulas',
     titulo: 'Jornadas y espacios · paso 2',
     resumen:
-      'El caso más difícil de la interfaz: definir una jornada es aritmética de horas. Se resolvió con una vista previa que se recalcula mientras se escribe.',
+      'Definir una jornada es aritmética de horas. Se resolvió con una vista previa que se recalcula mientras se escribe, y ahora con un tipo: regular o extraordinaria.',
     imagen: 'capturas/aulas.png',
     puntos: [
-      '.preview-panel oscuro y sticky: muestra los períodos ya calculados antes de guardar nada.',
-      'El receso aparece resaltado en ámbar con borde punteado (.break-row) porque desplaza las horas siguientes.',
-      'Días activos como .choice-pill; el estado marcado se pinta con :has(input:checked), sin JavaScript.',
+      'Panel oscuro de vista previa: muestra los períodos ya calculados antes de guardar nada.',
+      'El receso aparece resaltado con borde punteado porque desplaza las horas siguientes.',
+      '«Tipo de jornada»: una extraordinaria cuelga de una regular y debe tener bloques de la misma duración.',
     ],
     archivo: 'Components/Pages/Aulas.razor',
   },
@@ -64,41 +64,98 @@ export const CAPTURAS: Captura[] = [
     ruta: '/academia',
     titulo: 'Academia · paso 3',
     resumen:
-      'Siete entidades académicas en una sola página. Las pestañas propias evitan siete rutas distintas y mantienen el contexto.',
+      'Siete entidades académicas en una sola página, en pestañas numeradas: facultades, carreras, pensums, malla, cursos comunes, cohortes y áreas comunes.',
     imagen: 'capturas/academia.png',
     puntos: [
-      '.academia-tab con el conteo real dentro de cada pestaña (Cursos 607) para dar escala.',
-      'Alta a la izquierda, listado buscable a la derecha: el mismo esquema en todas las entidades.',
-      'La tabla scrollea dentro de la tarjeta (.academia-scroll) con encabezado sticky; la página no crece.',
+      'Alta a la izquierda, listado buscable y paginado a la derecha: el mismo esquema en todas las entidades.',
+      'Paginador reutilizable (Mostrar 10 por página · Anterior · Siguiente) en vez de tablas infinitas.',
+      'El código interno se genera solo: la persona escribe nombres, no claves.',
     ],
-    archivo: 'Components/Pages/Academia.razor · Academia.razor.css',
+    archivo: 'Components/Pages/Academia.razor · Shared/Paginador.razor',
   },
   {
     id: 'docentes',
     ruta: '/docentes',
     titulo: 'Docentes · paso 4',
     resumen:
-      'CRUD sobre 55 registros. La jerarquía de acciones se comunica solo con color: azul crea, gris edita, rojo da de baja.',
+      'El alta del docente crea también su cuenta: correo y contraseña inicial, que tendrá que cambiar en su primer ingreso.',
     imagen: 'capturas/docentes.png',
     puntos: [
-      'Buscador reutilizable <BarraBusqueda /> con icono SVG en línea y botón de limpiar.',
-      'Acción de continuidad arriba a la derecha: «Configurar disponibilidad →» encadena con el paso 5.',
+      'La carga máxima se explica en la propia tarjeta: es un límite obligatorio para el motor.',
+      'Facultades opcionales: sin marcar ninguna, el docente queda compartido entre todas.',
+      'Acción de continuidad arriba a la derecha: «Configurar disponibilidad →».',
     ],
-    archivo: 'Components/Pages/Docentes.razor · Shared/BarraBusqueda.razor',
+    archivo: 'Components/Pages/Docentes.razor',
+  },
+  {
+    id: 'jornadas-extraordinarias',
+    ruta: '/jornadas-extraordinarias',
+    titulo: 'Jornadas extraordinarias · paso 4b',
+    resumen:
+      'Pantalla nueva. Por período, se elige contra qué horario regular corre en paralelo la jornada extraordinaria y qué docentes dan clase en ella.',
+    imagen: 'capturas/jornadas-extraordinarias.png',
+    puntos: [
+      'Es un «4b» y no un paso 5: no cambia el orden del recorrido, se intercala.',
+      'Los bloques en que el docente ya da clase en el horario de referencia salen «Ocupado» en su disponibilidad.',
+      'La base impide que un plan mezcle jornadas regulares y extraordinarias.',
+    ],
+    archivo: 'Components/Pages/JornadasExtraordinarias.razor',
   },
   {
     id: 'disponibilidad',
     ruta: '/docentes/disponibilidad',
     titulo: 'Disponibilidad · paso 5',
     resumen:
-      'Una matriz de días por períodos. Es la pantalla más usada y por eso es la más simple: tres selectores y casillas.',
+      'Primero el contexto —docente, período y jornada— y solo entonces la matriz. Los tres selectores son combobox con búsqueda.',
     imagen: 'capturas/disponibilidad.png',
     puntos: [
-      '.availability-table con accent-color: #1b6ec2 y casillas de 1.25rem para poder marcar rápido.',
-      'La cabecera lleva la hora real de cada período (08:00–08:45), no solo su número.',
-      'Contador vivo «12 períodos marcados» + atajos «Marcar todo» / «Limpiar selección».',
+      'ComboboxBuscable: se escribe para filtrar docentes, períodos o jornadas en vez de recorrer un select largo.',
+      'La matriz muestra solo los períodos reales de esa jornada, con su hora.',
+      'El docente también la llena desde su propia cuenta, en /docente/disponibilidad.',
     ],
-    archivo: 'Components/Pages/DisponibilidadDocente.razor',
+    archivo: 'Components/Pages/DisponibilidadDocente.razor · Shared/ComboboxBuscable.razor',
+  },
+  {
+    id: 'planes',
+    ruta: '/planes',
+    titulo: 'Planes · la rejilla generada',
+    resumen:
+      'El horario ya no se revisa en una lista: cada carrera y semestre es una rejilla de días por slots, con el receso como fila propia y lo que no se colocó debajo, con su motivo.',
+    imagen: 'capturas/planes.png',
+    puntos: [
+      'Cada clase lleva curso, docente, aula y, si es de área común, cuántas cohortes la cursan juntas.',
+      'Chips por grupo: clases, cursos completos y cursos sin colocar.',
+      'La fila «Sin colocar» cita el motivo del motor en palabras, con nombres y horas.',
+    ],
+    archivo: 'Components/Pages/Planes.razor · Shared/RejillaHorario.razor',
+  },
+  {
+    id: 'editor',
+    ruta: '/planes · Editar clase',
+    titulo: 'Planes · edición manual',
+    resumen:
+      'Pulsar una clase abre el editor: se cambia día, hora, aula o docente, se fijan esas casillas y el motor reacomoda el resto. Nada se guarda hasta aplicar la propuesta.',
+    imagen: 'capturas/editor.png',
+    puntos: [
+      '<dialog> nativo con un módulo JS pequeño (EditorSesionModal.razor.js) para abrirlo, cerrarlo y devolver el foco.',
+      'A la derecha, «Estas casillas quedarán fijas»: el alcance del cambio se ve antes de buscar.',
+      'En un área común avisa que el cambio vale para todas sus cohortes y carreras.',
+    ],
+    archivo: 'Components/Shared/EditorSesionModal.razor · PropuestaEdicion.razor',
+  },
+  {
+    id: 'notificaciones',
+    ruta: '/notificaciones',
+    titulo: 'Notificaciones · paso 8',
+    resumen:
+      'Pantalla nueva. La coordinación escribe un mensaje con prioridad y elige docentes, o todos los activos con cuenta; cada docente lo recibe en su bandeja.',
+    imagen: 'capturas/notificaciones.png',
+    puntos: [
+      'El contenido se guarda una vez; el estado leído o descartado vive por destinatario.',
+      'Contador 0/5000 y buscador de docentes por nombre o correo.',
+      'Debajo, el historial con cuántos lo leyeron, cuántos no y cuántos lo descartaron.',
+    ],
+    archivo: 'Components/Pages/Notificaciones.razor · Shared/CampanaNotificaciones.razor',
   },
 ];
 
@@ -135,16 +192,17 @@ export const CAPAS_CSS: Capa[] = [
     detalles: [
       'Solo la hoja de estilos: el bundle JS de Bootstrap no se carga.',
       'No hay ni un solo atributo data-bs-* en el proyecto.',
+      'Al lado, SweetAlert2 para las alertas y confirmaciones, servido desde wwwroot/lib, sin CDN.',
       'Clases que sí se usan: container-fluid, row/col, table, form-control, form-select, btn, alert, d-flex, gap-*, mb-*.',
     ],
   },
   {
     titulo: 'Capa propia',
-    fuente: 'wwwroot/app.css · 129 líneas',
+    fuente: 'wwwroot/app.css · 2 270 líneas',
     texto:
-      'Encima de Bootstrap va una hoja corta con las piezas que Bootstrap no trae y que el flujo de horarios necesita repetir en todas las pantallas.',
+      'Encima de Bootstrap va una hoja propia con las piezas que Bootstrap no trae y que el flujo de horarios necesita repetir en todas las pantallas.',
     detalles: [
-      'Tipografía Inter con respaldo del sistema y escala propia de h1/h2/h3.',
+      'Tipografía Inter con respaldo del sistema y escala propia de h1/h2/h3. Creció con la rejilla del horario, los combobox, la paginación y el inicio docente.',
       '.workspace-card, .step-number, .status-chip, .preview-panel, .workflow-step, .choice-pill, .metric-card, .empty-state, .search-box, .availability-table.',
       'Se redefinen .btn, .form-control y .form-label para ganar altura de toque y peso tipográfico.',
     ],
@@ -158,6 +216,7 @@ export const CAPAS_CSS: Capa[] = [
       'MainLayout.razor.css: rejilla de página, barra superior y franja de error.',
       'NavMenu.razor.css: menú lateral, marca y estados del enlace activo.',
       'Academia.razor.css: pestañas y áreas con scroll propio de esa página.',
+      'RejillaHorario, EditorSesionModal, PropuestaEdicion, CampanaNotificaciones: 12 hojas aisladas, 989 líneas.',
       'Para cruzar el límite del componente se usa ::deep (por ejemplo, en los NavLink).',
     ],
   },
@@ -172,22 +231,22 @@ export const DECISIONES: Decision[] = [
   {
     titulo: 'La interfaz enseña el proceso',
     texto:
-      'Generar un horario tiene un orden obligatorio. Por eso todo está numerado del 1 al 6: el menú, la portada, los encabezados y los botones de «continuar a…». La navegación es el manual de uso.',
+      'Generar un horario tiene un orden obligatorio. Por eso todo está numerado: 1 a 5 para preparar datos —con el 4b de jornadas extraordinarias— y 6 a 8 para generar, consultar y avisar. El menú, la portada, los encabezados y los botones de «continuar a…» dicen lo mismo.',
   },
   {
     titulo: 'Una sola plantilla de página',
     texto:
-      'Toda pantalla repite el mismo esqueleto: eyebrow, título, una línea de contexto, acción de continuidad y tarjetas .workspace-card numeradas. Aprender una pantalla es aprender las siete.',
+      'Toda pantalla repite el mismo esqueleto: eyebrow, título, una línea de contexto, acción de continuidad y tarjetas .workspace-card numeradas. Aprender una pantalla es aprender las demás.',
   },
   {
     titulo: 'El menú muestra solo lo permitido',
     texto:
-      'Cada entrada va envuelta en un AuthorizeView con su política (academia:leer, docentes:actualizar, planes:leer). Un usuario sin permiso no ve la opción deshabilitada: no la ve.',
+      'Cada entrada va envuelta en un AuthorizeView con su política (academia:leer, docentes:actualizar, planes:leer, notificaciones:leer). Un usuario sin permiso no ve la opción deshabilitada: no la ve. El docente tiene su propio menú: inicio, disponibilidad y bandeja.',
   },
   {
-    titulo: 'Sin JavaScript propio',
+    titulo: 'JavaScript solo donde Blazor no llega',
     texto:
-      'Cero archivos .js escritos por el equipo y cero llamadas a IJSRuntime. La interactividad es InteractiveServer sobre SignalR; el menú móvil se abre con un checkbox y CSS.',
+      'Tres archivos, 189 líneas: las alertas de SweetAlert2, la recuperación de contraseña y el <dialog> del editor manual (foco y cierre). Todo lo demás es InteractiveServer sobre SignalR; el menú móvil se abre con un checkbox y CSS.',
   },
   {
     titulo: 'Vista previa antes de guardar',
@@ -197,7 +256,7 @@ export const DECISIONES: Decision[] = [
   {
     titulo: 'Errores en español llano',
     texto:
-      'PresentacionErroresCatalogo traduce el error técnico antes de pintarlo. La franja #blazor-error-ui queda solo para lo imprevisto.',
+      'PresentacionErroresCatalogo traduce el error técnico antes de pintarlo, y AlertasService lo muestra con el mismo formato en todas las pantallas. La franja #blazor-error-ui queda solo para lo imprevisto.',
   },
   {
     titulo: 'Buscar sin acentos ni mayúsculas',
@@ -217,7 +276,7 @@ export interface Metrica {
 }
 
 export const METRICAS: Metrica[] = [
-  { valor: '7', etiqueta: 'pantallas del flujo' },
-  { valor: '129', etiqueta: 'líneas de CSS propio' },
-  { valor: '0', etiqueta: 'JavaScript propio' },
+  { valor: '17', etiqueta: 'páginas con ruta' },
+  { valor: '2 270', etiqueta: 'líneas de CSS propio' },
+  { valor: '189', etiqueta: 'líneas de JavaScript propio' },
 ];

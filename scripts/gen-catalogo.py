@@ -23,7 +23,8 @@ DOMINIOS = {
         "curso_comun", "curso_comun_cursos", "cohortes", "cohorte_periodos",
         "periodos_academicos", "jornadas", "jornada_descansos", "carrera_jornadas",
         "agrupaciones_area_comun", "agrupacion_area_comun_cursos",
-        "agrupacion_area_comun_cohortes",
+        "agrupacion_area_comun_cohortes", "jornada_extraordinaria_periodos",
+        "jornada_extraordinaria_docentes",
     ],
     "infraestructura": ["aulas", "recursos", "aula_recursos", "curso_recursos_requeridos"],
     "docentes": [
@@ -43,7 +44,7 @@ DOMINIOS = {
     "importacion": ["importaciones", "importacion_errores", "plantillas_importacion"],
     "seguridad": ["usuarios", "roles", "permisos_acceso", "rol_permisos", "usuario_roles",
                   "usuario_facultades"],
-    "operacion": ["notificaciones", "plantillas_notificacion", "auditoria", "reportes"],
+    "operacion": ["notificaciones", "notificacion_destinatarios", "plantillas_notificacion", "auditoria", "reportes"],
 }
 DOM_DE = {t: d for d, ts in DOMINIOS.items() for t in ts}
 DOM_LABEL = {
@@ -71,7 +72,9 @@ TABLAS_DESC = {
         "Planes de estudio de una carrera, uno por año de creación, con su estado "
         "(borrador, vigente, en retiro, archivado)."),
     "cursos": (
-        "Materias propias de cada pensum: código, nombre, requisitos de laboratorio y marca de área común."),
+        "Materias propias de cada pensum: código, nombre, requisitos de laboratorio, marca de área común "
+        "y `esta_activo`. Un curso inactivo conserva su historia pero no admite nuevas autorizaciones, "
+        "equivalencias ni generaciones."),
     "cursos_en_pensum": (
         "La malla curricular: qué curso va en qué semestre de qué pensum, cuántos bloques "
         "semanales exige y si los prefiere consecutivos."),
@@ -91,7 +94,14 @@ TABLAS_DESC = {
         "Semestres o cuatrimestres: nombre, fecha de inicio y fin, y estado del período."),
     "jornadas": (
         "Matutina, vespertina…: días activos, hora de inicio y fin, duración del bloque, "
-        "bloques por día y el receso (después de qué bloque y cuántos minutos)."),
+        "bloques por día y el receso (después de qué bloque y cuántos minutos). Con "
+        "`jornada_regular_id` la jornada es extraordinaria y corre en paralelo a esa regular."),
+    "jornada_extraordinaria_periodos": (
+        "Por cada jornada extraordinaria y período, el horario regular de referencia contra el que "
+        "se calculan los bloques ocupados de cada docente."),
+    "jornada_extraordinaria_docentes": (
+        "Qué docentes están asignados a una jornada extraordinaria en un período. Solo ellos pueden "
+        "declarar disponibilidad en esa jornada."),
     "jornada_descansos": (
         "Recesos concretos dentro de una jornada, por día y rango de bloques. Una "
         "restricción de exclusión impide que dos se pisen."),
@@ -186,7 +196,8 @@ TABLAS_DESC = {
     # --- seguridad
     "usuarios": (
         "Usuarios del sistema. Enlaza con `auth.users` de Supabase por `auth_user_id` y "
-        "puede apuntar al docente o a la cohorte de la persona."),
+        "puede apuntar al docente o a la cohorte de la persona. `debe_cambiar_contrasena` obliga "
+        "a una cuenta docente recién creada a cambiar la contraseña inicial."),
     "roles": "Roles de acceso (coordinador, decano, docente…) con su descripción.",
     "permisos_acceso": (
         "Catálogo de permisos: el par (recurso, acción), por ejemplo ('aulas', 'crear')."),
@@ -196,8 +207,11 @@ TABLAS_DESC = {
         "Puente N:M. Qué facultades ve cada usuario. Es el alcance por facultad."),
     # --- operación
     "notificaciones": (
-        "Avisos internos por destinatario, con plantilla, asunto, cuerpo, estado y clave "
-        "de idempotencia."),
+        "Mensajes internos: remitente, asunto, cuerpo, prioridad (normal, importante, urgente) "
+        "y canal. El estado de lectura vive por destinatario en `notificacion_destinatarios`."),
+    "notificacion_destinatarios": (
+        "Bandeja de cada destinatario: una fila por mensaje y usuario, con estado no leída, "
+        "leída o descartada y la fecha de cada cambio."),
     "plantillas_notificacion": (
         "Plantillas de aviso: código, asunto, cuerpo y las variables que exige."),
     "auditoria": (
@@ -220,7 +234,9 @@ TIPOS_DESC = {
     "estado_generacion": "Estado de una corrida del motor: pendiente, generando, completada, fallida, inviable o cancelada.",
     "estado_horario": "Ciclo de vida de un plan: borrador → generando → generado → en revisión → pendiente de aprobación → aprobado → publicado → archivado (más fallido e inviable).",
     "estado_importacion": "Estado de una carga: recibida, validando, aplicada, rechazada o fallida.",
-    "estado_notificacion": "Estado de un aviso: pendiente, enviada, leída o fallida.",
+    "estado_notificacion": "Estado heredado de un aviso: pendiente, enviada, leída o fallida. La bandeja actual usa `estado_notificacion_destinatario`.",
+    "estado_notificacion_destinatario": "Estado de un mensaje en la bandeja de cada destinatario: no leída, leída o descartada.",
+    "prioridad_notificacion": "Urgencia de un mensaje interno: normal, importante o urgente.",
     "estado_pensum": "Estado de un plan de estudios: borrador, vigente, en retiro o archivado.",
     "estado_periodo": "Estado de un período académico: borrador, vigente, cerrado o archivado.",
     "estado_sugerencia_seccion": "Estado de una sugerencia de sección: pendiente, aprobada, rechazada, aplicada o cancelada.",
@@ -270,6 +286,8 @@ G_MOT = "Motor de generación"
 G_EDI = "Edición manual y versiones"
 G_CON = "Consultas de horario"
 G_IMP = "Importación y mantenimiento"
+G_JEX = "Jornadas extraordinarias"
+G_NOT = "Notificaciones internas"
 T_MARCA = "Trigger · marca de tiempo y versión"
 T_VALID = "Trigger · validación"
 T_COMPL = "Trigger · completar y derivar"
@@ -312,22 +330,22 @@ FUNCIONES = {
     "revocar_curso_docente": (G_DOC,
         "Retira la autorización marcando `esta_vigente = false`. No borra el historial.", ""),
     "guardar_disponibilidad_docente": (G_DOC,
-        "Guarda la cabecera de disponibilidad y reemplaza sus bloques en `disponibilidad_docente_slots`.",
+        "Guarda la cabecera de disponibilidad y reemplaza sus bloques en `disponibilidad_docente_slots`; los bloques ocupados de una jornada extraordinaria se descartan.",
         "Los bloques llegan en JSON; `ventanas_disponibilidad` define fechas de captura, no franjas horarias del docente."),
     "obtener_disponibilidad_docente": (G_DOC,
-        "Devuelve la disponibilidad guardada de un docente en un período, lista para pintar la grilla.", ""),
+        "Devuelve la disponibilidad guardada de un docente en un período, lista para pintar la grilla, sin los bloques que ya no cuentan.", ""),
     # --- planes
     "crear_plan_horario": (G_PLAN,
         "Crea el plan en estado `borrador` y fija su alcance: qué carreras y qué jornadas entran.", ""),
     "fijar_alcance_plan": (G_PLAN,
-        "Cambia las carreras y jornadas del plan. Solo se permite mientras sigue en `borrador`.", ""),
+        "Cambia las carreras y jornadas del plan. Solo en `borrador`, y sin mezclar jornadas regulares con extraordinarias.", ""),
     "cambiar_estado_plan": (G_PLAN,
         "Mueve el plan de un estado a otro y deja rastro en el historial. Usa bloqueo optimista: si otra persona lo cambió antes, la operación falla en vez de pisar su trabajo.",
         "Es el ejemplo canónico de `version_fila`: el UPDATE lleva `AND version_fila = <la que leí>`; si afecta cero filas, alguien se adelantó."),
     "plan_es_completo_y_valido": (G_PLAN,
         "¿Este plan se puede publicar? Exige sesiones colocadas, cero pendientes, cero conflictos duros y el contador de violaciones duras en cero.", ""),
     "conteos_revision_plan": (G_PLAN,
-        "Revisión previa a generar: cuenta qué hay y qué falta para el alcance elegido, antes de gastar una corrida.", ""),
+        "Revisión previa a generar: cuenta qué hay y qué falta para el alcance elegido, antes de gastar una corrida. Sin jornadas elegidas, cuenta solo las regulares.", ""),
     # --- motor
     "iniciar_generacion": (G_MOT,
         "Abre una corrida del motor en estado `generando`. La `clave_solicitud` impide que un doble clic lance dos corridas iguales.", ""),
@@ -355,9 +373,9 @@ FUNCIONES = {
         "Igual que la anterior pero solo sobre lo publicado. Es la que alimenta la vista pública.", ""),
     "consultar_revision_horario": (G_CON,
         "Consulta paginada del horario para revisión, con conflictos y clases pendientes ubicadas por carrera, semestre, curso y cohorte.",
-        "Devuelve slots, sesiones, conflictos y pendientes para construir la revisión por carrera y semestre."),
+        "Cada clase trae si está fijada a mano (`esta_fijada`), el curso con que la ve su cohorte y si es de área común con cuántas cohortes la comparten; cada pendiente trae su identidad y fecha."),
     "consultar_datos_reporte": (G_CON,
-        "Arma encabezados y filas para exportar a PDF o XLSX. Exige que la generación esté `completada`.", ""),
+        "Arma encabezados y filas para exportar a PDF o XLSX, también por curso. Exige que la generación esté `completada`.", ""),
     "listar_cohortes_publicadas": (G_CON,
         "Opciones del selector público: las cohortes que ya tienen horario publicado, con etiqueta legible.", ""),
     "listar_sustituciones_publicadas": (G_CON,
@@ -383,7 +401,7 @@ FUNCIONES = {
     "validar_sesion_en_jornada": (T_VALID,
         "Rechaza una sesión que no cabe en su jornada: día no activo o bloques fuera del rango del día.", ""),
     "validar_horario_publicable": (T_VALID,
-        "Impide pasar un horario a publicado si no cumple los requisitos de publicación.", ""),
+        "Impide pasar un horario a publicado si no cumple los requisitos de publicación, contando solo las cohortes de las jornadas del plan.", ""),
     "validar_importacion_plantilla": (T_VALID,
         "Rechaza un archivo que no coincide con la plantilla vigente y su versión.", ""),
     "validar_sustitucion_docente_original": (T_VALID,
@@ -490,12 +508,14 @@ PASOS = {
     "guardar_disponibilidad_docente": [
         "Crea o actualiza la cabecera de disponibilidad de ese docente en ese período.",
         "Borra los bloques anteriores y vuelve a insertar los recibidos.",
-        "De cada bloque comprueba contra su jornada que el día esté activo y el índice caiga dentro de los bloques del día.",
-        "Si un bloque no encaja en su jornada, aborta la operación entera.",
+        "De cada bloque comprueba contra su jornada que el día esté activo y el índice caiga dentro de los bloques del día; si no encaja, aborta la operación entera.",
+        "Un bloque de jornada extraordinaria ocupado, o de un docente no asignado, lo descarta el disparador sin error.",
+        "Si pidió confirmar y no quedó ningún bloque disponible, falla; devuelve los bloques realmente guardados.",
     ],
     "obtener_disponibilidad_docente": [
         "Lee la cabecera del docente en el período.",
-        "Anida sus bloques ordenados por día e índice.",
+        "Calcula con `obtener_slots_ignorados` los bloques extraordinarios que ya no cuentan.",
+        "Anida sus bloques ordenados por día e índice, sin esos, y dice cuántos quitó.",
         "Devuelve la lista de bloques vacía si aún no declaró nada.",
     ],
     # ---------------------------------------------------------- planes
@@ -506,6 +526,7 @@ PASOS = {
     ],
     "fijar_alcance_plan": [
         "Comprueba que el plan exista y siga en `borrador`; si no, falla con un código propio.",
+        "Rechaza mezclar jornadas regulares y extraordinarias; con extraordinarias, exige que el plan no sea referencia de otra y que todas usen el mismo horario de referencia.",
         "Borra el alcance anterior.",
         "Reinserta las carreras y jornadas recibidas.",
     ],
@@ -520,7 +541,7 @@ PASOS = {
         "Si el plan ni existe, devuelve `false` en lugar de nulo.",
     ],
     "conteos_revision_plan": [
-        "Arma el alcance: las cohortes activas del período, filtradas por las carreras y jornadas dadas.",
+        "Arma el alcance: las cohortes activas del período, filtradas por las carreras y por `jornada_en_alcance`.",
         "Cuenta cohortes, cohortes sin cursos en su semestre, aulas activas, docentes autorizados y docentes con disponibilidad confirmada.",
         "Devuelve todo junto para la pantalla previa a generar.",
     ],
@@ -589,7 +610,8 @@ PASOS = {
         "Devuelve como mucho 1 000 filas.",
     ],
     "consultar_revision_horario": [
-        "Junta sesiones, cursos, docentes, aulas, jornadas y cohortes del horario indicado.",
+        "Junta sesiones, cursos, docentes, aulas, jornadas y cohortes del horario indicado; el curso es el que ve cada cohorte en su pensum.",
+        "Marca las clases fijadas a mano y las de área común, con el total de cohortes de la sesión entera.",
         "Filtra por los parámetros dados y por el alcance del usuario.",
         "Pagina las sesiones y agrega, aparte, los conflictos y las sesiones pendientes.",
         "Devuelve todo en un solo objeto para la pantalla de revisión.",
@@ -597,7 +619,7 @@ PASOS = {
     "consultar_datos_reporte": [
         "Localiza el plan de esa generación y exige que su estado sea `completada`.",
         "Si la vista pedida es `diagnostico`, arma la tabla con los mensajes de la corrida.",
-        "Si no, arma la tabla del horario —carrera, cohorte, curso, docente, aula, jornada, día, bloque y duración— aplicando los filtros.",
+        "Si no, arma la tabla del horario —carrera, cohorte, curso, docente, aula, jornada, día, bloque y duración— aplicando los filtros por cohorte, docente, aula o curso.",
         "Devuelve encabezados y filas ya listos para exportar.",
     ],
     "listar_cohortes_publicadas": [
@@ -619,7 +641,7 @@ PASOS = {
     "restaurar_entidad": [
         "Comprueba que la tabla esté en la lista blanca de diez catálogos restaurables.",
         "Pone `eliminado_en` en nulo y sube `version_fila`; exige haber afectado exactamente una fila.",
-        "Deja constancia en `auditoria` y avisa al usuario con una notificación.",
+        "Deja constancia en `auditoria` y avisa al usuario con una notificación en su bandeja (`notificacion_destinatarios`).",
     ],
     # ---------------------------------------------------------- triggers
     "actualizar_marca": [
@@ -654,6 +676,7 @@ PASOS = {
     ],
     "validar_horario_publicable": [
         "Solo actúa cuando el estado pasa a pendiente de aprobación, aprobado o publicado.",
+        "Toma las jornadas del plan: las cohortes que exige cubrir son solo las de esas jornadas.",
         "Exige cero violaciones duras, cero conflictos duros, cero pendientes y al menos una sesión, todas con cohorte.",
         "Comprueba cada sesión: cohorte activa en el período, misma jornada, curso dentro del pensum y semestre, docente autorizado y área común completa y con un solo docente.",
         "Verifica aulas compatibles y con recursos, capacidad suficiente, un solo docente por curso y cohorte, disponibilidad confirmada y respeto de la carga máxima.",
@@ -735,9 +758,9 @@ NUEVAS_FUNCIONES = {
         "Lee los grupos sin borrado lógico y anida los ids de sus materias.",
         "Devuelve JSON ordenado por nombre, o un arreglo vacío si no hay grupos.",
     ]),
-    "cursos_equivalentes": (G_ACA, "Devuelve el curso consultado y los demás miembros de su curso común vigente.", [
-        "Incluye siempre el identificador recibido.",
-        "Une los cursos del mismo grupo no eliminado y elimina duplicados con UNION.",
+    "cursos_equivalentes": (G_ACA, "Devuelve el curso consultado y los demás miembros activos de su curso común vigente.", [
+        "Incluye el identificador recibido solo si el curso está activo y vivo.",
+        "Une los cursos activos del mismo grupo no eliminado y elimina duplicados con UNION; un curso inactivo no tiene equivalentes.",
     ]),
     "crear_agrupacion_desde_curso_comun": (G_ACA, "Crea una clase compartida para un período y jornada a partir de un grupo de equivalencia.", [
         "Comprueba que el curso común exista y crea la agrupación con su período y jornada.",
@@ -767,16 +790,144 @@ NUEVAS_FUNCIONES = {
     "crear_usuario_docente": (G_SEG, "Vincula una cuenta de Supabase Auth con un docente y le asigna el rol docente.", [
         "Serializa el alta con un advisory lock y exige un docente activo.",
         "Reutiliza el vínculo si coincide; rechaza cuentas, docentes o correos ya asociados de forma incompatible.",
-        "Inserta el usuario y su rol docente y devuelve el perfil creado.",
+        "Inserta el usuario con `debe_cambiar_contrasena = true` y su rol docente, y devuelve el perfil creado.",
     ]),
     "guardar_mi_disponibilidad_docente": (G_DOC, "Guarda la disponibilidad del docente identificado por la sesión autenticada.", [
         "Resuelve el docente desde `auth.uid()` y exige un usuario docente activo, período válido y lista de bloques.",
         "Impide confirmar una disponibilidad vacía.",
-        "Crea o actualiza la cabecera, reemplaza los bloques y devuelve la disponibilidad con sus slots.",
+        "Crea o actualiza la cabecera y reemplaza los bloques; el disparador descarta los ocupados en su jornada extraordinaria.",
+        "Si pidió confirmar y no quedó ningún bloque disponible, falla; si no, devuelve la disponibilidad con sus slots.",
     ]),
     "obtener_mi_disponibilidad_docente": (G_DOC, "Consulta la disponibilidad del docente de la sesión para un período.", [
         "Resuelve el docente desde el usuario activo asociado a `auth.uid()`.",
-        "Lee su cabecera y devuelve los slots ordenados por jornada, día e índice.",
+        "Lee su cabecera y devuelve los slots ordenados por jornada, día e índice, sin los que `obtener_slots_ignorados` ya no cuenta.",
+    ]),
+    # --- cursos inactivos
+    "establecer_estado_curso": (G_ACA, "Activa o desactiva un curso de forma idempotente, sin borrar malla, sesiones ni referencias históricas.", [
+        "Exige curso y estado.",
+        "Actualiza `esta_activo` solo si cambia; si ya tenía ese valor, relee la fila.",
+        "Falla si el curso no existe o está borrado; devuelve la fila en JSON.",
+    ]),
+    "exigir_curso_activo_en_autorizacion": (T_VALID, "Rechaza autorizar a un docente sobre un curso inactivo.", [
+        "Solo mira autorizaciones vigentes y vivas.",
+        "Si el curso no está activo y vivo, aborta con `No se puede autorizar un curso inactivo`.",
+    ]),
+    "exigir_curso_activo_en_nueva_relacion": (T_VALID, "Rechaza meter un curso inactivo en un curso común o en una agrupación de área común.", [
+        "Busca el curso de la fila nueva.",
+        "Si no está activo y vivo, aborta: un curso inactivo no admite nuevas selecciones.",
+    ]),
+    # --- jornadas extraordinarias
+    "validar_jornada_extraordinaria": (T_VALID, "Mantiene coherente la pareja jornada extraordinaria ↔ jornada regular.", [
+        "Si la jornada es extraordinaria, exige que su regular exista, no sea a su vez extraordinaria y tenga bloques de la misma duración.",
+        "Si es una regular con extraordinarias colgando, le impide volverse extraordinaria, cambiar la duración de sus bloques o darse de baja.",
+        "Desactivarla sí se permite: el motor sigue leyendo su reloj.",
+    ]),
+    "guardar_jornada_extraordinaria_periodo": (G_JEX, "Configura una jornada extraordinaria en un período: su horario de referencia y la lista completa de docentes asignados.", [
+        "Exige permiso ('aulas','crear') y que la jornada sea extraordinaria y activa.",
+        "Exige un horario de referencia vivo del mismo período que no sea el plan de otra extraordinaria.",
+        "Guarda o reemplaza la referencia de ese período.",
+        "Falla si algún plan aún generable junta esta jornada con otra extraordinaria de referencia distinta.",
+        "Sincroniza los docentes: quita a quien no viene en la lista y añade a los nuevos.",
+    ]),
+    "calcular_slots_bloqueados": (G_JEX, "Bloques de una jornada extraordinaria que un docente asignado no puede ofrecer, con el motivo legible.", [
+        "Cruza docentes asignados con su horario de referencia y la jornada regular de la que cuelga.",
+        "Expande todos los slots de la jornada con sus minutos de reloj.",
+        "Bloquea el slot si el docente ya da una clase que se solapa en el horario de referencia («Ya das X de hh:mm a hh:mm»).",
+        "Bloquea también el slot que cae en el receso de la jornada regular; devuelve un motivo por slot.",
+    ]),
+    "calcular_slots_ignorados": (G_JEX, "Bloques extraordinarios guardados que ya no cuentan: el docente dejó de estar asignado o el bloque quedó ocupado.", [
+        "Toma las marcas de disponibilidad guardadas en jornadas extraordinarias del período.",
+        "Se queda con las de docentes ya no asignados a la jornada o que caen en un slot bloqueado.",
+    ]),
+    "obtener_slots_ignorados": (G_JEX, "Los bloques ignorados de un docente, solo si quien consulta puede ver su disponibilidad.", [
+        "Llama a `calcular_slots_ignorados` para ese docente y período.",
+        "Filtra con `puede_ver_disponibilidad_de`: si no puede, devuelve vacío.",
+    ]),
+    "obtener_bloqueos_disponibilidad": (G_JEX, "Lo que pinta la grilla de disponibilidad en una jornada: si es extraordinaria, si el docente está asignado y qué bloques están bloqueados.", [
+        "Exige `puede_ver_disponibilidad_de` del docente: el motivo nombra sus clases.",
+        "Devuelve `es_extraordinaria`, `docente_asignado` y los slots bloqueados con su motivo.",
+    ]),
+    "descartar_slot_extraordinario_bloqueado": (T_VALID, "Descarta en silencio un bloque de disponibilidad que el docente no puede ofrecer en una jornada extraordinaria.", [
+        "En una jornada regular deja pasar la fila.",
+        "Si el docente no está asignado a la jornada en ese período, devuelve NULL: la fila no se escribe.",
+        "Si el slot está en `calcular_slots_bloqueados`, también la descarta.",
+    ]),
+    "plan_es_extraordinario": (G_JEX, "¿El plan cubre alguna jornada extraordinaria?", [
+        "Busca en `plan_jornadas` una jornada con `jornada_regular_id`.",
+    ]),
+    "es_horario_de_referencia": (G_JEX, "¿Este horario es la referencia de alguna jornada extraordinaria?", [
+        "Busca el id en `jornada_extraordinaria_periodos.horario_referencia_id`.",
+    ]),
+    "referencias_distintas": (G_JEX, "Cuántos horarios de referencia distintos usan esas jornadas extraordinarias en el período.", [
+        "Cuenta los `horario_referencia_id` distintos de las jornadas recibidas; más de uno impide juntarlas en un plan.",
+    ]),
+    "jornada_en_alcance": (G_JEX, "¿Esta jornada entra en el alcance pedido? Sin jornadas elegidas, solo entran las regulares.", [
+        "Con lista de jornadas, comprueba pertenencia.",
+        "Sin lista, admite la jornada solo si no es extraordinaria.",
+    ]),
+    "validar_un_publicado_por_alcance": (T_VALID, "Un solo horario publicado por período y tipo… salvo planes extraordinarios con jornadas distintas.", [
+        "Solo actúa si el horario queda publicado y vivo.",
+        "Toma un advisory lock por período y tipo de plan para serializar publicaciones simultáneas.",
+        "Falla si ya hay otro publicado y ambos son de jornadas regulares, o si comparten alguna jornada.",
+    ]),
+    "minuto_del_dia": (G_JEX, "Convierte una hora del día en minutos desde medianoche.", [
+        "Devuelve hora × 60 + minuto.",
+    ]),
+    "hora_de_minuto": (G_JEX, "Convierte minutos desde medianoche en texto `hh:mm`.", [
+        "Divide entre 60 y rellena con ceros a la izquierda.",
+    ]),
+    "rango_minutos_slot": (G_JEX, "El rango de minutos de reloj que ocupa el bloque n de una jornada.", [
+        "Parte de la hora de inicio y suma (n − 1) bloques.",
+        "Si el bloque va después del receso, suma también la duración del receso; devuelve un rango semiabierto.",
+    ]),
+    "rango_minutos_receso": (G_JEX, "El rango de minutos de reloj del receso de una jornada, o NULL si no tiene.", [
+        "Inicio = hora de inicio + bloques antes del receso × duración del bloque; fin = inicio + minutos del receso.",
+    ]),
+    "puede_ver_disponibilidad_de": (G_SEG, "¿Quien consulta puede ver la disponibilidad de ese docente?", [
+        "Sin sesión (servidor) devuelve `true`.",
+        "Un usuario docente activo solo ve la suya.",
+        "Los demás necesitan permiso de leer docentes, leer planes o generar con el motor.",
+    ]),
+    # --- contraseña
+    "marcar_contrasena_actualizada": (G_SEG, "Quita la obligación de cambiar la contraseña inicial al usuario de la sesión.", [
+        "Exige sesión.",
+        "Pone `debe_cambiar_contrasena = false` en su usuario activo; falla si no existe o está inactivo.",
+    ]),
+    # --- notificaciones
+    "crear_notificacion_interna": (G_NOT, "Envía un mensaje interno a docentes elegidos o a todos los activos con cuenta.", [
+        "Exige permiso ('notificaciones','crear'); recorta y valida asunto (1–200) y mensaje (1–5000).",
+        "Crea el mensaje con remitente, prioridad y canal `interno`.",
+        "Crea una fila en la bandeja de cada docente activo con cuenta que corresponda; falla si no queda ninguno.",
+        "Deja constancia en `auditoria` y devuelve id, cantidad de destinatarios y fecha.",
+    ]),
+    "listar_destinatarios_notificacion": (G_NOT, "Los docentes a los que se puede escribir: activos, con cuenta y usuario vivo.", [
+        "Exige permiso ('notificaciones','crear').",
+        "Devuelve usuario, docente, nombre y correo, ordenados por nombre.",
+    ]),
+    "listar_mis_notificaciones": (G_NOT, "La bandeja del usuario de la sesión, filtrada y paginada.", [
+        "Lee sus filas de `notificacion_destinatarios` con el mensaje y el remitente.",
+        "Oculta las descartadas salvo que se pidan; filtra por estado, prioridad y rango de fechas.",
+        "Ordena por fecha de envío descendente; límite entre 1 y 100.",
+    ]),
+    "contar_mis_notificaciones_no_leidas": (G_NOT, "El número de la campana: mensajes no leídos del usuario de la sesión.", [
+        "Cuenta sus filas en `no_leida` de mensajes vivos; sin sesión devuelve 0.",
+    ]),
+    "marcar_mi_notificacion_leida": (G_NOT, "Marca como leído un mensaje de la propia bandeja.", [
+        "Exige sesión y pasa a `leida` solo si estaba `no_leida`.",
+        "Falla si el mensaje no está en su bandeja; si cambió algo, lo audita.",
+    ]),
+    "descartar_mi_notificacion": (G_NOT, "Quita un mensaje de la propia bandeja sin borrarlo.", [
+        "Exige sesión y pasa a `descartada` si no lo estaba.",
+        "Falla si el mensaje no está en su bandeja; si cambió algo, lo audita.",
+    ]),
+    "listar_historial_notificaciones": (G_NOT, "Historial de mensajes enviados con sus conteos de lectura, para quien administra.", [
+        "Exige permiso ('notificaciones','leer').",
+        "Agrupa por mensaje: remitente, resumen de 140 caracteres y conteos de no leídas, leídas y descartadas.",
+        "Filtra por prioridad y fechas y pagina por fecha de envío descendente.",
+    ]),
+    "listar_destinatarios_de_notificacion": (G_NOT, "Quién recibió un mensaje y qué hizo con él.", [
+        "Exige permiso ('notificaciones','leer').",
+        "Devuelve usuario, correo, estado y las fechas de envío, lectura y descarte.",
     ]),
     "limpiar_miembros_curso_comun": (T_PROP, "Retira la membresía de un curso común cuando se marca como eliminado.", [
         "El trigger se activa al cambiar `eliminado_en` de NULL a una fecha.",
@@ -833,8 +984,10 @@ POLITICAS = {
     "api_roles_propios": (P_PROP, "Cada quien ve los roles que tiene asignados."),
     "api_permisos_roles_propios": (P_PROP, "Cada quien ve los permisos de los roles que tiene."),
     "api_facultades_propias": (P_PROP, "Cada quien ve las facultades que le fueron asignadas."),
-    "api_notificaciones_propias": (P_PROP, "Cada quien lee solo las notificaciones dirigidas a él."),
-    "api_notificaciones_insertar": (P_PROP, "Solo se pueden crear notificaciones dirigidas a uno mismo."),
+    "api_notificaciones_leer": (P_PROP, "Leer un mensaje vivo exige ser su remitente, estar entre sus destinatarios o tener permiso ('notificaciones','leer'). Escribir solo se hace por las funciones."),
+    "api_notificacion_destinatarios_leer": (P_PROP, "Cada quien ve sus propias filas de bandeja; quien tiene ('notificaciones','leer') ve todas."),
+    "jornada_extraordinaria_periodos_leer": (P_CAT, "Leer la referencia de una jornada extraordinaria exige permiso ('aulas','leer')."),
+    "jornada_extraordinaria_docentes_leer": (P_CAT, "Leer qué docentes están asignados a una jornada extraordinaria exige permiso ('aulas','leer')."),
     "api_reportes_propios": (P_PROP, "Cada quien ve solo los reportes que generó."),
     "api_reportes_insertar": (P_PROP, "Generar un reporte exige permiso ('reportes','exportar') y quedar registrado como su autor."),
     "api_roles_catalogo": (P_PROP, "El catálogo de roles vivos es visible para cualquier sesión activa."),
@@ -855,13 +1008,11 @@ POLITICAS = {
 # ---------------------------------------------------------------- índices y llaves
 
 INDICES_DESC = {
-    "horarios_publicado_unico_idx": "Solo puede haber un horario publicado a la vez por período y tipo de plan. Es la regla de «un único documento oficial vigente».",
     "generaciones_plan_activa_uq": "Impide dos corridas del motor vivas al mismo tiempo sobre el mismo plan.",
     "generaciones_activas_periodo_tipo_uq": "Impide dos corridas vivas al mismo tiempo para el mismo período y tipo de plan.",
     "generaciones_clave_solicitud_plan_uq": "Idempotencia: la misma solicitud de generación no puede entrar dos veces para un plan.",
     "generaciones_clave_solicitud_periodo_tipo_uq": "Idempotencia de la solicitud de generación por período y tipo de plan.",
     "importaciones_clave_solicitud_uq": "Idempotencia: reintentar la misma importación no la duplica.",
-    "notificaciones_clave_solicitud_uq": "Idempotencia: el mismo aviso no se manda dos veces.",
     "resultados_edicion_clave_solicitud_uq": "Idempotencia: mover la misma sesión dos veces por un doble clic no genera dos resultados.",
     "cohortes_identidad_uq": "La identidad de una cohorte —carrera, jornada, año y sección sin distinguir mayúsculas— no se repite entre cohortes vivas.",
     "cohorte_periodos_periodo_cohorte_uq": "Una cohorte aparece una sola vez por período.",
@@ -872,9 +1023,12 @@ INDICES_DESC = {
 }
 
 CONSTRAINTS_DESC = {
-    "sesiones_docente_no_solapado": "Un docente no puede estar en dos clases a la vez. Lo garantiza la base con una restricción de exclusión, no el código de la aplicación.",
-    "sesiones_aula_no_solapada": "Dos clases no pueden ocupar el mismo salón a la misma hora.",
-    "sesion_cohortes_no_solapadas": "Un mismo grupo de estudiantes no puede tener dos clases encima.",
+    # Desde 202609180001 las tres de solape son DEFERRABLE INITIALLY IMMEDIATE: solo el guardado
+    # de una edición manual las difiere al COMMIT, para poder guardar una permuta.
+    "sesiones_docente_no_solapado": "Un docente no puede estar en dos clases a la vez. Lo garantiza la base con una restricción de exclusión, no el código de la aplicación. Diferible: el guardado de una edición manual la comprueba al confirmar.",
+    "sesiones_aula_no_solapada": "Dos clases no pueden ocupar el mismo salón a la misma hora. Diferible: el guardado de una edición manual la comprueba al confirmar.",
+    "sesion_cohortes_no_solapadas": "Un mismo grupo de estudiantes no puede tener dos clases encima. Diferible: el guardado de una edición manual la comprueba al confirmar.",
+    "cursos_en_pensum_sesiones_enteras_check": "Una materia se dicta en sesiones enteras: los bloques semanales exactos tienen que ser múltiplo de la duración de cada sesión (`duracion_slots`). Es la regla BloquesSemanalesCompletos.",
     "jornada_descansos_no_solapados": "Dos recesos de la misma jornada no pueden pisarse.",
 }
 
@@ -1203,6 +1357,20 @@ for i, m in enumerate(marcas):
                 nota=nota, detalle=detalle, claves=f"{tabla} {cname}")
         continue
 
+    # -- CHECK añadido aparte: pg_dump lo saca de la tabla cuando es NOT VALID
+    if tipo == "CHECK CONSTRAINT":
+        tabla, cname = nombre.split()[0], nombre.split()[1]
+        if cname not in CONSTRAINTS_DESC:
+            raise SystemExit(f"Falta describir la restricción {cname}")
+        agregar(f"cons-{cname}", cname, "restriccion", "Restricciones CHECK",
+                CONSTRAINTS_DESC[cname], sql, linea, tabla=tabla,
+                nota="CHECK" + (" · NOT VALID" if "NOT VALID" in sql else ""),
+                detalle=("NOT VALID: vale para toda fila nueva o modificada, pero no se "
+                         "comprobaron las filas que ya existían al crearla."
+                         if "NOT VALID" in sql else ""),
+                claves=f"{tabla} {cname} check")
+        continue
+
     # -- RLS: activación por tabla
     if tipo == "ROW SECURITY":
         tabla = nombre.strip()
@@ -1257,11 +1425,11 @@ ORDEN_GRUPOS = [
     "Importación", "Seguridad", "Operación",
     "Estados", "Clasificaciones", "Otros tipos",
     "Vistas api_* · atajos del cliente", "Vistas vista_* · lectura pesada",
-    G_SEG, G_ACA, G_DOC, G_PLAN, G_MOT, G_EDI, G_CON, G_IMP,
+    G_SEG, G_ACA, G_JEX, G_DOC, G_PLAN, G_MOT, G_EDI, G_CON, G_NOT, G_IMP,
     T_MARCA, T_VALID, T_COMPL, T_PROP, T_BLOQ, "Otras funciones",
     "Marca de tiempo y versión", "Validación", "Completar y derivar",
     "Propagación", "Bloqueo e inmutabilidad", "Otros triggers",
-    "Claves primarias", "Claves únicas", "Exclusión · anti-solape",
+    "Claves primarias", "Claves únicas", "Exclusión · anti-solape", "Restricciones CHECK",
     "Índices únicos", "Índices de búsqueda",
     "Activación de RLS", P_CAT, P_PLAN, P_DOC, P_PROP, P_IMP, P_BIT, "Otras políticas",
 ]

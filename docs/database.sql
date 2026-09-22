@@ -1,13 +1,14 @@
--- Instantánea de la presentación: 2026-09-09
+-- Instantánea de la presentación: 2026-09-22
 -- Fuente: base local de HORARIOS/Horarios-develop, contenedor supabase_db_horarios.
 -- Solo estructura del esquema horarios; no contiene filas, propietarios ni permisos GRANT.
 -- Regenerar: docker exec supabase_db_horarios pg_dump --schema-only --no-owner --no-privileges --quote-all-identifiers -n horarios -U postgres postgres
 -- Las migraciones se mantienen en supabase/migrations/ del proyecto de referencia.
 --
+--
 -- PostgreSQL database dump
 --
 
-\restrict VEd9KakYnvmURGDx8mAbQH0reA9KeXpbPYfETHPgS7Qvg8vXmTb2c9TUsJpPtZb
+\restrict 3zwEzeF5CzFQvaH9oegfY13p8KC6kzKxeP0LFfyzfF280XMrF6RiUUofhDbmzCC
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -155,6 +156,17 @@ CREATE TYPE "horarios"."estado_notificacion" AS ENUM (
 
 
 --
+-- Name: estado_notificacion_destinatario; Type: TYPE; Schema: horarios; Owner: -
+--
+
+CREATE TYPE "horarios"."estado_notificacion_destinatario" AS ENUM (
+    'no_leida',
+    'leida',
+    'descartada'
+);
+
+
+--
 -- Name: estado_pensum; Type: TYPE; Schema: horarios; Owner: -
 --
 
@@ -233,6 +245,17 @@ CREATE TYPE "horarios"."nivel_severidad" AS ENUM (
     'media',
     'alta',
     'critica'
+);
+
+
+--
+-- Name: prioridad_notificacion; Type: TYPE; Schema: horarios; Owner: -
+--
+
+CREATE TYPE "horarios"."prioridad_notificacion" AS ENUM (
+    'normal',
+    'importante',
+    'urgente'
 );
 
 
@@ -643,6 +666,128 @@ begin
 
   return new;
 end;
+$$;
+
+
+--
+-- Name: calcular_slots_bloqueados("uuid", "uuid", "uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."calcular_slots_bloqueados"("p_periodo_id" "uuid", "p_jornada_id" "uuid" DEFAULT NULL::"uuid", "p_docente_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("jornada_id" "uuid", "docente_id" "uuid", "dia" "horarios"."dia_semana", "indice_slot" integer, "motivo" "text")
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    with
+    -- Qué docente está asignado a qué jornada extraordinaria, y contra qué horario se compara.
+    asignaciones as (
+        select ad.jornada_id,
+               ad.docente_id,
+               ep.horario_referencia_id,
+               e.jornada_regular_id
+        from horarios.jornada_extraordinaria_docentes ad
+        join horarios.jornada_extraordinaria_periodos ep
+          on ep.jornada_id = ad.jornada_id
+         and ep.periodo_id = ad.periodo_id
+        join horarios.jornadas e on e.id = ad.jornada_id
+        where ad.periodo_id = p_periodo_id
+          and (p_jornada_id is null or ad.jornada_id = p_jornada_id)
+          and (p_docente_id is null or ad.docente_id = p_docente_id)
+    ),
+    -- Todos los slots de esas jornadas, con sus minutos de reloj.
+    slots as (
+        select e.id as jornada_id,
+               d.dia,
+               i.indice_slot,
+               horarios.rango_minutos_slot(e, i.indice_slot) as minutos
+        from horarios.jornadas e
+        cross join unnest(e.dias_activos) as d (dia)
+        cross join generate_series(1, e.bloques_por_dia) as i (indice_slot)
+        where e.id in (select a.jornada_id from asignaciones a)
+    ),
+    -- Bloqueo 1: el docente ya da clase a esa hora en el horario de referencia.
+    por_clase as (
+        select a.jornada_id,
+               a.docente_id,
+               s.dia,
+               s.indice_slot,
+               format('Ya das «%s» de %s a %s',
+                      c.nombre,
+                      horarios.hora_de_minuto(lower(se.rango_minutos)),
+                      horarios.hora_de_minuto(upper(se.rango_minutos))) as motivo
+        from asignaciones a
+        join horarios.horarios h
+          on h.id = a.horario_referencia_id
+         and h.eliminado_en is null
+        join slots s on s.jornada_id = a.jornada_id
+        join horarios.sesiones se
+          on se.horario_id = h.id
+         and se.docente_id = a.docente_id
+         and se.dia = s.dia
+         and se.rango_minutos && s.minutos
+        join horarios.cursos c on c.id = se.curso_id
+    ),
+    -- Bloqueo 2: el slot cae en el receso de la jornada regular.
+    por_receso as (
+        select a.jornada_id,
+               a.docente_id,
+               s.dia,
+               s.indice_slot,
+               format('Es el receso de la jornada %s', r.nombre) as motivo
+        from asignaciones a
+        join horarios.jornadas r on r.id = a.jornada_regular_id
+        join slots s
+          on s.jornada_id = a.jornada_id
+         and s.dia = any (r.dias_activos)
+         and s.minutos && horarios.rango_minutos_receso(r)
+    )
+    select distinct on (b.jornada_id, b.docente_id, b.dia, b.indice_slot)
+           b.jornada_id, b.docente_id, b.dia, b.indice_slot, b.motivo
+    from (
+        select * from por_clase
+        union all
+        select * from por_receso
+    ) b
+    order by b.jornada_id, b.docente_id, b.dia, b.indice_slot, b.motivo;
+$$;
+
+
+--
+-- Name: calcular_slots_ignorados("uuid", "uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."calcular_slots_ignorados"("p_periodo_id" "uuid", "p_docente_id" "uuid" DEFAULT NULL::"uuid") RETURNS TABLE("docente_id" "uuid", "jornada_id" "uuid", "dia" "horarios"."dia_semana", "indice_slot" integer)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    with
+    -- Las marcas guardadas en jornadas extraordinarias; las de una regular siempre cuentan.
+    guardadas as (
+        select dd.docente_id, s.jornada_id, s.dia, s.indice_slot
+        from horarios.disponibilidades_docente dd
+        join horarios.disponibilidad_docente_slots s on s.disponibilidad_id = dd.id
+        join horarios.jornadas j on j.id = s.jornada_id and j.jornada_regular_id is not null
+        where dd.periodo_id = p_periodo_id
+          and (p_docente_id is null or dd.docente_id = p_docente_id)
+    ),
+    bloqueados as materialized (
+        select b.docente_id, b.jornada_id, b.dia, b.indice_slot
+        from horarios.calcular_slots_bloqueados(p_periodo_id, null, p_docente_id) b
+    )
+    select g.docente_id, g.jornada_id, g.dia, g.indice_slot
+    from guardadas g
+    where not exists (
+              select 1
+              from horarios.jornada_extraordinaria_docentes ad
+              where ad.jornada_id = g.jornada_id
+                and ad.periodo_id = p_periodo_id
+                and ad.docente_id = g.docente_id)
+       or exists (
+              select 1
+              from bloqueados b
+              where b.docente_id = g.docente_id
+                and b.jornada_id = g.jornada_id
+                and b.dia = g.dia
+                and b.indice_slot = g.indice_slot);
 $$;
 
 
@@ -1342,6 +1487,7 @@ begin
           and (p_vista <> 'cohorte' or p_filtro_id is null or co.id = p_filtro_id)
           and (p_vista <> 'docente' or p_filtro_id is null or d.id = p_filtro_id)
           and (p_vista <> 'aula' or p_filtro_id is null or a.id = p_filtro_id)
+          and (p_vista <> 'curso' or p_filtro_id is null or cu.id = p_filtro_id)
           and (p_carrera_id is null or ca.id = p_carrera_id)
           and (p_jornada_id is null or j.id = p_jornada_id)
           and (p_cohorte_id is null or co.id = p_cohorte_id)
@@ -1464,7 +1610,7 @@ CREATE FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "
     with periodo as (
         select h.periodo_id from horarios.horarios h where h.id = p_horario_id
     ), sesiones_filtradas as (
-        select s.id as sesion_id, cu.nombre as curso,
+        select s.id as sesion_id, cu.nombre as curso, sc.curso_visible_id as curso_id,
                co.anio_ingreso::text || '-' || co.seccion as cohorte, co.id as cohorte_id,
                coalesce(cp.semestre_asignado, 0) as semestre,
                d.nombre_completo as docente, d.id as docente_id,
@@ -1472,13 +1618,16 @@ CREATE FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "
                j.nombre as jornada, j.id as jornada_id, s.dia::text as dia,
                s.indice_slot_inicio, s.duracion_slots,
                s.minuto_inicio_dia as minuto_inicio, s.minuto_fin_dia as minuto_fin,
+               s.esta_fijada, s.es_area_comun,
+               (select count(*)::integer from horarios.sesion_cohortes todas
+                where todas.sesion_id = s.id) as total_cohortes,
                s.dia as dia_orden, co.anio_ingreso, co.seccion
         from horarios.sesiones s
-        join horarios.cursos cu on cu.id = s.curso_id
         join horarios.docentes d on d.id = s.docente_id
         join horarios.aulas a on a.id = s.aula_id
         join horarios.jornadas j on j.id = s.jornada_id
         join horarios.sesion_cohortes sc on sc.sesion_id = s.id
+        join horarios.cursos cu on cu.id = sc.curso_visible_id
         join horarios.cohortes co on co.id = sc.cohorte_id
         join horarios.carreras ca on ca.id = co.carrera_id
         left join horarios.cohorte_periodos cp
@@ -1547,7 +1696,8 @@ CREATE FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "
         -- escritos igual que en las sesiones colocadas. Asi la pantalla puede enseñarlo dentro
         -- del horario, en el grupo al que le falta, en vez de en una lista aparte donde hay que
         -- buscar a mano de quien era cada hueco.
-        select cu.nombre            as curso,
+        select p.curso_id, p.cohorte_id, p.creado_en as registrado_en,
+               cu.nombre            as curso,
                co.anio_ingreso::text || '-' || co.seccion as cohorte,
                ca.nombre                                  as carrera,
                coalesce(cp.semestre_asignado, 0)          as semestre,
@@ -1586,7 +1736,23 @@ $$;
 -- Name: FUNCTION "consultar_revision_horario"("p_horario_id" "uuid", "p_cohorte_id" "uuid", "p_docente_filtro_id" "uuid", "p_aula_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pagina" integer, "p_tamano_pagina" integer, "p_ver_todo" boolean, "p_docente_alcance_id" "uuid", "p_facultad_ids" "uuid"[]); Type: COMMENT; Schema: horarios; Owner: -
 --
 
-COMMENT ON FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "p_cohorte_id" "uuid", "p_docente_filtro_id" "uuid", "p_aula_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pagina" integer, "p_tamano_pagina" integer, "p_ver_todo" boolean, "p_docente_alcance_id" "uuid", "p_facultad_ids" "uuid"[]) IS 'El horario generado por paginas, con sus conflictos y sus huecos. Cada clase sin colocar viene ubicada en su carrera, semestre, curso y cohorte, para que la revision la enseñe dentro del horario y no en una lista aparte.';
+COMMENT ON FUNCTION "horarios"."consultar_revision_horario"("p_horario_id" "uuid", "p_cohorte_id" "uuid", "p_docente_filtro_id" "uuid", "p_aula_id" "uuid", "p_carrera_id" "uuid", "p_jornada_id" "uuid", "p_pagina" integer, "p_tamano_pagina" integer, "p_ver_todo" boolean, "p_docente_alcance_id" "uuid", "p_facultad_ids" "uuid"[]) IS 'El horario generado por paginas, con sus conflictos y sus huecos. Cada clase dice si esta fijada a mano, en que curso la ve su cohorte (curso_id y curso, el nombre de su pensum), el mismo que traen los pendientes, para contar por curso y cohorte cuantas sesiones faltan, y si es de area comun con cuantas cohortes la cursan juntas (es_area_comun, total_cohortes). Cada clase sin colocar viene ubicada en su carrera, semestre, curso y cohorte, para que la revision la enseñe dentro del horario y no en una lista aparte.';
+
+
+--
+-- Name: contar_mis_notificaciones_no_leidas(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."contar_mis_notificaciones_no_leidas"() RETURNS integer
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select case when auth.uid() is null then 0 else count(*)::integer end
+    from horarios.notificacion_destinatarios nd
+    join horarios.notificaciones n on n.id = nd.notificacion_id
+    where nd.destinatario_usuario_id = horarios.usuario_actual_id()
+      and nd.estado = 'no_leida' and n.eliminado_en is null;
+$$;
 
 
 --
@@ -1606,8 +1772,7 @@ CREATE FUNCTION "horarios"."conteos_revision_plan"("p_periodo_id" "uuid", "p_car
           and cp.eliminado_en is null
           and (cardinality(coalesce(p_carrera_ids, '{}'::uuid[])) = 0
                or c.carrera_id = any (p_carrera_ids))
-          and (cardinality(coalesce(p_jornada_ids, '{}'::uuid[])) = 0
-               or c.jornada_id = any (p_jornada_ids))
+          and horarios.jornada_en_alcance(c.jornada_id, p_jornada_ids)
     )
     select jsonb_build_object(
       'existe_periodo', exists(
@@ -1638,13 +1803,12 @@ CREATE FUNCTION "horarios"."conteos_revision_plan"("p_periodo_id" "uuid", "p_car
       'docentes_con_disponibilidad', (select count(*)::integer
           from horarios.disponibilidades_docente dd
           where dd.periodo_id = p_periodo_id and dd.esta_confirmada
-            and (cardinality(coalesce(p_jornada_ids, '{}'::uuid[])) = 0
-                 or exists (
-                   select 1
-                   from horarios.disponibilidad_docente_slots dds
-                   where dds.disponibilidad_id = dd.id
-                     and dds.esta_disponible
-                     and dds.jornada_id = any (p_jornada_ids)))));
+            and exists (
+                select 1
+                from horarios.disponibilidad_docente_slots dds
+                where dds.disponibilidad_id = dd.id
+                  and dds.esta_disponible
+                  and horarios.jornada_en_alcance(dds.jornada_id, p_jornada_ids))));
 $$;
 
 
@@ -1841,6 +2005,66 @@ $$;
 
 
 --
+-- Name: crear_notificacion_interna("text", "text", "horarios"."prioridad_notificacion", "uuid"[], boolean); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."crear_notificacion_interna"("p_asunto" "text", "p_mensaje" "text", "p_prioridad" "horarios"."prioridad_notificacion" DEFAULT 'normal'::"horarios"."prioridad_notificacion", "p_destinatario_ids" "uuid"[] DEFAULT '{}'::"uuid"[], "p_todos_activos" boolean DEFAULT false) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_usuario_id uuid := horarios.usuario_actual_id();
+    v_notificacion_id uuid;
+    v_cantidad integer;
+    v_creado_en timestamptz;
+begin
+    if auth.uid() is null or v_usuario_id is null
+       or not horarios.usuario_actual_tiene_permiso('notificaciones', 'crear') then
+        raise exception 'No tiene permiso para crear notificaciones' using errcode = '42501';
+    end if;
+    p_asunto := btrim(coalesce(p_asunto, ''));
+    p_mensaje := btrim(coalesce(p_mensaje, ''));
+    if length(p_asunto) not between 1 and 200 then
+        raise exception 'El asunto debe contener entre 1 y 200 caracteres';
+    end if;
+    if length(p_mensaje) not between 1 and 5000 then
+        raise exception 'El mensaje debe contener entre 1 y 5000 caracteres';
+    end if;
+
+    insert into horarios.notificaciones
+        (remitente_usuario_id, tipo_notificacion, asunto, mensaje_cuerpo, prioridad,
+         canal_envio, fecha_creacion, actualizado_en)
+    values
+        (v_usuario_id, 'interna_docente', p_asunto, p_mensaje, p_prioridad,
+         'interno', now(), now())
+    returning id, fecha_creacion into v_notificacion_id, v_creado_en;
+
+    insert into horarios.notificacion_destinatarios
+        (notificacion_id, destinatario_usuario_id)
+    select distinct v_notificacion_id, u.id
+    from horarios.usuarios u
+    join horarios.docentes d on d.id = u.docente_id
+    where u.tipo = 'docente' and u.estado = 'activo' and u.eliminado_en is null
+      and u.auth_user_id is not null and d.esta_activo and d.eliminado_en is null
+      and (p_todos_activos or u.id = any(coalesce(p_destinatario_ids, '{}'::uuid[])));
+    get diagnostics v_cantidad = row_count;
+    if v_cantidad = 0 then raise exception 'Seleccione al menos un docente activo con cuenta'; end if;
+
+    insert into horarios.auditoria
+        (usuario_id, accion, entidad, entidad_id, valores_nuevos)
+    values
+        (v_usuario_id, 'crear', 'notificaciones', v_notificacion_id,
+         jsonb_build_object('asunto', p_asunto, 'prioridad', p_prioridad,
+                            'cantidad_destinatarios', v_cantidad));
+
+    return jsonb_build_object('notificacion_id', v_notificacion_id,
+                              'cantidad_destinatarios', v_cantidad,
+                              'creado_en', v_creado_en);
+end;
+$$;
+
+
+--
 -- Name: crear_plan_horario("uuid", "text", "uuid", "uuid"[], "uuid"[]); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -1942,7 +2166,8 @@ begin
         nombre_completo,
         correo_institucional,
         estado,
-        docente_id
+        docente_id,
+        debe_cambiar_contrasena
     )
     values (
         p_auth_user_id,
@@ -1950,7 +2175,8 @@ begin
         trim(v_docente.nombre_completo),
         lower(trim(v_docente.correo)),
         'activo'::horarios.estado_usuario,
-        p_docente_id
+        p_docente_id,
+        true
     )
     returning * into v_usuario;
 
@@ -2144,15 +2370,26 @@ CREATE FUNCTION "horarios"."cursos_equivalentes"("p_curso_id" "uuid") RETURNS TA
     LANGUAGE "sql" STABLE
     SET "search_path" TO 'horarios', 'public'
     AS $$
-    select p_curso_id
+    select c.id
+      from horarios.cursos c
+     where c.id = p_curso_id
+       and c.esta_activo
+       and c.eliminado_en is null
     union
     select gc2.curso_id
-    from horarios.curso_comun_cursos gc1
-    join horarios.curso_comun g
-      on g.id = gc1.curso_comun_id and g.eliminado_en is null
-    join horarios.curso_comun_cursos gc2
-      on gc2.curso_comun_id = gc1.curso_comun_id
-    where gc1.curso_id = p_curso_id;
+      from horarios.curso_comun_cursos gc1
+      join horarios.curso_comun g
+        on g.id = gc1.curso_comun_id and g.eliminado_en is null
+      join horarios.curso_comun_cursos gc2
+        on gc2.curso_comun_id = gc1.curso_comun_id
+      join horarios.cursos c2
+        on c2.id = gc2.curso_id and c2.esta_activo and c2.eliminado_en is null
+     where gc1.curso_id = p_curso_id
+       and exists (
+           select 1 from horarios.cursos origen
+            where origen.id = p_curso_id
+              and origen.esta_activo
+              and origen.eliminado_en is null);
 $$;
 
 
@@ -2160,7 +2397,88 @@ $$;
 -- Name: FUNCTION "cursos_equivalentes"("p_curso_id" "uuid"); Type: COMMENT; Schema: horarios; Owner: -
 --
 
-COMMENT ON FUNCTION "horarios"."cursos_equivalentes"("p_curso_id" "uuid") IS 'El curso y los demás miembros de su curso común. Un curso sin grupo se devuelve solo.';
+COMMENT ON FUNCTION "horarios"."cursos_equivalentes"("p_curso_id" "uuid") IS 'El curso activo y los miembros activos de su curso común. Los inactivos no autorizan generaciones nuevas.';
+
+
+--
+-- Name: descartar_mi_notificacion("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."descartar_mi_notificacion"("p_notificacion_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare v_usuario_id uuid := horarios.usuario_actual_id(); v_cambio integer;
+begin
+    if auth.uid() is null or v_usuario_id is null then raise exception 'Sesion requerida' using errcode='42501'; end if;
+    update horarios.notificacion_destinatarios
+       set estado = 'descartada', descartada_en = now(), actualizado_en = now()
+     where notificacion_id = p_notificacion_id and destinatario_usuario_id = v_usuario_id
+       and estado <> 'descartada';
+    get diagnostics v_cambio = row_count;
+    if not exists (select 1 from horarios.notificacion_destinatarios where notificacion_id=p_notificacion_id and destinatario_usuario_id=v_usuario_id) then
+        raise exception 'Notificacion no encontrada';
+    end if;
+    if v_cambio = 1 then
+      insert into horarios.auditoria(usuario_id, accion, entidad, entidad_id)
+      values(v_usuario_id, 'descartar', 'notificacion_destinatarios', p_notificacion_id);
+    end if;
+    return true;
+end;
+$$;
+
+
+--
+-- Name: descartar_slot_extraordinario_bloqueado(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."descartar_slot_extraordinario_bloqueado"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+declare
+    v_docente_id uuid;
+    v_periodo_id uuid;
+begin
+    -- En una jornada regular no hay nada que revisar.
+    if not exists (
+        select 1
+        from horarios.jornadas j
+        where j.id = new.jornada_id
+          and j.jornada_regular_id is not null)
+    then
+        return new;
+    end if;
+
+    select dd.docente_id, dd.periodo_id
+      into v_docente_id, v_periodo_id
+    from horarios.disponibilidades_docente dd
+    where dd.id = new.disponibilidad_id;
+
+    -- Descartar si el docente no está asignado a la jornada...
+    if not exists (
+        select 1
+        from horarios.jornada_extraordinaria_docentes ad
+        where ad.jornada_id = new.jornada_id
+          and ad.periodo_id = v_periodo_id
+          and ad.docente_id = v_docente_id)
+    then
+        return null;
+    end if;
+
+    -- ...o si el slot está bloqueado.
+    if exists (
+        select 1
+        from horarios.calcular_slots_bloqueados(v_periodo_id, new.jornada_id, v_docente_id) b
+        where b.dia = new.dia
+          and b.indice_slot = new.indice_slot)
+    then
+        return null;
+    end if;
+
+    return new;
+end;
+$$;
 
 
 --
@@ -2230,6 +2548,122 @@ $$;
 
 
 --
+-- Name: es_horario_de_referencia("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."es_horario_de_referencia"("p_horario_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    select exists (
+        select 1
+        from horarios.jornada_extraordinaria_periodos ep
+        where ep.horario_referencia_id = p_horario_id);
+$$;
+
+
+--
+-- Name: establecer_estado_curso("uuid", boolean); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."establecer_estado_curso"("p_curso_id" "uuid", "p_esta_activo" boolean) RETURNS "jsonb"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare
+    v_curso horarios.cursos%rowtype;
+begin
+    if p_curso_id is null or p_esta_activo is null then
+        raise exception using
+            errcode = '22023',
+            message = 'El curso y el estado son obligatorios.';
+    end if;
+
+    update horarios.cursos
+       set esta_activo = p_esta_activo
+     where id = p_curso_id
+       and eliminado_en is null
+       and esta_activo is distinct from p_esta_activo
+    returning * into v_curso;
+
+    if not found then
+        select * into v_curso
+          from horarios.cursos
+         where id = p_curso_id
+           and eliminado_en is null;
+    end if;
+
+    if not found then
+        raise exception using
+            errcode = 'P0002',
+            message = 'No se encontró el curso.';
+    end if;
+
+    return to_jsonb(v_curso);
+end;
+$$;
+
+
+--
+-- Name: FUNCTION "establecer_estado_curso"("p_curso_id" "uuid", "p_esta_activo" boolean); Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON FUNCTION "horarios"."establecer_estado_curso"("p_curso_id" "uuid", "p_esta_activo" boolean) IS 'Activa o desactiva un curso de forma idempotente, sin borrar malla, sesiones ni referencias históricas.';
+
+
+--
+-- Name: exigir_curso_activo_en_autorizacion(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."exigir_curso_activo_en_autorizacion"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+begin
+    if new.esta_vigente and new.eliminado_en is null and not exists (
+        select 1
+          from horarios.cursos c
+         where c.id = new.curso_id
+           and c.esta_activo
+           and c.eliminado_en is null
+    ) then
+        raise exception using
+            errcode = '23514',
+            message = 'No se puede autorizar un curso inactivo.';
+    end if;
+
+    return new;
+end;
+$$;
+
+
+--
+-- Name: exigir_curso_activo_en_nueva_relacion(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."exigir_curso_activo_en_nueva_relacion"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+begin
+    if not exists (
+        select 1
+          from horarios.cursos c
+         where c.id = new.curso_id
+           and c.esta_activo
+           and c.eliminado_en is null
+    ) then
+        raise exception using
+            errcode = '23514',
+            message = 'El curso está inactivo y no admite nuevas selecciones.';
+    end if;
+
+    return new;
+end;
+$$;
+
+
+--
 -- Name: fijar_alcance_plan("uuid", "uuid"[], "uuid"[]); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -2239,8 +2673,10 @@ CREATE FUNCTION "horarios"."fijar_alcance_plan"("p_plan_id" "uuid", "p_carrera_i
     AS $$
 declare
     v_estado horarios.estado_horario;
+    v_periodo_id uuid;
+    v_con_extraordinarias boolean;
 begin
-    select estado into v_estado
+    select estado, periodo_id into v_estado, v_periodo_id
     from horarios.horarios
     where id = p_plan_id and eliminado_en is null;
 
@@ -2250,6 +2686,34 @@ begin
 
     if v_estado <> 'borrador' then
         raise exception 'plan_no_editable' using errcode = 'invalid_parameter_value';
+    end if;
+
+    v_con_extraordinarias := exists (
+        select 1 from horarios.jornadas j
+        where j.id = any (p_jornada_ids) and j.jornada_regular_id is not null);
+
+    -- 1. Un plan es de jornadas regulares o de extraordinarias, nunca de las dos: el
+    --    extraordinario se genera contra un horario regular que ya existe.
+    if v_con_extraordinarias
+       and exists (select 1 from horarios.jornadas j
+                   where j.id = any (p_jornada_ids) and j.jornada_regular_id is null)
+    then
+        raise exception 'Un plan no puede mezclar jornadas regulares y extraordinarias'
+            using errcode = 'check_violation';
+    end if;
+
+    if v_con_extraordinarias then
+        -- 2. El horario de referencia de una extraordinaria no puede volverse extraordinario.
+        if horarios.es_horario_de_referencia(p_plan_id) then
+            raise exception 'Este plan es el horario de referencia de una jornada extraordinaria: no puede cubrir jornadas extraordinarias'
+                using errcode = 'check_violation';
+        end if;
+
+        -- 3. Todas las extraordinarias del plan tienen que usar el mismo horario de referencia.
+        if horarios.referencias_distintas(v_periodo_id, p_jornada_ids) > 1 then
+            raise exception 'Las jornadas extraordinarias elegidas usan horarios de referencia distintos: genéralas en planes separados'
+                using errcode = 'check_violation';
+        end if;
     end if;
 
     delete from horarios.plan_carreras where plan_id = p_plan_id;
@@ -2413,39 +2877,147 @@ declare
     v_id uuid;
     v_slot jsonb;
 begin
-    insert into horarios.disponibilidades_docente
-        (docente_id, periodo_id, esta_confirmada)
+    insert into horarios.disponibilidades_docente (docente_id, periodo_id, esta_confirmada)
     values (p_docente_id, p_periodo_id, p_confirmar)
     on conflict (docente_id, periodo_id) do update
       set esta_confirmada = excluded.esta_confirmada, actualizado_en = now()
     returning id into v_id;
 
     delete from horarios.disponibilidad_docente_slots where disponibilidad_id = v_id;
+
     for v_slot in select value from jsonb_array_elements(p_slots)
     loop
-        insert into horarios.disponibilidad_docente_slots
-            (disponibilidad_id, jornada_id, dia, indice_slot, esta_disponible)
-        select v_id,
-               (v_slot->>'jornada_id')::uuid,
-               (v_slot->>'dia')::horarios.dia_semana,
-               (v_slot->>'indice_slot')::integer,
-               coalesce((v_slot->>'esta_disponible')::boolean, true)
-        from horarios.jornadas j
-        where j.id = (v_slot->>'jornada_id')::uuid
-          and j.esta_activa and j.eliminado_en is null
-          and (v_slot->>'dia')::horarios.dia_semana = any(j.dias_activos)
-          and (v_slot->>'indice_slot')::integer between 1 and j.bloques_por_dia;
-        if not found then
+        if not exists (
+            select 1
+            from horarios.jornadas j
+            where j.id = (v_slot->>'jornada_id')::uuid
+              and j.esta_activa and j.eliminado_en is null
+              and (v_slot->>'dia')::horarios.dia_semana = any (j.dias_activos)
+              and (v_slot->>'indice_slot')::integer between 1 and j.bloques_por_dia)
+        then
             raise exception 'Un bloque no pertenece a la jornada indicada';
         end if;
+
+        -- Si el slot está bloqueado, el disparador lo descarta y no se escribe nada.
+        insert into horarios.disponibilidad_docente_slots
+            (disponibilidad_id, jornada_id, dia, indice_slot, esta_disponible)
+        values (
+            v_id,
+            (v_slot->>'jornada_id')::uuid,
+            (v_slot->>'dia')::horarios.dia_semana,
+            (v_slot->>'indice_slot')::integer,
+            coalesce((v_slot->>'esta_disponible')::boolean, true));
     end loop;
+
+    if coalesce(p_confirmar, false) and not exists (
+        select 1
+        from horarios.disponibilidad_docente_slots s
+        where s.disponibilidad_id = v_id
+          and s.esta_disponible)
+    then
+        raise exception 'No se puede confirmar una disponibilidad sin bloques: los bloques enviados están ocupados en su jornada extraordinaria, o el docente no está asignado a ella';
+    end if;
 
     return jsonb_build_object(
         'id', v_id,
         'docente_id', p_docente_id,
         'periodo_id', p_periodo_id,
         'esta_confirmada', p_confirmar,
-        'slots', p_slots);
+        'slots_ignorados', 0,
+        'slots', coalesce((
+            select jsonb_agg(jsonb_build_object(
+                       'jornada_id', s.jornada_id,
+                       'dia', s.dia::text,
+                       'indice_slot', s.indice_slot,
+                       'esta_disponible', s.esta_disponible)
+                   order by s.jornada_id, s.dia, s.indice_slot)
+            from horarios.disponibilidad_docente_slots s
+            where s.disponibilidad_id = v_id
+        ), '[]'::jsonb));
+end;
+$$;
+
+
+--
+-- Name: guardar_jornada_extraordinaria_periodo("uuid", "uuid", "uuid", "uuid"[]); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."guardar_jornada_extraordinaria_periodo"("p_jornada_id" "uuid", "p_periodo_id" "uuid", "p_horario_referencia_id" "uuid", "p_docente_ids" "uuid"[]) RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+    if auth.uid() is not null
+       and not horarios.usuario_actual_tiene_permiso('aulas', 'crear')
+    then
+        raise exception 'No tiene permiso para configurar jornadas extraordinarias'
+            using errcode = '42501';
+    end if;
+
+    if not exists (
+        select 1
+        from horarios.jornadas j
+        where j.id = p_jornada_id
+          and j.jornada_regular_id is not null
+          and j.eliminado_en is null)
+    then
+        raise exception 'La jornada % no es una jornada extraordinaria activa', p_jornada_id
+            using errcode = 'check_violation';
+    end if;
+
+    -- La referencia tiene que ser un horario vivo del mismo período y de jornadas regulares.
+    if not exists (
+        select 1
+        from horarios.horarios h
+        where h.id = p_horario_referencia_id
+          and h.periodo_id = p_periodo_id
+          and h.eliminado_en is null)
+    then
+        raise exception 'El horario de referencia no existe, está dado de baja o no es de este período'
+            using errcode = 'check_violation';
+    end if;
+
+    if horarios.plan_es_extraordinario(p_horario_referencia_id) then
+        raise exception 'El horario de referencia no puede ser el plan de una jornada extraordinaria: elige un horario de jornadas regulares'
+            using errcode = 'check_violation';
+    end if;
+
+    insert into horarios.jornada_extraordinaria_periodos (jornada_id, periodo_id, horario_referencia_id)
+    values (p_jornada_id, p_periodo_id, p_horario_referencia_id)
+    on conflict (jornada_id, periodo_id) do update
+        set horario_referencia_id = excluded.horario_referencia_id,
+            actualizado_en = now();
+
+    -- Un plan que todavía se puede generar no puede quedar con dos referencias distintas.
+    if exists (
+        select 1
+        from horarios.horarios h
+        where h.periodo_id = p_periodo_id
+          and h.eliminado_en is null
+          and h.estado not in ('publicado', 'archivado')
+          and exists (
+              select 1
+              from horarios.plan_jornadas pj
+              where pj.plan_id = h.id
+                and pj.jornada_id = p_jornada_id)
+          and horarios.referencias_distintas(
+                  p_periodo_id,
+                  array(select pj.jornada_id from horarios.plan_jornadas pj where pj.plan_id = h.id)) > 1)
+    then
+        raise exception 'Un plan de este período junta esta jornada con otra extraordinaria que usa otro horario de referencia. Usa la misma referencia o separa las jornadas en planes distintos'
+            using errcode = 'check_violation';
+    end if;
+
+    -- La lista que llega es la lista completa: quien no viene, deja de estar asignado.
+    delete from horarios.jornada_extraordinaria_docentes ad
+    where ad.jornada_id = p_jornada_id
+      and ad.periodo_id = p_periodo_id
+      and not (ad.docente_id = any (coalesce(p_docente_ids, '{}'::uuid[])));
+
+    insert into horarios.jornada_extraordinaria_docentes (jornada_id, periodo_id, docente_id)
+    select p_jornada_id, p_periodo_id, docente_id
+    from unnest(coalesce(p_docente_ids, '{}'::uuid[])) as docente_id
+    on conflict do nothing;
 end;
 $$;
 
@@ -2508,6 +3080,7 @@ begin
     delete from horarios.disponibilidad_docente_slots
      where disponibilidad_id = v_disponibilidad_id;
 
+    -- Si un bloque está ocupado en su jornada extraordinaria, el disparador lo descarta.
     insert into horarios.disponibilidad_docente_slots
         (disponibilidad_id, jornada_id, dia, indice_slot, esta_disponible)
     select
@@ -2523,12 +3096,22 @@ begin
         esta_disponible boolean
     );
 
+    if coalesce(p_confirmar, false) and not exists (
+        select 1
+        from horarios.disponibilidad_docente_slots slot
+        where slot.disponibilidad_id = v_disponibilidad_id
+          and slot.esta_disponible)
+    then
+        raise exception 'No se puede confirmar una disponibilidad sin bloques: los bloques enviados están ocupados en tu jornada extraordinaria, o no estás asignado a ella';
+    end if;
+
     return (
         select jsonb_build_object(
             'id', disponibilidad.id,
             'docente_id', disponibilidad.docente_id,
             'periodo_id', disponibilidad.periodo_id,
             'esta_confirmada', disponibilidad.esta_confirmada,
+            'slots_ignorados', 0,
             'slots', coalesce((
                 select jsonb_agg(jsonb_build_object(
                     'jornada_id', slot.jornada_id,
@@ -2842,6 +3425,18 @@ $$;
 
 
 --
+-- Name: hora_de_minuto(integer); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."hora_de_minuto"("p_minuto" integer) RETURNS "text"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+    select lpad((p_minuto / 60)::text, 2, '0') || ':' || lpad((p_minuto % 60)::text, 2, '0');
+$$;
+
+
+--
 -- Name: iniciar_generacion("uuid", "text", "uuid", "uuid", "text", "text", "jsonb"); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -2862,6 +3457,26 @@ begin
     returning id into v_id;
     return horarios.obtener_generacion(v_id);
 end;
+$$;
+
+
+--
+-- Name: jornada_en_alcance("uuid", "uuid"[]); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."jornada_en_alcance"("p_jornada_id" "uuid", "p_jornada_ids" "uuid"[]) RETURNS boolean
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+    select case
+        when cardinality(coalesce(p_jornada_ids, '{}'::uuid[])) > 0
+            then p_jornada_id = any (p_jornada_ids)
+        else not exists (
+            select 1
+            from horarios.jornadas j
+            where j.id = p_jornada_id
+              and j.jornada_regular_id is not null)
+    end;
 $$;
 
 
@@ -2951,6 +3566,45 @@ $$;
 
 
 --
+-- Name: listar_destinatarios_de_notificacion("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."listar_destinatarios_de_notificacion"("p_notificacion_id" "uuid") RETURNS TABLE("usuario_id" "uuid", "nombre_completo" "text", "correo" "text", "estado" "text", "enviada_en" timestamp with time zone, "leida_en" timestamp with time zone, "descartada_en" timestamp with time zone)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select u.id, u.nombre_completo::text, u.correo_institucional::text, nd.estado::text,
+           nd.enviada_en, nd.leida_en, nd.descartada_en
+    from horarios.notificacion_destinatarios nd
+    join horarios.usuarios u on u.id=nd.destinatario_usuario_id
+    where auth.uid() is not null
+      and horarios.usuario_actual_tiene_permiso('notificaciones','leer')
+      and nd.notificacion_id=p_notificacion_id
+    order by u.nombre_completo, u.id;
+$$;
+
+
+--
+-- Name: listar_destinatarios_notificacion(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."listar_destinatarios_notificacion"() RETURNS TABLE("usuario_id" "uuid", "docente_id" "uuid", "nombre_completo" "text", "correo" "text")
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select u.id, d.id, d.nombre_completo::text, d.correo::text
+    from horarios.usuarios u
+    join horarios.docentes d on d.id = u.docente_id
+    where auth.uid() is not null
+      and horarios.usuario_actual_tiene_permiso('notificaciones', 'crear')
+      and u.tipo = 'docente' and u.estado = 'activo' and u.eliminado_en is null
+      and u.auth_user_id is not null
+      and d.esta_activo and d.eliminado_en is null
+    order by d.nombre_completo, d.id;
+$$;
+
+
+--
 -- Name: listar_generaciones_plan("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -2961,6 +3615,68 @@ CREATE FUNCTION "horarios"."listar_generaciones_plan"("p_plan_id" "uuid") RETURN
     select coalesce(jsonb_agg(horarios.obtener_generacion(c.id)
         order by c.iniciada_en desc), '[]'::jsonb)
     from horarios.generaciones c where c.plan_id = p_plan_id;
+$$;
+
+
+--
+-- Name: listar_historial_notificaciones("text", timestamp with time zone, timestamp with time zone, integer, integer); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."listar_historial_notificaciones"("p_prioridad" "text" DEFAULT NULL::"text", "p_desde" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_hasta" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_limite" integer DEFAULT 50, "p_offset" integer DEFAULT 0) RETURNS TABLE("notificacion_id" "uuid", "asunto" "text", "mensaje_resumen" "text", "prioridad" "text", "remitente" "text", "enviada_en" timestamp with time zone, "total" integer, "no_leidas" integer, "leidas" integer, "descartadas" integer, "destinatarios_resumen" "text")
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select n.id, n.asunto,
+           case when length(n.mensaje_cuerpo) <= 140 then n.mensaje_cuerpo else left(n.mensaje_cuerpo, 140) || '…' end,
+           n.prioridad::text, coalesce(r.nombre_completo, 'Sistema')::text,
+           max(nd.enviada_en), count(nd.id)::integer,
+           count(*) filter (where nd.estado = 'no_leida')::integer,
+           count(*) filter (where nd.estado = 'leida')::integer,
+           count(*) filter (where nd.estado = 'descartada')::integer,
+           case when count(nd.id) = 1 then max(u.nombre_completo)::text
+                else count(nd.id)::text || ' docentes' end
+    from horarios.notificaciones n
+    join horarios.notificacion_destinatarios nd on nd.notificacion_id = n.id
+    join horarios.usuarios u on u.id = nd.destinatario_usuario_id
+    left join horarios.usuarios r on r.id = n.remitente_usuario_id
+    where auth.uid() is not null
+      and horarios.usuario_actual_tiene_permiso('notificaciones', 'leer')
+      and n.eliminado_en is null
+      and (p_prioridad is null or n.prioridad::text = p_prioridad)
+      and (p_desde is null or nd.enviada_en >= p_desde)
+      and (p_hasta is null or nd.enviada_en <= p_hasta)
+    group by n.id, r.nombre_completo
+    order by max(nd.enviada_en) desc, n.id desc
+    limit least(greatest(coalesce(p_limite, 50), 1), 100)
+    offset greatest(coalesce(p_offset, 0), 0);
+$$;
+
+
+--
+-- Name: listar_mis_notificaciones("text", "text", timestamp with time zone, timestamp with time zone, boolean, integer, integer); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."listar_mis_notificaciones"("p_estado" "text" DEFAULT NULL::"text", "p_prioridad" "text" DEFAULT NULL::"text", "p_desde" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_hasta" timestamp with time zone DEFAULT NULL::timestamp with time zone, "p_incluir_descartadas" boolean DEFAULT false, "p_limite" integer DEFAULT 20, "p_offset" integer DEFAULT 0) RETURNS TABLE("notificacion_id" "uuid", "asunto" "text", "mensaje" "text", "prioridad" "text", "remitente" "text", "creado_en" timestamp with time zone, "enviada_en" timestamp with time zone, "estado" "text", "leida_en" timestamp with time zone, "descartada_en" timestamp with time zone)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+    select n.id, n.asunto, n.mensaje_cuerpo, n.prioridad::text,
+           coalesce(r.nombre_completo, 'Sistema')::text,
+           n.fecha_creacion, nd.enviada_en, nd.estado::text, nd.leida_en, nd.descartada_en
+    from horarios.notificacion_destinatarios nd
+    join horarios.notificaciones n on n.id = nd.notificacion_id
+    left join horarios.usuarios r on r.id = n.remitente_usuario_id
+    where auth.uid() is not null
+      and nd.destinatario_usuario_id = horarios.usuario_actual_id()
+      and n.eliminado_en is null
+      and (p_incluir_descartadas or nd.estado <> 'descartada')
+      and (p_estado is null or nd.estado::text = p_estado)
+      and (p_prioridad is null or n.prioridad::text = p_prioridad)
+      and (p_desde is null or nd.enviada_en >= p_desde)
+      and (p_hasta is null or nd.enviada_en <= p_hasta)
+    order by nd.enviada_en desc, n.id desc
+    limit least(greatest(coalesce(p_limite, 20), 1), 100)
+    offset greatest(coalesce(p_offset, 0), 0);
 $$;
 
 
@@ -3034,6 +3750,72 @@ $$;
 
 
 --
+-- Name: marcar_contrasena_actualizada(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."marcar_contrasena_actualizada"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'auth', 'public'
+    AS $$
+begin
+    if auth.uid() is null then
+        raise exception 'sesion_requerida';
+    end if;
+
+    update horarios.usuarios
+    set debe_cambiar_contrasena = false
+    where auth_user_id = auth.uid()
+      and estado = 'activo'::horarios.estado_usuario
+      and eliminado_en is null;
+
+    if not found then
+        raise exception 'usuario_inexistente_o_inactivo';
+    end if;
+end;
+$$;
+
+
+--
+-- Name: marcar_mi_notificacion_leida("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."marcar_mi_notificacion_leida"("p_notificacion_id" "uuid") RETURNS boolean
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'horarios', 'public'
+    AS $$
+declare v_usuario_id uuid := horarios.usuario_actual_id(); v_cambio integer;
+begin
+    if auth.uid() is null or v_usuario_id is null then raise exception 'Sesion requerida' using errcode='42501'; end if;
+    update horarios.notificacion_destinatarios
+       set estado = 'leida', leida_en = now(), descartada_en = null, actualizado_en = now()
+     where notificacion_id = p_notificacion_id and destinatario_usuario_id = v_usuario_id
+       and estado = 'no_leida';
+    get diagnostics v_cambio = row_count;
+    if not exists (select 1 from horarios.notificacion_destinatarios where notificacion_id=p_notificacion_id and destinatario_usuario_id=v_usuario_id) then
+        raise exception 'Notificacion no encontrada';
+    end if;
+    if v_cambio = 1 then
+      insert into horarios.auditoria(usuario_id, accion, entidad, entidad_id)
+      values(v_usuario_id, 'leer', 'notificacion_destinatarios', p_notificacion_id);
+    end if;
+    return true;
+end;
+$$;
+
+
+--
+-- Name: minuto_del_dia(time without time zone); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."minuto_del_dia"("p_hora" time without time zone) RETURNS integer
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+    select extract(hour from p_hora)::integer * 60 + extract(minute from p_hora)::integer;
+$$;
+
+
+--
 -- Name: obtener_alcance_usuario("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -3055,6 +3837,43 @@ $$;
 
 
 --
+-- Name: obtener_bloqueos_disponibilidad("uuid", "uuid", "uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."obtener_bloqueos_disponibilidad"("p_docente_id" "uuid", "p_periodo_id" "uuid", "p_jornada_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+    -- La misma puerta que leer su disponibilidad: el motivo nombra sus clases.
+    if not horarios.puede_ver_disponibilidad_de(p_docente_id) then
+        raise exception 'No puede consultar la disponibilidad de ese docente'
+            using errcode = '42501';
+    end if;
+
+    return jsonb_build_object(
+        'es_extraordinaria', exists (
+            select 1
+            from horarios.jornadas j
+            where j.id = p_jornada_id
+              and j.jornada_regular_id is not null),
+        'docente_asignado', exists (
+            select 1
+            from horarios.jornada_extraordinaria_docentes ad
+            where ad.jornada_id = p_jornada_id
+              and ad.periodo_id = p_periodo_id
+              and ad.docente_id = p_docente_id),
+        'slots', coalesce((
+            select jsonb_agg(
+                       jsonb_build_object('dia', b.dia, 'indice_slot', b.indice_slot, 'motivo', b.motivo)
+                       order by b.dia, b.indice_slot)
+            from horarios.calcular_slots_bloqueados(p_periodo_id, p_jornada_id, p_docente_id) b
+        ), '[]'::jsonb));
+end;
+$$;
+
+
+--
 -- Name: obtener_disponibilidad_docente("uuid", "uuid"); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -3062,11 +3881,16 @@ CREATE FUNCTION "horarios"."obtener_disponibilidad_docente"("p_docente_id" "uuid
     LANGUAGE "sql" STABLE
     SET "search_path" TO 'horarios', 'public'
     AS $$
+    with ignorados as materialized (
+        select i.jornada_id, i.dia, i.indice_slot
+        from horarios.obtener_slots_ignorados(p_docente_id, p_periodo_id) i
+    )
     select jsonb_build_object(
         'id', d.id,
         'docente_id', d.docente_id,
         'periodo_id', d.periodo_id,
         'esta_confirmada', d.esta_confirmada,
+        'slots_ignorados', (select count(*)::integer from ignorados),
         'slots', coalesce((select jsonb_agg(jsonb_build_object(
             'jornada_id', s.jornada_id,
             'dia', s.dia::text,
@@ -3074,7 +3898,13 @@ CREATE FUNCTION "horarios"."obtener_disponibilidad_docente"("p_docente_id" "uuid
             'esta_disponible', s.esta_disponible)
             order by s.dia, s.indice_slot)
             from horarios.disponibilidad_docente_slots s
-            where s.disponibilidad_id = d.id), '[]'::jsonb))
+            where s.disponibilidad_id = d.id
+              and not exists (
+                  select 1
+                  from ignorados i
+                  where i.jornada_id = s.jornada_id
+                    and i.dia = s.dia
+                    and i.indice_slot = s.indice_slot)), '[]'::jsonb))
     from horarios.disponibilidades_docente d
     where d.docente_id = p_docente_id and d.periodo_id = p_periodo_id;
 $$;
@@ -3121,11 +3951,26 @@ CREATE FUNCTION "horarios"."obtener_mi_disponibilidad_docente"("p_periodo_id" "u
     LANGUAGE "sql" STABLE
     SET "search_path" TO ''
     AS $$
+    with
+    yo as (
+        select usuario.docente_id
+        from horarios.usuarios usuario
+        where usuario.auth_user_id = (select auth.uid())
+          and usuario.tipo = 'docente'
+          and usuario.estado = 'activo'
+          and usuario.eliminado_en is null
+    ),
+    ignorados as materialized (
+        select i.jornada_id, i.dia, i.indice_slot
+        from yo
+        cross join horarios.obtener_slots_ignorados(yo.docente_id, p_periodo_id) i
+    )
     select jsonb_build_object(
         'id', disponibilidad.id,
         'docente_id', disponibilidad.docente_id,
         'periodo_id', disponibilidad.periodo_id,
         'esta_confirmada', disponibilidad.esta_confirmada,
+        'slots_ignorados', (select count(*)::integer from ignorados),
         'slots', coalesce((
             select jsonb_agg(jsonb_build_object(
                 'jornada_id', slot.jornada_id,
@@ -3135,18 +3980,31 @@ CREATE FUNCTION "horarios"."obtener_mi_disponibilidad_docente"("p_periodo_id" "u
             ) order by slot.jornada_id, slot.dia, slot.indice_slot)
             from horarios.disponibilidad_docente_slots slot
             where slot.disponibilidad_id = disponibilidad.id
+              and not exists (
+                  select 1
+                  from ignorados i
+                  where i.jornada_id = slot.jornada_id
+                    and i.dia = slot.dia
+                    and i.indice_slot = slot.indice_slot)
         ), '[]'::jsonb)
     )
     from horarios.disponibilidades_docente disponibilidad
     where disponibilidad.periodo_id = p_periodo_id
-      and disponibilidad.docente_id = (
-          select usuario.docente_id
-          from horarios.usuarios usuario
-          where usuario.auth_user_id = (select auth.uid())
-            and usuario.tipo = 'docente'
-            and usuario.estado = 'activo'
-            and usuario.eliminado_en is null
-      );
+      and disponibilidad.docente_id = (select yo.docente_id from yo);
+$$;
+
+
+--
+-- Name: obtener_slots_ignorados("uuid", "uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."obtener_slots_ignorados"("p_docente_id" "uuid", "p_periodo_id" "uuid") RETURNS TABLE("jornada_id" "uuid", "dia" "horarios"."dia_semana", "indice_slot" integer)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    select i.jornada_id, i.dia, i.indice_slot
+    from horarios.calcular_slots_ignorados(p_periodo_id, p_docente_id) i
+    where horarios.puede_ver_disponibilidad_de(p_docente_id);
 $$;
 
 
@@ -3164,6 +4022,23 @@ CREATE FUNCTION "horarios"."plan_es_completo_y_valido"("p_plan_id" "uuid") RETUR
                        where horario_id = p_plan_id and es_restriccion_dura)
        and coalesce((select cantidad_violaciones_duras = 0
                      from horarios.horarios where id = p_plan_id), false);
+$$;
+
+
+--
+-- Name: plan_es_extraordinario("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."plan_es_extraordinario"("p_plan_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    select exists (
+        select 1
+        from horarios.plan_jornadas pj
+        join horarios.jornadas j on j.id = pj.jornada_id
+        where pj.plan_id = p_plan_id
+          and j.jornada_regular_id is not null);
 $$;
 
 
@@ -3187,6 +4062,121 @@ begin
 
   return new;
 end;
+$$;
+
+
+--
+-- Name: puede_ver_disponibilidad_de("uuid"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."puede_ver_disponibilidad_de"("p_docente_id" "uuid") RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    select case
+        when (select auth.uid()) is null then true
+        when exists (
+            select 1
+            from horarios.usuarios u
+            where u.auth_user_id = (select auth.uid())
+              and u.tipo = 'docente'
+              and u.estado = 'activo'
+              and u.eliminado_en is null)
+        then exists (
+            select 1
+            from horarios.usuarios u
+            where u.auth_user_id = (select auth.uid())
+              and u.tipo = 'docente'
+              and u.estado = 'activo'
+              and u.eliminado_en is null
+              and u.docente_id = p_docente_id)
+        else horarios.usuario_actual_tiene_permiso('docentes', 'leer')
+          or horarios.usuario_actual_tiene_permiso('planes', 'leer')
+          or horarios.usuario_actual_tiene_permiso('motor', 'generar')
+    end;
+$$;
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = "heap";
+
+--
+-- Name: jornadas; Type: TABLE; Schema: horarios; Owner: -
+--
+
+CREATE TABLE "horarios"."jornadas" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "nombre" character varying(100) NOT NULL,
+    "dias_activos" "horarios"."dia_semana"[] NOT NULL,
+    "hora_inicio" time without time zone NOT NULL,
+    "hora_fin" time without time zone NOT NULL,
+    "duracion_bloque_minutos" integer NOT NULL,
+    "bloques_por_dia" integer NOT NULL,
+    "esta_activa" boolean DEFAULT true NOT NULL,
+    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone,
+    "version_fila" bigint DEFAULT 0 NOT NULL,
+    "receso_despues_bloque" integer DEFAULT 0 NOT NULL,
+    "duracion_receso_minutos" integer DEFAULT 0 NOT NULL,
+    "jornada_regular_id" "uuid",
+    CONSTRAINT "jornadas_bloques_por_dia_check" CHECK (("bloques_por_dia" > 0)),
+    CONSTRAINT "jornadas_check" CHECK (("hora_fin" > "hora_inicio")),
+    CONSTRAINT "jornadas_check1" CHECK ((((("bloques_por_dia" * "duracion_bloque_minutos") + "duracion_receso_minutos"))::numeric <= (EXTRACT(epoch FROM ("hora_fin" - "hora_inicio")) / (60)::numeric))),
+    CONSTRAINT "jornadas_dias_activos_check" CHECK (("cardinality"("dias_activos") > 0)),
+    CONSTRAINT "jornadas_duracion_bloque_minutos_check" CHECK (("duracion_bloque_minutos" > 0)),
+    CONSTRAINT "jornadas_receso_check" CHECK (((("duracion_receso_minutos" = 0) AND ("receso_despues_bloque" = 0)) OR (("duracion_receso_minutos" > 0) AND ("receso_despues_bloque" > 0) AND ("receso_despues_bloque" < "bloques_por_dia")))),
+    CONSTRAINT "jornadas_regular_distinta_check" CHECK (("jornada_regular_id" IS DISTINCT FROM "id"))
+);
+
+
+--
+-- Name: COLUMN "jornadas"."jornada_regular_id"; Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON COLUMN "horarios"."jornadas"."jornada_regular_id" IS 'Nulo en una jornada regular. Con valor, esta jornada es extraordinaria y corre en paralelo a esa jornada regular.';
+
+
+--
+-- Name: rango_minutos_receso("horarios"."jornadas"); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."rango_minutos_receso"("p_jornada" "horarios"."jornadas") RETURNS "int4range"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+    select case
+        when p_jornada.duracion_receso_minutos > 0 then int4range(
+            inicio,
+            inicio + p_jornada.duracion_receso_minutos,
+            '[)')
+    end
+    from (
+        select horarios.minuto_del_dia(p_jornada.hora_inicio)
+             + p_jornada.receso_despues_bloque * p_jornada.duracion_bloque_minutos as inicio
+    ) calculo;
+$$;
+
+
+--
+-- Name: rango_minutos_slot("horarios"."jornadas", integer); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."rango_minutos_slot"("p_jornada" "horarios"."jornadas", "p_indice" integer) RETURNS "int4range"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO ''
+    AS $$
+    select int4range(inicio, inicio + p_jornada.duracion_bloque_minutos, '[)')
+    from (
+        select horarios.minuto_del_dia(p_jornada.hora_inicio)
+             + (p_indice - 1) * p_jornada.duracion_bloque_minutos
+             + case when p_jornada.duracion_receso_minutos > 0
+                         and p_indice > p_jornada.receso_despues_bloque
+                    then p_jornada.duracion_receso_minutos
+                    else 0
+               end as inicio
+    ) calculo;
 $$;
 
 
@@ -3234,6 +4224,21 @@ COMMENT ON FUNCTION "horarios"."recalcular_areas_comunes_periodo"("p_periodo_id"
 
 
 --
+-- Name: referencias_distintas("uuid", "uuid"[]); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."referencias_distintas"("p_periodo_id" "uuid", "p_jornada_ids" "uuid"[]) RETURNS integer
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+    select count(distinct ep.horario_referencia_id)::integer
+    from horarios.jornada_extraordinaria_periodos ep
+    where ep.periodo_id = p_periodo_id
+      and ep.jornada_id = any (coalesce(p_jornada_ids, '{}'::uuid[]));
+$$;
+
+
+--
 -- Name: restaurar_entidad("text", "uuid", "text", "uuid"); Type: FUNCTION; Schema: horarios; Owner: -
 --
 
@@ -3242,47 +4247,22 @@ CREATE FUNCTION "horarios"."restaurar_entidad"("p_entidad" "text", "p_entidad_id
     SET "search_path" TO 'horarios', 'public'
     AS $_$
 declare
-    v_permitidas constant text[] := array[
-        'facultades','carreras','pensums','cohortes','cursos','docentes',
-        'aulas','jornadas','recursos','horarios'];
-    v_afectadas integer;
-    v_notificacion_id uuid;
+    v_permitidas constant text[] := array['facultades','carreras','pensums','cohortes','cursos','docentes','aulas','jornadas','recursos','horarios'];
+    v_afectadas integer; v_notificacion_id uuid;
 begin
-    if not p_entidad = any(v_permitidas) then
-        raise exception 'Entidad no restaurable';
-    end if;
-
-    execute format(
-        'update horarios.%I set eliminado_en = null, actualizado_en = now(), '
-        'version_fila = version_fila + 1 where id = $1 and eliminado_en is not null',
-        p_entidad)
-    using p_entidad_id;
+    if not p_entidad = any(v_permitidas) then raise exception 'Entidad no restaurable'; end if;
+    execute format('update horarios.%I set eliminado_en=null, actualizado_en=now(), version_fila=version_fila+1 where id=$1 and eliminado_en is not null', p_entidad) using p_entidad_id;
     get diagnostics v_afectadas = row_count;
-    if v_afectadas <> 1 then
-        raise exception 'El elemento no existe, no esta eliminado o ya fue restaurado';
-    end if;
-
-    insert into horarios.auditoria
-        (usuario_id, accion, entidad, entidad_id, motivo, valores_nuevos)
-    values
-        (p_usuario_id, 'restaurar', p_entidad, p_entidad_id, p_motivo,
-         '{"eliminado_en":null}'::jsonb);
-
-    insert into horarios.notificaciones
-        (destinatario_id, tipo_notificacion, asunto, mensaje_cuerpo, estado)
-    values
-        (p_usuario_id, 'restauracion_logica', 'Elemento restaurado',
-         'Se restauro ' || p_entidad || ' ' || p_entidad_id::text || '. Motivo: ' || p_motivo,
-         'enviada')
+    if v_afectadas <> 1 then raise exception 'El elemento no existe, no esta eliminado o ya fue restaurado'; end if;
+    insert into horarios.auditoria(usuario_id,accion,entidad,entidad_id,motivo,valores_nuevos)
+    values(p_usuario_id,'restaurar',p_entidad,p_entidad_id,p_motivo,'{"eliminado_en":null}'::jsonb);
+    insert into horarios.notificaciones(remitente_usuario_id,tipo_notificacion,asunto,mensaje_cuerpo,prioridad)
+    values(p_usuario_id,'restauracion_logica','Elemento restaurado','Se restauro '||p_entidad||' '||p_entidad_id::text||'. Motivo: '||p_motivo,'normal')
     returning id into v_notificacion_id;
-
-    return jsonb_build_object(
-        'entidad', p_entidad,
-        'entidad_id', p_entidad_id,
-        'restaurado', true,
-        'notificacion_id', v_notificacion_id);
-end;
-$_$;
+    insert into horarios.notificacion_destinatarios(notificacion_id,destinatario_usuario_id)
+    values(v_notificacion_id,p_usuario_id);
+    return jsonb_build_object('entidad',p_entidad,'entidad_id',p_entidad_id,'restaurado',true,'notificacion_id',v_notificacion_id);
+end; $_$;
 
 
 --
@@ -3598,6 +4578,9 @@ $$;
 CREATE FUNCTION "horarios"."validar_horario_publicable"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
+declare
+  v_jornadas_plan uuid[] := array(
+    select pj.jornada_id from horarios.plan_jornadas pj where pj.plan_id = new.id);
 begin
   if new.estado in ('pendiente_aprobacion', 'aprobado', 'publicado') then
     if new.cantidad_violaciones_duras > 0 then
@@ -3926,6 +4909,7 @@ begin
           and cp.eliminado_en is null
           and co.estado = 'activa'
           and co.eliminado_en is null
+          and horarios.jornada_en_alcance(co.jornada_id, v_jornadas_plan)
       ) then
         raise exception 'El periodo % no tiene cohortes activas para publicar horario de clases',
           new.periodo_id;
@@ -3944,6 +4928,7 @@ begin
           and cp.eliminado_en is null
           and co.estado = 'activa'
           and co.eliminado_en is null
+          and horarios.jornada_en_alcance(co.jornada_id, v_jornadas_plan)
           and (
             select coalesce(sum(s.duracion_slots), 0)
             from sesion_cohortes sc
@@ -4037,6 +5022,72 @@ begin
   end if;
 
   return new;
+end;
+$$;
+
+
+--
+-- Name: validar_jornada_extraordinaria(); Type: FUNCTION; Schema: horarios; Owner: -
+--
+
+CREATE FUNCTION "horarios"."validar_jornada_extraordinaria"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+declare
+    v_regular horarios.jornadas;
+begin
+    -- a) Una jornada extraordinaria necesita una regular válida, y sus bloques duran lo mismo:
+    --    si no, los slots de las dos no se podrían comparar uno a uno en la pantalla.
+    if new.jornada_regular_id is not null then
+        select * into v_regular
+        from horarios.jornadas j
+        where j.id = new.jornada_regular_id
+          and j.eliminado_en is null;
+
+        if not found then
+            raise exception 'La jornada regular % no existe', new.jornada_regular_id
+                using errcode = 'foreign_key_violation';
+        end if;
+
+        if v_regular.jornada_regular_id is not null then
+            raise exception 'La jornada % ya es extraordinaria: una extraordinaria no puede colgar de otra', v_regular.nombre
+                using errcode = 'check_violation';
+        end if;
+
+        if v_regular.duracion_bloque_minutos <> new.duracion_bloque_minutos then
+            raise exception 'Los bloques de una jornada extraordinaria deben durar % minutos, como los de %',
+                v_regular.duracion_bloque_minutos, v_regular.nombre
+                using errcode = 'check_violation';
+        end if;
+    end if;
+
+    -- b) Una regular con extraordinarias colgando no puede romperlas: ni volverse
+    --    extraordinaria, ni cambiar la duración de sus bloques, ni darse de baja.
+    --    Desactivarla sí se puede: el preparador del motor sigue leyendo su reloj.
+    if tg_op = 'UPDATE' and exists (
+        select 1
+        from horarios.jornadas e
+        where e.jornada_regular_id = new.id
+          and e.eliminado_en is null)
+    then
+        if new.jornada_regular_id is not null then
+            raise exception 'La jornada % tiene jornadas extraordinarias: no puede volverse extraordinaria', new.nombre
+                using errcode = 'check_violation';
+        end if;
+
+        if new.duracion_bloque_minutos <> old.duracion_bloque_minutos then
+            raise exception 'La jornada % tiene jornadas extraordinarias: no se puede cambiar la duración de sus bloques', new.nombre
+                using errcode = 'check_violation';
+        end if;
+
+        if new.eliminado_en is not null and old.eliminado_en is null then
+            raise exception 'La jornada % tiene jornadas extraordinarias: dalas de baja primero', new.nombre
+                using errcode = 'check_violation';
+        end if;
+    end if;
+
+    return new;
 end;
 $$;
 
@@ -4471,9 +5522,50 @@ end;
 $$;
 
 
-SET default_tablespace = '';
+--
+-- Name: validar_un_publicado_por_alcance(); Type: FUNCTION; Schema: horarios; Owner: -
+--
 
-SET default_table_access_method = "heap";
+CREATE FUNCTION "horarios"."validar_un_publicado_por_alcance"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+    if new.estado <> 'publicado' or new.eliminado_en is not null then
+        return new;
+    end if;
+
+    perform pg_advisory_xact_lock(
+        hashtextextended('horarios.publicado:' || new.periodo_id::text || ':' || new.tipo_plan::text, 0));
+
+    if exists (
+        select 1
+        from horarios.horarios otro
+        where otro.periodo_id = new.periodo_id
+          and otro.tipo_plan = new.tipo_plan
+          and otro.estado = 'publicado'
+          and otro.eliminado_en is null
+          and otro.id <> new.id
+          and (
+              -- Los dos son de jornadas regulares.
+              (not horarios.plan_es_extraordinario(new.id)
+               and not horarios.plan_es_extraordinario(otro.id))
+              -- O comparten alguna jornada.
+              or exists (
+                  select 1
+                  from horarios.plan_jornadas mio
+                  join horarios.plan_jornadas suyo on suyo.jornada_id = mio.jornada_id
+                  where mio.plan_id = new.id
+                    and suyo.plan_id = otro.id)))
+    then
+        raise exception 'Ya hay un horario publicado para este período con ese alcance: archívalo antes de publicar otro'
+            using errcode = 'unique_violation';
+    end if;
+
+    return new;
+end;
+$$;
+
 
 --
 -- Name: agrupacion_area_comun_cohortes; Type: TABLE; Schema: horarios; Owner: -
@@ -4567,6 +5659,7 @@ CREATE TABLE "horarios"."usuarios" (
     "fecha_ultimo_acceso" timestamp with time zone,
     "eliminado_en" timestamp with time zone,
     "version_fila" bigint DEFAULT 0 NOT NULL,
+    "debe_cambiar_contrasena" boolean DEFAULT false NOT NULL,
     CONSTRAINT "usuarios_check" CHECK (((("tipo" = 'docente'::"horarios"."tipo_usuario") AND ("docente_id" IS NOT NULL) AND ("cohorte_id" IS NULL)) OR (("tipo" = 'alumno'::"horarios"."tipo_usuario") AND ("cohorte_id" IS NOT NULL) AND ("docente_id" IS NULL)) OR (("tipo" = ANY (ARRAY['superadministrador'::"horarios"."tipo_usuario", 'coordinador_academico'::"horarios"."tipo_usuario", 'decano'::"horarios"."tipo_usuario"])) AND ("docente_id" IS NULL) AND ("cohorte_id" IS NULL)))),
     CONSTRAINT "usuarios_correo_institucional_check" CHECK ((("correo_institucional")::"text" = "lower"(TRIM(BOTH FROM "correo_institucional"))))
 );
@@ -4684,10 +5777,18 @@ CREATE TABLE "horarios"."cursos" (
     "eliminado_en" timestamp with time zone,
     "version_fila" bigint DEFAULT 0 NOT NULL,
     "pensum_id" "uuid" NOT NULL,
+    "esta_activo" boolean DEFAULT true NOT NULL,
     CONSTRAINT "cursos_check" CHECK (("requiere_laboratorio" OR ("tipo_laboratorio_requerido" IS NULL))),
     CONSTRAINT "cursos_codigo_check" CHECK ((("codigo")::"text" = "upper"(TRIM(BOTH FROM "codigo")))),
     CONSTRAINT "cursos_nombre_check" CHECK (("length"(TRIM(BOTH FROM "nombre")) > 0))
 );
+
+
+--
+-- Name: COLUMN "cursos"."esta_activo"; Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON COLUMN "horarios"."cursos"."esta_activo" IS 'Controla nuevas selecciones, autorizaciones y generaciones. La fila se conserva para la historia.';
 
 
 --
@@ -4759,7 +5860,7 @@ CREATE VIEW "horarios"."api_cursos_periodo" WITH ("security_invoker"='true') AS
      JOIN "horarios"."carreras" "ca" ON ((("ca"."id" = "c"."carrera_id") AND ("ca"."eliminado_en" IS NULL))))
      JOIN "horarios"."pensums" "p" ON ((("p"."id" = "c"."pensum_id") AND ("p"."eliminado_en" IS NULL))))
      JOIN "horarios"."cursos_en_pensum" "cep" ON ((("cep"."pensum_id" = "c"."pensum_id") AND ("cep"."semestre_asignado" = "cp"."semestre_asignado") AND ("cep"."eliminado_en" IS NULL))))
-     JOIN "horarios"."cursos" "cur" ON ((("cur"."id" = "cep"."curso_id") AND ("cur"."eliminado_en" IS NULL))))
+     JOIN "horarios"."cursos" "cur" ON ((("cur"."id" = "cep"."curso_id") AND "cur"."esta_activo" AND ("cur"."eliminado_en" IS NULL))))
   WHERE ("cp"."esta_activa" AND ("cp"."eliminado_en" IS NULL));
 
 
@@ -4767,7 +5868,7 @@ CREATE VIEW "horarios"."api_cursos_periodo" WITH ("security_invoker"='true') AS
 -- Name: VIEW "api_cursos_periodo"; Type: COMMENT; Schema: horarios; Owner: -
 --
 
-COMMENT ON VIEW "horarios"."api_cursos_periodo" IS 'Cursos derivados de las cohortes activas de un período. Misma regla que el motor: pensum de la cohorte × semestre en que la cohorte está ese período.';
+COMMENT ON VIEW "horarios"."api_cursos_periodo" IS 'Cursos activos derivados de las cohortes activas de un período; la historia permanece en sesiones y cursos.';
 
 
 --
@@ -5305,30 +6406,25 @@ CREATE TABLE "horarios"."jornada_descansos" (
 
 
 --
--- Name: jornadas; Type: TABLE; Schema: horarios; Owner: -
+-- Name: jornada_extraordinaria_docentes; Type: TABLE; Schema: horarios; Owner: -
 --
 
-CREATE TABLE "horarios"."jornadas" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "nombre" character varying(100) NOT NULL,
-    "dias_activos" "horarios"."dia_semana"[] NOT NULL,
-    "hora_inicio" time without time zone NOT NULL,
-    "hora_fin" time without time zone NOT NULL,
-    "duracion_bloque_minutos" integer NOT NULL,
-    "bloques_por_dia" integer NOT NULL,
-    "esta_activa" boolean DEFAULT true NOT NULL,
-    "creado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "eliminado_en" timestamp with time zone,
-    "version_fila" bigint DEFAULT 0 NOT NULL,
-    "receso_despues_bloque" integer DEFAULT 0 NOT NULL,
-    "duracion_receso_minutos" integer DEFAULT 0 NOT NULL,
-    CONSTRAINT "jornadas_bloques_por_dia_check" CHECK (("bloques_por_dia" > 0)),
-    CONSTRAINT "jornadas_check" CHECK (("hora_fin" > "hora_inicio")),
-    CONSTRAINT "jornadas_check1" CHECK ((((("bloques_por_dia" * "duracion_bloque_minutos") + "duracion_receso_minutos"))::numeric <= (EXTRACT(epoch FROM ("hora_fin" - "hora_inicio")) / (60)::numeric))),
-    CONSTRAINT "jornadas_dias_activos_check" CHECK (("cardinality"("dias_activos") > 0)),
-    CONSTRAINT "jornadas_duracion_bloque_minutos_check" CHECK (("duracion_bloque_minutos" > 0)),
-    CONSTRAINT "jornadas_receso_check" CHECK (((("duracion_receso_minutos" = 0) AND ("receso_despues_bloque" = 0)) OR (("duracion_receso_minutos" > 0) AND ("receso_despues_bloque" > 0) AND ("receso_despues_bloque" < "bloques_por_dia"))))
+CREATE TABLE "horarios"."jornada_extraordinaria_docentes" (
+    "jornada_id" "uuid" NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "docente_id" "uuid" NOT NULL
+);
+
+
+--
+-- Name: jornada_extraordinaria_periodos; Type: TABLE; Schema: horarios; Owner: -
+--
+
+CREATE TABLE "horarios"."jornada_extraordinaria_periodos" (
+    "jornada_id" "uuid" NOT NULL,
+    "periodo_id" "uuid" NOT NULL,
+    "horario_referencia_id" "uuid" NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
 
@@ -5350,12 +6446,28 @@ CREATE TABLE "horarios"."mensajes_generacion" (
 
 
 --
+-- Name: notificacion_destinatarios; Type: TABLE; Schema: horarios; Owner: -
+--
+
+CREATE TABLE "horarios"."notificacion_destinatarios" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "notificacion_id" "uuid" NOT NULL,
+    "destinatario_usuario_id" "uuid" NOT NULL,
+    "estado" "horarios"."estado_notificacion_destinatario" DEFAULT 'no_leida'::"horarios"."estado_notificacion_destinatario" NOT NULL,
+    "enviada_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "leida_en" timestamp with time zone,
+    "descartada_en" timestamp with time zone,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "notificacion_destinatarios_fechas_check" CHECK (((("estado" = 'no_leida'::"horarios"."estado_notificacion_destinatario") AND ("leida_en" IS NULL) AND ("descartada_en" IS NULL)) OR (("estado" = 'leida'::"horarios"."estado_notificacion_destinatario") AND ("leida_en" IS NOT NULL) AND ("descartada_en" IS NULL)) OR (("estado" = 'descartada'::"horarios"."estado_notificacion_destinatario") AND ("descartada_en" IS NOT NULL))))
+);
+
+
+--
 -- Name: notificaciones; Type: TABLE; Schema: horarios; Owner: -
 --
 
 CREATE TABLE "horarios"."notificaciones" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "destinatario_id" "uuid" NOT NULL,
     "plantilla_id" "uuid",
     "tipo_notificacion" character varying(100) NOT NULL,
     "asunto" "text" NOT NULL,
@@ -5363,8 +6475,10 @@ CREATE TABLE "horarios"."notificaciones" (
     "canal_envio" "horarios"."canal_notificacion" DEFAULT 'interno'::"horarios"."canal_notificacion" NOT NULL,
     "clave_solicitud" character varying(120),
     "fecha_creacion" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "fecha_lectura" timestamp with time zone,
-    "estado" "horarios"."estado_notificacion" DEFAULT 'pendiente'::"horarios"."estado_notificacion" NOT NULL
+    "remitente_usuario_id" "uuid",
+    "prioridad" "horarios"."prioridad_notificacion" DEFAULT 'normal'::"horarios"."prioridad_notificacion" NOT NULL,
+    "actualizado_en" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "eliminado_en" timestamp with time zone
 );
 
 
@@ -6080,6 +7194,21 @@ ALTER TABLE ONLY "horarios"."cursos_en_pensum"
 
 
 --
+-- Name: cursos_en_pensum cursos_en_pensum_sesiones_enteras_check; Type: CHECK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE "horarios"."cursos_en_pensum"
+    ADD CONSTRAINT "cursos_en_pensum_sesiones_enteras_check" CHECK ((("duracion_slots" > 0) AND (("bloques_semanales_exactos" % "duracion_slots") = 0))) NOT VALID;
+
+
+--
+-- Name: CONSTRAINT "cursos_en_pensum_sesiones_enteras_check" ON "cursos_en_pensum"; Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON CONSTRAINT "cursos_en_pensum_sesiones_enteras_check" ON "horarios"."cursos_en_pensum" IS 'BloquesSemanalesCompletos: la carga semanal debe dividirse en sesiones enteras.';
+
+
+--
 -- Name: cursos cursos_id_pensum_id_key; Type: CONSTRAINT; Schema: horarios; Owner: -
 --
 
@@ -6208,6 +7337,22 @@ ALTER TABLE ONLY "horarios"."jornada_descansos"
 
 
 --
+-- Name: jornada_extraordinaria_docentes jornada_extraordinaria_docentes_pkey; Type: CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_docentes"
+    ADD CONSTRAINT "jornada_extraordinaria_docentes_pkey" PRIMARY KEY ("jornada_id", "periodo_id", "docente_id");
+
+
+--
+-- Name: jornada_extraordinaria_periodos jornada_extraordinaria_periodos_pkey; Type: CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_periodos"
+    ADD CONSTRAINT "jornada_extraordinaria_periodos_pkey" PRIMARY KEY ("jornada_id", "periodo_id");
+
+
+--
 -- Name: jornadas jornadas_pkey; Type: CONSTRAINT; Schema: horarios; Owner: -
 --
 
@@ -6221,6 +7366,22 @@ ALTER TABLE ONLY "horarios"."jornadas"
 
 ALTER TABLE ONLY "horarios"."mensajes_generacion"
     ADD CONSTRAINT "mensajes_generacion_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: notificacion_destinatarios notificacion_destinatarios_pkey; Type: CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."notificacion_destinatarios"
+    ADD CONSTRAINT "notificacion_destinatarios_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: notificacion_destinatarios notificacion_destinatarios_unicos; Type: CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."notificacion_destinatarios"
+    ADD CONSTRAINT "notificacion_destinatarios_unicos" UNIQUE ("notificacion_id", "destinatario_usuario_id");
 
 
 --
@@ -6380,7 +7541,14 @@ ALTER TABLE ONLY "horarios"."roles"
 --
 
 ALTER TABLE ONLY "horarios"."sesion_cohortes"
-    ADD CONSTRAINT "sesion_cohortes_no_solapadas" EXCLUDE USING "gist" ("horario_id" WITH =, "cohorte_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&);
+    ADD CONSTRAINT "sesion_cohortes_no_solapadas" EXCLUDE USING "gist" ("horario_id" WITH =, "cohorte_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&) DEFERRABLE;
+
+
+--
+-- Name: CONSTRAINT "sesion_cohortes_no_solapadas" ON "sesion_cohortes"; Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON CONSTRAINT "sesion_cohortes_no_solapadas" ON "horarios"."sesion_cohortes" IS 'Una cohorte no cursa dos clases a la vez. Diferible solo para el guardado de una edición manual, que la difiere hasta confirmar.';
 
 
 --
@@ -6396,7 +7564,14 @@ ALTER TABLE ONLY "horarios"."sesion_cohortes"
 --
 
 ALTER TABLE ONLY "horarios"."sesiones"
-    ADD CONSTRAINT "sesiones_aula_no_solapada" EXCLUDE USING "gist" ("horario_id" WITH =, "aula_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&);
+    ADD CONSTRAINT "sesiones_aula_no_solapada" EXCLUDE USING "gist" ("horario_id" WITH =, "aula_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&) DEFERRABLE;
+
+
+--
+-- Name: CONSTRAINT "sesiones_aula_no_solapada" ON "sesiones"; Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON CONSTRAINT "sesiones_aula_no_solapada" ON "horarios"."sesiones" IS 'Un aula no aloja dos clases a la vez. Diferible solo para el guardado de una edición manual, que la difiere hasta confirmar.';
 
 
 --
@@ -6404,7 +7579,14 @@ ALTER TABLE ONLY "horarios"."sesiones"
 --
 
 ALTER TABLE ONLY "horarios"."sesiones"
-    ADD CONSTRAINT "sesiones_docente_no_solapado" EXCLUDE USING "gist" ("horario_id" WITH =, "docente_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&);
+    ADD CONSTRAINT "sesiones_docente_no_solapado" EXCLUDE USING "gist" ("horario_id" WITH =, "docente_id" WITH =, COALESCE("fecha_sesion", '0001-01-01'::"date") WITH =, "dia" WITH =, "rango_minutos" WITH &&) DEFERRABLE;
+
+
+--
+-- Name: CONSTRAINT "sesiones_docente_no_solapado" ON "sesiones"; Type: COMMENT; Schema: horarios; Owner: -
+--
+
+COMMENT ON CONSTRAINT "sesiones_docente_no_solapado" ON "horarios"."sesiones" IS 'Un docente no da dos clases a la vez. Diferible solo para el guardado de una edición manual, que la difiere hasta confirmar.';
 
 
 --
@@ -6616,6 +7798,13 @@ CREATE INDEX "curso_comun_cursos_grupo_idx" ON "horarios"."curso_comun_cursos" U
 
 
 --
+-- Name: cursos_activos_pensum_idx; Type: INDEX; Schema: horarios; Owner: -
+--
+
+CREATE INDEX "cursos_activos_pensum_idx" ON "horarios"."cursos" USING "btree" ("pensum_id", "nombre", "codigo") WHERE ("esta_activo" AND ("eliminado_en" IS NULL));
+
+
+--
 -- Name: cursos_codigo_uq; Type: INDEX; Schema: horarios; Owner: -
 --
 
@@ -6735,17 +7924,17 @@ CREATE UNIQUE INDEX "horarios_periodo_tipo_version_uq" ON "horarios"."horarios" 
 
 
 --
--- Name: horarios_publicado_unico_idx; Type: INDEX; Schema: horarios; Owner: -
---
-
-CREATE UNIQUE INDEX "horarios_publicado_unico_idx" ON "horarios"."horarios" USING "btree" ("periodo_id", "tipo_plan") WHERE (("estado" = 'publicado'::"horarios"."estado_horario") AND ("eliminado_en" IS NULL));
-
-
---
 -- Name: importaciones_clave_solicitud_uq; Type: INDEX; Schema: horarios; Owner: -
 --
 
 CREATE UNIQUE INDEX "importaciones_clave_solicitud_uq" ON "horarios"."importaciones" USING "btree" ("clave_solicitud") WHERE ("clave_solicitud" IS NOT NULL);
+
+
+--
+-- Name: jornada_extraordinaria_docentes_docente_idx; Type: INDEX; Schema: horarios; Owner: -
+--
+
+CREATE INDEX "jornada_extraordinaria_docentes_docente_idx" ON "horarios"."jornada_extraordinaria_docentes" USING "btree" ("docente_id", "periodo_id");
 
 
 --
@@ -6763,17 +7952,17 @@ CREATE INDEX "mensajes_generacion_generacion_idx" ON "horarios"."mensajes_genera
 
 
 --
--- Name: notificaciones_clave_solicitud_uq; Type: INDEX; Schema: horarios; Owner: -
+-- Name: notificacion_destinatarios_bandeja_idx; Type: INDEX; Schema: horarios; Owner: -
 --
 
-CREATE UNIQUE INDEX "notificaciones_clave_solicitud_uq" ON "horarios"."notificaciones" USING "btree" ("destinatario_id", "clave_solicitud") WHERE ("clave_solicitud" IS NOT NULL);
+CREATE INDEX "notificacion_destinatarios_bandeja_idx" ON "horarios"."notificacion_destinatarios" USING "btree" ("destinatario_usuario_id", "estado", "enviada_en" DESC);
 
 
 --
--- Name: notificaciones_destinatario_estado_idx; Type: INDEX; Schema: horarios; Owner: -
+-- Name: notificaciones_fecha_idx; Type: INDEX; Schema: horarios; Owner: -
 --
 
-CREATE INDEX "notificaciones_destinatario_estado_idx" ON "horarios"."notificaciones" USING "btree" ("destinatario_id", "estado", "fecha_creacion" DESC);
+CREATE INDEX "notificaciones_fecha_idx" ON "horarios"."notificaciones" USING "btree" ("fecha_creacion" DESC) WHERE ("eliminado_en" IS NULL);
 
 
 --
@@ -6903,10 +8092,24 @@ CREATE UNIQUE INDEX "usuarios_correo_institucional_uq" ON "horarios"."usuarios" 
 
 
 --
+-- Name: agrupacion_area_comun_cursos agrupacion_area_curso_activo; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "agrupacion_area_curso_activo" BEFORE INSERT OR UPDATE OF "curso_id" ON "horarios"."agrupacion_area_comun_cursos" FOR EACH ROW EXECUTE FUNCTION "horarios"."exigir_curso_activo_en_nueva_relacion"();
+
+
+--
 -- Name: agrupaciones_area_comun agrupaciones_area_comun_actualizar_trg; Type: TRIGGER; Schema: horarios; Owner: -
 --
 
 CREATE TRIGGER "agrupaciones_area_comun_actualizar_trg" BEFORE UPDATE ON "horarios"."agrupaciones_area_comun" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();
+
+
+--
+-- Name: asignaciones_docente_curso asignacion_docente_curso_activo; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "asignacion_docente_curso_activo" BEFORE INSERT OR UPDATE OF "curso_id", "esta_vigente", "eliminado_en" ON "horarios"."asignaciones_docente_curso" FOR EACH ROW EXECUTE FUNCTION "horarios"."exigir_curso_activo_en_autorizacion"();
 
 
 --
@@ -6966,6 +8169,13 @@ CREATE TRIGGER "curso_comun_actualizar_trg" BEFORE UPDATE ON "horarios"."curso_c
 
 
 --
+-- Name: curso_comun_cursos curso_comun_curso_activo; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "curso_comun_curso_activo" BEFORE INSERT OR UPDATE OF "curso_id" ON "horarios"."curso_comun_cursos" FOR EACH ROW EXECUTE FUNCTION "horarios"."exigir_curso_activo_en_nueva_relacion"();
+
+
+--
 -- Name: curso_comun curso_comun_limpiar_miembros_trg; Type: TRIGGER; Schema: horarios; Owner: -
 --
 
@@ -6984,6 +8194,13 @@ CREATE TRIGGER "cursos_actualizar_trg" BEFORE UPDATE ON "horarios"."cursos" FOR 
 --
 
 CREATE TRIGGER "cursos_en_pensum_actualizar_trg" BEFORE UPDATE ON "horarios"."cursos_en_pensum" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();
+
+
+--
+-- Name: disponibilidad_docente_slots disponibilidad_descartar_slot_extraordinario_trg; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "disponibilidad_descartar_slot_extraordinario_trg" BEFORE INSERT OR UPDATE ON "horarios"."disponibilidad_docente_slots" FOR EACH ROW EXECUTE FUNCTION "horarios"."descartar_slot_extraordinario_bloqueado"();
 
 
 --
@@ -7043,6 +8260,13 @@ CREATE TRIGGER "horarios_bloquear_delete_oficial_trg" BEFORE DELETE ON "horarios
 
 
 --
+-- Name: horarios horarios_un_publicado_por_alcance_trg; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "horarios_un_publicado_por_alcance_trg" BEFORE INSERT OR UPDATE OF "estado", "eliminado_en", "periodo_id", "tipo_plan" ON "horarios"."horarios" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_un_publicado_por_alcance"();
+
+
+--
 -- Name: horarios horarios_validar_publicacion_trg; Type: TRIGGER; Schema: horarios; Owner: -
 --
 
@@ -7068,6 +8292,27 @@ CREATE TRIGGER "jornada_descansos_validar_trg" BEFORE INSERT OR UPDATE OF "jorna
 --
 
 CREATE TRIGGER "jornadas_actualizar_trg" BEFORE UPDATE ON "horarios"."jornadas" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca_con_version"();
+
+
+--
+-- Name: jornadas jornadas_validar_extraordinaria_trg; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "jornadas_validar_extraordinaria_trg" BEFORE INSERT OR UPDATE ON "horarios"."jornadas" FOR EACH ROW EXECUTE FUNCTION "horarios"."validar_jornada_extraordinaria"();
+
+
+--
+-- Name: notificacion_destinatarios notificacion_destinatarios_actualizar_trg; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "notificacion_destinatarios_actualizar_trg" BEFORE UPDATE ON "horarios"."notificacion_destinatarios" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();
+
+
+--
+-- Name: notificaciones notificaciones_actualizar_trg; Type: TRIGGER; Schema: horarios; Owner: -
+--
+
+CREATE TRIGGER "notificaciones_actualizar_trg" BEFORE UPDATE ON "horarios"."notificaciones" FOR EACH ROW EXECUTE FUNCTION "horarios"."actualizar_marca"();
 
 
 --
@@ -7739,6 +8984,54 @@ ALTER TABLE ONLY "horarios"."jornada_descansos"
 
 
 --
+-- Name: jornada_extraordinaria_docentes jornada_extraordinaria_docentes_docente_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_docentes"
+    ADD CONSTRAINT "jornada_extraordinaria_docentes_docente_id_fkey" FOREIGN KEY ("docente_id") REFERENCES "horarios"."docentes"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: jornada_extraordinaria_docentes jornada_extraordinaria_docentes_jornada_id_periodo_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_docentes"
+    ADD CONSTRAINT "jornada_extraordinaria_docentes_jornada_id_periodo_id_fkey" FOREIGN KEY ("jornada_id", "periodo_id") REFERENCES "horarios"."jornada_extraordinaria_periodos"("jornada_id", "periodo_id") ON DELETE CASCADE;
+
+
+--
+-- Name: jornada_extraordinaria_periodos jornada_extraordinaria_periodos_horario_referencia_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_periodos"
+    ADD CONSTRAINT "jornada_extraordinaria_periodos_horario_referencia_id_fkey" FOREIGN KEY ("horario_referencia_id") REFERENCES "horarios"."horarios"("id") ON DELETE RESTRICT;
+
+
+--
+-- Name: jornada_extraordinaria_periodos jornada_extraordinaria_periodos_jornada_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_periodos"
+    ADD CONSTRAINT "jornada_extraordinaria_periodos_jornada_id_fkey" FOREIGN KEY ("jornada_id") REFERENCES "horarios"."jornadas"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: jornada_extraordinaria_periodos jornada_extraordinaria_periodos_periodo_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornada_extraordinaria_periodos"
+    ADD CONSTRAINT "jornada_extraordinaria_periodos_periodo_id_fkey" FOREIGN KEY ("periodo_id") REFERENCES "horarios"."periodos_academicos"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: jornadas jornadas_jornada_regular_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."jornadas"
+    ADD CONSTRAINT "jornadas_jornada_regular_id_fkey" FOREIGN KEY ("jornada_regular_id") REFERENCES "horarios"."jornadas"("id") ON DELETE RESTRICT;
+
+
+--
 -- Name: mensajes_generacion mensajes_generacion_generacion_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
 --
 
@@ -7747,11 +9040,19 @@ ALTER TABLE ONLY "horarios"."mensajes_generacion"
 
 
 --
--- Name: notificaciones notificaciones_destinatario_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+-- Name: notificacion_destinatarios notificacion_destinatarios_destinatario_usuario_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
 --
 
-ALTER TABLE ONLY "horarios"."notificaciones"
-    ADD CONSTRAINT "notificaciones_destinatario_id_fkey" FOREIGN KEY ("destinatario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE CASCADE;
+ALTER TABLE ONLY "horarios"."notificacion_destinatarios"
+    ADD CONSTRAINT "notificacion_destinatarios_destinatario_usuario_id_fkey" FOREIGN KEY ("destinatario_usuario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: notificacion_destinatarios notificacion_destinatarios_notificacion_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."notificacion_destinatarios"
+    ADD CONSTRAINT "notificacion_destinatarios_notificacion_id_fkey" FOREIGN KEY ("notificacion_id") REFERENCES "horarios"."notificaciones"("id") ON DELETE CASCADE;
 
 
 --
@@ -7760,6 +9061,14 @@ ALTER TABLE ONLY "horarios"."notificaciones"
 
 ALTER TABLE ONLY "horarios"."notificaciones"
     ADD CONSTRAINT "notificaciones_plantilla_id_fkey" FOREIGN KEY ("plantilla_id") REFERENCES "horarios"."plantillas_notificacion"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: notificaciones notificaciones_remitente_usuario_id_fkey; Type: FK CONSTRAINT; Schema: horarios; Owner: -
+--
+
+ALTER TABLE ONLY "horarios"."notificaciones"
+    ADD CONSTRAINT "notificaciones_remitente_usuario_id_fkey" FOREIGN KEY ("remitente_usuario_id") REFERENCES "horarios"."usuarios"("id") ON DELETE SET NULL;
 
 
 --
@@ -9143,17 +10452,19 @@ CREATE POLICY "api_importar_catalogo_insertar" ON "horarios"."recursos" FOR INSE
 
 
 --
--- Name: notificaciones api_notificaciones_insertar; Type: POLICY; Schema: horarios; Owner: -
+-- Name: notificacion_destinatarios api_notificacion_destinatarios_leer; Type: POLICY; Schema: horarios; Owner: -
 --
 
-CREATE POLICY "api_notificaciones_insertar" ON "horarios"."notificaciones" FOR INSERT TO "authenticated" WITH CHECK (("destinatario_id" = "horarios"."usuario_actual_id"()));
+CREATE POLICY "api_notificacion_destinatarios_leer" ON "horarios"."notificacion_destinatarios" FOR SELECT TO "authenticated" USING ((("destinatario_usuario_id" = "horarios"."usuario_actual_id"()) OR "horarios"."usuario_actual_tiene_permiso"('notificaciones'::"text", 'leer'::"text")));
 
 
 --
--- Name: notificaciones api_notificaciones_propias; Type: POLICY; Schema: horarios; Owner: -
+-- Name: notificaciones api_notificaciones_leer; Type: POLICY; Schema: horarios; Owner: -
 --
 
-CREATE POLICY "api_notificaciones_propias" ON "horarios"."notificaciones" FOR SELECT TO "authenticated" USING (("destinatario_id" = "horarios"."usuario_actual_id"()));
+CREATE POLICY "api_notificaciones_leer" ON "horarios"."notificaciones" FOR SELECT TO "authenticated" USING ((("eliminado_en" IS NULL) AND (("remitente_usuario_id" = "horarios"."usuario_actual_id"()) OR "horarios"."usuario_actual_tiene_permiso"('notificaciones'::"text", 'leer'::"text") OR (EXISTS ( SELECT 1
+   FROM "horarios"."notificacion_destinatarios" "nd"
+  WHERE (("nd"."notificacion_id" = "notificaciones"."id") AND ("nd"."destinatario_usuario_id" = "horarios"."usuario_actual_id"())))))));
 
 
 --
@@ -10150,6 +11461,32 @@ ALTER TABLE "horarios"."importaciones" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "horarios"."jornada_descansos" ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: jornada_extraordinaria_docentes; Type: ROW SECURITY; Schema: horarios; Owner: -
+--
+
+ALTER TABLE "horarios"."jornada_extraordinaria_docentes" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: jornada_extraordinaria_docentes jornada_extraordinaria_docentes_leer; Type: POLICY; Schema: horarios; Owner: -
+--
+
+CREATE POLICY "jornada_extraordinaria_docentes_leer" ON "horarios"."jornada_extraordinaria_docentes" FOR SELECT TO "authenticated" USING (( SELECT "horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso"));
+
+
+--
+-- Name: jornada_extraordinaria_periodos; Type: ROW SECURITY; Schema: horarios; Owner: -
+--
+
+ALTER TABLE "horarios"."jornada_extraordinaria_periodos" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: jornada_extraordinaria_periodos jornada_extraordinaria_periodos_leer; Type: POLICY; Schema: horarios; Owner: -
+--
+
+CREATE POLICY "jornada_extraordinaria_periodos_leer" ON "horarios"."jornada_extraordinaria_periodos" FOR SELECT TO "authenticated" USING (( SELECT "horarios"."usuario_actual_tiene_permiso"('aulas'::"text", 'leer'::"text") AS "usuario_actual_tiene_permiso"));
+
+
+--
 -- Name: jornadas; Type: ROW SECURITY; Schema: horarios; Owner: -
 --
 
@@ -10160,6 +11497,12 @@ ALTER TABLE "horarios"."jornadas" ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE "horarios"."mensajes_generacion" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: notificacion_destinatarios; Type: ROW SECURITY; Schema: horarios; Owner: -
+--
+
+ALTER TABLE "horarios"."notificacion_destinatarios" ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: notificaciones; Type: ROW SECURITY; Schema: horarios; Owner: -
@@ -10309,4 +11652,5 @@ ALTER TABLE "horarios"."versiones_horario" ENABLE ROW LEVEL SECURITY;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict VEd9KakYnvmURGDx8mAbQH0reA9KeXpbPYfETHPgS7Qvg8vXmTb2c9TUsJpPtZb
+\unrestrict 3zwEzeF5CzFQvaH9oegfY13p8KC6kzKxeP0LFfyzfF280XMrF6RiUUofhDbmzCC
+

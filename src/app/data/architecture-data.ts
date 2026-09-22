@@ -6,7 +6,7 @@
 // distintas. Quien entienda uno debería poder predecir los otros dos.
 
 export type CapaId =
-  'blazor' | 'aplicacion' | 'dominio' | 'contratos' | 'infraestructura' | 'datos';
+  'blazor' | 'aplicacion' | 'dominio' | 'contratos' | 'motor' | 'infraestructura' | 'datos';
 
 export interface Nodo {
   x: number;
@@ -44,21 +44,21 @@ export const CAPAS: Capa[] = [
     analogia:
       'El mostrador: recibe a la persona, muestra lo que hay, toma la solicitud y la pasa. No decide nada por su cuenta.',
     hace: [
-      'Dibuja las páginas y responde a los clics: Planes, Docentes, Aulas, Academia, Períodos, Acceso.',
+      'Dibuja las páginas y responde a los clics: Planes, Docentes, Aulas, Academia, Períodos, Acceso, Jornadas extraordinarias y Notificaciones.',
       'Es el único lugar donde se decide qué clase concreta cumple cada interfaz: Program.cs.',
-      'Aporta tres piezas que cumplen puertos de Aplicación: ContextoUsuarioHttp, ColaGeneracionesEnMemoria y ProcesadorTrabajosPesados.',
+      'Cumple tres puertos de Aplicación con piezas propias —ContextoUsuarioHttp, ContextoGestionDocentesHttp y ColaGeneracionesEnMemoria— y corre ProcesadorTrabajosPesados de fondo.',
     ],
     noHace: 'No consulta la base por su cuenta ni contiene reglas del negocio.',
-    referencia: 'Aplicacion · Contratos · Infraestructura',
+    referencia: 'Aplicacion · Contratos · Infraestructura · Motor',
     referidaPor: 'Nadie. Es el borde de fuera.',
     archivos: [
       {
         ruta: 'Program.cs',
-        nota: 'Las ~80 líneas que conectan cada interfaz con su implementación.',
+        nota: 'Los ~100 registros que conectan cada interfaz con su implementación.',
       },
       {
         ruta: 'Components/Pages/Planes.razor',
-        nota: 'Inyecta 11 casos de uso y no llama a nada más.',
+        nota: 'Inyecta 12 casos de uso —con EditarSesionHorario, la edición manual— y no llama a nada más.',
       },
       {
         ruta: 'Acceso/ContextoUsuarioHttp.cs',
@@ -79,8 +79,8 @@ export const CAPAS: Capa[] = [
     analogia:
       'El funcionario que atiende: pide los papeles, comprueba que estén completos, aplica el procedimiento en orden y manda a archivar. Él no guarda nada.',
     hace: [
-      '34 archivos, un trámite cada uno: CrearDocente, ListarAulas, IniciarSesion, RevisarDatosPlan, GenerarHorarioPlan…',
-      'Declara 21 interfaces —los puertos— con todo lo que necesita del mundo exterior.',
+      '39 casos de uso con un EjecutarAsync cada uno —CrearDocente, ListarAulas, IniciarSesion, GenerarHorarioPlan…— y 11 servicios de varias operaciones: los Gestionar* y EditarSesionHorario.',
+      'Declara 26 interfaces —los puertos— con todo lo que necesita del mundo exterior.',
       'Exige permisos siempre por el mismo sitio: AutorizacionAplicacion.Exigir(contexto, recurso, acción).',
     ],
     noHace: 'No sabe si los datos están en Supabase, en un archivo o en memoria.',
@@ -128,17 +128,45 @@ export const CAPAS: Capa[] = [
     hace: [
       'Entradas: CrearDocenteSolicitud, CrearPlanSolicitud, AutorizarCursoDocenteSolicitud.',
       'Salidas: GeneracionHorarioDto, HorarioGeneradoDto, RevisionPlanDto, DocenteResumenDto.',
+      'El contrato del motor: Instantanea de entrada, Resultado de salida y las interfaces IMotorHorarios, IVerificadorHorario e IReparadorHorario.',
     ],
     noHace: 'No tiene lógica ni decisiones: solo describe la forma de los datos.',
     referencia: 'Nada. Igual que Dominio, no referencia a nadie.',
-    referidaPor: 'Las otras cuatro capas.',
+    referidaPor: 'Blazor, Aplicación, Infraestructura y Motor.',
     archivos: [
       {
         ruta: 'Planes/GeneracionHorarioDtos.cs',
         nota: 'El comprobante de generación y el horario armado.',
       },
+      {
+        ruta: 'Motor/ContratoMotor.cs',
+        nota: 'Lo único que Aplicación sabe del motor: qué entra, qué sale y la interfaz.',
+      },
     ],
     nodo: { x: 470, y: 240, w: 250, h: 62 },
+  },
+  {
+    id: 'motor',
+    proyecto: 'Horarios.Motor',
+    rol: 'El cálculo',
+    color: '#7a4fbf',
+    analogia:
+      'La sala de planificación: le dan una foto de todo lo que hay y devuelve un horario propuesto. No sale a buscar papeles ni firma nada.',
+    hace: [
+      'Genera: RejillaTiempo → Precalculo → ColocadorVoraz arman el horario, y VerificadorHorario lo revisa regla a regla.',
+      'Repara: RepararHorario propone cómo reacomodar el resto cuando una persona fija una clase a mano en Planes.',
+      'Trabaja solo en memoria: recibe una Instantanea y devuelve un Resultado. 23 archivos, 4 645 líneas.',
+    ],
+    noHace: 'No lee ni escribe la base, no conoce HTTP ni permisos.',
+    referencia: 'Solo Contratos.',
+    referidaPor: 'Infraestructura (el preparador y el revisor de factibilidad usan sus piezas) y Blazor, que lo registra en Program.cs.',
+    archivos: [
+      { ruta: 'MotorHorarios.cs', nota: 'Cumple IMotorHorarios: la entrada única a la generación.' },
+      { ruta: 'Construccion/ColocadorVoraz.cs', nota: 'Coloca cada sesión en el primer hueco legal.' },
+      { ruta: 'Reparacion/RepararHorario.cs', nota: 'Cumple IReparadorHorario: la edición manual.' },
+      { ruta: 'Verificacion/VerificadorHorario.cs', nota: 'Revisa el resultado contra las reglas duras.' },
+    ],
+    nodo: { x: 470, y: 336, w: 250, h: 62 },
   },
   {
     id: 'infraestructura',
@@ -148,12 +176,12 @@ export const CAPAS: Capa[] = [
     analogia:
       'El archivo y el mensajero: sabe dónde está guardado cada papel y cómo pedirlo. Cumple, en concreto, lo que Aplicación pidió por interfaz.',
     hace: [
-      '15 adaptadores, cada uno cumpliendo un puerto: DatosDocentesPostgres es IDatosDocentes.',
-      'ClienteDatosSupabase: el único sitio que habla HTTP con Supabase y llama sus funciones RPC.',
+      '21 adaptadores, cada uno cumpliendo un puerto: DatosDocentesPostgres es IDatosDocentes.',
+      'ClienteDatosSupabase habla HTTP con Supabase y llama sus funciones RPC; solo el preparador del motor y el guardado de la edición manual van por conexión directa (Npgsql), porque necesitan una transacción propia.',
       'Traduce errores de base a errores del negocio: un duplicado 23505 sale como GeneracionPlanEnCursoException.',
     ],
     noHace: 'No decide reglas ni ordena procedimientos: trae, guarda y traduce.',
-    referencia: 'Aplicacion · Dominio · Contratos',
+    referencia: 'Aplicacion · Dominio · Contratos · Motor',
     referidaPor: 'Solo Blazor, y solo desde Program.cs.',
     archivos: [
       { ruta: 'Supabase/ClienteDatosSupabase.cs', nota: 'Consultar, insertar, actualizar y RPC.' },
@@ -173,11 +201,11 @@ export const CAPAS: Capa[] = [
     analogia:
       'El archivo central de la universidad: guarda todo y vuelve a comprobar en la puerta quién está pidiendo qué.',
     hace: [
-      'Guarda las 57 tablas del esquema horarios con sus 110 claves foráneas.',
+      'Guarda las 62 tablas del esquema horarios con sus 122 claves foráneas.',
       'Resuelve trámites enteros en un viaje con funciones RPC: iniciar_generacion, conteos_revision_plan.',
       'Aplica políticas por fila con el token del usuario: la seguridad no depende solo de la pantalla.',
     ],
-    noHace: 'No contiene la lógica de generación.',
+    noHace: 'No contiene la lógica de generación: esa es del Motor.',
     referencia: 'No es un proyecto de la solución: es un servicio externo.',
     referidaPor: 'Solo Infraestructura le habla.',
     archivos: [
@@ -284,6 +312,28 @@ export const ARISTAS: Arista[] = [
     anclaje: 'middle',
   },
   {
+    id: 'motor-contratos',
+    de: 'motor',
+    a: 'contratos',
+    tipo: 'implementa',
+    d: 'M595,336 L595,308',
+    etiqueta: 'cumple IMotorHorarios',
+    lx: 607,
+    ly: 326,
+    anclaje: 'start',
+  },
+  {
+    id: 'infra-motor',
+    de: 'infraestructura',
+    a: 'motor',
+    tipo: 'referencia',
+    d: 'M350,367 L464,367',
+    etiqueta: 'prepara su entrada',
+    lx: 407,
+    ly: 359,
+    anclaje: 'middle',
+  },
+  {
     id: 'blazor-infra',
     de: 'blazor',
     a: 'infraestructura',
@@ -300,7 +350,7 @@ export const ARISTAS: Arista[] = [
 export const LEYENDA_ARISTAS: { tipo: TipoArista; texto: string }[] = [
   { tipo: 'llamada', texto: 'Llamada en tiempo de ejecución' },
   { tipo: 'declara', texto: 'Declara el puerto (la interfaz)' },
-  { tipo: 'implementa', texto: 'Lo cumple: la única flecha que sube' },
+  { tipo: 'implementa', texto: 'Lo cumple: las únicas flechas que suben' },
   { tipo: 'referencia', texto: 'Referencia de proyecto en el .csproj' },
 ];
 
@@ -367,7 +417,7 @@ export const RANURAS: Ranura[] = [
     capa: 'aplicacion',
     pregunta: '¿Qué necesito de fuera, dicho sin decir de dónde?',
     siempre:
-      'Una interfaz declarada dentro de Aplicación. Es el único vocabulario con el que el caso de uso pide algo al mundo exterior. Hay 21 en el proyecto.',
+      'Una interfaz declarada dentro de Aplicación. Es el único vocabulario con el que el caso de uso pide algo al mundo exterior. Hay 26 en el proyecto; las del motor viven en Contratos.',
     cambia:
       'A qué apunta: una base (IDatosAulas), un servicio de identidad (IAutenticadorSupabase), la sesión web (IContextoUsuario) o una cola (IColaGeneraciones).',
     senal:
@@ -382,7 +432,7 @@ export const RANURAS: Ranura[] = [
     siempre:
       'Una clase que implementa la interfaz. Program.cs decide cuál, en una línea. Cambiarla no toca ningún caso de uso.',
     cambia:
-      'Dónde vive: casi siempre en Infraestructura, pero ContextoUsuarioHttp y ColaGeneracionesEnMemoria están en Blazor.',
+      'Dónde vive: casi siempre en Infraestructura, pero ContextoUsuarioHttp y ColaGeneracionesEnMemoria están en Blazor, y MotorHorarios en Motor.',
     senal:
       'Si dos adaptadores distintos repiten la misma traducción de errores, falta un sitio común.',
     x: 630,
@@ -790,9 +840,9 @@ export const REGLAS: Regla[] = [
   {
     titulo: 'Se pide por interfaz, se cumple por fuera',
     texto:
-      'Aplicación declara 21 puertos. Quién los cumple se decide en un solo archivo, y cambiarlo no toca ningún caso de uso.',
+      'Aplicación declara 26 puertos. Quién los cumple se decide en un solo archivo, y cambiarlo no toca ningún caso de uso.',
     prueba:
-      'Compruébalo: las ~80 líneas AddScoped de Program.cs son la lista completa de decisiones.',
+      'Compruébalo: los ~100 registros builder.Services.Add… de Program.cs son la lista completa de decisiones.',
   },
   {
     titulo: 'Lo que viaja está escrito',
@@ -816,7 +866,7 @@ export const DONDE_TOCAR: DondeTocar[] = [
   },
   {
     quiero: 'Cambiar de Supabase a otra base',
-    toco: 'Los 15 adaptadores de Infraestructura y las líneas de Program.cs.',
+    toco: 'Los 21 adaptadores de Infraestructura y las líneas de Program.cs.',
     noToco: 'Ni un caso de uso, ni una entidad, ni una página.',
   },
   {

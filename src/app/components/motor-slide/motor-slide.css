@@ -634,6 +634,7 @@
 }
 
 .regla {
+  overflow-wrap: anywhere;
   display: inline-block;
   padding: 0.05rem 0.32rem;
   border-radius: 3px;

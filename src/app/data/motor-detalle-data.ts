@@ -2,8 +2,8 @@
 // nombra pero no abre —asignación de aulas, docente duplicado, aula ocupada y cruce de
 // horarios— más la lectura del horario ya guardado.
 //
-// Fuente: código real del repositorio Horarios-develop (rama integration/E0-05-P5),
-// leído el 2026-08-31:
+// Fuente: código real del repositorio Horarios-develop (rama integrar-backlog-s1-p5,
+// commit b733879), releído el 2026-09-22:
 //
 //   src/Horarios.Motor/Reglas/{ReglasAula,ReglasDocente,ReglasCohorte}.cs
 //   src/Horarios.Motor/Ocupacion/{RegistroOcupacion,RegistroCarga,RegistroContinuidad}.cs
@@ -11,17 +11,18 @@
 //   src/Horarios.Motor/Construccion/{Precalculo,OrdenDeTrabajo,ColocadorVoraz}.cs
 //   src/Horarios.Motor/Expansion/ExpansorAsignaciones.cs
 //   src/Horarios.Motor/Verificacion/VerificadorHorario.cs
-//   src/Horarios.Infraestructura/Motor/PreparadorInstantaneaMotorPostgres.cs  (C-5)
+//   src/Horarios.Infraestructura/Motor/PreparadorInstantaneaMotorPostgres.cs  (CargaDeAulas)
 //   src/Horarios.Infraestructura/Planes/DatosGeneracionesPostgres.cs
 //   src/Horarios.Infraestructura/Consultas/DatosConsultasPostgres.cs
 //   src/Horarios.Aplicacion/{Aulas,Consultas,Motor}/
 //   src/Horarios.Contratos/{Motor/ContratoMotor.cs, Consultas/, Planes/}
 //   src/Horarios.Blazor/Components/Pages/{Planes,Consultas,Aulas,InicioDocente}.razor
-//   docs/database.sql de esta presentación (instantánea local del 2026-09-09)
+//   docs/database.sql de esta presentación (instantánea local del 2026-09-22)
 //
-// Los códigos D-nn y P-nn son los de docs/motor-v2-fase1.md del repositorio fuente:
-// 43 reglas, D-01…D-35 duras del SQL y P-01…P-08 del proyecto. No hay ninguno inventado
-// aquí. Las referencias SQL apuntan a las mismas reglas en la instantánea actual.
+// Los nombres de regla son los de docs/motor-v2-fase1.md del repositorio fuente, que
+// desde el commit 7fd911e sustituyen a los códigos D-nn, P-nn y C-n: 33 duras del SQL y
+// 8 del proyecto. No hay ninguno inventado aquí. Las referencias SQL apuntan a las mismas
+// reglas en la instantánea actual.
 
 /** Los cinco carriles del mapa. El quinto es la base, que no es una capa del .NET. */
 export type CapaDetalleId = 'blazor' | 'aplicacion' | 'infraestructura' | 'motor' | 'postgres';
@@ -320,14 +321,14 @@ const AULAS: DetalleMotor = {
       proyecto: 'Horarios.Infraestructura',
       clase: 'PreparadorInstantaneaMotorPostgres',
       archivo: 'Motor/PreparadorInstantaneaMotorPostgres.cs',
-      metodo: 'CargarAulasAsync — la consulta C-5',
+      metodo: 'CargarAulasAsync — la consulta CargaDeAulas',
       hace:
         'Trae todas las aulas activas con capacidad, tipo, tipo de laboratorio y sus recursos con cantidad, agregados en dos arreglos paralelos.',
       entra: 'ninguna: la consulta no lleva parámetros',
       sale: 'ImmutableArray<Aula>, ordenada por Id',
       base:
         'select a.id, a.capacidad_maxima, a.tipo, a.tipo_laboratorio_disponible, array_agg(ar.recurso_id), array_agg(ar.cantidad) … left join aula_recursos … where a.esta_activa and a.eliminado_en is null group by a.id order by a.id',
-      reglas: ['D-23', 'P-05'],
+      reglas: ['AulaActiva', 'AulasFondoComun'],
       siFalla:
         'Sin aulas activas no lanza: la lista queda vacía y todas las asignaciones caerán con SIN_AULA_FACTIBLE.',
     },
@@ -343,7 +344,7 @@ const AULAS: DetalleMotor = {
         'Une lo que exigen los cursos visibles de todas las cohortes de la sesión: laboratorio con un OR, tipo de laboratorio único, y de cada recurso el máximo, no la suma.',
       entra: 'RequisitoCargado[] agrupados por ClaveAsignacion',
       sale: 'SesionRequerida.RequiereLaboratorio · TipoLaboratorioRequerido · Recursos',
-      reglas: ['D-24', 'D-25', 'D-26'],
+      reglas: ['AulaDeLaboratorio', 'TipoDeLaboratorioExacto', 'AulaConLosRecursos'],
       siFalla:
         'Dos tipos de laboratorio distintos en la misma sesión lanzan InvalidOperationException: una sesión ocupa un aula sola, así que no se elige ninguno de los dos.',
     },
@@ -359,7 +360,7 @@ const AULAS: DetalleMotor = {
         'Filtra el catálogo entero con las cuatro reglas puras de aula, una sola vez por asignación, antes de intentar colocar nada.',
       entra: 'Instantanea.Aulas + la sesión de referencia de la asignación',
       sale: 'ImmutableArray<Aula> factibles, ordenada por Id',
-      reglas: ['D-24', 'D-25', 'D-26', 'D-27'],
+      reglas: ['AulaDeLaboratorio', 'TipoDeLaboratorioExacto', 'AulaConLosRecursos', 'AulaConCapacidad'],
       siFalla:
         'Lista vacía: emite el diagnóstico SIN_AULA_FACTIBLE con el filtro exacto que la vació, y sigue. No lanza.',
     },
@@ -403,9 +404,9 @@ const AULAS: DetalleMotor = {
         'Con el día, la hora y el docente ya decididos, recorre las aulas ordenadas y se queda con la primera libre. El aula es lo único que obliga a recorrer una lista.',
       entra: 'SesionRequerida + Docente + Colocacion + aulas ordenadas',
       sale: 'SesionColocada(SesionId, DocenteId, AulaId, Colocacion)',
-      reglas: ['D-29'],
+      reglas: ['AulaSinSolape'],
       siFalla:
-        'Ninguna libre: cuenta un rechazo D-29 por cada aula probada y pasa a la siguiente colocación.',
+        'Ninguna libre: cuenta un rechazo AulaSinSolape por cada aula probada y pasa a la siguiente colocación.',
     },
     {
       n: 10,
@@ -417,9 +418,9 @@ const AULAS: DetalleMotor = {
       metodo: 'OcuparFijadas → VerificarFila',
       hace:
         'Las sesiones que alguien fijó a mano traen su aula ya elegida: se les exigen las mismas cuatro reglas antes de ocupar nada.',
-      entra: 'Instantanea.Fijadas (consulta C-7)',
+      entra: 'Instantanea.Fijadas (consulta CargaDeSesionesFijadas)',
       sale: 'ocupación previa, inamovible',
-      reglas: ['P-04', 'D-24', 'D-25', 'D-26', 'D-27'],
+      reglas: ['SesionesFijadasInamovibles', 'AulaDeLaboratorio', 'TipoDeLaboratorioExacto', 'AulaConLosRecursos', 'AulaConCapacidad'],
       siFalla:
         'InvalidOperationException nombrando el aula y la sesión: no se mueve una fijada ni se degrada en silencio a pendiente.',
     },
@@ -435,7 +436,7 @@ const AULAS: DetalleMotor = {
         'Segunda opinión sobre el resultado: vuelve a pasar las cuatro reglas de aula sobre cada sesión emitida, sin fiarse de quién la produjo.',
       entra: 'Instantanea + Resultado',
       sale: 'Violacion[] con cinco códigos posibles de aula',
-      reglas: ['D-24', 'D-25', 'D-26', 'D-27'],
+      reglas: ['AulaDeLaboratorio', 'TipoDeLaboratorioExacto', 'AulaConLosRecursos', 'AulaConCapacidad'],
       siFalla: 'Cualquier violación cierra la generación como Inviable en vez de Completada.',
     },
     {
@@ -457,14 +458,14 @@ const AULAS: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'guardar_resultado_generacion',
-      archivo: 'docs/database.sql:2751',
+      archivo: 'docs/database.sql:3334',
       metodo: 'insert into horarios.sesiones … aula_id',
       hace:
         'Borra el horario anterior del plan entero e inserta el nuevo. Cada inserción dispara la validación del aula contra el curso visible de cada cohorte.',
       entra: 'p_sesiones · p_pendientes · p_conflictos',
       sale: 'cuántas sesiones quedaron insertadas',
       base: 'sesiones · sesion_cohortes → trigger completar_sesion_cohorte + EXCLUDE sesiones_aula_no_solapada',
-      reglas: ['D-24', 'D-25', 'D-26', 'D-27', 'D-29'],
+      reglas: ['AulaDeLaboratorio', 'TipoDeLaboratorioExacto', 'AulaConLosRecursos', 'AulaConCapacidad', 'AulaSinSolape'],
       siFalla:
         'La excepción del trigger revienta la transacción entera: o se guarda el horario completo o no se guarda nada.',
     },
@@ -477,16 +478,16 @@ const AULAS: DetalleMotor = {
     {
       quien: 'PreparadorInstantaneaMotorPostgres',
       aQuien: 'Postgres',
-      contrato: 'C-5 · SQL crudo por NpgsqlDataSource',
+      contrato: 'CargaDeAulas · SQL crudo por NpgsqlDataSource',
       frontera: 'sql',
       pide: 'Todas las aulas activas con capacidad, tipo, tipo de laboratorio y sus recursos con cantidad.',
       devuelve: 'ImmutableArray<Aula>, ordenada por Id',
       nota:
-        'El join a aula_recursos es externo a propósito: un aula sin recursos declarados sigue siendo usable. No se filtra por facultad, carrera ni jornada (P-05).',
+        'El join a aula_recursos es externo a propósito: un aula sin recursos declarados sigue siendo usable. No se filtra por facultad, carrera ni jornada (AulasFondoComun).',
     },
     {
       quien: 'ExpansorAsignaciones',
-      aQuien: 'RequisitoCargado (consulta C-3)',
+      aQuien: 'RequisitoCargado (consulta CargaDeRequisitos)',
       contrato: 'RequiereLaboratorio · TipoLaboratorioRequerido · Recursos',
       frontera: 'memoria',
       pide: 'Qué exige el curso visible de cada cohorte que va a compartir la clase.',
@@ -536,69 +537,69 @@ const AULAS: DetalleMotor = {
     'Las cinco reglas duras que deciden el aula, con el SQL del que cada una es espejo. Ninguna se comprueba dos veces con dos códigos distintos: los cuatro filtros son puros y se resuelven una vez por asignación; el quinto es el único que mira lo ya colocado.',
   reglas: [
     {
-      codigo: 'D-23',
+      codigo: 'AulaActiva',
       nombre: 'El aula existe y está activa',
       momento: 'previa',
       donde: 'PreparadorInstantaneaMotorPostgres · CargarAulasAsync',
-      cuando: 'Al cargar C-5, como cláusula where.',
+      cuando: 'Al cargar CargaDeAulas, como cláusula where.',
       pregunta: '¿El aula está activa y no está borrada?',
-      espejo: 'completar_sesion_cohorte, database.sql:985 — a.eliminado_en is not null or not a.esta_activa',
+      espejo: 'completar_sesion_cohorte, database.sql:1130 — a.eliminado_en is not null or not a.esta_activa',
       siNo: 'No entra a la instantánea. Para el motor, un aula inactiva no existe.',
     },
     {
-      codigo: 'D-24',
+      codigo: 'AulaDeLaboratorio',
       nombre: 'Laboratorio si el curso lo exige',
       momento: 'previa',
       donde: 'ReglasAula.AulaAdmiteLaboratorio',
       cuando: 'Precálculo, una vez por (aula, asignación); y otra vez en el verificador.',
       pregunta:
         '¿Si algún curso visible de la sesión exige laboratorio, el aula es de tipo laboratorio o mixta?',
-      espejo: 'completar_sesion_cohorte, database.sql:987 — c.requiere_laboratorio and a.tipo not in (…)',
-      siNo: 'El aula se descarta. Fuera de esta regla, el tipo de aula no filtra nada (P-03).',
+      espejo: 'completar_sesion_cohorte, database.sql:1132 — c.requiere_laboratorio and a.tipo not in (…)',
+      siNo: 'El aula se descarta. Fuera de esta regla, el tipo de aula no filtra nada (AulaSirveParaCualquierModalidad).',
     },
     {
-      codigo: 'D-25',
+      codigo: 'TipoDeLaboratorioExacto',
       nombre: 'El tipo de laboratorio es idéntico',
       momento: 'previa',
       donde: 'ReglasAula.AulaTieneTipoDeLaboratorio',
-      cuando: 'Precálculo, junto a D-24.',
+      cuando: 'Precálculo, junto a AulaDeLaboratorio.',
       pregunta: '¿El aula ofrece exactamente el tipo de laboratorio que el curso pide?',
       espejo:
-        'completar_sesion_cohorte, database.sql:989 — a.tipo_laboratorio_disponible is distinct from c.tipo_laboratorio_requerido',
+        'completar_sesion_cohorte, database.sql:1134 — a.tipo_laboratorio_disponible is distinct from c.tipo_laboratorio_requerido',
       siNo:
         'Se descarta. El SQL usa is distinct from: un aula sin tipo declarado no sirve para un curso que sí lo exige.',
     },
     {
-      codigo: 'D-26',
+      codigo: 'AulaConLosRecursos',
       nombre: 'Los recursos alcanzan, en cantidad',
       momento: 'previa',
       donde: 'ReglasAula.AulaTieneRecursos',
       cuando: 'Precálculo, por cada recurso requerido.',
       pregunta: '¿Por cada recurso que el curso pide, el aula lo declara con cantidad suficiente?',
-      espejo: 'completar_sesion_cohorte, database.sql:1004 — ar.cantidad >= crr.cantidad',
+      espejo: 'completar_sesion_cohorte, database.sql:1149 — ar.cantidad >= crr.cantidad',
       siNo:
         'Se descarta. El motor v1 comparaba solo el código del recurso y daba por buena un aula con un proyector donde el curso pedía tres.',
     },
     {
-      codigo: 'D-27',
+      codigo: 'AulaConCapacidad',
       nombre: 'La capacidad cubre a todas las cohortes',
       momento: 'previa',
       donde: 'ReglasAula.AulaTieneCapacidad',
       cuando: 'Precálculo, sumando la matrícula de todas las participaciones.',
       pregunta: '¿La capacidad del aula cubre la suma de matrículas de todas las cohortes de la sesión?',
-      espejo: 'completar_sesion_cohorte, database.sql:1042 — v_matricula_total > v_capacidad_aula',
+      espejo: 'completar_sesion_cohorte, database.sql:1187 — v_matricula_total > v_capacidad_aula',
       siNo:
         'Se descarta. En área común comparten aula, así que la cohorte que cabe sola puede no caber acompañada.',
     },
     {
-      codigo: 'D-29',
+      codigo: 'AulaSinSolape',
       nombre: 'El aula está libre a esa hora',
       momento: 'bucle',
       donde: 'RegistroOcupacion.Libre · instancia de aulas',
       cuando: 'Dentro del bucle, por cada aula candidata de cada colocación candidata.',
       pregunta: '¿Tiene el aula libres todos los minutos de esa colocación, ese día?',
-      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:6399',
-      siNo: 'Se prueba la siguiente aula de la lista, y se cuenta un rechazo D-29.',
+      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:7567',
+      siNo: 'Se prueba la siguiente aula de la lista, y se cuenta un rechazo AulaSinSolape.',
     },
   ],
   ordenesPista:
@@ -635,8 +636,8 @@ const AULAS: DetalleMotor = {
       individual: {
         unidad: 'un aula del catálogo',
         pasos: [
-          'Se le pregunta D-24: ¿es de laboratorio, si la sesión lo exige?',
-          'Luego D-25, D-26 y D-27, en ese orden, sin cortocircuito por regla: es un único Where encadenado.',
+          'Se le pregunta AulaDeLaboratorio: ¿es de laboratorio, si la sesión lo exige?',
+          'Luego TipoDeLaboratorioExacto, AulaConLosRecursos y AulaConCapacidad, en ese orden, sin cortocircuito por regla: es un único Where encadenado.',
           'Si pasa las cuatro, entra en AulasFactibles de esa asignación. Si no, no vuelve a aparecer.',
           'Ninguna de las cuatro preguntas mira el reloj ni lo ya colocado, así que la respuesta no cambia durante la generación.',
         ],
@@ -659,7 +660,7 @@ const AULAS: DetalleMotor = {
         pasos: [
           'Se pregunta si está libre en esa colocación, con esa duración.',
           'Si lo está, se acabó la búsqueda: se emite la SesionColocada y se ocupan las tres entidades a la vez.',
-          'Si no, se cuenta un rechazo D-29 y se pasa a la siguiente aula.',
+          'Si no, se cuenta un rechazo AulaSinSolape y se pasa a la siguiente aula.',
           'Nunca se compara «cuál es mejor»: la lista ya venía ordenada por preferencia.',
         ],
       },
@@ -668,7 +669,7 @@ const AULAS: DetalleMotor = {
         pasos: [
           'La lista ordenada se calcula una vez, fuera del bucle de sesiones, y se reutiliza para las N.',
           'Cada sesión puede acabar en un aula distinta: el aula no es continua, a diferencia del docente.',
-          'Si una sola de las N no encuentra sitio, se liberan las aulas de las que sí lo encontraron (P-08).',
+          'Si una sola de las N no encuentra sitio, se liberan las aulas de las que sí lo encontraron (TodoONadaPorAsignacion).',
           'O entran todas, o ninguna: media asignación ocupa el aula que otra sí habría podido aprovechar.',
         ],
       },
@@ -683,31 +684,31 @@ const AULAS: DetalleMotor = {
       origen: 'motor',
       cuando: 'Precálculo, antes de intentar nada.',
       mensaje:
-        '«Ninguna aula sirve para el curso X de la cohorte Y: exige 3 del recurso Z (D-26) y ninguna de las 14 aulas lo tiene en esa cantidad.»',
+        '«Ninguna aula sirve para el curso «X» de Y: exige 3 de «Z» y ninguna de las 14 aulas lo tiene en esa cantidad.»',
       arreglo: 'Declarar el recurso en un aula con esa cantidad, o bajar la exigencia del curso.',
     },
     {
-      codigo: '0 candidatos',
+      codigo: 'Pendiente por imposibilidad',
       origen: 'motor',
-      cuando: 'Al dejar la asignación pendiente sin haber probado ni un candidato.',
-      mensaje: '«0 candidatos: la asignación no tiene ninguna aula factible.»',
+      cuando: 'Al dejar la asignación pendiente sin haber probado ni una hora.',
+      mensaje: '«el curso «X» de Y: sus 2 sesiones semanales se quedaron sin colocar porque no hay ninguna aula que sirva: exige 3 de «Z» y …»',
       arreglo:
         'Es la misma causa que el diagnóstico anterior, repetida en la fila de sesiones_no_asignadas para que se explique sola: la columna motivo_no_asignacion es NOT NULL.',
     },
     {
-      codigo: 'N por D-29',
+      codigo: 'Pendiente por aula ocupada',
       origen: 'motor',
       cuando: 'Al dejar la asignación pendiente después de recorrer candidatos.',
-      mensaje: '«17 candidatos: 12 rechazados por D-29 (aula ocupada), 5 por D-28 (docente ocupado).»',
+      mensaje: '«… · Ana López no pudo ubicar ninguna: su única sesión no cupo en ninguna de las 15 horas posibles de la jornada Vespertina. En 12 de ellas, las 3 aulas que sirven ya estaban ocupadas — p. ej. el lunes de 14:00 a 15:30: en el Aula 204 ya estaba el curso «Física I» de …, con Luis Pérez.»',
       arreglo:
-        'El motivo se cuenta mientras se recorre, no se reconstruye después con la ocupación ya cambiada: es la causa real, no la que quedó a la vista al final.',
+        'El motivo se cuenta mientras se recorre y se redacta en palabras, con la clase que estorbaba: es la causa real, no la que quedó a la vista al final. Diez aulas ocupadas a la misma hora cuentan una vez, no diez.',
     },
     {
       codigo: 'Fijada incompatible',
       origen: 'motor',
       cuando: 'OcuparFijadas, antes de colocar la primera sesión libre.',
       mensaje:
-        '«La sesión fijada X no se puede respetar: el aula A no tiene capacidad para sus 96 estudiantes (D-27).»',
+        '«No se puede respetar la sesión fijada S —la sesión 1 de el curso «X» de Y, el lunes de 08:00 a 09:30—: el Aula A tiene capacidad 40 y la sesión reúne 96 estudiantes.»',
       arreglo: 'Cambiar el aula de la sesión fijada, o dejar de fijarla. El motor no la mueve por su cuenta.',
     },
     {
@@ -728,7 +729,7 @@ const AULAS: DetalleMotor = {
     },
   ],
   cifras: [
-    { valor: '4', que: 'reglas puras de aula', nota: 'D-24 a D-27, todas espejo de completar_sesion_cohorte' },
+    { valor: '4', que: 'reglas puras de aula', nota: 'AulaDeLaboratorio a AulaConCapacidad, todas espejo de completar_sesion_cohorte' },
     { valor: '1', que: 'vez que se filtra el catálogo', nota: 'por asignación, no por sesión ni por colocación' },
     { valor: '3', que: 'criterios de orden', nota: 'capacidad, recursos de sobra, Id' },
     { valor: '5', que: 'lugares que lo comprueban', nota: 'precálculo, fijadas, verificador, trigger y restricción' },
@@ -750,7 +751,7 @@ const DOCENTE: DetalleMotor = {
       id: 'foto',
       titulo: 'La foto · quién puede dar qué, y cuándo',
       hilo: 'web',
-      disparo: 'El clic en «Generar»: la consulta C-4 se lanza junto con las otras seis.',
+      disparo: 'El clic en «Generar»: CargaDeDocentes se lanza junto con las otras ocho cargas.',
       fin: 'Cuando CargarDocentesAsync devuelve el ImmutableArray<Docente>, con sus autorizaciones y su disponibilidad.',
       color: COLOR_WEB,
     },
@@ -787,13 +788,13 @@ const DOCENTE: DetalleMotor = {
       proyecto: 'Horarios.Infraestructura',
       clase: 'PreparadorInstantaneaMotorPostgres',
       archivo: 'Motor/PreparadorInstantaneaMotorPostgres.cs',
-      metodo: 'CargarDocentesAsync — la consulta C-4',
+      metodo: 'CargarDocentesAsync — la consulta CargaDeDocentes',
       hace:
         'Trae los docentes activos con su carga máxima, su nivel de prioridad, sus autorizaciones completas y su disponibilidad confirmada, slot a slot.',
       entra: 'ninguna: el alcance del plan no filtra docentes',
       sale: 'ImmutableArray<Docente>, ordenada por Id',
       base: 'docentes · asignaciones_docente_curso · disponibilidad_docente_slots',
-      reglas: ['D-17', 'D-20', 'D-21'],
+      reglas: ['DocenteAutorizado', 'DocenteDisponible', 'CargaDocenteMaxima'],
     },
     {
       n: 2,
@@ -802,13 +803,13 @@ const DOCENTE: DetalleMotor = {
       proyecto: 'Horarios.Infraestructura',
       clase: 'PreparadorInstantaneaMotorPostgres',
       archivo: 'Motor/PreparadorInstantaneaMotorPostgres.cs',
-      metodo: 'CargarEquivalenciasAsync — la consulta C-6',
+      metodo: 'CargarEquivalenciasAsync — la consulta CargaDeEquivalencias',
       hace:
         'Trae qué cursos valen por cuál, para que un docente autorizado por el curso equivalente no se descarte.',
-      entra: 'los cursos de C-3 y los que pertenecen a un curso_comun',
+      entra: 'los cursos de CargaDeRequisitos y los que pertenecen a un curso_comun',
       sale: 'ImmutableDictionary<Guid, ImmutableHashSet<Guid>>',
-      base: 'función cursos_equivalentes, database.sql:2147',
-      reglas: ['D-17'],
+      base: 'función cursos_equivalentes, database.sql:2373',
+      reglas: ['DocenteAutorizado'],
       siFalla: 'Un curso ausente del diccionario equivale solo a sí mismo, que es lo que devuelve el SQL.',
     },
     {
@@ -823,7 +824,7 @@ const DOCENTE: DetalleMotor = {
         'Comprueba que el docente esté autorizado para el curso visible de cada participación —o para un equivalente suyo— y con la jornada correcta, donde el nulo es comodín.',
       entra: 'Docente + SesionRequerida + Instantanea.Equivalencias',
       sale: 'bool',
-      reglas: ['D-17'],
+      reglas: ['DocenteAutorizado'],
       siFalla: 'No es candidato de esa asignación. No lanza.',
     },
     {
@@ -838,7 +839,7 @@ const DOCENTE: DetalleMotor = {
         'Se queda con los autorizados que además tengan disponibilidad confirmada en alguna colocación de la jornada. Autorizado pero sin horas no es candidato.',
       entra: 'Instantanea.Docentes + las colocaciones factibles de la jornada',
       sale: 'ImmutableArray<Docente>, ordenada por Id',
-      reglas: ['D-17', 'D-20', 'P-01'],
+      reglas: ['DocenteAutorizado', 'DocenteDisponible', 'DisponibilidadImpuestaAlColocar'],
       siFalla:
         'Lista vacía: diagnóstico SIN_DOCENTE_FACTIBLE, con tres redacciones distintas según cuál de las tres causas sea.',
     },
@@ -854,7 +855,7 @@ const DOCENTE: DetalleMotor = {
         'Si la asignación ya tiene docente elegido —porque una sesión fijada lo trajo, o porque ya se confirmó—, el único candidato es ese. Si no, se prueban todos sus factibles en orden.',
       entra: 'RegistroContinuidad.DocenteDe(clave)',
       sale: 'ImmutableArray<Docente>: uno solo, o todos los factibles ordenados',
-      reglas: ['D-18', 'D-19', 'P-04'],
+      reglas: ['DocenteUnicoPorCursoDeCohorte', 'DocenteUnicoPorAreaComun', 'SesionesFijadasInamovibles'],
       siFalla:
         'Aquí es donde «docente duplicado» deja de ser posible: no hay rama del código que devuelva dos docentes para la misma clave.',
     },
@@ -870,8 +871,8 @@ const DOCENTE: DetalleMotor = {
         'Antes de probar nada, compara cuántas asignaciones distintas lleva el docente con su carga_maxima_cursos. Volver a tomar una que ya lleva no le sube la carga.',
       entra: 'Guid docenteId + ClaveAsignacion',
       sale: 'int · bool',
-      reglas: ['D-21'],
-      siFalla: 'Se cuenta un rechazo D-21 y se pasa al siguiente docente, sin probar ni una colocación.',
+      reglas: ['CargaDocenteMaxima'],
+      siFalla: 'Se cuenta un rechazo CargaDocenteMaxima y se pasa al siguiente docente, sin probar ni una colocación.',
     },
     {
       n: 7,
@@ -885,8 +886,8 @@ const DOCENTE: DetalleMotor = {
         'Comprueba que la disponibilidad confirmada cubra todos los slots que la sesión ocupa, uno por uno, en esa jornada y ese día. Cubrir el primero no basta.',
       entra: 'Docente.Disponibles: HashSet<(Jornada, Dia, Slot)>',
       sale: 'bool',
-      reglas: ['D-20', 'P-01'],
-      siFalla: 'Rechazo D-20 y se prueba la siguiente colocación.',
+      reglas: ['DocenteDisponible', 'DisponibilidadImpuestaAlColocar'],
+      siFalla: 'Rechazo DocenteDisponible y se prueba la siguiente colocación.',
     },
     {
       n: 8,
@@ -900,8 +901,8 @@ const DOCENTE: DetalleMotor = {
         'Pregunta si el docente tiene libres esos minutos ese día. Es la comprobación de «docente duplicado» en su segundo sentido: el mismo docente en dos sitios a la vez.',
       entra: 'la instancia de docentes del registro',
       sale: 'bool',
-      reglas: ['D-28'],
-      siFalla: 'Rechazo D-28 y se prueba la siguiente colocación. El mecanismo de franjas está en la sub-slide 5.4.',
+      reglas: ['DocenteSinSolape'],
+      siFalla: 'Rechazo DocenteSinSolape y se prueba la siguiente colocación. El mecanismo de franjas está en la sub-slide 5.4.',
     },
     {
       n: 9,
@@ -915,9 +916,9 @@ const DOCENTE: DetalleMotor = {
         'Con todas las sesiones libres colocadas, emite el paquete, deja al docente elegido para siempre y le anota una unidad de carga. Una sola, no una por sesión.',
       entra: 'la lista de sesiones puestas',
       sale: 'colocadas + continuidad.Elegir + carga.Anotar',
-      reglas: ['D-18', 'D-19', 'D-21'],
+      reglas: ['DocenteUnicoPorCursoDeCohorte', 'DocenteUnicoPorAreaComun', 'CargaDocenteMaxima'],
       siFalla:
-        'Si alguna de las sesiones no cupo, no se llega aquí: se liberan las que sí cupieron y se prueba el siguiente docente (P-08).',
+        'Si alguna de las sesiones no cupo, no se llega aquí: se liberan las que sí cupieron y se prueba el siguiente docente (TodoONadaPorAsignacion).',
     },
     {
       n: 10,
@@ -929,9 +930,9 @@ const DOCENTE: DetalleMotor = {
       metodo: 'VerificarContinuidadYCarga(fijada, docente)',
       hace:
         'Sobre las sesiones fijadas a mano: si dos de la misma asignación traen docentes distintos, lanza nombrando a los dos y la sesión afectada.',
-      entra: 'Instantanea.Fijadas (consulta C-7)',
+      entra: 'Instantanea.Fijadas (consulta CargaDeSesionesFijadas)',
       sale: 'continuidad.Elegir + carga.Anotar, o excepción',
-      reglas: ['P-04', 'D-18', 'D-19', 'D-21'],
+      reglas: ['SesionesFijadasInamovibles', 'DocenteUnicoPorCursoDeCohorte', 'DocenteUnicoPorAreaComun', 'CargaDocenteMaxima'],
       siFalla:
         'InvalidOperationException: «Las sesiones fijadas de X traen dos docentes distintos, A y B: sus sesiones son un solo paquete.»',
     },
@@ -947,7 +948,7 @@ const DOCENTE: DetalleMotor = {
         'Reconstruye las reglas globales desde la salida: agrupa por (cohorte, curso visible) y cuenta docentes distintos; agrupa por agrupación de área común; cuenta claves distintas por docente.',
       entra: 'Resultado.Colocadas + Instantanea',
       sale: 'CONTINUIDAD_DOCENTE · AREA_COMUN_VARIOS_DOCENTES · CARGA_DOCENTE_EXCEDIDA',
-      reglas: ['D-18', 'D-19', 'D-21'],
+      reglas: ['DocenteUnicoPorCursoDeCohorte', 'DocenteUnicoPorAreaComun', 'CargaDocenteMaxima'],
       siFalla:
         'No comparte con el colocador ninguna de estas tres: las recalcula desde cero, que es lo que hace que sea una segunda opinión y no un eco.',
     },
@@ -957,14 +958,14 @@ const DOCENTE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'completar_sesion_cohorte',
-      archivo: 'docs/database.sql:966',
+      archivo: 'docs/database.sql:1111',
       metodo: 'trigger sobre sesion_cohortes',
       hace:
         'Al insertar cada participación, comprueba que la agrupación de área común no tenga ya sesiones con otro docente.',
       entra: 'la fila que se está insertando',
       sale: 'la fila completada, o excepción',
       base: 'sesiones · sesion_cohortes',
-      reglas: ['D-19'],
+      reglas: ['DocenteUnicoPorAreaComun'],
       siFalla: '«La agrupacion de area comun X ya tiene sesiones con otro docente.»',
     },
     {
@@ -973,20 +974,20 @@ const DOCENTE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'validar_horario_publicable',
-      archivo: 'docs/database.sql:3690 · :3786 · :3868 · :3886',
+      archivo: 'docs/database.sql:4673 · :4769 · :4851 · :4869',
       metodo: 'al publicar el horario, no al generarlo',
       hace:
-        'La última red: autorización (D-17), disponibilidad (D-20), continuidad por cohorte-curso (D-18), un docente por área común (D-19) y carga máxima (D-21).',
+        'La última red: autorización (DocenteAutorizado), disponibilidad (DocenteDisponible), continuidad por cohorte-curso (DocenteUnicoPorCursoDeCohorte), un docente por área común (DocenteUnicoPorAreaComun) y carga máxima (CargaDocenteMaxima).',
       entra: 'el horario ya guardado',
       sale: 'permite publicar, o lo impide',
       base: 'validar_horario_publicable',
-      reglas: ['D-17', 'D-18', 'D-19', 'D-20', 'D-21'],
+      reglas: ['DocenteAutorizado', 'DocenteUnicoPorCursoDeCohorte', 'DocenteUnicoPorAreaComun', 'DocenteDisponible', 'CargaDocenteMaxima'],
       siFalla:
-        'P-01 es exactamente esto adelantado: el motor no coloca nunca fuera de la disponibilidad confirmada, aunque la base solo lo revise al publicar.',
+        'DisponibilidadImpuestaAlColocar es exactamente esto adelantado: el motor no coloca nunca fuera de la disponibilidad confirmada, aunque la base solo lo revise al publicar.',
     },
   ],
   piePasos:
-    'D-18 y D-19 no aparecen como funciones en ninguna parte, y esa ausencia es el diseño: son consecuencias de que el colocador elija un docente por asignación y no lo pueda cambiar. Las únicas que sí se preguntan son D-20, D-21 y D-28.',
+    'DocenteUnicoPorCursoDeCohorte y DocenteUnicoPorAreaComun no aparecen como funciones en ninguna parte, y esa ausencia es el diseño: son consecuencias de que el colocador elija un docente por asignación y no lo pueda cambiar. Las únicas que sí se preguntan son DocenteDisponible, CargaDocenteMaxima y DocenteSinSolape.',
   peticionesPista:
     'Qué se pregunta sobre el docente, a quién, y qué devuelve. Las dos primeras son puras y se responden mirando solo al docente; las tres siguientes miran estado acumulado y por eso viven en registros, no en reglas.',
   peticiones: [
@@ -1053,68 +1054,68 @@ const DOCENTE: DetalleMotor = {
     'Cinco reglas duras sobre el docente. Dos son funciones puras, una es una cuenta, y dos son estructurales: no se comprueban en ninguna parte porque el diseño las hace imposibles de romper.',
   reglas: [
     {
-      codigo: 'D-17',
+      codigo: 'DocenteAutorizado',
       nombre: 'Docente autorizado',
       momento: 'previa',
       donde: 'ReglasDocente.DocenteAutorizado',
       cuando: 'Precálculo, una vez por (docente, asignación); y otra en el verificador, por participación.',
       pregunta:
         '¿Está autorizado para el curso visible de cada cohorte —o para un equivalente— y con la jornada de la autorización?',
-      espejo: 'completar_sesion_cohorte, database.sql:944 — adc.curso_id in (select … cursos_equivalentes(…))',
+      espejo: 'completar_sesion_cohorte, database.sql:1089 — adc.curso_id in (select … cursos_equivalentes(…))',
       siNo: 'No entra en DocentesFactibles. Si ninguno entra: diagnóstico SIN_DOCENTE_FACTIBLE.',
     },
     {
-      codigo: 'D-20 · P-01',
+      codigo: 'DocenteDisponible · DisponibilidadImpuestaAlColocar',
       nombre: 'Disponibilidad confirmada',
       momento: 'bucle',
       donde: 'ReglasDocente.DocenteDisponible',
       cuando: 'En el precálculo para saber si es candidato, y en el bucle para cada colocación concreta.',
       pregunta: '¿Cubre su disponibilidad confirmada todos los slots de esa colocación?',
-      espejo: 'validar_horario_publicable, database.sql:3786 — generate_series(slot_inicio, slot_inicio + duracion − 1)',
-      siNo: 'Rechazo D-20: «docente sin disponibilidad confirmada» en el motivo de la pendiente.',
+      espejo: 'validar_horario_publicable, database.sql:4769 — generate_series(slot_inicio, slot_inicio + duracion − 1)',
+      siNo: 'Rechazo DocenteDisponible: «docente sin disponibilidad confirmada» en el motivo de la pendiente.',
     },
     {
-      codigo: 'D-21',
+      codigo: 'CargaDocenteMaxima',
       nombre: 'Carga máxima de cursos',
       momento: 'bucle',
       donde: 'RegistroCarga + la comparación en ColocadorVoraz.Atender',
       cuando: 'Antes de probar la primera colocación de cada docente candidato.',
       pregunta: '¿Le cabe una asignación más, contando claves distintas y no clases?',
-      espejo: 'validar_horario_publicable, database.sql:3886 — count(*) sobre las llaves distintas',
+      espejo: 'validar_horario_publicable, database.sql:4869 — count(*) sobre las llaves distintas',
       siNo:
-        'Rechazo D-21: «docente con la carga llena». Una asignación puede quedarse fuera sin haber llegado a probar ni una colocación, y por eso también se cuenta.',
+        'Rechazo CargaDocenteMaxima: «docente con la carga llena». Una asignación puede quedarse fuera sin haber llegado a probar ni una colocación, y por eso también se cuenta.',
     },
     {
-      codigo: 'D-18',
+      codigo: 'DocenteUnicoPorCursoDeCohorte',
       nombre: 'Un solo docente por cohorte y curso',
       momento: 'previa',
       donde: 'RegistroContinuidad · estructural, no es una función',
       cuando: 'Siempre: no hay un momento en que se compruebe.',
       pregunta: '¿La misma cohorte tiene el mismo curso visible con dos docentes distintos?',
-      espejo: 'validar_horario_publicable, database.sql:3868',
+      espejo: 'validar_horario_publicable, database.sql:4851',
       siNo:
         'No puede pasar: la clave CURSO:{visible}:COHORTE:{cohorte} tiene un solo docente en el diccionario, y Elegir lanza si se intenta cambiar.',
     },
     {
-      codigo: 'D-19',
+      codigo: 'DocenteUnicoPorAreaComun',
       nombre: 'Un solo docente por área común',
       momento: 'previa',
       donde: 'RegistroContinuidad · estructural, misma clase',
       cuando: 'Siempre, por la misma razón.',
       pregunta: '¿Un área común entera está repartida entre varios docentes?',
-      espejo: 'validar_horario_publicable, database.sql:3771',
+      espejo: 'validar_horario_publicable, database.sql:4754',
       siNo:
         'No puede pasar: la clave AREA:{agrupación} es una sola entrada del mismo diccionario. Por eso basta un diccionario y no hacen falta dos registros.',
     },
     {
-      codigo: 'D-28',
+      codigo: 'DocenteSinSolape',
       nombre: 'El docente no se solapa consigo mismo',
       momento: 'bucle',
       donde: 'RegistroOcupacion.Libre · instancia de docentes',
-      cuando: 'Dentro del bucle, después de las cohortes, P-02 y la disponibilidad.',
+      cuando: 'Dentro del bucle, después de las cohortes y la disponibilidad.',
       pregunta: '¿Está dando otra clase en esos mismos minutos?',
-      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:6407',
-      siNo: 'Rechazo D-28: «docente ocupado». Se prueba la siguiente colocación.',
+      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:7582',
+      siNo: 'Rechazo DocenteSinSolape: «docente ocupado». Se prueba la siguiente colocación.',
     },
   ],
   estructurasPista:
@@ -1129,7 +1130,7 @@ const DOCENTE: DetalleMotor = {
       cambia:
         'Elegir(clave, docente) al confirmar la asignación, y antes de todo eso al ocupar cada sesión fijada.',
       porque:
-        'La clave es exactamente el paquete que D-18 y D-19 protegen. Volver a elegir al mismo no hace nada; elegir a otro lanza, porque sería justo el horario que la base rechaza al publicarlo.',
+        'La clave es exactamente el paquete que DocenteUnicoPorCursoDeCohorte y DocenteUnicoPorAreaComun protegen. Volver a elegir al mismo no hace nada; elegir a otro lanza, porque sería justo el horario que la base rechaza al publicarlo.',
     },
     {
       clase: 'RegistroCarga',
@@ -1175,7 +1176,7 @@ const DOCENTE: DetalleMotor = {
       lote: {
         unidad: 'la asignación entera, con sus N sesiones semanales',
         pasos: [
-          'Las N sesiones son un solo paquete: o entran todas con el mismo docente, o ninguna (P-08).',
+          'Las N sesiones son un solo paquete: o entran todas con el mismo docente, o ninguna (TodoONadaPorAsignacion).',
           'Media asignación incumple la cobertura igual que cero, y encima ocupa el aula y el docente que otra sí habría aprovechado.',
           'Las sesiones fijadas no entran en el bucle, pero cuentan para decidir si la asignación quedó completa.',
           'Cuando las hay, ya eligieron el docente: el único candidato es ese.',
@@ -1200,7 +1201,7 @@ const DOCENTE: DetalleMotor = {
           'El orden de preferencia se recalcula en cada asignación, porque el registro va cambiando.',
           'El resultado es un reparto proporcional, no un óptimo: nadie compara dos repartos entre sí.',
           'Un docente con la carga llena sigue siendo factible en el precálculo; lo descarta el bucle, no el filtro.',
-          'Y por eso los rechazos por D-21 se cuentan: si no, la pendiente diría «0 candidatos» siendo falso.',
+          'Y por eso los rechazos por CargaDocenteMaxima se cuentan: si no, la pendiente diría «0 candidatos» siendo falso.',
         ],
       },
       cardinalidad: 'G asignaciones → 1 anotación de carga cada una → D docentes con su cuenta',
@@ -1214,37 +1215,37 @@ const DOCENTE: DetalleMotor = {
       origen: 'motor',
       cuando: 'Precálculo, antes de intentar nada.',
       mensaje:
-        '«Ninguno de los 4 docentes autorizados para el curso X de la cohorte Y tiene disponibilidad confirmada en alguna de las 32 colocaciones de la jornada J.»',
+        '«Los 4 docentes autorizados no tienen disponibilidad confirmada en ninguna de las 32 horas posibles de la jornada J para dar el curso «X» de Y. La disponibilidad la confirma el propio docente desde su cuenta.»',
       arreglo:
         'Son tres causas distintas con tres redacciones distintas, porque arreglarlas cuesta cosas distintas: autorizar a alguien, confirmarle disponibilidad, o corregir la jornada.',
     },
     {
-      codigo: 'N por D-21',
+      codigo: 'Pendiente por carga llena',
       origen: 'motor',
       cuando: 'Al dejar la asignación pendiente.',
-      mensaje: '«6 candidatos: 4 rechazados por D-21 (docente con la carga llena), 2 por D-20 (…).»',
-      arreglo: 'Subir carga_maxima_cursos a alguien, o autorizar a más docentes para ese curso.',
+      mensaje: '«… se consideraron 6 docentes y ninguno pudo con todas. · Ana López no se probó porque ya tiene la carga llena: su máximo es 4 asignaciones y ya da … Los otros 3 docentes tampoco pudieron: 2 por tener la carga llena, 1 por no tener disponibilidad confirmada a esas horas.»',
+      arreglo: 'Subir carga_maxima_cursos a alguien, o autorizar a más docentes para ese curso. Si solo hay un candidato, el precálculo ya lo avisó con CARGA_DOCENTE_INSUFICIENTE.',
     },
     {
       codigo: 'CONTINUIDAD_DOCENTE',
       origen: 'verificador',
       cuando: 'Agrupando el resultado por (cohorte, curso visible).',
-      mensaje: '«La cohorte C tiene el curso X con varios docentes.»',
+      mensaje: '«La cohorte C tiene «X» repartido entre varios docentes (A, B).»',
       arreglo:
-        'Es D-18 vista desde la salida. Si aparece, el registro de continuidad falló, porque el colocador no tiene forma de producirlo.',
+        'Es DocenteUnicoPorCursoDeCohorte vista desde la salida. Si aparece, el registro de continuidad falló, porque el colocador no tiene forma de producirlo.',
     },
     {
       codigo: 'AREA_COMUN_VARIOS_DOCENTES',
       origen: 'verificador',
       cuando: 'Agrupando por agrupación de área común.',
-      mensaje: '«La agrupación A tiene sesiones con varios docentes.»',
-      arreglo: 'Lo mismo para D-19. También lo comprueba el trigger al insertar, con su propio mensaje.',
+      mensaje: '«El área común «A» tiene sesiones con varios docentes (D1, D2).»',
+      arreglo: 'Lo mismo para DocenteUnicoPorAreaComun. También lo comprueba el trigger al insertar, con su propio mensaje.',
     },
     {
       codigo: 'CARGA_DOCENTE_EXCEDIDA',
       origen: 'verificador',
       cuando: 'Contando claves distintas por docente sobre el resultado.',
-      mensaje: '«El docente D tiene 5 asignaciones y admite 4.»',
+      mensaje: '«D quedó con 5 cursos y su carga máxima es 4.»',
       arreglo: 'Cuenta claves distintas, igual que el SQL: si contara sesiones, saltaría con horarios correctos.',
     },
     {
@@ -1252,13 +1253,13 @@ const DOCENTE: DetalleMotor = {
       origen: 'motor',
       cuando: 'OcuparFijadas, antes de colocar la primera sesión libre.',
       mensaje:
-        '«Las sesiones fijadas de CURSO:x:COHORTE:y traen dos docentes distintos, A y B: sus sesiones son un solo paquete (D-18, D-19).»',
+        '«Las sesiones fijadas de el curso «X» de Y traen dos docentes distintos, A y B, y todas las sesiones de un curso de una cohorte —o de un área común— las da una sola persona. Sesión afectada: S.»',
       arreglo:
         'Es la única contradicción que lanza en vez de degradarse a pendiente: mover una fijada o descartarla en silencio sería tirar el trabajo de una persona sin decírselo.',
     },
   ],
   cifras: [
-    { valor: '2', que: 'reglas estructurales', nota: 'D-18 y D-19: no hay función que las compruebe' },
+    { valor: '2', que: 'reglas estructurales', nota: 'DocenteUnicoPorCursoDeCohorte y DocenteUnicoPorAreaComun: no hay función que las compruebe' },
     { valor: '1', que: 'docente por asignación', nota: 'elegido una vez y ya no cambia' },
     { valor: '1', que: 'unidad de carga por clave', nota: 'no por sesión, no por cohorte' },
     { valor: '1 nivel', que: 'de retroceso', nota: 'probar el siguiente docente; no hay más marcha atrás' },
@@ -1289,7 +1290,7 @@ const OCUPACION: DetalleMotor = {
       titulo: 'La ocupación previa · lo que alguien fijó a mano',
       hilo: 'fondo',
       disparo: 'OcuparFijadas, la primera llamada de Colocar.',
-      fin: 'Cuando todas las fijadas de C-7 están ocupadas, o cuando dos se contradicen y lanza.',
+      fin: 'Cuando todas las fijadas de CargaDeSesionesFijadas están ocupadas, o cuando dos se contradicen y lanza.',
       color: COLOR_FONDO,
     },
     {
@@ -1322,7 +1323,7 @@ const OCUPACION: DetalleMotor = {
         'Numera las fronteras de minuto de todas las jornadas juntas y las convierte en franjas canónicas comparables entre jornadas.',
       entra: 'ImmutableArray<Jornada>',
       sale: 'la rejilla del plan',
-      reglas: ['D-04', 'D-06'],
+      reglas: ['SesionCabeEnBloques'],
       siFalla: 'Dos jornadas con el mismo Id lanzan ArgumentException al construirla.',
     },
     {
@@ -1337,7 +1338,7 @@ const OCUPACION: DetalleMotor = {
         'Crea los tres registros: docentes, aulas y cohortes. Misma clase, tres estados; lo único que cambia es qué identificador recibe cada uno.',
       entra: 'la rejilla, la misma para los tres',
       sale: 'ocupacionDocentes · ocupacionAulas · ocupacionCohortes',
-      reglas: ['D-28', 'D-29', 'D-30'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
       siFalla:
         'Dos rejillas distintas numerarían las franjas distinto y los veredictos de solape dejarían de compararse.',
     },
@@ -1353,7 +1354,7 @@ const OCUPACION: DetalleMotor = {
         'Antes de ocupar cada fijada, comprueba que no se pise con otra ya ocupada, para el aula, para el docente y para cada cohorte.',
       entra: 'Instantanea.Fijadas',
       sale: 'las tres entidades ocupadas, o excepción',
-      reglas: ['P-04', 'D-28', 'D-29', 'D-30'],
+      reglas: ['SesionesFijadasInamovibles', 'DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
       siFalla:
         'Lanza nombrando a las dos sesiones. CulpableDe recorre lo ya ocupado solo para el mensaje: el veredicto lo dio el registro.',
     },
@@ -1369,7 +1370,7 @@ const OCUPACION: DetalleMotor = {
         'Traduce la colocación a franjas con la rejilla y mira si alguna de ellas está en el conjunto. Recorre [desde, hasta), no un rango entero.',
       entra: '(Guid entidad, Guid jornada, Colocacion, int duración)',
       sale: 'bool',
-      reglas: ['D-28', 'D-29', 'D-30'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
       siFalla:
         'Una colocación que no cabe en la jornada lanza ArgumentOutOfRangeException: el colocador solo usa las que da la rejilla, así que llegar aquí con otra es un defecto del motor.',
     },
@@ -1382,12 +1383,12 @@ const OCUPACION: DetalleMotor = {
       archivo: 'Construccion/ColocadorVoraz.cs',
       metodo: 'ColocarUna — el orden de las preguntas',
       hace:
-        'Pregunta en un orden que no se reordena: cohortes, P-02, disponibilidad, docente, y por último el aula dentro de su propio bucle.',
+        'Pregunta en un orden que no se reordena: cohortes, disponibilidad, docente, y por último el aula dentro de su propio bucle. Las horas ya vienen ordenadas con las que emparejan de dos en dos delante.',
       entra: 'las colocaciones factibles ya ordenadas',
       sale: 'SesionColocada, o nulo',
-      reglas: ['D-30', 'P-02', 'D-20', 'D-28', 'D-29'],
+      reglas: ['CohorteSinSolape', 'DocenteDisponible', 'DocenteSinSolape', 'AulaSinSolape'],
       siFalla:
-        'Cada rechazo se cuenta con su código. Ese contador es el que acaba redactando el motivo de la pendiente.',
+        'Cada hora descartada se cuenta una vez, por la primera regla que la descartó, con la clase que la ocupaba. Ese contador es el que acaba redactando el motivo de la pendiente.',
     },
     {
       n: 6,
@@ -1415,7 +1416,7 @@ const OCUPACION: DetalleMotor = {
         'Ocupa las tres entidades a la vez —cada cohorte, el docente y el aula— y además anota la clase en la agenda de las cohortes.',
       entra: 'SesionRequerida + SesionColocada',
       sale: 'los tres registros y la agenda actualizados',
-      reglas: ['D-28', 'D-29', 'D-30', 'P-02'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape', 'SesionesDeDosEnDos'],
     },
     {
       n: 8,
@@ -1429,7 +1430,7 @@ const OCUPACION: DetalleMotor = {
         'Inverso exacto: devuelve las franjas de las tres entidades y borra la clase de la agenda. Es lo que hace posible revertir una asignación entera.',
       entra: 'las mismas dos cosas',
       sale: 'la ocupación igual que antes de probar ese docente',
-      reglas: ['P-08'],
+      reglas: ['TodoONadaPorAsignacion'],
       siFalla:
         'Si Ocupar y Liberar no fueran inversos exactos, el siguiente docente partiría de un horario distinto y el resultado dejaría de ser reproducible.',
     },
@@ -1445,7 +1446,7 @@ const OCUPACION: DetalleMotor = {
         'Compara todos los pares de sesiones colocadas: mismo día y rangos de minutos que se cruzan. Si además comparten aula, docente o cohorte, emite el código correspondiente.',
       entra: 'Resultado.Colocadas ordenadas',
       sale: 'COLISION_AULA · COLISION_DOCENTE · COLISION_COHORTE',
-      reglas: ['D-28', 'D-29', 'D-30'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
       siFalla:
         'No reutiliza los registros del colocador: construye su propia rejilla y recalcula los minutos desde la salida.',
     },
@@ -1455,14 +1456,14 @@ const OCUPACION: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'sesiones_aula_no_solapada',
-      archivo: 'docs/database.sql:6399',
+      archivo: 'docs/database.sql:7567',
       metodo: 'EXCLUDE USING gist',
       hace:
         'La base lo impide físicamente: horario_id =, aula_id =, fecha =, dia =, y rango_minutos && (se solapan).',
       entra: 'la fila que se está insertando',
       sale: 'aceptada, o error 23P01',
       base: 'sesiones.rango_minutos, int4range generado siempre a partir de minuto_inicio_dia y minuto_fin_dia',
-      reglas: ['D-29'],
+      reglas: ['AulaSinSolape'],
       siFalla: 'Revienta la transacción del guardado entera. No hay horario a medias.',
     },
   ],
@@ -1524,37 +1525,37 @@ const OCUPACION: DetalleMotor = {
     'Las tres reglas de no solapamiento son la misma línea de código con tres identificadores. En la base son tres restricciones de exclusión con la misma forma.',
   reglas: [
     {
-      codigo: 'D-29',
+      codigo: 'AulaSinSolape',
       nombre: 'Aula ocupada',
       momento: 'bucle',
       donde: 'ocupacionAulas.Libre',
       cuando: 'Dentro del bucle de aulas, después de haber fijado día, hora y docente.',
       pregunta: '¿Hay otra clase de este horario en esta aula, este día, en esos minutos?',
-      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:6399',
-      siNo: 'Rechazo D-29 y se prueba la siguiente aula de la lista ordenada.',
+      espejo: 'EXCLUDE USING gist sesiones_aula_no_solapada, database.sql:7567',
+      siNo: 'Rechazo AulaSinSolape y se prueba la siguiente aula de la lista ordenada.',
     },
     {
-      codigo: 'D-28',
+      codigo: 'DocenteSinSolape',
       nombre: 'Docente ocupado',
       momento: 'bucle',
       donde: 'ocupacionDocentes.Libre',
       cuando: 'Antes de entrar al bucle de aulas: descarta la colocación entera.',
       pregunta: '¿El docente ya elegido está dando otra clase en esos minutos?',
-      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:6407',
-      siNo: 'Rechazo D-28 y se prueba la siguiente colocación.',
+      espejo: 'EXCLUDE USING gist sesiones_docente_no_solapado, database.sql:7582',
+      siNo: 'Rechazo DocenteSinSolape y se prueba la siguiente colocación.',
     },
     {
-      codigo: 'D-30',
+      codigo: 'CohorteSinSolape',
       nombre: 'Cohorte ocupada',
       momento: 'bucle',
       donde: 'ocupacionCohortes.Libre, por cada participación',
       cuando: 'La primera pregunta de todas, sobre la colocación candidata.',
       pregunta: '¿Alguna de las cohortes de la sesión ya tiene clase en esos minutos?',
-      espejo: 'EXCLUDE USING gist sesion_cohortes_no_solapadas, database.sql:6383',
-      siNo: 'Rechazo D-30 y se prueba la siguiente colocación.',
+      espejo: 'EXCLUDE USING gist sesion_cohortes_no_solapadas, database.sql:7544',
+      siNo: 'Rechazo CohorteSinSolape y se prueba la siguiente colocación.',
     },
     {
-      codigo: 'P-08',
+      codigo: 'TodoONadaPorAsignacion',
       nombre: 'O todas, o ninguna',
       momento: 'bucle',
       donde: 'ColocadorVoraz.Atender · Liberar',
@@ -1566,7 +1567,7 @@ const OCUPACION: DetalleMotor = {
     },
   ],
   estructurasPista:
-    'Una sola clase, noventa y seis líneas, tres instancias. Es la pieza más consultada del motor y la única que guarda todo el estado del reloj.',
+    'Una sola clase, ciento cuarenta líneas, tres instancias. Es la pieza más consultada del motor y la única que guarda todo el estado del reloj; desde las jornadas extraordinarias también recuerda quién ocupa cada franja, para poder nombrarlo.',
   estructuras: [
     {
       clase: 'RegistroOcupacion',
@@ -1584,10 +1585,10 @@ const OCUPACION: DetalleMotor = {
       guarda: 'Dictionary<(Guid Cohorte, DiaSemana Dia), ImmutableList<Clase>>',
       clave: '(cohorte, día) → curso visible, slot inicio, slot fin',
       responde:
-        'TieneElCursoEseDia (P-02), ClasesDelDia y DistanciaMasCorta: cuántas y a qué distancia, en slots.',
+        'EmparejaConElMismoCurso (SesionesDeDosEnDos), ClasesDelDia y DistanciaMasCorta: si forma pareja, cuántas hay y a qué distancia, en slots.',
       cambia: 'Anotar y Borrar a la par de los tres registros, para que revertir la deje como estaba.',
       porque:
-        'No decide nada y no es una regla: el registro de ocupación responde sí o no sobre franjas, y las preferencias del §9.3 preguntan otra cosa. Preguntarlo en slots es exacto porque D-10 obliga a que toda sesión de una cohorte sea de su jornada.',
+        'No decide nada y no es una regla: el registro de ocupación responde sí o no sobre franjas, y las preferencias del §9.3 preguntan otra cosa. Preguntarlo en slots es exacto porque CohorteDeLaJornadaDeLaSesion obliga a que toda sesión de una cohorte sea de su jornada.',
     },
   ],
   lecturasPista:
@@ -1627,7 +1628,7 @@ const OCUPACION: DetalleMotor = {
         ],
       },
       lote: {
-        unidad: 'todas las fijadas del plan (consulta C-7)',
+        unidad: 'todas las fijadas del plan (consulta CargaDeSesionesFijadas)',
         pasos: [
           'Se ocupan todas antes de colocar la primera sesión libre.',
           'Si dos se contradicen entre sí, lanza y la generación se cierra como fallida.',
@@ -1642,10 +1643,10 @@ const OCUPACION: DetalleMotor = {
     'Cuatro salidas distintas para la misma situación, según quién la detecte. Solo la primera es normal; las otras tres significan que algo anterior falló.',
   fallos: [
     {
-      codigo: 'N por D-29',
+      codigo: 'Pendiente por aula ocupada',
       origen: 'motor',
       cuando: 'Durante el bucle, contando rechazos.',
-      mensaje: '«23 candidatos: 18 rechazados por D-29 (aula ocupada), 5 por D-30 (cohorte ocupada).»',
+      mensaje: '«… En 18 de ellas, las 2 aulas que sirven ya estaban ocupadas — p. ej. …. En 5 de ellas, la cohorte Y ya tenía clase — p. ej. el martes de 10:00 a 11:30: ya cursaba el curso «Z», en el Aula 101, con B.»',
       arreglo:
         'Es el caso normal y no es un error: significa que a esa hora ya no queda aula. Se arregla con más aulas, o con más horas en la jornada.',
     },
@@ -1654,7 +1655,7 @@ const OCUPACION: DetalleMotor = {
       origen: 'motor',
       cuando: 'Ocupar sobre una franja ya tomada.',
       mensaje:
-        '«La entidad E ya está ocupada el martes desde el slot 4 de la jornada J durante 2 slots: hay que preguntar por Libre antes de ocupar.»',
+        '«La entidad E ya está ocupada el Martes desde el slot 4 de la jornada J durante 2 slots: hay que preguntar por Libre antes de ocupar.»',
       arreglo:
         'Es un defecto del motor, no de los datos. Se corta ahí a propósito, para que Liberar siga siendo el inverso exacto de Ocupar.',
     },
@@ -1663,8 +1664,8 @@ const OCUPACION: DetalleMotor = {
       origen: 'motor',
       cuando: 'OcuparFijadas.',
       mensaje:
-        '«Dos sesiones fijadas se pisan en el reloj: el aula A ya está ocupada el lunes desde el slot 3 (D-29). Sesiones afectadas: S1, S2.»',
-      arreglo: 'Corregir a mano una de las dos. El mensaje nombra las dos justamente para eso.',
+        '«Dos sesiones fijadas se pisan: el Aula A ya está ocupada el lunes de 10:00 a 11:30. Sesiones afectadas: S1, S2. La otra clase es …»',
+      arreglo: 'Corregir a mano una de las dos. El mensaje nombra las dos justamente para eso. Si la que estorba es una clase del horario de referencia de una jornada extraordinaria, el mensaje la nombra y pide mover la fijada o cambiar de referencia.',
     },
     {
       codigo: 'COLISION_AULA · COLISION_DOCENTE · COLISION_COHORTE',
@@ -1743,13 +1744,13 @@ const CRUCE: DetalleMotor = {
       proyecto: 'Horarios.Infraestructura',
       clase: 'PreparadorInstantaneaMotorPostgres',
       archivo: 'Motor/PreparadorInstantaneaMotorPostgres.cs',
-      metodo: 'CargarJornadasAsync — la consulta C-1',
+      metodo: 'CargarJornadasAsync — la consulta CargaDeJornadas',
       hace:
         'Trae las jornadas activas del alcance con sus días activos, su hora de inicio y fin en minutos, su duración de bloque, sus bloques por día, su receso y sus descansos.',
       entra: 'el alcance del plan',
       sale: 'ImmutableArray<Jornada>, ordenada por Id',
       base: 'jornadas · jornada_descansos',
-      reglas: ['D-02', 'D-05'],
+      reglas: ['DiaActivoEnJornada', 'SesionFueraDeDescansos'],
     },
     {
       n: 2,
@@ -1763,7 +1764,7 @@ const CRUCE: DetalleMotor = {
         'Para cada jornada y cada bloque calcula su minuto de inicio y de fin, mete todos esos minutos en un SortedSet común y los numera. Ese número es la franja.',
       entra: 'todas las jornadas de la instantánea, juntas',
       sale: 'ImmutableDictionary<int minuto, int franja>',
-      reglas: ['D-04', 'D-06'],
+      reglas: ['SesionCabeEnBloques'],
       siFalla:
         'Como el conjunto es común a todas las jornadas, dos jornadas que empiezan a la misma hora comparten frontera, y por eso sus franjas son comparables.',
     },
@@ -1779,7 +1780,7 @@ const CRUCE: DetalleMotor = {
         'inicio = minutoInicio + (slot − 1) × duracionBloque; fin = minutoInicio + últimoSlot × duracionBloque; y se suma el receso a lo que quede detrás de él.',
       entra: 'la jornada y la colocación',
       sale: '(Inicio, Fin) en minutos desde medianoche',
-      reglas: ['D-06'],
+      reglas: ['SesionCabeEnBloques'],
       siFalla:
         'Es el mismo cálculo que hace el disparador aplicar_receso_a_sesion en la base, línea por línea.',
     },
@@ -1792,10 +1793,10 @@ const CRUCE: DetalleMotor = {
       archivo: 'Tiempo/RejillaTiempo.cs',
       metodo: 'ColocacionesDe(jornadaId, duracionSlots)',
       hace:
-        'Genera el producto días activos × bloques, y se queda con los que sobreviven a cuatro filtros de forma temporal. El resultado se memoriza.',
+        'Genera el producto días activos × bloques, y se queda con los que caben en los bloques del día y no tocan un descanso. El resultado se memoriza.',
       entra: '(Guid jornada, int duración)',
       sale: 'ImmutableArray<Colocacion>, ordenada por día y slot',
-      reglas: ['D-02', 'D-03', 'D-04', 'D-05', 'D-06'],
+      reglas: ['DiaActivoEnJornada', 'SesionCabeEnBloques', 'SesionFueraDeDescansos'],
       siFalla:
         'Una duración mayor que los bloques del día devuelve lista vacía, no excepción: es un dato, no un defecto.',
     },
@@ -1806,14 +1807,13 @@ const CRUCE: DetalleMotor = {
       proyecto: 'Horarios.Motor',
       clase: 'Precalculo',
       archivo: 'Construccion/Precalculo.cs',
-      metodo: 'Calcular → ColocacionesFactibles + P-07',
+      metodo: 'Calcular → ColocacionesFactibles',
       hace:
-        'Guarda esa lista en la asignación y cuenta cuántos días distintos tienen al menos una colocación. Si la asignación pide más sesiones que días, apaga P-02 para ella.',
+        'Guarda esa lista en la asignación. Si sale vacía, redacta por qué —la jornada no está activa, no tiene días, la sesión dura más que el día o los descansos no dejan hueco— y lo deja en Imposibilidad.',
       entra: 'la lista de colocaciones de su jornada y duración',
-      sale: 'ColocacionesFactibles + AplicaP02',
-      reglas: ['P-07'],
+      sale: 'ColocacionesFactibles + Imposibilidad',
       siFalla:
-        'Contar DiasActivos sería incorrecto: D-04 y D-05 pueden dejar un día activo sin ninguna colocación válida.',
+        'Ya no hay válvula que apague la preferencia de dos en dos: desde que es un orden y no una condición, no puede dejar nada pendiente.',
     },
     {
       n: 6,
@@ -1839,7 +1839,7 @@ const CRUCE: DetalleMotor = {
       hace: 'Recorre de Desde a Hasta y pregunta, toma o devuelve cada franja. Nada más.',
       entra: 'entidad, día, franjas',
       sale: 'bool, o estado mutado',
-      reglas: ['D-28', 'D-29', 'D-30'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
     },
     {
       n: 8,
@@ -1848,14 +1848,14 @@ const CRUCE: DetalleMotor = {
       proyecto: 'Horarios.Motor',
       clase: 'AgendaDeCohortes',
       archivo: 'Construccion/ColocadorVoraz.cs',
-      metodo: 'ClasesDelDia · DistanciaMasCorta · TieneElCursoEseDia',
+      metodo: 'EmparejaConElMismoCurso · ClasesDelDia · DistanciaMasCorta',
       hace:
-        'La otra lectura del tiempo, en slots y no en franjas: cuántas clases tiene ya la cohorte ese día y a cuántos slots está la más cercana.',
+        'La otra lectura del tiempo, en slots y no en franjas: si la hora forma pareja con otra sesión del mismo curso, cuántas clases tiene ya la cohorte ese día y a cuántos slots está la más cercana.',
       entra: 'la sesión y la colocación candidata',
-      sale: 'int · int · bool',
-      reglas: ['P-02'],
+      sale: 'bool · int · int',
+      reglas: ['SesionesDeDosEnDos'],
       siFalla:
-        'Cero significa contigua —o solapada, que lo descarta D-30 un paso después—; int.MaxValue significa que ese día está vacío.',
+        'Cero significa contigua —o solapada, que lo descarta CohorteSinSolape un paso después—; int.MaxValue significa que ese día está vacío.',
     },
     {
       n: 9,
@@ -1869,7 +1869,7 @@ const CRUCE: DetalleMotor = {
         'Con su propia rejilla, recalcula los minutos de las dos sesiones y compara los rangos: mismo día y rangoA.Inicio < rangoB.Fin && rangoB.Inicio < rangoA.Fin.',
       entra: 'dos sesiones colocadas',
       sale: 'bool',
-      reglas: ['D-28', 'D-29', 'D-30'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
       siFalla: 'Una jornada ausente devuelve falso en vez de lanzar: el código correspondiente ya lo dijo aparte.',
     },
     {
@@ -1878,14 +1878,14 @@ const CRUCE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'aplicar_receso_a_sesion',
-      archivo: 'docs/database.sql:486',
+      archivo: 'docs/database.sql:509',
       metodo: 'trigger BEFORE INSERT OR UPDATE sobre sesiones',
       hace:
         'Antes de guardar, recalcula minuto_inicio_dia y minuto_fin_dia sumando el receso, y lanza si la sesión se pasa del fin de la jornada.',
       entra: 'la fila con jornada, slot inicial y duración',
       sale: 'la misma fila con sus minutos corregidos',
       base: 'trigger zz_sesiones_aplicar_receso_trg',
-      reglas: ['D-06', 'D-04'],
+      reglas: ['SesionCabeEnBloques'],
       siFalla: '«La sesión excede el fin de la jornada al considerar el receso.»',
     },
     {
@@ -1894,13 +1894,13 @@ const CRUCE: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'sesiones.rango_minutos',
-      archivo: 'docs/database.sql:5574',
+      archivo: 'docs/database.sql:6688',
       metodo: 'GENERATED ALWAYS AS int4range(minuto_inicio_dia, minuto_fin_dia, «[)») STORED',
       hace:
         'La columna que las tres restricciones de exclusión comparan. Es un rango semiabierto, igual que las franjas del motor.',
       entra: 'los dos minutos ya corregidos',
       sale: 'int4range almacenado e indexado por gist',
-      reglas: ['D-28', 'D-29', 'D-30'],
+      reglas: ['DocenteSinSolape', 'AulaSinSolape', 'CohorteSinSolape'],
     },
   ],
   piePasos:
@@ -1944,7 +1944,7 @@ const CRUCE: DetalleMotor = {
       frontera: 'proceso',
       pide: '¿Cabe la sesión antes de que termine la jornada, empiece donde empiece?',
       devuelve: 'un rango de minutos',
-      nota: 'Se usa para redactar el motivo de SIN_COLOCACION_FACTIBLE, que distingue D-03 de D-04 de D-05.',
+      nota: 'Se usa para redactar el motivo de SIN_COLOCACION_FACTIBLE, que distingue SesionCabeEnBloques de SesionCabeEnBloques de SesionFueraDeDescansos.',
     },
     {
       quien: 'la pantalla',
@@ -1961,66 +1961,66 @@ const CRUCE: DetalleMotor = {
     'Las cinco reglas de forma temporal se resuelven todas en la rejilla, antes de que el colocador exista. Después, ninguna se vuelve a mirar: lo que la rejilla devuelve ya es válido por construcción.',
   reglas: [
     {
-      codigo: 'D-02',
+      codigo: 'DiaActivoEnJornada',
       nombre: 'Solo días activos',
       momento: 'previa',
       donde: 'RejillaTiempo.ColocacionesDe · jornada.DiasActivos',
       cuando: 'Al generar el catálogo de colocaciones.',
       pregunta: '¿La jornada trabaja ese día?',
-      espejo: 'validar_sesion_en_jornada, database.sql:4082',
+      espejo: 'validar_sesion_en_jornada, database.sql:5133',
       siNo: 'Ese día no produce ninguna colocación.',
     },
     {
-      codigo: 'D-03',
+      codigo: 'SesionCabeEnBloques',
       nombre: 'Cabe en los bloques del día',
       momento: 'previa',
       donde: 'RejillaTiempo.EsValida · ValidarRangoSlots',
       cuando: 'Al generar el catálogo, y al traducir cualquier colocación a minutos.',
       pregunta: '¿El último slot de la sesión sigue dentro de bloques_por_dia?',
-      espejo: 'validar_sesion_en_jornada, database.sql:4086',
+      espejo: 'validar_sesion_en_jornada, database.sql:5137',
       siNo:
         'Se descarta. Una duración mayor que los bloques del día deja la lista vacía y produce el diagnóstico correspondiente.',
     },
     {
-      codigo: 'D-04',
+      codigo: 'SesionCabeEnBloques',
       nombre: 'Termina antes que la jornada',
       momento: 'previa',
       donde: 'RejillaTiempo.EsValida · fin > jornada.MinutoFin',
       cuando: 'Al generar el catálogo, ya con el receso sumado.',
       pregunta: '¿El minuto final de la sesión pasa de la hora de fin?',
-      espejo: 'validar_sesion_en_jornada, database.sql:4099',
+      espejo: 'validar_sesion_en_jornada, database.sql:5150',
       siNo: 'Se descarta. También lo comprueba el disparador de la base al insertar.',
     },
     {
-      codigo: 'D-05',
+      codigo: 'SesionFueraDeDescansos',
       nombre: 'No pisa un descanso',
       momento: 'previa',
       donde: 'RejillaTiempo.EsValida · jornada.Descansos',
       cuando: 'Al generar el catálogo.',
       pregunta: '¿El tramo de la sesión se cruza con algún descanso de ese día?',
-      espejo: 'validar_sesion_en_jornada, database.sql:4103',
+      espejo: 'validar_sesion_en_jornada, database.sql:5154',
       siNo:
         'Se descarta. La comparación es de rangos semiabiertos: descanso.SlotDesde < finExclusivo && slotInicio < descanso.SlotHasta.',
     },
     {
-      codigo: 'D-06',
+      codigo: 'SesionCabeEnBloques',
       nombre: 'El receso corre el reloj',
       momento: 'previa',
       donde: 'RejillaTiempo.CalcularMinutos',
       cuando: 'En cada traducción de bloque a minutos.',
       pregunta: '¿La sesión empieza o termina después del receso?',
-      espejo: 'aplicar_receso_a_sesion, database.sql:494',
+      espejo: 'aplicar_receso_a_sesion, database.sql:517',
       siNo:
         'Si empieza después, se le suma el receso al inicio y al fin; si solo termina después, solo al fin. Una sesión que cruza el receso se lo come.',
     },
     {
-      codigo: 'D-10',
+      codigo: 'CohorteDeLaJornadaDeLaSesion',
       nombre: 'Una cohorte, una jornada',
       momento: 'previa',
       donde: 'ReglasCohorte.CohortesEnLaJornadaDeLaSesion',
       cuando: 'Al expandir, y otra vez en el verificador.',
       pregunta: '¿Toda cohorte de la sesión cursa la jornada de la sesión?',
-      espejo: 'completar_sesion_cohorte, database.sql:871',
+      espejo: 'completar_sesion_cohorte, database.sql:1016',
       siNo:
         'Es la regla que sostiene todo el razonamiento en slots: como una cohorte solo tiene sesiones de su propia jornada, para ella el índice de slot ya identifica la hora.',
     },
@@ -2058,7 +2058,7 @@ const CRUCE: DetalleMotor = {
         unidad: 'el catálogo de una (jornada, duración)',
         pasos: [
           'Se hace el producto días activos × bloques por día, ordenado por día y por slot.',
-          'Se filtra con D-03, D-04 y D-05, en ese orden, y lo que queda es el catálogo.',
+          'Se filtra con SesionCabeEnBloques, SesionCabeEnBloques y SesionFueraDeDescansos, en ese orden, y lo que queda es el catálogo.',
           'Se guarda en el diccionario: todas las asignaciones de la misma jornada y duración lo comparten.',
           'De ahí sale la tercera cifra de la dificultad, que decide el turno de la asignación.',
         ],
@@ -2096,25 +2096,16 @@ const CRUCE: DetalleMotor = {
       origen: 'motor',
       cuando: 'Precálculo, cuando el catálogo de esa (jornada, duración) sale vacío.',
       mensaje:
-        '«No hay ninguna colocación factible para el curso X de la cohorte Y: la sesión de 3 slots termina después de la hora de fin de la jornada J empiece donde empiece (D-04), ni siquiera antes del receso de 20 minutos (D-06).»',
+        '«No hay ninguna hora de la jornada donde quepa el curso «X» de Y: la sesión dura 5 bloques seguidos y la jornada J solo tiene 4 bloques por día.»',
       arreglo:
         'Se pregunta en el orden en que la rejilla las aplica, de la más gruesa a la más fina, para nombrar solo la regla que de verdad vació la lista.',
-    },
-    {
-      codigo: 'P02_RELAJADA',
-      origen: 'motor',
-      cuando: 'Precálculo, cuando la asignación pide más sesiones que días con colocación.',
-      mensaje:
-        '«Se permite más de una sesión por día para el curso X de la cohorte Y: pide 5 sesiones y solo tiene 4 días con colocaciones factibles.»',
-      arreglo:
-        'P-07 apaga sola la preferencia P-02 para esa asignación. Sin eso, quedaría pendiente por una preferencia, no por una regla.',
     },
     {
       codigo: 'SEMESTRE_NO_CABE',
       origen: 'motor',
       cuando: 'Precálculo, sumando los slots semanales que pide cada cohorte.',
       mensaje:
-        '«La cohorte C pide 46 slots semanales y la jornada J tiene 40; faltan 6 slots, equivalentes a por lo menos 3 sesiones. Es un ajuste del pensum o de la jornada, no del horario.»',
+        '«La cohorte C, semestre 3 del pensum P, pide 46 slots semanales y la jornada J tiene 40; faltan 6 slots, equivalentes a por lo menos 3 sesiones. Es un ajuste del pensum o de la jornada, no del horario.»',
       arreglo:
         'Es aritmética, no búsqueda: se sabe antes de intentar nada. El plan se genera igual, con esas sesiones pendientes.',
     },
@@ -2122,9 +2113,18 @@ const CRUCE: DetalleMotor = {
       codigo: 'COLOCACION_FUERA_DE_JORNADA',
       origen: 'verificador',
       cuando: 'Sobre cada sesión emitida.',
-      mensaje: '«La colocación de la sesión S no cabe en su jornada.»',
+      mensaje: '«el curso «X» de Y quedó el lunes de 08:00 a 09:30 —slot 1, 2 slots—, y ahí no cabe …»',
       arreglo:
         'Comprueba que la colocación esté en el catálogo de la rejilla. Si aparece, el colocador usó una colocación que no salió de ColocacionesDe.',
+    },
+    {
+      codigo: 'COLISION_HORARIO_REFERENCIA',
+      origen: 'verificador',
+      cuando: 'En un plan de jornada extraordinaria, contra las clases del horario de referencia.',
+      mensaje:
+        '«el curso «X» de Y (el martes de 18:15 a 19:45) se solapa con «Z» del horario de la jornada regular (el martes de 18:00 a 19:30), y …»',
+      arreglo:
+        'Es el mismo cruce en minutos, pero contra otro horario: las clases de referencia ocupan docente y aula antes de colocar nada. Si aparece, el colocador no respetó esa ocupación.',
     },
     {
       codigo: 'raise exception',
@@ -2136,7 +2136,7 @@ const CRUCE: DetalleMotor = {
     },
   ],
   cifras: [
-    { valor: '5', que: 'reglas de forma temporal', nota: 'D-02 a D-06, todas resueltas en la rejilla' },
+    { valor: '3', que: 'reglas de forma temporal', nota: 'DiaActivoEnJornada, SesionCabeEnBloques y SesionFueraDeDescansos, resueltas en la rejilla' },
     { valor: '1', que: 'conjunto de fronteras', nota: 'común a todas las jornadas del plan' },
     { valor: '[ )', que: 'rangos semiabiertos', nota: 'en el motor y en int4range de la base' },
     { valor: '3', que: 'veces que se calcula lo mismo', nota: 'motor, verificador y disparador de la base' },
@@ -2159,7 +2159,7 @@ const CONSULTA: DetalleMotor = {
       titulo: 'Camino A · la revisión del plan, desde Planes.razor',
       hilo: 'web',
       disparo: 'El botón «Ver horario» de un plan, o el fin del sondeo cuando la generación termina.',
-      fin: 'Cuando llega el HorarioGeneradoDto: 500 sesiones por página, y los conflictos y pendientes enteros.',
+      fin: 'Cuando llega el HorarioGeneradoDto: todas las sesiones en una página, con los conflictos y pendientes enteros.',
       color: COLOR_LECTURA,
     },
     {
@@ -2216,7 +2216,7 @@ const CONSULTA: DetalleMotor = {
       archivo: 'Planes/DatosGeneracionesPostgres.cs',
       metodo: 'ConsultarAsync — implementa IDatosHorarioGenerado',
       hace:
-        'Llama a la RPC con cuatro parámetros: el plan como horario, página 1, tamaño 500 y ver todo en verdadero.',
+        'Llama a la RPC con cuatro parámetros: el plan como horario, página 1, tamaño 0 —sin límite— y ver todo en verdadero.',
       entra: 'Guid planId',
       sale: 'HorarioGeneradoDto deserializado del jsonb',
       base: 'RPC consultar_revision_horario',
@@ -2229,12 +2229,12 @@ const CONSULTA: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'consultar_revision_horario',
-      archivo: 'docs/database.sql:1460',
+      archivo: 'docs/database.sql:1606',
       metodo: 'LANGUAGE sql STABLE · tres CTE y un jsonb_build_object',
       hace:
-        'sesiones_filtradas une sesiones con curso, docente, aula, jornada, cohorte y carrera; pagina la ordena y la recorta; conflictos y pendientes se leen enteros.',
+        'sesiones_filtradas une sesiones con curso visible, docente, aula, jornada, cohorte y carrera, y marca esta_fijada y el área común; pagina la ordena y, con tamaño 0, no recorta; conflictos y pendientes se leen enteros, cada pendiente con su identidad.',
       entra: 'p_horario_id + ocho filtros opcionales + paginación',
-      sale: 'jsonb: sesiones, conflictos, pendientes, total_sesiones, pagina, tamano_pagina',
+      sale: 'jsonb: slots, sesiones, conflictos, pendientes, total_sesiones, pagina, tamano_pagina',
       base: 'sesiones · sesion_cohortes · conflictos · conflicto_sesiones · sesiones_no_asignadas',
       siFalla:
         'Un filtro en nulo no filtra: cada condición es «p_x is null or columna = p_x». El total se cuenta sobre las filtradas, no sobre la página.',
@@ -2246,13 +2246,13 @@ const CONSULTA: DetalleMotor = {
       proyecto: 'Horarios.Blazor',
       clase: 'Planes.razor',
       archivo: 'Components/Pages/Planes.razor',
-      metodo: 'SesionesFiltradas · Hora(minuto) · NombreDia(dia)',
+      metodo: 'GruposHorario · RejillaHorario',
       hace:
-        'Pinta la tabla de día, hora, curso, cohorte, docente, aula y jornada, con un filtro de texto en cliente sobre lo ya traído, y los chips de totales.',
+        'Agrupa por carrera y semestre y pinta cada grupo como una rejilla —días en columnas, slots en filas—, con «x/y pendientes» por curso y cohorte, la marca de las clases fijadas y las de área común. Pulsar una clase abre el editor manual.',
       entra: 'HorarioGeneradoDto',
-      sale: 'la tabla, los chips y la lista de diagnósticos',
+      sale: 'las rejillas, los chips y la lista de diagnósticos',
       siFalla:
-        'El filtro de la barra de búsqueda no vuelve al servidor: recorta las 500 filas que ya están en memoria.',
+        'El filtro de la barra de búsqueda no vuelve al servidor: recorta lo que ya está en memoria, que es el horario entero.',
     },
     {
       n: 6,
@@ -2303,7 +2303,7 @@ const CONSULTA: DetalleMotor = {
       capa: 'postgres',
       proyecto: 'supabase',
       clase: 'consultar_datos_reporte',
-      archivo: 'docs/database.sql:1295',
+      archivo: 'docs/database.sql:1440',
       metodo: 'LANGUAGE plpgsql STABLE',
       hace:
         'Resuelve el plan y el estado de la generación; si la vista es diagnóstico lee mensajes_generacion, y si no, arma nueve columnas fijas uniendo por el curso visible de cada cohorte.',
@@ -2387,12 +2387,12 @@ const CONSULTA: DetalleMotor = {
     {
       quien: 'DatosGeneracionesPostgres',
       aQuien: 'Postgres',
-      contrato: 'consultar_revision_horario(p_horario_id, p_pagina := 1, p_tamano_pagina := 500, p_ver_todo := true)',
+      contrato: 'consultar_revision_horario(p_horario_id, p_pagina := 1, p_tamano_pagina := 0, p_ver_todo := true)',
       frontera: 'rpc',
-      pide: 'Sesiones paginadas, y conflictos y pendientes enteros.',
-      devuelve: 'un solo jsonb con seis claves',
+      pide: 'El horario entero, con conflictos y pendientes.',
+      devuelve: 'un solo jsonb con siete claves',
       nota:
-        'Las sesiones se paginan porque un período completo son miles; los conflictos y pendientes no, porque son pocos y hay que verlos todos.',
+        'Antes pedía 500 por página. Agrupado por carrera y semestre, un recorte dejaba el último grupo incompleto sin que nada lo dijera; por eso ahora se pide todo.',
     },
     {
       quien: 'Consultas.razor',
@@ -2440,11 +2440,11 @@ const CONSULTA: DetalleMotor = {
     },
     {
       codigo: 'Vista válida',
-      nombre: 'Solo cuatro vistas',
+      nombre: 'Solo cinco vistas',
       momento: 'previa',
       donde: 'ConsultarReporte · VistasPermitidas',
       cuando: 'Antes de llamar al puerto.',
-      pregunta: '¿La vista es docente, cohorte, aula o diagnóstico?',
+      pregunta: '¿La vista es docente, cohorte, aula, curso o diagnóstico?',
       espejo: 'Comparación sin distinguir mayúsculas; la vista se normaliza a minúsculas antes de viajar.',
       siNo: 'ArgumentException: «La vista de reporte no es válida.»',
     },
@@ -2509,7 +2509,7 @@ const CONSULTA: DetalleMotor = {
       archivo: 'Contratos/Consultas/ReporteDtos.cs',
       guarda: 'HorarioId, GeneracionId, Titulo, string[] Encabezados, ReporteFilaDto[] Filas',
       clave: 'una lista de celdas por fila, sin nombres de columna',
-      responde: 'La misma tabla para las cuatro vistas.',
+      responde: 'La misma tabla para las cinco vistas.',
       cambia: 'Nunca.',
       porque:
         'Es deliberadamente genérico: la vista de diagnóstico tiene tres columnas y las otras nueve, y la pantalla pinta las dos con el mismo código.',
@@ -2532,13 +2532,13 @@ const CONSULTA: DetalleMotor = {
       lote: {
         unidad: 'la consulta entera',
         pasos: [
-          'Las sesiones se ordenan por día, slot, carrera, año y sección, y se recortan a 500.',
+          'Las sesiones se ordenan por día, slot, carrera, año y sección; con tamaño 0 no se recortan.',
           'Los conflictos vienen de dos tablas unidas y ordenados por dureza y por fecha, sin paginar.',
           'Los pendientes vienen de sesiones_no_asignadas con el código fijo SESION_PENDIENTE y severidad alta.',
           'total_sesiones se cuenta sobre las filtradas, no sobre la página: es el número que sale en el chip.',
         ],
       },
-      cardinalidad: '1 plan → 1 RPC → 500 sesiones + todos los conflictos + todos los pendientes',
+      cardinalidad: '1 plan → 1 RPC → todas las sesiones + todos los conflictos + todos los pendientes',
     },
     {
       titulo: 'El reporte de una generación',
@@ -2615,8 +2615,8 @@ const CONSULTA: DetalleMotor = {
   ],
   cifras: [
     { valor: '2', que: 'caminos de lectura', nota: 'revisión del plan y reporte; no comparten ninguna clase' },
-    { valor: '500', que: 'sesiones por página', nota: 'el tamaño que pide la aplicación, de un máximo de 100 por defecto' },
-    { valor: '4', que: 'vistas de reporte', nota: 'docente, cohorte, aula y diagnóstico' },
+    { valor: '0', que: 'tamaño de página', nota: 'la aplicación pide el horario entero; el valor por defecto de la función es 100' },
+    { valor: '5', que: 'vistas de reporte', nota: 'docente, cohorte, aula, curso y diagnóstico' },
     { valor: '2 s', que: 'de sondeo', nota: 'PeriodicTimer, hasta que el plan deja de estar en Generando' },
     { valor: '0', que: 'procesos de fondo', nota: 'leer un horario no encola nada' },
   ],

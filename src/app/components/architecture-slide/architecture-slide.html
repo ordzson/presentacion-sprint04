@@ -2,7 +2,7 @@
   <header class="slide-header">
     <div>
       <p class="eyebrow">Fase 3 · Arquitectura</p>
-      <h1>Cinco piezas y un solo patrón, repetido</h1>
+      <h1>Seis piezas y un solo patrón, repetido</h1>
       <p class="subtitle">
         Todo trámite del sistema —listar aulas, dar de alta un docente, entrar—
         atraviesa las mismas ranuras en el mismo orden. Lo que cambia es el relleno.
@@ -117,7 +117,7 @@
               [attr.y]="puertosNodo.y + 21"
               class="puertos-titulo"
             >
-              21 puertos · interfaces
+              26 puertos · interfaces
             </text>
             <text
               [attr.x]="puertosNodo.x + puertosNodo.w / 2"
@@ -168,8 +168,9 @@
         </div>
 
         <p class="regla-oro">
-          <strong>La única flecha que sube</strong> es la de Infraestructura hacia los puertos. Por
-          eso Aplicación no tiene ni una referencia a Infraestructura, y aun así se guardan datos.
+          <strong>Las flechas que suben</strong> son las de quien cumple un puerto: Infraestructura
+          hacia los de Aplicación y Motor hacia IMotorHorarios, en Contratos. Por eso Aplicación no
+          referencia ni a Infraestructura ni al Motor, y aun así guarda datos y genera horarios.
         </p>
       </div>
 

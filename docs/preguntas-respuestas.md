@@ -9,7 +9,7 @@
 > **Fuente de todo lo que se afirma acá:** el repositorio `HORARIOS/Horarios-develop`
 > (código en `src/`, base de datos en `supabase/`, documentación en `docs/`). Cuando una respuesta
 > cita un archivo, ese archivo existe y dice eso. La información de base de datos se actualizó
-> el **2026-09-09** desde la base local del proyecto de referencia; su estructura se conserva
+> el **2026-09-22** desde la base local del proyecto de referencia; su estructura se conserva
 > en `docs/database.sql` de esta presentación.
 >
 > **Si un término no te suena** —endpoint, esquema, entidad, RLS, DTO—, saltá al
@@ -28,6 +28,7 @@
    - [4.4 Planes](#44-planes)
    - [4.5 Acceso](#45-acceso)
    - [4.6 Importaciones](#46-importaciones)
+   - [4.7 Lo que llegó en septiembre](#47-lo-que-llegó-en-septiembre)
 5. [Preguntas incómodas](#5-preguntas-incómodas)
 6. [Glosario](#6-glosario)
 
@@ -225,26 +226,31 @@ qué esquema busco?". Está en `ClienteDatosSupabase.cs`, constante `Esquema`.
 ### P8. ¿Qué tamaño tiene la base de datos?
 
 **Qué.** Instantánea del esquema `horarios` de la base local de `Horarios-develop`,
-exportada el **2026-09-09** y conservada en `docs/database.sql` de esta presentación:
+exportada el **2026-09-22** y conservada en `docs/database.sql` de esta presentación:
 
 | Objeto | Cantidad |
 |---|---|
 | Esquemas propios | 1 (`horarios`) |
-| Tablas | 59 |
-| Columnas | 504 |
-| Claves foráneas | 115 (114 internas y 1 a `auth.users`) |
-| Tipos ENUM | 22 |
+| Tablas | 62 |
+| Columnas | 523 |
+| Claves foráneas | 123 (122 internas y 1 a `auth.users`) |
+| Tipos ENUM | 24 |
 | Vistas | 10 (5 `api_*` + 5 `vista_*`) |
-| Funciones | 72 (55 funciones ordinarias + 17 de trigger) |
-| Triggers | 44, sobre 34 tablas |
-| Políticas RLS | 254, con **53 nombres distintos** |
-| Tablas con RLS activado | 59 |
-| Índices explícitos | 57, además de los asociados a restricciones |
+| Funciones | 101 (79 funciones ordinarias + 22 de trigger) |
+| Triggers | 52, sobre 38 tablas |
+| Políticas RLS | 256, con **55 nombres distintos** |
+| Tablas con RLS activado | 62 |
+| Índices explícitos | 58, además de los asociados a restricciones |
 
 **Cómo.** El diagrama y el catálogo se generan desde la misma instantánea SQL. Las políticas
 se aplican tabla por tabla; varios nombres se repiten, aunque las condiciones concretas
-pueden cambiar según la tabla. El catálogo agrupa las 254 políticas y las 59 activaciones
-de RLS en **313 objetos de seguridad por fila**.
+pueden cambiar según la tabla. El catálogo agrupa las 256 políticas y las 62 activaciones
+de RLS en **318 objetos de seguridad por fila**.
+
+Lo que creció desde el 2026-09-09: `jornada_extraordinaria_periodos`,
+`jornada_extraordinaria_docentes` y `notificacion_destinatarios`, la columna
+`cursos.esta_activo` y 29 funciones nuevas —jornadas extraordinarias, bandeja de
+notificaciones, cursos inactivos y cambio de contraseña inicial—.
 
 **Por qué.** Las cifras describen la estructura local exportada, no los datos de alumnos,
 usuarios o sesiones. La fecha y el origen permiten comprobar qué versión se está exponiendo
@@ -629,8 +635,10 @@ datos que se van a contradecir.
 ### P21. ¿Qué es la idempotencia y dónde aparece?
 
 **Qué.** Que repetir la misma operación no la duplique. En el esquema se implementa con la
-columna `clave_solicitud`, presente en `importaciones`, `generaciones`, `notificaciones` y
-`resultados_edicion`.
+columna `clave_solicitud` con índice único en `importaciones`, `generaciones` y
+`resultados_edicion`. `notificaciones` conserva la columna, pero desde la bandeja por
+destinatario (2026-09-14) ya no tiene el índice: cada mensaje se crea una vez por
+`crear_notificacion_interna`.
 
 **Cómo.** El cliente manda un texto único por operación, y un índice único parcial impide
 que la misma operación entre dos veces:
@@ -1123,6 +1131,11 @@ comprueba que cada bloque corresponda a una jornada y un día válidos.
 Nota importante: `RevisarDatosPlan` exige disponibilidad **confirmada** para dejar generar.
 Declarada pero sin confirmar no cuenta.
 
+Desde las jornadas extraordinarias, un bloque de una jornada extraordinaria en que el docente
+ya da clase en el horario de referencia, o que cae en el receso de la regular, no se guarda:
+el disparador `descartar_slot_extraordinario_bloqueado` lo descarta, y la pantalla lo pinta
+«Ocupado» con el motivo que da `calcular_slots_bloqueados`.
+
 #### P40. ¿Quién puede ver y editar la disponibilidad de quién?
 
 **Qué.** Un docente edita la suya; un decano, la de los docentes de sus facultades;
@@ -1223,7 +1236,11 @@ docentes o alumnos citados en dos lugares a la vez.
 `INSERT OR DELETE OR UPDATE` — **las tres**: *a esta tabla no se le hace nada si su horario ya
 está publicado*.
 
-**Cómo.** Para cambiar algo hay que crear una **versión derivada** con
+Antes de publicar sí se edita: en `Generado`, `EnRevision` o `Inviable`, la edición manual de
+Planes mueve clases a mano (ver [P60](#p60-cómo-funciona-la-edición-manual-del-horario)). Lo
+que decide qué estados se editan es `PlanHorario.AdmiteEdicionManual`, en el dominio.
+
+**Cómo.** Para cambiar algo ya publicado hay que crear una **versión derivada** con
 `crear_version_derivada(...)`, que clona el horario publicado, mueve la sesión pedida y usa
 `pg_advisory_xact_lock` para que dos ediciones simultáneas no se pisen. Después,
 `comparar_version_horario(...)` muestra las diferencias.
@@ -1319,10 +1336,11 @@ sesión. **Un mecanismo, dos usos.**
 `usuario_facultades`. Los permisos se ven en las políticas como
 `usuario_actual_tiene_permiso('aulas', 'crear')` y en C# como
 `AutorizacionAplicacion.Exigir(contexto, "aulas", "crear")`. La lista completa registrada en
-`Program.cs` tiene 18 permisos: `academia:crear`, `academia:leer`, `auditoria:administrar`,
-`auditoria:leer`, `aulas:crear`, `aulas:leer`, `consultas:leer`, `docentes:actualizar`,
-`docentes:leer`, `importaciones:importar`, `planes:actualizar`,
-`planes:aprobar`, `planes:crear`, `planes:leer`, `planes:publicar`, `reportes:exportar`,
+`Program.cs` tiene 21 permisos: `academia:crear`, `academia:leer`, `auditoria:administrar`,
+`auditoria:leer`, `aulas:crear`, `aulas:leer`, `consultas:leer`, `docente:disponibilidad`,
+`docentes:actualizar`, `docentes:leer`, `importaciones:importar`, `motor:generar`,
+`notificaciones:crear`, `notificaciones:leer`, `planes:actualizar`, `planes:aprobar`,
+`planes:crear`, `planes:leer`, `planes:publicar`, `reportes:exportar` y
 `sustituciones:crear`. Los roles funcionales son Superadministrador, Coordinador académico,
 Decano y Docente.
 
@@ -1398,6 +1416,78 @@ Injection*). Leer el valor literal de la celda y rechazar lo que sea fórmula es
 segura, y además la única determinista: dos programas de hoja de cálculo pueden evaluar la misma
 fórmula distinto.
 
+### 4.7 Lo que llegó en septiembre
+
+#### P60. ¿Cómo funciona la edición manual del horario?
+
+**Qué.** En Planes, pulsar una clase abre «Editar clase»: se cambia día, hora, aula o docente,
+esas casillas quedan fijas y el motor reacomoda lo demás. Nada se escribe hasta pulsar
+«Aplicar propuesta». También sirve para colocar una clase que quedó sin colocar.
+
+**Cómo.** `EditarSesionHorario` (Aplicación) calcula qué queda fijo y llama a `RepararHorario`
+(Motor). Ese reparador no es un segundo motor: fija temporalmente todo lo que no hace falta
+mover y deja que `MotorHorarios` vuelva a colocar solo el resto, probando primero el docente,
+el aula y la hora que cada clase ya tenía. Prueba tres alcances cada vez más grandes dentro de
+un plazo de 15 s, y verifica la propuesta entera con el mismo `VerificadorHorario`. Al
+aplicar, `DatosEdicionHorarioPostgres` guarda por Npgsql en una transacción serializable, con
+las tres restricciones de solape diferidas hasta el `COMMIT` para poder guardar una permuta.
+
+**Por qué.** Porque el motor es voraz y deja pendientes, y la coordinación siempre va a querer
+ajustar algo a mano. Reutilizar el motor en vez de escribir otro garantiza que una edición
+cumple exactamente las mismas reglas que una generación. Y diferir los solapes solo en esa
+transacción, en vez de apagar disparadores, mantiene intacta la protección de la base: una
+propuesta que deje un choque no llega a guardarse.
+
+#### P61. ¿Qué es una jornada extraordinaria?
+
+**Qué.** Una jornada que corre en paralelo a una regular —por ejemplo, un plan de fin de
+semana o de refuerzo— con los mismos docentes y aulas. En la tabla `jornadas` es una fila con
+`jornada_regular_id`; por período se configura en `jornada_extraordinaria_periodos` contra
+qué horario regular se compara, y en `jornada_extraordinaria_docentes` quién da clase en ella.
+
+**Cómo.** Al generar, el preparador del motor carga las clases del horario de referencia como
+**ocupaciones externas**: ocupan su docente y su aula antes de colocar nada, no se emiten ni
+se mueven, y el verificador revisa `COLISION_HORARIO_REFERENCIA`. La base impide mezclar en un
+plan jornadas regulares y extraordinarias (`fijar_alcance_plan`) y que una regular con
+extraordinarias cambie la duración de sus bloques (`validar_jornada_extraordinaria`).
+
+**Por qué.** Porque el docente es la misma persona en las dos jornadas: sin la referencia, el
+motor lo colocaría a la misma hora en dos sitios. Y porque «un solo horario publicado por
+período» dejó de ser un índice único: ahora es el disparador `validar_un_publicado_por_alcance`,
+que admite un publicado regular y otro extraordinario si no comparten jornada.
+
+#### P62. ¿Cómo funcionan las notificaciones internas?
+
+**Qué.** La coordinación escribe un mensaje con prioridad (normal, importante, urgente) a
+docentes elegidos o a todos los activos con cuenta; cada docente lo ve en su bandeja y en la
+campana de la barra superior. No sale correo: el canal es `interno`.
+
+**Cómo.** El mensaje se guarda una vez en `notificaciones` y el estado vive por destinatario
+en `notificacion_destinatarios` (no leída, leída, descartada, con la fecha de cada cambio).
+Todo pasa por funciones: `crear_notificacion_interna` exige `notificaciones:crear`,
+`listar_mis_notificaciones` y `contar_mis_notificaciones_no_leidas` solo ven lo propio, y
+`listar_historial_notificaciones` da a la coordinación cuántos lo leyeron.
+
+**Por qué.** Separar el contenido del estado evita copiar un mensaje por cada docente y
+permite saber quién lo leyó. Y que las escrituras sean solo por funciones —las políticas de
+las dos tablas son de lectura— hace que nadie pueda marcar como leído el mensaje de otro.
+
+#### P63. ¿Qué pasa con un curso que deja de dictarse, o con la contraseña de un docente nuevo?
+
+**Qué.** Un curso se **desactiva**, no se borra: `cursos.esta_activo` en falso. Y un docente
+dado de alta con cuenta recibe una contraseña inicial que tiene que cambiar al entrar.
+
+**Cómo.** `establecer_estado_curso` cambia el estado sin tocar malla, sesiones ni historia;
+tres disparadores impiden autorizar a un docente, añadir a un curso común o a un área común
+un curso inactivo, y `cursos_equivalentes` y el preparador del motor lo ignoran. Para la
+contraseña, `crear_usuario_docente` deja `debe_cambiar_contrasena = true` y
+`marcar_contrasena_actualizada` lo apaga cuando el docente la cambia; si la olvida, la
+recupera por correo desde `/acceso/recuperar`, que es Supabase Auth.
+
+**Por qué.** Borrar un curso rompería los horarios y reportes que lo citan; desactivarlo
+conserva la historia y solo cierra la puerta a lo nuevo. Y una contraseña que conoce quien
+dio de alta al docente no debería seguir sirviendo después del primer ingreso.
+
 ---
 
 ## 5. Preguntas incómodas
@@ -1410,7 +1500,7 @@ fórmula distinto.
 
 Sería sobreingeniería si el sistema fuera un CRUD. No lo es: hay un ciclo de vida de 10
 estados, autorización por permiso y por alcance de facultad, versionado de horarios
-publicados y un esquema de 59 tablas. **La
+publicados y un esquema de 62 tablas. **La
 complejidad ya está en el problema**; las capas la ordenan, no la crean.
 
 La prueba concreta de que la separación paga es que la suite de aplicación corre sin base de
@@ -1482,67 +1572,72 @@ requisito.
 
 ### P58. ¿Por qué hay tantas clases en el diagrama de clases?
 
-**Qué.** 222 tipos, contados uno por uno recorriendo los proyectos: 72 en `Aplicación`,
-65 en `Contratos`, 42 en `Infraestructura`, 28 en `Dominio` y 15 en `Blazor`. No es una cifra
-elegida para la slide: es lo que hay en el código a día de hoy.
+**Qué.** 406 tipos, contados uno por uno por `scripts/gen-clases.py` al recorrer los seis
+proyectos: 138 en `Contratos`, 110 en `Aplicación`, 61 en `Infraestructura`, 33 en `Dominio`,
+32 en `Motor` y 32 en `Blazor`. No es una cifra elegida para la slide: es lo que hay en el
+código a día de hoy (rama `integrar-backlog-s1-p5`, 2026-09-22).
 
 | Capa | Tipos | Qué guarda |
 |---|---|---|
-| `Aplicación` | 72 | Un caso de uso por operación, más los puertos que declara |
-| `Contratos` | 65 | DTOs de solicitud y de respuesta |
-| `Infraestructura` | 42 | Un adaptador Postgres por puerto, más las filas que mapea |
-| `Dominio` | 28 | Entidades y enums del negocio |
-| `Blazor` | 15 | Páginas y estado de sesión |
+| `Contratos` | 138 | DTOs de solicitud y de respuesta, y el contrato del motor |
+| `Aplicación` | 110 | Un caso de uso por operación, más los puertos que declara |
+| `Infraestructura` | 61 | Un adaptador Postgres por puerto, más las filas que mapea |
+| `Dominio` | 33 | Entidades y enums del negocio |
+| `Motor` | 32 | Rejilla, precálculo, colocador, verificador y la reparación de la edición manual |
+| `Blazor` | 32 | Páginas, componentes compartidos y estado de sesión |
 
-**Cómo.** `Aplicación` y `Contratos` concentran el 62% porque cada operación —crear, listar,
+**Cómo.** `Contratos` y `Aplicación` concentran el 61% porque cada operación —crear, listar,
 actualizar…— no es un tipo, son tres: el caso de uso en `Aplicación` (`CrearAula`), su DTO de
 entrada en `Contratos` (`CrearAulaSolicitud`) y, si además se lee, su DTO de salida
-(`AulaDto`). Contando solo `Contratos`: 37 tipos terminan en `Solicitud` y 26 en `Dto`. De
-los 72 de `Aplicación`, 52 son casos de uso —un archivo, una operación, ver
-[P23](#p23-por-qué-un-proyecto-net-separado-por-capa-y-no-carpetas-dentro-de-uno-solo)— y 14
+(`AulaDto`). Contando solo `Contratos`: 41 tipos terminan en `Solicitud` y 53 en `Dto`. De
+los 110 de `Aplicación`, 71 son clases —los casos de uso y los servicios `Gestionar*`, ver
+[P23](#p23-por-qué-un-proyecto-net-separado-por-capa-y-no-carpetas-dentro-de-uno-solo)— y 26
 son las interfaces (`IDatosAcademia`, `IDatosDocentes`…) que esos casos de uso piden por
-constructor. `Infraestructura` (42) es casi un espejo de esas interfaces: 17 clases adaptador
-(`DatosAcademiaPostgres`…) más 19 records `*Fila` que mapean una fila cruda de Postgres antes
-de convertirla en dominio.
+constructor. `Infraestructura` (61) es casi un espejo de esas interfaces: 26 clases, casi
+todas adaptadores (`DatosAcademiaPostgres`…), más 24 records `*Fila` que mapean una fila cruda
+de Postgres antes de convertirla en dominio.
 
-**Por qué.** El diagrama es ancho, no profundo: 222 tipos y 380 relaciones —menos de dos por
-tipo, en promedio—, porque cada tipo hace una sola cosa y no acumula lógica ajena. La
+**Por qué.** El diagrama es ancho, no profundo: 406 tipos y 890 relaciones —poco más de dos
+por tipo, en promedio—, porque cada tipo hace una sola cosa y no acumula lógica ajena. La
 alternativa —un `AulaService` con diez métodos que mezcle validación, persistencia y
 transporte— tendría menos archivos, pero cada uno haría más y sería más difícil de probar
 aislado. Es *Single Responsibility* (Martin) aplicado sin excepción. Y la cifra no crece con
 la dificultad de cada pieza, crece con el número de operaciones del sistema: un módulo nuevo
-agrega el mismo patrón de tres a cinco tipos, no una excepción a la regla.
+—las notificaciones, por ejemplo— agrega el mismo patrón de tipos, no una excepción a la regla.
 
 ### P59. ¿Qué tipos de clase hay en el diagrama y para qué sirve cada uno?
 
 **Qué.** El diagrama distingue cuatro formas de tipo de C# que aparecen de verdad en el
 código —`record`, `clase`, `interfaz`, `enum`; el generador también reconoce `struct`, pero
-el código real no usa ninguno—: 108 son `record`, 81 son `clase`, 17 son `enum` y 16 son
-`interfaz`.
+el código real no usa ninguno—: 207 son `record`, 143 son `clase`, 31 son `interfaz` y 25 son
+`enum`.
 
 | Kind | Cuántos | Para qué sirve | Ejemplo |
 |---|---|---|---|
-| `record` | 108 | Dato inmutable, igualdad por valor | `Cohorte`, `CrearAulaSolicitud`, `AulaFila` |
-| `clase` | 81 | Comportamiento: orquesta, transforma o adapta | `CrearCarrera`, `DatosAcademiaPostgres` |
-| `enum` | 17 | Un conjunto cerrado de valores válidos | `EstadoPlan`, `TipoUsuario` |
-| `interfaz` | 16 | Puerto: el contrato que `Aplicación` define e `Infraestructura` implementa | `IDatosAcademia`, `IDatosDocentes` |
+| `record` | 207 | Dato inmutable, igualdad por valor | `Cohorte`, `CrearAulaSolicitud`, `AulaFila` |
+| `clase` | 143 | Comportamiento: orquesta, transforma o adapta | `CrearCarrera`, `DatosAcademiaPostgres`, `ColocadorVoraz` |
+| `interfaz` | 31 | Puerto: el contrato que una capa define y otra implementa | `IDatosAcademia`, `IMotorHorarios` |
+| `enum` | 25 | Un conjunto cerrado de valores válidos | `EstadoPlan`, `TipoUsuario` |
 
 **Cómo.** Cada kind se concentra donde tiene sentido, no está repartido parejo:
 
-- **`record` (108).** 56 en `Contratos` (los DTOs de solicitud y de respuesta), 24 en
-  `Infraestructura` (`*Fila`, el resultado crudo de una consulta antes de mapearlo), 20 en
-  `Dominio` (las entidades: `Carrera`, `Cohorte`, `AgrupacionAreaComun`…), 6 en `Aplicación`
-  (valores de sesión como `SesionSupabase`, `ResultadoInicioSesion`) y 2 en `Blazor`
-  (`CredencialesFormulario`, `EntradaSesion`). Es `record` y no `class` en todos estos casos
-  porque ninguno cambia después de crearse: se lee, se compara y se descarta.
-- **`clase` (81).** 52 en `Aplicación` (un caso de uso por archivo), 17 en `Infraestructura`
-  (los adaptadores que implementan un puerto contra Postgres) y 12 en `Blazor` (páginas y
-  servicios de sesión). Donde hay comportamiento hay `clase`; donde solo hay datos, `record`.
-- **`interfaz` (16).** 14 en `Aplicación` (los puertos que cada caso de uso pide por
-  constructor), 1 en `Infraestructura` y 1 en `Blazor`. Casi todas viven en `Aplicación` a propósito: es la capa
+- **`record` (207).** 117 en `Contratos` (los DTOs y los tipos del motor: `Instantanea`,
+  `SesionRequerida`, `Resultado`…), 34 en `Infraestructura` (`*Fila`, el resultado crudo de
+  una consulta antes de mapearlo), 23 en `Dominio` (las entidades: `Carrera`, `Cohorte`,
+  `AgrupacionAreaComun`…), 14 en `Blazor`, 13 en `Aplicación` (valores como `SesionSupabase`,
+  `ResultadoInicioSesion`) y 6 en `Motor`. Es `record` y no `class` porque ninguno cambia
+  después de crearse: se lee, se compara y se descarta.
+- **`clase` (143).** 71 en `Aplicación` (casos de uso y servicios), 26 en `Motor` (las piezas
+  del cálculo y la reparación), 26 en `Infraestructura` (los adaptadores que implementan un
+  puerto contra Postgres) y 16 en `Blazor` (servicios y estado de página). Donde hay
+  comportamiento hay `clase`; donde solo hay datos, `record`.
+- **`interfaz` (31).** 26 en `Aplicación` (los puertos que cada caso de uso pide por
+  constructor), 3 en `Contratos` (`IMotorHorarios`, `IVerificadorHorario`,
+  `IReparadorHorario`: el motor se pide por interfaz igual que la base), 1 en
+  `Infraestructura` y 1 en `Blazor`. Casi todas viven en `Aplicación` a propósito: es la capa
   que decide **qué** necesita, no **cómo** se cumple, y esa inversión es la que permite
   cambiar de proveedor sin tocar un caso de uso (ver [P24](#p24-y-si-mañana-hay-que-salir-de-supabase)).
-- **`enum` (17).** 9 en `Contratos` y 8 en `Dominio`, casi siempre por parejas
+- **`enum` (25).** 16 en `Contratos`, 8 en `Dominio` y 1 en `Blazor`, casi siempre por parejas
   (`EstadoPensum` en `Dominio`, `EstadoPensumDto` en `Contratos`). No es descuido: es la misma
   razón que separa `Contratos` de `Dominio` en general (ver [P25](#p25-para-qué-sirve-horarioscontratos-si-ya-existe-horariosdominio)) — si el dominio agrega un
   estado interno nuevo, el contrato publicado hacia afuera no cambia solo porque el dominio
@@ -1601,7 +1696,7 @@ pone en sus dos ejes.
 | **Restricción (constraint)** | Regla que la base de datos hace cumplir siempre: `NOT NULL`, `CHECK`, `UNIQUE`, `FOREIGN KEY`, `EXCLUDE` | `CHECK (minuto_fin_dia > minuto_inicio_dia)` |
 | **Restricción EXCLUDE** | Prohíbe que existan dos filas que cumplan a la vez una condición dada. Sirve para impedir solapes | `sesiones_docente_no_solapado` |
 | **Columna generada** | Columna que la base de datos calcula sola a partir de otras. No se escribe | `rango_minutos`, `rango_slots` |
-| **ENUM** | Tipo con lista cerrada de valores. La base de datos rechaza cualquier otro | 22 tipos: días, estados, permisos y clasificaciones como `tipo_recurso` |
+| **ENUM** | Tipo con lista cerrada de valores. La base de datos rechaza cualquier otro | 24 tipos: días, estados, permisos, prioridades y clasificaciones como `tipo_recurso` |
 | **Vista** | Consulta guardada con nombre, que se usa como si fuera una tabla | `api_cohortes_activas`, `vista_horarios_publicados` |
 | **`security_invoker`** | Opción de una vista para que corra con los permisos de quien consulta y no de quien la creó. Sin ella, una vista evade RLS | Las cinco vistas `api_*` la llevan |
 | **Función almacenada** | Código que vive en la base de datos y se ejecuta ahí. Puede hacer varias operaciones en una transacción | 55 funciones ordinarias y 17 funciones de trigger |
@@ -1611,7 +1706,7 @@ pone en sus dos ejes.
 | **Transacción** | Conjunto de operaciones que ocurren todas o ninguna | Cada función SQL corre en una |
 | **ACID** | Atomicidad, Consistencia, Aislamiento, Durabilidad: las garantías de una transacción | Es el motivo de meter escrituras múltiples en funciones |
 | **UPSERT** | `INSERT ... ON CONFLICT ... DO UPDATE`: insertar si no existe, actualizar si ya está, atómicamente | `activar_cohorte_periodo(...)` |
-| **RLS** | *Row Level Security*: filtros por fila que PostgreSQL aplica solo, según quién consulta | Las 254 políticas y 59 tablas con RLS activado |
+| **RLS** | *Row Level Security*: filtros por fila que PostgreSQL aplica solo, según quién consulta | Las 256 políticas y 62 tablas con RLS activado |
 | **`USING` / `WITH CHECK`** | En una política: filtro para leer / filtro para escribir | `USING` mira lo que está; `WITH CHECK`, lo que vas a dejar |
 | **`SECURITY DEFINER`** | Función que corre con los permisos de su propietario y puede omitir RLS según esos permisos | 7 funciones de contexto, alta de usuarios y consultas públicas |
 | **`search_path`** | Orden en que Postgres busca nombres sin esquema. Fijarlo es obligatorio en funciones `SECURITY DEFINER` | `SET search_path TO 'horarios', 'public'` |
