@@ -2,6 +2,7 @@ import { Component, HostListener, computed, signal } from '@angular/core';
 import { ArchitectureSlide } from './components/architecture-slide/architecture-slide';
 import { CatalogoSlide } from './components/catalogo-slide/catalogo-slide';
 import { ClasesSlide } from './components/clases-slide/clases-slide';
+import { ErdAppSlide } from './components/erd-app-slide/erd-app-slide';
 import { ErdSlide } from './components/erd-slide/erd-slide';
 import { InterfaceSlide } from './components/interface-slide/interface-slide';
 import { MotorDetalleSlide } from './components/motor-detalle-slide/motor-detalle-slide';
@@ -11,13 +12,14 @@ import { RequirementsSlide } from './components/requirements-slide/requirements-
 import { SUBSLIDES_MOTOR } from './data/motor-detalle-data';
 
 /** La primera sub-slide del motor. Las cinco van seguidas a partir de aquí. */
-const PRIMERA_SUBSLIDE = 6;
+const PRIMERA_SUBSLIDE = 7;
 
 @Component({
   selector: 'app-root',
   imports: [
     RequirementsSlide,
     ErdSlide,
+    ErdAppSlide,
     ClasesSlide,
     ArchitectureSlide,
     MotorSlide,
@@ -32,23 +34,24 @@ const PRIMERA_SUBSLIDE = 6;
 export class App {
   /**
    * El deck es plano, pero tiene grupos: las cinco sub-slides del motor pertenecen al
-   * grupo 5, igual que la slide del recorrido. El grupo es lo que siguen los dígitos del
-   * teclado, para que pulsar 6 siga llevando a «Interfaz» como antes de partirlo.
+   * grupo 6, igual que la slide del recorrido. El grupo es lo que siguen los dígitos del
+   * teclado, para que pulsar 7 siga llevando a «Interfaz» como antes de partirlo.
    */
   readonly slides = [
     { n: 1, grupo: 1, titulo: 'Requerimientos', sub: false },
     { n: 2, grupo: 2, titulo: 'Base de datos', sub: false },
-    { n: 3, grupo: 3, titulo: 'Diagrama de clases', sub: false },
-    { n: 4, grupo: 4, titulo: 'Arquitectura', sub: false },
-    { n: 5, grupo: 5, titulo: 'Motor', sub: false },
-    { n: 6, grupo: 5, titulo: '5.1 · Asignación de aulas', sub: true },
-    { n: 7, grupo: 5, titulo: '5.2 · Docente duplicado', sub: true },
-    { n: 8, grupo: 5, titulo: '5.3 · Aula ocupada', sub: true },
-    { n: 9, grupo: 5, titulo: '5.4 · Cruce de horarios', sub: true },
-    { n: 10, grupo: 5, titulo: '5.5 · Consulta de horarios', sub: true },
-    { n: 11, grupo: 6, titulo: 'Interfaz', sub: false },
-    { n: 12, grupo: 7, titulo: 'Script de la base', sub: false },
-    { n: 13, grupo: 8, titulo: 'Preguntas y glosario', sub: false },
+    { n: 3, grupo: 3, titulo: 'Base de datos · App de rutas', sub: false },
+    { n: 4, grupo: 4, titulo: 'Diagrama de clases', sub: false },
+    { n: 5, grupo: 5, titulo: 'Arquitectura', sub: false },
+    { n: 6, grupo: 6, titulo: 'Motor', sub: false },
+    { n: 7, grupo: 6, titulo: '5.1 · Asignación de aulas', sub: true },
+    { n: 8, grupo: 6, titulo: '5.2 · Docente duplicado', sub: true },
+    { n: 9, grupo: 6, titulo: '5.3 · Aula ocupada', sub: true },
+    { n: 10, grupo: 6, titulo: '5.4 · Cruce de horarios', sub: true },
+    { n: 11, grupo: 6, titulo: '5.5 · Consulta de horarios', sub: true },
+    { n: 12, grupo: 7, titulo: 'Interfaz', sub: false },
+    { n: 13, grupo: 8, titulo: 'Script de la base', sub: false },
+    { n: 14, grupo: 9, titulo: 'Preguntas y glosario', sub: false },
   ];
 
   readonly actual = signal(1);
